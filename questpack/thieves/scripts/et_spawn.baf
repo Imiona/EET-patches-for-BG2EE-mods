@@ -1,0 +1,77 @@
+IF
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  OR(8)
+    AreaCheckObject("AR0020",Player1)
+    AreaCheckObject("AR0300",Player1)
+    AreaCheckObject("AR0400",Player1)
+    AreaCheckObject("AR0500",Player1)
+    AreaCheckObject("AR0700",Player1)
+    AreaCheckObject("AR0800",Player1)
+    AreaCheckObject("AR0900",Player1)
+    AreaCheckObject("AR1000",Player1)
+  !GlobalTimerNotExpired("D0MaevarTimer","GLOBAL")
+  Global("D0Maevar","GLOBAL",3)
+  OR(2)
+    !GlobalGT("D0Maevar2","GLOBAL",29)
+    Global("D0Maevar2","GLOBAL",33)
+  OR(2)
+    !Global("D0Maevar2","GLOBAL",1)
+    Global("D0Maevar2","GLOBAL",33)
+  !Dead("Aran")
+  !Dead("Maevar")
+  !Dead("d0nightk")
+  CombatCounter(0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Maevar","GLOBAL",4)
+    CreateCreatureObjectOffScreen("d0msngr",Player1,0,0,0)
+    ActionOverride("d0msngr",StartDialogueNoSet(Player1))
+END
+
+IF
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  OR(8)
+    AreaCheckObject("AR0020",Player1)
+    AreaCheckObject("AR0300",Player1)
+    AreaCheckObject("AR0400",Player1)
+    AreaCheckObject("AR0500",Player1)
+    AreaCheckObject("AR0700",Player1)
+    AreaCheckObject("AR0800",Player1)
+    AreaCheckObject("AR0900",Player1)
+    AreaCheckObject("AR1000",Player1)
+  GlobalLT("D0Maevar","GLOBAL",3)
+  !GlobalGT("D0Maevar2","GLOBAL",29)
+  !Global("D0Maevar2","GLOBAL",1)
+  !Dead("Aran")
+  !Dead("habrega")
+  Global("PlayerThiefGuild","GLOBAL",0)
+  CombatCounter(0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Maevar2","GLOBAL",30)
+    CreateCreatureObjectOffScreen("d0msngr2",Player1,0,0,0)
+    ActionOverride("d0msngr2",StartDialogueNoSet(Player1))
+END
+
+IF
+  GlobalLT("chapter","GLOBAL",%bg2_chapter_6%)
+  OR(8)
+    AreaCheckObject("AR0020",Player1)
+    AreaCheckObject("AR0300",Player1)
+    AreaCheckObject("AR0400",Player1)
+    AreaCheckObject("AR0500",Player1)
+    AreaCheckObject("AR0700",Player1)
+    AreaCheckObject("AR0800",Player1)
+    AreaCheckObject("AR0900",Player1)
+    AreaCheckObject("AR1000",Player1)
+  Global("D0Maevar","GLOBAL",3)
+  GlobalTimerExpired("D0RenalRevenge","GLOBAL")
+  Global("D0RenalRevengeSpawn","GLOBAL",0)
+  TimeOfDay(NIGHT)
+  CombatCounter(0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0RenalRevengeSpawn","GLOBAL",1)
+    CreateCreatureObjectOffScreen("d0renrev",Player1,0,0,0)
+    ActionOverride("d0renrev",StartDialogueNoSet(Player1))
+END

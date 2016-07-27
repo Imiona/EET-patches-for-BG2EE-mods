@@ -1,0 +1,426 @@
+BACKUP ~Skie\backup~
+AUTHOR ~Lava Del'Vortel~
+
+AUTO_TRA ~Skie/translations/%s~
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+
+  // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+  INCLUDE ~%MOD_FOLDER%/handle_charsets.tpa~
+
+  // No exception, everything needs to be converted
+  ACTION_DEFINE_ARRAY 1xSnoconvert BEGIN END
+
+  // Only setup-Innershade.tra needs to be reloaded
+  ACTION_DEFINE_ARRAY 1xSreload BEGIN setup-Skie END
+
+  // There is no "language" folder so the root of all languages in %MOD_FOLDER%
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~%MOD_FOLDER%/translations~
+      // charset_table = 1xScharsets // Included for illustrative purposes.
+      noconvert_array = 1xSnoconvert
+      reload_array = 1xSreload
+  END
+END
+
+LANGUAGE ~Polski~ ~Polski~ ~Skie/Translations/Polski/setup-skie.tra~
+LANGUAGE ~English~ ~English~ ~Skie/Translations/English/setup-skie.tra~
+
+BEGIN @0 /* Skie NPC - BG2 */ 
+
+// Fixing Imoen's dialogue file
+ACTION_IF FILE_EXISTS_IN_GAME ~mel01.cre~ THEN BEGIN
+  COPY_EXISTING ~interdia.2da~ ~override~
+    SET_2DA_ENTRY 17 1 2 ~BIMOEN2~ // fixes ToB version
+    BUT_ONLY_IF_IT_CHANGES
+END ELSE BEGIN
+  APPEND ~interdia.2da~ ~IMOEN       BIMOEN2~ // fixes SoA version
+    UNLESS ~BIMOEN2~
+END
+
+APPEND ~STATE.IDS~ ~0x80101FEF CD_STATE_NOTVALID~
+UNLESS ~CD_STATE_NOTVALID~
+
+ACTION_IF ("%LANGUAGE%" STRING_COMPARE_CASE "English" =0) BEGIN
+ 
+COPY ~Skie\AUDIOEng~ ~override\~
+
+   END ELSE ACTION_IF  ("%LANGUAGE%" STRING_COMPARE_CASE "English" =0) BEGIN
+
+COPY ~Skie\AUDIO~ ~override\~
+
+END
+
+COPY_EXISTING ~SPWI107.spl~ ~override/SKIE01.spl~
+SAY NAME1 @1 /* Nieustaj¹ce pytlowanie */
+SAY NAME2 @1 /* Nieustaj¹ce pytlowanie */
+SAY DESC @1 /* Nieustaj¹ce pytlowanie */
+WRITE_SHORT 0x1C 4 
+WRITE_LONG 0x34 1 
+READ_LONG 0x64 "offset_abil"
+READ_SHORT 0x68 "num_abil"
+READ_ASCII ("%offset_abil%" + 0x04) "bam" 
+WRITE_EVALUATED_ASCII 0x3A "%bam%" 
+WHILE (0 < "%num_abil%")
+BEGIN
+WRITE_SHORT (("%offset_abil%" + 0x02) + (("%num_abil%" - 1) * 0x28)) 4 
+SET "num_abil" = ("%num_abil%" - 1)
+END
+
+
+
+COPY ~Skie\Other\1xSCARF.bam~ ~override\1xSCARF.bam~
+
+COPY ~Skie\PORTRAIT\ALTER\1xSkieG.bmp~ ~override\1xSkieG.bmp~
+COPY ~Skie\PORTRAIT\ALTER\1xSkieM.bmp~ ~override\1xSkieM.bmp~
+COPY ~Skie\PORTRAIT\ALTER\1xSkieS.bmp~ ~override\1xSkieS.bmp~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COPY ~Skie\PORTRAIT\EE~ ~override~
+END
+
+COPY ~Skie\OTHER\1xSkie2.cre~ ~override\1xSkie2.cre~
+SAY NAME1 @2 /* Skie */
+SAY NAME2 @2 /* Skie */
+SAY BIO@3 /* Zapytana o przesz³oœæ, SKIE zaczyna siê œmiaæ. Odpowiada, ¿e doskonale wiesz co siê dzia³o. Przypomina wasze spotkanie we Wrotach Baldura. Skie jest córk¹ Entara Srebrnej Tarczy. Niegdyœ ju¿ razem podró¿owaliœcie. Jej zachowanie wskazuje na doœæ du¿e rozpieszczenie, ale pewne jest, i¿ jej zdolnoœci z³odziejskie s¹ nieprzeciêtne. Zdaje siê cieszyæ, ¿e znowu ciê spotka³a. */
+
+  SAY MORALE @4 /* Pomoooocy! */ 
+  SAY HAPPY @5 /* Myœlê, ¿e jesteœ wspania³¹ osob¹. */ 
+  SAY UNHAPPY_ANNOYED @6 /* Nie s¹dzê, by to, co robimy by³o moralnie s³uszne. */ 
+  SAY UNHAPPY_SERIOUS @7 /* Wszyscy jesteœcie brudnymi œwiniami. */ 
+  SAY UNHAPPY_BREAKING @8 /* Nie zniosê ju¿ tego i wracam do domu! */ 
+  SAY LEADER @9 /* Nie wiem, czy dam sobie radê z przywództwem, ale mogê spróbowaæ. */ 
+  SAY TIRED @10 /* Jestem zmêczona... Czy nie moglibyœmy odpocz¹æ? */ 
+  SAY BORED @11 /* Jestem tak zmêczona... */ 
+  SAY DAMAGE  @12 /* Aaaoa! */ 
+  SAY DYING @13 /* Aaaa! */ 
+  SAY HURT @14 /* Ach... Raniono mnie... Na pomooooc! */ 
+  SAY SELECT_COMMON1 @15 /* Mogê w czymœ pomóc? */ 
+  SAY SELECT_COMMON2 @16 /* Z³ama³am paznokieæ. */ 
+  SAY SELECT_COMMON3 @17 /* Zniszczy³am sobie fryzurê. */ 
+  SAY SELECT_COMMON4 @18 /* Podobaj¹ ci siê moje pachnid³a? */ 
+  SAY SELECT_COMMON5 @19 /* Pokocha³am ciê, Eldoth... */ 
+  SAY SELECT_ACTION1 @20 /* Boli mnie stopa. */ 
+  SAY SELECT_ACTION2 @21 /* Przeziêbi³am siê. */ 
+  SAY SELECT_ACTION3 @22 /* Boli mnie g³owa. */ 
+  SAY SELECT_ACTION4 @23 /* Dawno nie jad³am gor¹cego posi³ku... */ 
+  SAY SELECT_ACTION5 @24 /* ChodŸmy na zakupy! */ 
+  SAY SELECT_ACTION6 @25 /* Chcê do domu! */ 
+  SAY SELECT_ACTION7 @26 /* Dobry z ciebie przyjaciel. */ 
+  SAY SELECT_RARE1 @27 /* Dlaczego zawsze siê ze mnie wyœmiewasz?! Nie cierpiê ciê! IdŸ precz! */ 
+  SAY SELECT_RARE2 @28 /* Przykro mi, czy¿bym zrobi³a coœ z³ego? */ 
+  
+COMPILE ~Skie\DIALOGUES\1xSPR.d~
+COMPILE ~Skie\DIALOGUES\1xSkie.d~
+COMPILE ~Skie\DIALOGUES\1xSkieB.d~
+COMPILE EVALUATE_BUFFER ~Skie\DIALOGUES\1xSkieJ.d~
+COMPILE ~Skie\DIALOGUES\1xSkii1.d~
+COMPILE ~Skie\DIALOGUES\1xSkii2.d~
+COMPILE ~Skie\DIALOGUES\1xSkieVa.d~
+COMPILE ~Skie\DIALOGUES\1xAppend.d~
+COMPILE ~Skie\DIALOGUES\1xthi.d~
+
+COMPILE ~Skie\BAF\1xSkii2.baf~
+COMPILE ~Skie\BAF\1xSkii1.baf~
+COMPILE EVALUATE_BUFFER ~Skie\BAF\1xSkie.baf~
+EXTEND_TOP ~Aerie.bcs~ ~Skie\BAF\Aerie.baf~
+EXTEND_TOP ~Jaheira.bcs~ ~Skie\BAF\Jaheira.baf~
+EXTEND_TOP ~Viconia.bcs~ ~Skie\BAF\Viconia.baf~
+
+
+COPY ~Skie\OTHER\Skiei1.itm~ ~override\Skiei1.itm~
+SAY NAME1@29 /* Modna zbroja wyszczuplaj¹ca */
+SAY NAME2@29 /* Modna zbroja wyszczuplaj¹ca */
+SAY DESC@30 /* Jest to zbroja zaprojektowana przez najwspanialszych projektantów Waterdeep. Jest ona niezwykle modna tego sezonu. Obcis³a i szykowna. Ciemny kolor sprawia, ¿e postaæ j¹ nosz¹ca zdaje siê szczuplejsza. Sam przedmiot tak¿e jest l¿ejszy ni¿ zwyczajna zbroja. To przedmiot zachwytu Skie.
+
+W£AŒCIWOŒCI:
+
+Klasa Pancerza: 4
+Dodaje 5% do krycia siê w cieniu
+Waga: 3
+Mo¿e u¿ywaæ:
+Skie */
+
+COPY ~Skie\OTHER\SK001.itm~ ~override\SK001.itm~
+SAY NAME1@31 /* P³aszczyk z koronk¹ */
+SAY NAME2@31 /* P³aszczyk z koronk¹ */
+SAY DESC@32 /* Jest to osobisty p³aszczyk z³odziejki Skie. Wykonany jest z niezwykle g³atkiego materia³u, na którym nie pozostaj¹ ¿adne zagiêcia, nawet po nieuwa¿nym prasowaniu. Finezyjnie wykonana koronka dodaje temu p³aszczykowi urody.
+
+W£AŒCIWOŒCI:
+
+Chroni przed wyssaniem poziomu.
+
+Mo¿e u¿ywaæ:
+Skie */
+
+COPY ~Skie\OTHER\SKIER.itm~ ~override\SKIER.itm~
+SAY NAME1@33 /* Bransolety Entara */
+SAY NAME2@33 /* Bransolety Entara */
+SAY DESC@34 /* S¹ to bransolety Entara Srebrnej Tarczy - pami¹tka Skie po jej zmar³ym ojcu. Skie podarowa³a ci ten przedmiot z powodu uczuæ jakimi ciê darzy.
+
+W£AŒCIWOŒCI:
+
+Si³a: 18/00
+Ochrona przed ciosami w plecy
+Ochrona przed truciznami
+
+Mo¿e u¿ywaæ:
+ */
+
+COPY ~Skie\OTHER\SKIEBA.itm~ ~override\SKIEBA.itm~
+SAY NAME1@35 /* Dziecko */
+SAY NAME2@35 /* Dziecko */
+SAY DESC @36 /* Jest to dziecko <CHARNAME> oraz z³odziejki Skie. Jest niezwykle urokliwe, a jego r¹czki zdaj¹ siê w ci¹g³ym ruchu.
+
+Waga: 10 */
+
+COPY ~Skie\OTHER\SKIESC.itm~ ~override\SKIESC.itm~
+SAY NAME1@37 /* Wilczy Szal Entara */
+SAY NAME2@37 /* Wilczy Szal Entara */
+SAY DESC @38 /* To jest wspania³y, furzany szal, który zdaje siê nale¿a³ do Entara Srebrnej Tarczy. Jest niezwykle ciep³y, a wilcza skóra, z której jest wykonany, mieni siê piêknymi refleksami.
+
+W£AŒCIWOŒCI:
+
+Nosz¹cy jest chroniony przed wszelkimi wilkami
+50% Odpronoœci na zimno
+Rzuty obronny przeciwko œmierci +5
++1 Charyzmy
+
+Mo¿e u¿ywaæ:
+Skie */
+
+COPY ~Skie\OTHER\SKIEST.spl~ ~override\SKIEST.spl~
+SAY NAME1@39 /* Okie³znanie */
+SAY NAME2@39 /* Okie³znanie */
+
+COPY ~Skie\OTHER\1xSkii1.cre~ ~override\1xSkii1.cre~
+SAY NAME1@40 /* Perpetua Margerita IV Sharalla */
+SAY NAME2@40 /* Perpetua Margerita IV Sharalla */
+
+COPY ~Skie\OTHER\1xSkii2.cre~ ~override\1xSkii2.cre~
+SAY NAME1@41 /* Projektant */
+SAY NAME2@41 /* Projektant */
+
+COPY ~Skie\OTHER\1xSPR.cre~ ~override\1xSPR.cre~
+SAY NAME1@41 /* Projektant */
+SAY NAME2@41 /* Projektant */
+
+COPY ~Skie\OTHER\1xThi.cre~ ~override\1xThi.cre~
+SAY NAME1 @42 /* Dziwny goœæ */
+SAY NAME2 @42 /* Dziwny goœæ */
+
+COPY ~Skie\OTHER\1xSkieVa.cre~ ~override\1xSkieVa.cre~
+SAY NAME1 @43 /* Zaciek³a Wampirzyca */
+SAY NAME2 @43 /* Zaciek³a Wampirzyca */
+
+EXTEND_TOP ~AR2017.bcs~ ~Skie\BAF\AR2017.baf~
+EXTEND_TOP ~AR0400.bcs~ ~Skie\BAF\AR0400.baf~
+EXTEND_TOP ~AR0020.bcs~ ~Skie\BAF\AR0020.baf~
+EXTEND_TOP ~AR1000.bcs~ ~Skie\BAF\AR1000.baf~
+
+APPEND ~pdialog.2da~
+~SkieDV 1xSkieP 1xSkieJ 1xSkieD 1xSki25P 1xSki25J 1xSki25D 1xSki25~ 
+UNLESS ~SkieDV~
+
+APPEND ~interdia.2da~
+
+~SkieDV 1xSkieB 1xSki25B~
+
+COPY ~Skie\OTHER\1xSkie3.cre~ ~override\1xSkie3.cre~
+SAY NAME1 @2 /* Skie */
+SAY NAME2 @2 /* Skie */
+SAY BIO@44 /* Zapytana o przesz³oœæ, SKIE zaczyna siê œmiaæ. Odpowiada, ¿e doskonale wiesz co siê dzia³o. Przypomina, ¿e spotkaliœcie siê ju¿ we Wrotach Baldura. Skie jest córk¹ Entara Srebrnej Tarczy. Niegdyœ ju¿ razem podró¿owaliœcie. Ta dziewczyna jest bardzo rozpieszczon¹ dziewczyn¹. Zdaje siê cieszyæ, ¿e znowu ciê spotka³a. */
+
+  SAY MORALE @4 /* Pomoooocy! */ 
+  SAY HAPPY @5 /* Myœlê, ¿e jesteœ wspania³¹ osob¹. */ 
+  SAY UNHAPPY_ANNOYED @6 /* Nie s¹dzê, by to, co robimy by³o moralnie s³uszne. */ 
+  SAY UNHAPPY_SERIOUS @7 /* Wszyscy jesteœcie brudnymi œwiniami. */ 
+  SAY UNHAPPY_BREAKING @8 /* Nie zniosê ju¿ tego i wracam do domu! */ 
+  SAY LEADER @9 /* Nie wiem, czy dam sobie radê z przywództwem, ale mogê spróbowaæ. */ 
+  SAY TIRED @10 /* Jestem zmêczona... Czy nie moglibyœmy odpocz¹æ? */ 
+  SAY BORED @11 /* Jestem tak zmêczona... */ 
+  SAY DAMAGE  @12 /* Aaaoa! */ 
+  SAY DYING @13 /* Aaaa! */ 
+  SAY HURT @14 /* Ach... Raniono mnie... Na pomooooc! */ 
+  SAY SELECT_COMMON1 @15 /* Mogê w czymœ pomóc? */ 
+  SAY SELECT_COMMON2 @16 /* Z³ama³am paznokieæ. */ 
+  SAY SELECT_COMMON3 @17 /* Zniszczy³am sobie fryzurê. */ 
+  SAY SELECT_COMMON4 @18 /* Podobaj¹ ci siê moje pachnid³a? */ 
+  SAY SELECT_COMMON5 @19 /* Pokocha³am ciê, Eldoth... */ 
+  SAY SELECT_ACTION1 @20 /* Boli mnie stopa. */ 
+  SAY SELECT_ACTION2 @21 /* Przeziêbi³am siê. */ 
+  SAY SELECT_ACTION3 @22 /* Boli mnie g³owa. */ 
+  SAY SELECT_ACTION4 @23 /* Dawno nie jad³am gor¹cego posi³ku... */ 
+  SAY SELECT_ACTION5 @24 /* ChodŸmy na zakupy! */ 
+  SAY SELECT_ACTION6 @25 /* Chcê do domu! */ 
+  SAY SELECT_ACTION7 @26 /* Dobry z ciebie przyjaciel. */ 
+  SAY SELECT_RARE1 @27 /* Dlaczego zawsze siê ze mnie wyœmiewasz?! Nie cierpiê ciê! IdŸ precz! */ 
+  SAY SELECT_RARE2 @28 /* Przykro mi, czy¿bym zrobi³a coœ z³ego? */ 
+
+EXTEND_TOP ~ar6200.bcs~ ~Skie\BAF\AR6200.baf~
+
+COPY ~Skie\OTHER\SkiEp.2da~ ~override\SkiEp.2da~
+
+        REPLACE_TEXTUALLY ~PORTRAIT~ ~1xSkieG~ 
+
+        REPLACE 99999 @45 /* Po zakoñczeniu podró¿y z Dzieckiem Bhaala, Skie postanowi³a powróciæ do Wrót Baldura. Nie mo¿na ukrywaæ, ¿e wzbogaci³a siê podczas walk u boku innych. Wszystkie pieni¹dze jakie zdoby³a postanowi³a przeznaczyæ na otworzenie "Przybytku Skie" – nowego, wspania³ego domu mody. Obecnie zapewne projektuje ubrania. Czasami wyrusza na kupieckie wyprawy do Waterdeep, Doliny Lodowego Wichru, Luskan czy innych wielkich miast. Mówi siê, ¿e zaczê³a nawet wspó³pracowaæ z Ribaldem Kramarzem. */
+
+COPY ~Skie\OTHER\SkiEp2.2da~ ~override\SkiEp2.2da~
+
+        REPLACE_TEXTUALLY ~PORTRAIT~ ~1xSkieG~ 
+
+        REPLACE 99998 @46 /* Postanowi³eœ zostaæ z Skie w Faerunie, wyzbywaj¹c siê potêgi Tronu Bhaala i swojego ojca. Razem ze Skie i wasz¹ córk¹ - Elani - postanowiliœcie odwiedziæ Neverwiner oraz Waterdeep, jednak po pewnym czasie postanowiliœcie wróciæ do posiad³oœci Srebrnych Tarcz we Wrotach Baldura. Tam Skie otworzy³a szko³ê tañca i muzyki, ty zaœ mia³eœ szansê wspieraæ swoj¹ wybrankê. Niekiedy wybiera³eœ siê na ró¿nego rodzaju wyprawy do miejsc ju¿ ci znanych - Amn, okolice Candlekeep czy Wie¿y Durlaga, ale to ju¿ zupe³nie inne historie. */
+        
+COPY ~Skie\OTHER\SkiEp3.2da~ ~override\SkiEp3.2da~
+
+        REPLACE_TEXTUALLY ~PORTRAIT~ ~1xSkieG~ 
+
+        REPLACE 99997 @47 /* Podczas swojej podró¿y Skie zosta³a wys³ana wraz z dzieckiem do swojego domu we Wrotach Baldura. Z tego co doniesiono, nigdy nie uda³o jej siê tam dotrzeæ. Ostatni raz widziano j¹ zaraz przed wkroczeniem w rejon pasma górkiego na pó³nocy od Athkatli. Prawdopodobnie wyzwanie okaza³o siê dla niej za ciê¿kie. */
+
+COMPILE ~Skie\DIALOGUES\1xSki25J.d~
+COMPILE ~Skie\DIALOGUES\1xSki25.d~
+COMPILE ~Skie\BAF\1xSki25.baf~
+COMPILE ~Skie\DIALOGUES\1xSki25B.d~
+
+//Skie BLANK SONG
+
+COPY_EXISTING ~songlist.2da~ ~override~
+REPLACE_TEXTUALLY
+~0 No_music ****~
+~0 SKIEBLANK SKIEBLANK.MUS~
+
+COPY ~Skie\MUSIC\SkieBlank.mus~ ~music/SkieBlank.mus~
+
+COPY ~Skie\MUSIC\SKIER.ogg~ ~override/SKIER.ogg~
+COPY ~Skie\MUSIC\oggdec.exe~ ~override/oggdec.exe~
+
+COPY ~Skie\SKIEMUSICI.bat~ ~SKIEMUSICI.bat~
+COPY ~Skie\SKIEMUSICU.bat~ ~SKIEMUSICU.bat~
+
+ACTION_IF GAME_IS ~eet~ BEGIN
+  LOAD_TRA ~Skie/translations/%LANGUAGE%/1XSKI25J.TRA~
+  INCLUDE ~Skie/lib/EET_functions.tph~
+  LAF ~EET_NPC_TRANSITION~
+    INT_VAR
+      type = 2
+      clean_ToB = 1
+    STR_VAR
+      dv = "SKIEDV"
+      override_SoA = "1XSKIE"
+      override_ToB = "1XSKI25"
+      dialog_ToB = "1XSKI25"
+      string = "@132" //Bring Skie, the constantly-complaining thief.
+      stringPosDV = "Tiax"
+      clean_ToB_DV = "Skie"
+  END
+END ELSE BEGIN
+  COMPILE ~Skie/DIALOGUES/FATESP.d~ USING ~Skie/translations/%LANGUAGE%/1XSKI25J.TRA~
+END
+
+AT_INTERACTIVE_EXIT ~SKIEMUSICI.bat~
+AT_UNINSTALL ~SKIEMUSICU.bat~
+
+
+
+
+
+
+BEGIN @48 /* Skie Alternatywna - s³absza, lecz logiczniejsze statystyki (inne ni¿ oryginalna Skie z BG1) */
+REQUIRE_COMPONENT ~Setup-Skie.tp2~ ~0~ @49 /* Wymaga komponentu g³ównego */
+
+COPY ~Skie\AltSkie\1xSkie2.cre~ ~override\1xSkie2.cre~
+SAY NAME1 @2 /* Skie */
+SAY NAME2 @2 /* Skie */
+SAY BIO@44 /* Zapytana o przesz³oœæ, SKIE zaczyna siê œmiaæ. Odpowiada, ¿e doskonale wiesz co siê dzia³o. Przypomina, ¿e spotkaliœcie siê ju¿ we Wrotach Baldura. Skie jest córk¹ Entara Srebrnej Tarczy. Niegdyœ ju¿ razem podró¿owaliœcie. Ta dziewczyna jest bardzo rozpieszczon¹ dziewczyn¹. Zdaje siê cieszyæ, ¿e znowu ciê spotka³a. */
+
+  SAY MORALE @4 /* Pomoooocy! */ 
+  SAY HAPPY @5 /* Myœlê, ¿e jesteœ wspania³¹ osob¹. */ 
+  SAY UNHAPPY_ANNOYED @6 /* Nie s¹dzê, by to, co robimy by³o moralnie s³uszne. */ 
+  SAY UNHAPPY_SERIOUS @7 /* Wszyscy jesteœcie brudnymi œwiniami. */ 
+  SAY UNHAPPY_BREAKING @8 /* Nie zniosê ju¿ tego i wracam do domu! */ 
+  SAY LEADER @9 /* Nie wiem, czy dam sobie radê z przywództwem, ale mogê spróbowaæ. */ 
+  SAY TIRED @10 /* Jestem zmêczona... Czy nie moglibyœmy odpocz¹æ? */ 
+  SAY BORED @11 /* Jestem tak zmêczona... */ 
+  SAY DAMAGE  @12 /* Aaaoa! */ 
+  SAY DYING @13 /* Aaaa! */ 
+  SAY HURT @14 /* Ach... Raniono mnie... Na pomooooc! */ 
+  SAY SELECT_COMMON1 @15 /* Mogê w czymœ pomóc? */ 
+  SAY SELECT_COMMON2 @16 /* Z³ama³am paznokieæ. */ 
+  SAY SELECT_COMMON3 @17 /* Zniszczy³am sobie fryzurê. */ 
+  SAY SELECT_COMMON4 @18 /* Podobaj¹ ci siê moje pachnid³a? */ 
+  SAY SELECT_COMMON5 @19 /* Pokocha³am ciê, Eldoth... */ 
+  SAY SELECT_ACTION1 @20 /* Boli mnie stopa. */ 
+  SAY SELECT_ACTION2 @21 /* Przeziêbi³am siê. */ 
+  SAY SELECT_ACTION3 @22 /* Boli mnie g³owa. */ 
+  SAY SELECT_ACTION4 @23 /* Dawno nie jad³am gor¹cego posi³ku... */ 
+  SAY SELECT_ACTION5 @24 /* ChodŸmy na zakupy! */ 
+  SAY SELECT_ACTION6 @25 /* Chcê do domu! */ 
+  SAY SELECT_ACTION7 @26 /* Dobry z ciebie przyjaciel. */ 
+  SAY SELECT_RARE1 @27 /* Dlaczego zawsze siê ze mnie wyœmiewasz?! Nie cierpiê ciê! IdŸ precz! */ 
+  SAY SELECT_RARE2 @28 /* Przykro mi, czy¿bym zrobi³a coœ z³ego? */ 
+
+COPY ~Skie\AltSkie\1xSkie3.cre~ ~override\1xSkie3.cre~
+
+SAY NAME1 @2 /* Skie */
+SAY NAME2 @2 /* Skie */
+SAY BIO@44 /* Zapytana o przesz³oœæ, SKIE zaczyna siê œmiaæ. Odpowiada, ¿e doskonale wiesz co siê dzia³o. Przypomina, ¿e spotkaliœcie siê ju¿ we Wrotach Baldura. Skie jest córk¹ Entara Srebrnej Tarczy. Niegdyœ ju¿ razem podró¿owaliœcie. Ta dziewczyna jest bardzo rozpieszczon¹ dziewczyn¹. Zdaje siê cieszyæ, ¿e znowu ciê spotka³a. */
+
+  SAY MORALE @4 /* Pomoooocy! */ 
+  SAY HAPPY @5 /* Myœlê, ¿e jesteœ wspania³¹ osob¹. */ 
+  SAY UNHAPPY_ANNOYED @6 /* Nie s¹dzê, by to, co robimy by³o moralnie s³uszne. */ 
+  SAY UNHAPPY_SERIOUS @7 /* Wszyscy jesteœcie brudnymi œwiniami. */ 
+  SAY UNHAPPY_BREAKING @8 /* Nie zniosê ju¿ tego i wracam do domu! */ 
+  SAY LEADER @9 /* Nie wiem, czy dam sobie radê z przywództwem, ale mogê spróbowaæ. */ 
+  SAY TIRED @10 /* Jestem zmêczona... Czy nie moglibyœmy odpocz¹æ? */ 
+  SAY BORED @11 /* Jestem tak zmêczona... */ 
+  SAY DAMAGE  @12 /* Aaaoa! */ 
+  SAY DYING @13 /* Aaaa! */ 
+  SAY HURT @14 /* Ach... Raniono mnie... Na pomooooc! */ 
+  SAY SELECT_COMMON1 @15 /* Mogê w czymœ pomóc? */ 
+  SAY SELECT_COMMON2 @16 /* Z³ama³am paznokieæ. */ 
+  SAY SELECT_COMMON3 @17 /* Zniszczy³am sobie fryzurê. */ 
+  SAY SELECT_COMMON4 @18 /* Podobaj¹ ci siê moje pachnid³a? */ 
+  SAY SELECT_COMMON5 @19 /* Pokocha³am ciê, Eldoth... */ 
+  SAY SELECT_ACTION1 @20 /* Boli mnie stopa. */ 
+  SAY SELECT_ACTION2 @21 /* Przeziêbi³am siê. */ 
+  SAY SELECT_ACTION3 @22 /* Boli mnie g³owa. */ 
+  SAY SELECT_ACTION4 @23 /* Dawno nie jad³am gor¹cego posi³ku... */ 
+  SAY SELECT_ACTION5 @24 /* ChodŸmy na zakupy! */ 
+  SAY SELECT_ACTION6 @25 /* Chcê do domu! */ 
+  SAY SELECT_ACTION7 @26 /* Dobry z ciebie przyjaciel. */ 
+  SAY SELECT_RARE1 @27 /* Dlaczego zawsze siê ze mnie wyœmiewasz?! Nie cierpiê ciê! IdŸ precz! */ 
+  SAY SELECT_RARE2 @28 /* Przykro mi, czy¿bym zrobi³a coœ z³ego? */ 
+
+/*
+
+BEGIN @50 /* Alternatywny portret Skie wykonany rêk¹ Plasmocat */
+SUBCOMPONENT @51
+REQUIRE_COMPONENT ~Setup-Skie.tp2~ ~0~ @49 /* Wymaga komponentu g³ównego */
+
+COPY ~Skie\PORTRAIT\ALTER\1xSkieG.bmp~ ~override\1xSkieG.bmp~
+COPY ~Skie\PORTRAIT\ALTER\1xSkieM.bmp~ ~override\1xSkieM.bmp~
+COPY ~Skie\PORTRAIT\ALTER\1xSkieS.bmp~ ~override\1xSkieS.bmp~
+
+
+BEGIN @52
+SUBCOMPONENT @51
+REQUIRE_COMPONENT ~Setup-Skie.tp2~ ~0~ @49 /* Wymaga komponentu g³ównego */
+
+COPY ~Skie\PORTRAIT\BrandNew\1xSkieG.bmp~ ~override\1xSkieG.bmp~
+COPY ~Skie\PORTRAIT\BrandNew\1xSkieM.bmp~ ~override\1xSkieM.bmp~
+COPY ~Skie\PORTRAIT\BrandNew\1xSkieS.bmp~ ~override\1xSkieS.bmp~
+
+*/

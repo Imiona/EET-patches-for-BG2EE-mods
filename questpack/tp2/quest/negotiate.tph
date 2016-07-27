@@ -1,0 +1,17 @@
+COMPILE EVALUATE_BUFFER // ~questpack/negotiate/dialog.d~
+        ~questpack/negotiate/dialog2.d~ USING
+        ~%tra_path%/english/negotiate.tra~
+        ~%tra_path%/%LANGUAGE%/negotiate.tra~
+
+ADD_JOURNAL EXISTING TITLE (#74468) @24 USING
+            ~%tra_path%/english/negotiate.tra~
+            ~%tra_path%/%LANGUAGE%/negotiate.tra~
+
+COPY_EXISTING ~ar2100.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~GiveItemCreate("rods01","udvith",1,1,0)~
+                      ~GiveItemCreate("rods01","udvith",11,11,0)~
+  END
+BUT_ONLY
+
+COPY ~questpack/negotiate/spin671.spl~ ~override~

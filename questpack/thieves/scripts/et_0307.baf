@@ -1,0 +1,156 @@
+IF
+  InMyArea(Player1)
+  OR(2)
+    GlobalGT("D0Maevar2","GLOBAL",33)
+    GlobalGT("BodhiJob","GLOBAL",0)
+  Global("Open0307","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("Open0307","GLOBAL",1)
+    Continue()
+END
+
+IF
+  OR(2)
+    Global("D0LarellAssault","GLOBAL",1)
+    GlobalGT("D0Maevar2","GLOBAL",33)
+  !Global("D0SpawnMore","MYAREA",1)
+THEN
+  RESPONSE #100
+    SetGlobal("D0SpawnMore","MYAREA",1)
+    CreateCreature("ARNWAR05",[3820.1173],0)
+    CreateCreature("ARNWAR09",[3753.2114],0)
+    CreateCreatureObjectOffScreen("d0arbkup","ARNWAR09",1,0,0)
+    CreateCreature("ARNWAR09",[1719.1718],0)
+    CreateCreatureObjectOffScreen("d0arbkup","ARNWAR09",1,0,0)
+    CreateCreature("ARNWAR05",[1720.1718],0)
+    CreateCreature("ARNWAR01",[1719.1719],0)
+    CreateCreature("ARNWAR01",[1720.1719],0)
+    CreateCreature("ARNWAR10",[1534.665],0)
+    CreateCreature("ARNWAR04",[1173.1663],0)
+    CreateCreatureObjectOffScreen("d0arbkup",[GOODCUTOFF],1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",[GOODCUTOFF],1,0,0)
+    SetGlobal("SPRITE_IS_DEADarnman07","GLOBAL",1)
+    ActionOverride("arnman07",DestroySelf())
+    ActionOverride("arntra01",DestroySelf())
+    ActionOverride("arntra02",DestroySelf())
+    ActionOverride("arntra03",DestroySelf())
+    ActionOverride("arntra04",DestroySelf())
+    ActionOverride("arntra05",DestroySelf())
+    ActionOverride("arntra06",DestroySelf())
+    ActionOverride("arnman10",DestroySelf())
+    ActionOverride("arnman11",DestroySelf())
+    ActionOverride("pelanna",DestroySelf())
+END
+
+IF
+  Global("D0AranHostile","GLOBAL",1)
+  !Global("D0SpawnMore","MYAREA",1)
+  AreaCheck("ar0307")
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+THEN
+  RESPONSE #100
+    SetGlobal("D0SpawnMore","MYAREA",1)
+    CreateCreatureDoor("ARNWAR05",[3820.1173],0)
+    CreateCreatureDoor("ARNWAR09",[3753.2114],0)
+    CreateCreatureObjectOffScreen("d0arbkup","ARNWAR09",1,0,0)
+    CreateCreatureDoor("ARNWAR09",[1719.1718],0)
+    CreateCreatureObjectOffScreen("d0arbkup","ARNWAR09",1,0,0)
+    CreateCreatureDoor("d0arbkup",[1719.1718],0)
+    CreateCreatureDoor("arnfgt04",[3753.2114],0)
+    CreateCreatureDoor("ARNWAR05",[1720.1718],0)
+    CreateCreatureDoor("ARNWAR01",[1719.1719],0)
+    CreateCreatureDoor("ARNWAR01",[1720.1719],0)
+    CreateCreatureDoor("ARNWAR10",[1534.665],0)
+    CreateCreatureDoor("ARNWAR04",[1173.1663],0)
+    CreateCreatureObjectOffScreen("d0arbkup",[GOODCUTOFF],1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",[GOODCUTOFF],1,0,0)
+    SetGlobal("SPRITE_IS_DEADarnman07","GLOBAL",1)
+    ActionOverride("arnman07",Kill(Myself))
+    ActionOverride("arntra01",EscapeArea())
+    ActionOverride("arntra02",EscapeArea())
+    ActionOverride("arntra03",EscapeArea())
+    ActionOverride("arntra04",EscapeArea())
+    ActionOverride("arntra05",EscapeArea())
+    ActionOverride("arntra06",EscapeArea())
+    ActionOverride("arnman10",EscapeArea())
+    ActionOverride("arnman11",EscapeArea())
+    ActionOverride("pelanna",EscapeArea())
+END
+
+IF
+  Global("D0LarellAssault","GLOBAL",1)
+  !Global("D0SpawnMore2","MYAREA",1)
+THEN
+  RESPONSE #100
+    SetGlobal("D0SpawnMore2","MYAREA",1)
+    CreateCreature("D0ARNLIE",[3820.1173],0)
+    CreateCreatureDoor("FLYFGT02",[1247.1754],0)
+    CreateCreatureDoor("FLYFGT03",[1285.2016],0)
+    CreateCreatureDoor("FLYFGT04",[1513.1828],0)
+END
+
+IF
+  GlobalGT("D0Maevar2","GLOBAL",33)
+  !Global("D0SpawnMore2","MYAREA",1)
+THEN
+  RESPONSE #100
+    SetGlobal("D0SpawnMore2","MYAREA",1)
+    ActionOverride("arnwar06",DestroySelf())
+    CreateCreature("D0ARNLIE",[3820.1173],0)
+END
+
+IF
+  Dead("Aran")
+  CombatCounter(0)
+  Global("D0SpawnLarAgain","MYAREA",0)
+  !Dead("d0nightk")
+  !Global("D0WarnedAran","GLOBAL",1)
+  GlobalGT("D0Maevar","GLOBAL",4)
+THEN
+  RESPONSE #100
+    SetGlobal("D0SpawnLarAgain","MYAREA",1)
+    CreateCreatureObjectOffScreen("d0nightk",Player1,0,0,0)
+    CreateCreatureObjectOffset("d0night2","d0nightk",[5.5])
+    CreateCreatureObjectOffset("d0night2","d0nightk",[-5.-5])
+    ActionOverride("d0nightk",StartDialogueNoSet(Player1))
+END
+
+IF
+  !Global("D0RenalSpawn","MYAREA",1)
+  GlobalGT("D0RenalPrisoner","GLOBAL",0)
+  !Dead("d0renal")
+  !Dead("Renal Bloodscalp")
+THEN
+  RESPONSE #100
+    SetGlobal("D0RenalSpawn","MYAREA",1)
+    CreateCreature("D0Renal",[1076.2469],12)
+END
+
+IF
+  AreaCheckObject("ar0329",Player1)
+  !Global("D0SpawnPrisoners","AR0329",1)
+THEN
+  RESPONSE #100
+    SetGlobal("D0SpawnPrisoners","AR0329",1)
+    CreateCreature("arnman01",[1289.2336],2)
+    CreateCreature("arnman02",[1195.2372],14)
+    CreateCreature("arnman06",[1479.2678],8)
+END
+
+/*
+IF
+  Global("ReynaldSpawn","AR0307",0)
+  Global("D0Reynald","GLOBAL",5)
+  GlobalGT("D0AranHostile","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ReynaldSpawn","AR0307",1)
+    CreateCreature("d0qpgua1",
+    CreateCreature("d0qpgua2",
+    CreateCreature("d0qpgua2",
+    CreateCreature("d0qpgua2",
+    CreateCreature("d0qpgua2",
+    CreateCreature("d0qpgua2",
+    CreateCreature("d0qpkpal",
+END */

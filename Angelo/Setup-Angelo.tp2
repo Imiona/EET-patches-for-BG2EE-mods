@@ -1,0 +1,701 @@
+BACKUP ~Angelo/Backup~
+
+AUTHOR ~http://forums.gibberlings3.net~
+
+VERSION ~v5~
+
+README ~Angelo/readme-angelo.html~
+
+AUTO_TRA ~Angelo/%s~
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+END
+
+LANGUAGE ~English~ ~English~ ~Angelo/English/Setup-Angelo.tra~
+
+BEGIN @0
+
+COPY ~Angelo/Areas~ ~override~
+
+COPY ~Angelo/Audio~ ~override~
+
+COPY ~Angelo/Music~ ~music~
+
+COPY_EXISTING ~songlist.2da~ ~override~
+REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH
+~0       No_music        ****~
+~0       BLANK           BLANK.MUS~
+
+COPY ~Angelo/Icons~ ~override~
+
+ACTION_IF GAME_IS ~BG2EE eet~ BEGIN
+LOAD_TRA ~Angelo/%LANGUAGE%/Setup-Angelo-EE.tra~
+ADD_JOURNAL EXISTING TITLE (#74337) @10012
+ADD_JOURNAL @10000 @10001 @10002 @10003 @10004 @10005 @10006 @10011
+END
+
+COPY ~Angelo/Portraits/ADAngelL.bmp~ ~override~
+
+ACTION_IF GAME_IS ~BG2EE eet~ BEGIN
+COPY ~Angelo/Portraits/ADAngEEM.bmp~ ~override/ADAngelM.bmp~
+COPY ~Angelo/Portraits/ADAngEES.bmp~ ~override/ADAngelS.bmp~
+END ELSE BEGIN
+COPY ~Angelo/Portraits/ADAngelM.bmp~ ~override~
+COPY ~Angelo/Portraits/ADAngelS.bmp~ ~override~
+COPY ~Angelo/Portraits/ADSawarS.bmp~ ~override~
+COPY ~Angelo/Portraits/ADSuuS.bmp~ ~override~
+END
+
+// CamDawg's code for State.ids
+APPEND ~STATE.IDS~ ~0x80101FEF CD_STATE_NOTVALID~
+UNLESS ~CD_STATE_NOTVALID~
+
+// Setting a script to the prison area, if it hasn't been done already
+COPY_EXISTING ~ar1005.are~ ~override~
+WRITE_ASCII 0x94 ~AR1005~
+BUT_ONLY_IF_IT_CHANGES
+
+COPY ~Angelo/Items/ADAngBod.itm~ ~override/ADAngBod.itm~
+SAY NAME1 @117
+SAY NAME2 @117
+SAY UNIDENTIFIED_DESC @118
+SAY DESC @118
+
+COPY ~Angelo/Items/ADSutra.itm~ ~override/ADSutra.itm~
+SAY NAME1 @112
+SAY NAME2 @112
+SAY UNIDENTIFIED_DESC @113
+SAY DESC @113
+
+COPY ~Angelo/Items/ADRed.itm~ ~override/ADRed.itm~
+SAY NAME1 @114
+SAY NAME2 @114
+SAY UNIDENTIFIED_DESC @115
+SAY DESC @115
+
+COPY ~Angelo/Items/ADLeath.itm~ ~override/ADLeath.itm~
+SAY NAME1 @62
+SAY NAME2 @62
+SAY UNIDENTIFIED_DESC @63
+SAY DESC @63
+
+COPY ~Angelo/Items/ADGaunt.itm~ ~override/ADGaunt.itm~
+// SAY NAME1 @64
+SAY NAME2 @64
+// SAY UNIDENTIFIED_DESC @65
+SAY DESC @65
+
+COPY ~Angelo/Items/ADWaki.itm~ ~override/ADWaki.itm~
+// SAY NAME1 @66
+SAY NAME2 @66
+SAY DESC @67
+
+COPY ~Angelo/Items/ADRing.itm~ ~override/ADRing.itm~
+// SAY NAME1 @68
+SAY NAME2 @68
+SAY DESC @69
+
+COPY ~Angelo/Items/ADKat1.itm~ ~override/ADKat1.itm~
+// SAY NAME1 @72
+SAY NAME2 @72
+SAY DESC @73
+
+COPY ~Angelo/Items/ADDiary.itm~ ~override/ADDiary.itm~
+SAY NAME1 @74
+SAY NAME2 @74
+SAY UNIDENTIFIED_DESC @75
+SAY DESC @75
+
+COPY ~Angelo/Items/ADNinja.itm~ ~override/ADNinja.itm~
+// SAY NAME1 @78
+SAY NAME2 @78
+SAY DESC @79
+
+COPY ~Angelo/Items/ADKatana.itm~ ~override/ADKatana.itm~
+// SAY NAME1 @80
+SAY NAME2 @80
+SAY DESC @81
+
+COPY ~Angelo/Items/ADFinger.itm~ ~override/ADFinger.itm~
+SAY NAME1 @87
+SAY NAME2 @87
+SAY UNIDENTIFIED_DESC @88
+SAY DESC @88
+
+COPY ~Angelo/Items/ADLotus.itm~ ~override/ADLotus.itm~
+SAY NAME1 @89
+SAY NAME2 @89
+SAY UNIDENTIFIED_DESC @90
+SAY DESC @90
+
+COPY ~Angelo/Items/ADAngBok.itm~ ~override/ADAngBok.itm~
+SAY NAME1 @91
+SAY NAME2 @91
+SAY UNIDENTIFIED_DESC @92
+SAY DESC @92
+
+COPY ~Angelo/Items/ADNote.itm~ ~override/ADNote.itm~
+SAY NAME1 @97
+SAY NAME2 @97
+SAY UNIDENTIFIED_DESC @98
+SAY DESC @98
+
+COPY ~Angelo/Items/ADGem.itm~ ~override/ADGem.itm~
+SAY NAME1 @93
+SAY NAME2 @93
+SAY UNIDENTIFIED_DESC @94
+SAY DESC @94
+
+APPEND ~itemdial.2da~
+~ADGEM    14117 ADGEM~
+UNLESS ~ADGEM~
+
+COPY ~Angelo/Stores/ADStore.sto~ ~override/ADStore.sto~
+SAY 0xc @116
+
+COPY ~Angelo/Characters/ADAngel.cre~ ~override/ADAngel.cre~
+SAY NAME1 @1
+SAY NAME2 @1
+WRITE_ASCII 0x248 ~ADAngel~  #8  // override
+WRITE_ASCII 0x2cc ~ADAngel~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADAngel~  #32 // death variable
+WRITE_ASCII 0x3c  ~ADAngelM~ #8  // large portrait
+WRITE_ASCII 0X34  ~ADAngelS~ #8  // small portrait
+SAY INITIAL_MEETING @2
+SAY MORALE @3
+SAY HAPPY @4
+SAY UNHAPPY_ANNOYED @5
+SAY UNHAPPY_SERIOUS @6
+SAY UNHAPPY_BREAKING @7
+SAY LEADER @8
+SAY TIRED @9
+SAY BORED @10
+SAY BATTLE_CRY1 @11
+SAY BATTLE_CRY2 @12
+SAY BATTLE_CRY3 @13
+SAY BATTLE_CRY4 @14
+SAY BATTLE_CRY5 @15
+SAY DAMAGE @16
+SAY DYING @17
+SAY HURT @18
+SAY AREA_FOREST @19
+SAY AREA_CITY @20
+SAY AREA_DUNGEON @21
+SAY AREA_DAY @22
+SAY AREA_NIGHT @23
+SAY SELECT_COMMON1 @24
+SAY SELECT_COMMON2 @25
+SAY SELECT_COMMON3 @26
+SAY SELECT_COMMON4 @27
+SAY SELECT_COMMON5 @28
+SAY SELECT_COMMON6 @29
+SAY SELECT_ACTION1 @30
+SAY SELECT_ACTION2 @31
+SAY SELECT_ACTION3 @32
+SAY SELECT_ACTION4 @33
+SAY SELECT_ACTION5 @34
+SAY SELECT_ACTION6 @35
+SAY SELECT_ACTION7 @36
+SAY SELECT_RARE1 @37
+SAY SELECT_RARE2 @38
+SAY CRITICAL_HIT @39
+SAY CRITICAL_MISS @40
+SAY TARGET_IMMUNE @41
+SAY INVENTORY_FULL @42
+SAY SPELL_DISRUPTED @43
+SAY BIO @44
+
+COPY ~Angelo/Characters/ADAngVam.cre~ ~override/ADAngVam.cre~
+WRITE_ASCII 0x248 ~ADAngVam~  #8  // override
+WRITE_ASCII 0x2cc ~ADAngVam~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADAngVam~  #32 // death variable
+SAY NAME1 @119
+SAY NAME2 @119
+SAY BATTLE_CRY1 @126
+
+COPY ~Angelo/Characters/ADSakaki.cre~ ~override/ADSakaki.cre~
+WRITE_ASCII 0x2cc ~ADSakaki~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADSakaki~  #32 // death variable
+SAY NAME1 @120
+SAY NAME2 @120
+SAY INITIAL_MEETING @127
+SAY SELECT_COMMON1 @127
+SAY SELECT_COMMON2 @128
+SAY SELECT_COMMON3 @127
+
+COPY ~Angelo/Characters/ADOyaji.cre~ ~override/ADOyaji.cre~
+WRITE_ASCII 0x248 ~ADOyaji~  #8  // override
+WRITE_ASCII 0x2cc ~ADOyaji~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADOyaji~  #32 // death variable
+SAY NAME1 @121
+SAY NAME2 @121
+SAY INITIAL_MEETING @129
+SAY SELECT_COMMON1 @129
+SAY SELECT_COMMON2 @130
+SAY SELECT_COMMON3 @131
+SAY SELECT_COMMON4 @132
+
+COPY ~Angelo/Characters/ADImogen.cre~ ~override/ADImogen.cre~
+WRITE_ASCII 0x2cc ~ADImogen~  #8 // dialogue
+WRITE_ASCII 0x280 ~ADImogen~ #32 // death variable
+
+COPY_EXISTING ~BMERCH1.cre~ ~override/ADMerch.cre~
+WRITE_ASCII 0x280 ~ADMerch~  #32 // death variable
+SAY NAME1 @101
+SAY NAME2 @101
+
+COPY_EXISTING ~NOBL4.cre~ ~override/ADOli1.cre~
+WRITE_ASCII 0x280 ~ADOli1~  #32 // death variable
+SAY NAME1 @107
+SAY NAME2 @107
+
+COPY_EXISTING ~SHOP01.cre~ ~override/ADOli2.cre~
+WRITE_ASCII 0x280 ~ADOli2~  #32 // death variable
+SAY NAME1 @106
+SAY NAME2 @106
+
+COPY ~Angelo/Characters/ADOli3.cre~ ~override/ADOli3.cre~
+WRITE_ASCII 0x248 ~ADOli3~  #8  // override
+WRITE_ASCII 0x280 ~ADOli3~  #32 // death variable
+SAY NAME1 @108
+SAY NAME2 @108
+
+COPY ~Angelo/Characters/ADSawara.cre~ ~override/ADSawara.cre~
+SAY NAME1 @45
+SAY NAME2 @45
+SAY DAMAGE ~~ [ADAngS01]
+SAY DYING ~~ [ADAngS02]
+SAY INITIAL_MEETING @104
+SAY SELECT_COMMON1 @104
+WRITE_ASCII 0x248 ~ADSawara~  #8  // override
+WRITE_ASCII 0x2cc ~ADSawara~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADSawara~  #32 // death variable
+WRITE_ASCII 0X34  ~ADSawarS~  #8  // small portrait
+
+COPY ~Angelo/Characters/ADSuu.cre~ ~override/ADSuu.cre~
+WRITE_ASCII 0x248 ~ADSuu~  #8  // override
+WRITE_ASCII 0x2cc ~ADSuu~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADSuu~  #32 // death variable
+WRITE_ASCII 0X34  ~ADSuuS~ #8  // small portrait
+SAY NAME1 @46
+SAY NAME2 @46
+
+COPY ~Angelo/Characters/ADHayate.cre~ ~override/ADHayate.cre~
+WRITE_ASCII 0x248 ~ADHayate~  #8 // override
+WRITE_ASCII 0x2cc ~ADHayate~  #8 // dialogue
+WRITE_ASCII 0x280 ~ADHayate~ #32 // death variable
+SAY NAME1 @47
+SAY NAME2 @47
+SAY INITIAL_MEETING @103
+SAY SELECT_COMMON1 @103
+
+COPY ~Angelo/Characters/ADOliver.cre~ ~override/ADOliver.cre~
+WRITE_ASCII 0x248 ~ADStart~   #8  // override
+WRITE_ASCII 0x2cc ~ADOliver~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADOliver~  #32 // death variable
+SAY NAME1 @48
+SAY NAME2 @48
+
+COPY ~Angelo/Characters/ADPierre.cre~ ~override/ADPierre.cre~
+WRITE_ASCII 0x2cc ~ADPierre~ #8 // dialogue
+WRITE_ASCII 0x280 ~ADPierre~ #32 // death variable
+SAY NAME1 @49
+SAY NAME2 @49
+
+COPY ~Angelo/Characters/ADAsgurz.cre~ ~override/ADAsgurz.cre~
+WRITE_ASCII 0x248 ~ADStart~  #8  // override
+WRITE_ASCII 0x2cc ~ADAsgurz~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADAsgurz~ #32 // death variable
+SAY NAME1 @50
+SAY NAME2 @50
+
+COPY ~Angelo/Characters/ADAsg1.cre~ ~override/ADAsg1.cre~
+WRITE_ASCII 0x280 ~ADAsg1~ #32 // death variable
+SAY NAME1 @99
+SAY NAME2 @99
+
+COPY ~Angelo/Characters/ADAsg2.cre~ ~override/ADAsg2.cre~
+WRITE_ASCII 0x280 ~ADAsg2~ #32 // death variable
+SAY NAME1 @99
+SAY NAME2 @99
+
+COPY ~Angelo/Characters/ADMerzer.cre~ ~override/ADMerzer.cre~
+WRITE_ASCII 0x248 ~ADStart~   #8 // override
+WRITE_ASCII 0x2cc ~ADMerzer~  #8 // dialogue
+WRITE_ASCII 0x280 ~ADMerzer~  #32 // death variable
+SAY NAME1 @51
+SAY NAME2 @51
+SAY INITIAL_MEETING @105
+SAY SELECT_COMMON1 @105
+
+COPY ~Angelo/Characters/ADGuard.cre~ ~override/ADGuard.cre~
+WRITE_ASCII 0x2cc ~ADGuard~ #8 // dialogue
+WRITE_ASCII 0x280 ~ADGuard~  #32 // death variable
+SAY NAME1 @100
+SAY NAME2 @100
+
+COPY ~Angelo/Characters/ADGinpac.cre~ ~override/ADGinpac.cre~
+WRITE_ASCII 0x248 ~ADStart~  #8  // override
+WRITE_ASCII 0x2cc ~ADGinpac~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADGinpac~ #32 // death variable
+SAY NAME1 @52
+SAY NAME2 @52
+
+COPY ~Angelo/Characters/ADKaede.cre~ ~override/ADKaede.cre~
+WRITE_ASCII 0x280 ~ADKaede~ #32 // death variable
+SAY NAME1 @53
+SAY NAME2 @53
+
+COPY ~Angelo/Characters/ADAmara.cre~ ~override/ADAmara.cre~
+WRITE_ASCII 0x248 ~ADStart~ #8  // override
+WRITE_ASCII 0x2cc ~ADAmara~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADAmara~ #32 // death variable
+SAY NAME1 @55
+SAY NAME2 @55
+
+COPY_EXISTING ~BAMNG01.cre~ ~override/ADAmaG1.cre~
+WRITE_ASCII 0x2cc ~ADAmaG1~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADAmaG1~ #32 // death variable
+
+COPY_EXISTING ~BAMNG01.cre~ ~override/ADAmaG2.cre~
+WRITE_ASCII 0x2cc ~ADAmaG2~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADAmaG2~ #32 // death variable
+
+COPY ~Angelo/Characters/ADFox.cre~ ~override/ADFox.cre~
+WRITE_ASCII 0x2cc ~ADFox~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADFox~ #32 // death variable
+SAY NAME1 @54
+SAY NAME2 @54
+
+COPY ~Angelo/Characters/ADFoxbat.cre~ ~override/ADFoxbat.cre~
+WRITE_ASCII 0x280 ~ADFoxbat~ #32 // death variable
+SAY NAME1 @54
+SAY NAME2 @54
+
+COPY ~Angelo/Characters/ADBlack.cre~ ~override/ADBlack.cre~
+WRITE_ASCII 0x2cc ~ADBlack~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADBlack~ #32 // death variable
+SAY NAME1 @56
+SAY NAME2 @56
+
+COPY ~Angelo/Characters/ADAngMa1.cre~ ~override/ADAngMa1.cre~
+WRITE_ASCII 0x280 ~ADAngMa1~ #32 // death variable
+SAY NAME1 @58
+SAY NAME2 @58
+WRITE_ASCII 0x2cc ~ADBla1~  #8 // dialogue
+
+COPY ~Angelo/Characters/ADAngMa2.cre~ ~override/ADAngMa2.cre~
+WRITE_ASCII 0x280 ~ADAngMa2~ #32 // death variable
+SAY NAME1 @59
+SAY NAME2 @59
+WRITE_ASCII 0x248 ~ADBla2~  #8  // override
+WRITE_ASCII 0x2cc ~ADBla2~  #8  // dialogue
+
+COPY ~Angelo/Characters/ADAngMa3.cre~ ~override/ADAngMa3.cre~
+WRITE_ASCII 0x280 ~ADAngMa3~ #32 // death variable
+SAY NAME1 @60
+SAY NAME2 @60
+WRITE_ASCII 0x2cc ~ADBla3~  #8 // dialogue
+
+COPY ~Angelo/Characters/ADAngMa4.cre~ ~override/ADAngMa4.cre~
+WRITE_ASCII 0x280 ~ADAngMa4~ #32 // death variable
+SAY NAME1 @61
+SAY NAME2 @61
+WRITE_ASCII 0x2cc ~ADBla4~  #8 // dialogue
+
+COPY ~Angelo/Characters/ADMerz1.cre~ ~override/ADMerz1.cre~
+WRITE_ASCII 0x280 ~ADMerz1~ #32 // death variable
+SAY NAME1 @133
+SAY NAME2 @133
+
+COPY ~Angelo/Characters/ADMerz2.cre~ ~override/ADMerz2.cre~
+WRITE_ASCII 0x280 ~ADMerz2~ #32 // death variable
+SAY NAME1 @134
+SAY NAME2 @134
+
+COPY ~Angelo/Characters/ADMerz3.cre~ ~override/ADMerz3.cre~
+WRITE_ASCII 0x280 ~ADMerz3~ #32 // death variable
+SAY NAME1 @135
+SAY NAME2 @135
+
+COPY ~Angelo/Characters/ADMerz4.cre~ ~override/ADMerz4.cre~
+WRITE_ASCII 0x280 ~ADMerz4~ #32 // death variable
+SAY NAME1 @57
+SAY NAME2 @57
+
+COPY ~Angelo/Characters/ADMerz5.cre~ ~override/ADMerz5.cre~
+WRITE_ASCII 0x280 ~ADMerz5~ #32 // death variable
+SAY NAME1 @57
+SAY NAME2 @57
+
+COMPILE	EVALUATE_BUFFER ~Angelo/Dialogue/BADAngel.d~
+	~Angelo/Dialogue/ADAngel.d~
+	~Angelo/Dialogue/ADAngelJ.d~
+	~Angelo/Dialogue/ADAngelP.d~
+
+	~Angelo/Scripts/ADAngelB.baf~
+	~Angelo/Scripts/ADAngelD.baf~
+	~Angelo/Scripts/ADAngelF.baf~
+	~Angelo/Scripts/ADAngel.baf~
+	~Angelo/Scripts/ADACut1.baf~
+	~Angelo/Scripts/ADACut2.baf~
+	~Angelo/Scripts/ADACut3.baf~
+	~Angelo/Scripts/ADAngT1.baf~
+	~Angelo/Scripts/ADAngT2.baf~
+	~Angelo/Scripts/ARAD02.baf~
+	~Angelo/Scripts/ADStart.baf~
+	~Angelo/Scripts/ADSawara.baf~
+	~Angelo/Scripts/ADSuu.baf~
+	~Angelo/Scripts/ADHayate.baf~
+	~Angelo/Scripts/ADBla2.baf~
+
+	~Angelo/Scripts/ADVampir.baf~
+	~Angelo/Scripts/ADAngC53.baf~
+	~Angelo/Scripts/ADAngAG.baf~
+	~Angelo/Scripts/ADOyaji.baf~
+	~Angelo/Scripts/ADAngVam.baf~
+
+EXTEND_BOTTOM ~AR0500.bcs~ ~Angelo/Scripts/AR0500.baf~
+EXTEND_BOTTOM ~AR0515.bcs~ ~Angelo/Scripts/AR0515.baf~
+EXTEND_BOTTOM ~AR0800.bcs~ ~Angelo/Scripts/AR0800.baf~
+EXTEND_BOTTOM ~AR1000.bcs~ ~Angelo/Scripts/AR1000.baf~
+EXTEND_BOTTOM ~AR1005.bcs~ ~Angelo/Scripts/AR1005.baf~
+EXTEND_BOTTOM ~Anomen.bcs~ ~Angelo/Scripts/Anomen.baf~
+EXTEND_BOTTOM ~Imoen2.bcs~ ~Angelo/Scripts/Imoen2.baf~
+
+EXTEND_BOTTOM ~AR0809.bcs~ ~Angelo/Scripts/AR0809.baf~
+EXTEND_BOTTOM ~BODHIAMB.bcs~ ~Angelo/Scripts/BODHIAMB.baf~
+EXTEND_BOTTOM ~CLEANSE.bcs~ ~Angelo/Scripts/CLEANSE.baf~
+
+EXTEND_TOP    ~AR0900.bcs~ ~Angelo/Scripts/AR0900.baf~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~mel01.cre~ THEN
+BEGIN
+
+ACTION_IF GAME_IS ~BG2EE eet~ BEGIN
+ADD_JOURNAL @10007 @10008 @10009 @10010
+END
+
+COPY ~Angelo/Characters/ADAng25.cre~ ~override/ADAng25.cre~
+SAY NAME1 @1
+SAY NAME2 @1
+WRITE_ASCII 0x248 ~ADAng25~  #8  // override
+WRITE_ASCII 0x2cc ~ADAng25~  #8  // dialogue
+WRITE_ASCII 0x280 ~ADAngel~  #32 // death variable
+WRITE_ASCII 0x3c  ~ADAngelM~ #8  // large portrait
+WRITE_ASCII 0X34  ~ADAngelS~ #8  // small portrait
+SAY INITIAL_MEETING @2
+SAY MORALE @3
+SAY HAPPY @4
+SAY UNHAPPY_ANNOYED @5
+SAY UNHAPPY_SERIOUS @6
+SAY UNHAPPY_BREAKING @7
+SAY LEADER @8
+SAY TIRED @9
+SAY BORED @10
+SAY BATTLE_CRY1 @11
+SAY BATTLE_CRY2 @12
+SAY BATTLE_CRY3 @13
+SAY BATTLE_CRY4 @14
+SAY BATTLE_CRY5 @15
+SAY DAMAGE @16
+SAY DYING @17
+SAY HURT @18
+SAY AREA_FOREST @19
+SAY AREA_CITY @20
+SAY AREA_DUNGEON @21
+SAY AREA_DAY @22
+SAY AREA_NIGHT @23
+SAY SELECT_COMMON1 @24
+SAY SELECT_COMMON2 @25
+SAY SELECT_COMMON3 @26
+SAY SELECT_COMMON4 @27
+SAY SELECT_COMMON5 @28
+SAY SELECT_COMMON6 @29
+SAY SELECT_ACTION1 @30
+SAY SELECT_ACTION2 @31
+SAY SELECT_ACTION3 @32
+SAY SELECT_ACTION4 @33
+SAY SELECT_ACTION5 @34
+SAY SELECT_ACTION6 @35
+SAY SELECT_ACTION7 @36
+SAY SELECT_RARE1 @37
+SAY SELECT_RARE2 @38
+SAY CRITICAL_HIT @39
+SAY CRITICAL_MISS @40
+SAY TARGET_IMMUNE @41
+SAY INVENTORY_FULL @42
+SAY SPELL_DISRUPTED @43
+SAY BIO @44
+
+COPY ~Angelo/Items/ADNote.itm~ ~override/ADTamoko.itm~
+SAY NAME1 @110
+SAY NAME2 @110
+SAY UNIDENTIFIED_DESC @111
+SAY DESC @111
+
+COPY ~Angelo/Characters/ADTobbar.cre~ ~override/ADTobbar.cre~
+WRITE_ASCII 0x248 ~ADTobbar~ #8  // override
+WRITE_ASCII 0x2cc ~ADTobbar~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADTobbar~ #32 // death variable
+SAY NAME1 @109
+SAY NAME2 @109
+
+COPY ~Angelo/Characters/ADSuu.cre~ ~override/ADSuu25.cre~
+WRITE_ASCII 0x248 ~ADSuu~   #8  // override
+WRITE_ASCII 0x2cc ~ADSuu25~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADSuu25~ #32 // death variable
+SAY NAME1 @46
+SAY NAME2 @46
+
+COPY ~Angelo/Characters/ADShar.cre~ ~override/ADShar.cre~
+WRITE_ASCII 0x2cc ~ADShar~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADShar~ #32 // death variable
+
+COPY ~Angelo/Items/ADWedR.itm~ ~override/ADWedR.itm~
+SAY NAME1 @95
+SAY NAME2 @95
+SAY UNIDENTIFIED_DESC @96
+SAY DESC @96
+
+COPY ~Angelo/Characters/ADNinja.cre~ ~override/ADNin01.cre~
+SAY NAME1 @102
+SAY NAME2 @102
+WRITE_ASCII 0x248 ~ADNinja~ #8  // override
+WRITE_ASCII 0x2cc ~ADNin01~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADNin01~ #32 // death variable
+
+COPY ~Angelo/Characters/ADNinja.cre~ ~override/ADNin02.cre~
+SAY NAME1 @102
+SAY NAME2 @102
+WRITE_ASCII 0x248 ~ADNinja~ #8  // override
+WRITE_ASCII 0x2cc ~ADNin02~ #8  // dialogue
+WRITE_ASCII 0x280 ~ADNin02~ #32 // death variable
+
+COMPILE EVALUATE_BUFFER ~Angelo/Dialogue/BADAng25.d~
+	~Angelo/Dialogue/ADAng25.d~
+	~Angelo/Dialogue/ADAng25P.d~
+	~Angelo/Dialogue/ADAng25J.d~
+
+	~Angelo/Scripts/ADAngelW.baf~
+	~Angelo/Scripts/ADAng25.baf~
+	~Angelo/Scripts/ADAng25D.baf~
+	~Angelo/Scripts/ADBath1.baf~
+	~Angelo/Scripts/ADBath2.baf~
+	~Angelo/Scripts/ADBath3.baf~
+	~Angelo/Scripts/ADAngWe1.baf~
+	~Angelo/Scripts/ADAngWe2.baf~
+	~Angelo/Scripts/ADAngWe3.baf~
+	~Angelo/Scripts/ADAngWe4.baf~
+	~Angelo/Scripts/ADAngWe5.baf~
+	~Angelo/Scripts/ADNinja.baf~
+	~Angelo/Scripts/ADACut4.baf~
+
+EXTEND_BOTTOM ~Anom25.bcs~   ~Angelo/Scripts/Anom25.baf~
+EXTEND_BOTTOM ~Imoe25.bcs~  ~Angelo/Scripts/Imoe25.baf~
+EXTEND_BOTTOM ~Haer25.bcs~   ~Angelo/Scripts/Haer25.baf~
+EXTEND_BOTTOM ~AR5003.bcs~   ~Angelo/Scripts/AR5003.baf~
+EXTEND_TOP    ~AR6200.bcs~   ~Angelo/Scripts/AR6200.baf~
+EXTEND_TOP    ~Cut218g.bcs~  ~Angelo/Scripts/Cut218g.baf~
+EXTEND_BOTTOM ~Player1d.bcs~ ~Angelo/Scripts/Player1d.baf~
+EXTEND_BOTTOM ~Baldur25.bcs~ ~Angelo/Scripts/Baldur25.baf~
+
+COPY ~Angelo/Epilogue/ADAngzz.2da~ ~override/ADAng01.2da~
+REPLACE ~99999~ @82
+COPY ~Angelo/Epilogue/ADAngzz.2da~ ~override/ADAng02.2da~
+REPLACE ~99999~ @83
+COPY ~Angelo/Epilogue/ADAngzz.2da~ ~override/ADAng03.2da~
+REPLACE ~99999~ @86
+COPY ~Angelo/Epilogue/ADAngzz.2da~ ~override/ADAng04.2da~
+REPLACE ~99999~ @84
+COPY ~Angelo/Epilogue/ADAngzz.2da~ ~override/ADAng05.2da~
+REPLACE ~99999~ @85
+
+END
+
+APPEND ~interdia.2da~ ~ADANGEL     BADANGEL      BADANG25~
+UNLESS ~ADANGEL~
+
+APPEND ~pdialog.2da~ ~ADANGEL      ADANGELP           ADANGELJ          ADANGELD       ADANG25P           ADANG25J              ADANG25D              ADANG25~
+UNLESS ~ADANGEL~
+
+
+// sounds
+ACTION_IF ("%WEIDU_ARCH%" STRING_COMPARE_CASE "x86" = 0) THEN BEGIN // if Windows
+
+  AT_NOW ~Angelo/Commands/ADAngelInstall.bat~
+  AT_UNINSTALL ~Angelo/Commands/ADAngelUninstall.bat~
+
+END ELSE BEGIN // linux or OS X
+
+  AT_NOW ~sh Angelo/Commands/ADAngelInstall.sh~
+  AT_UNINSTALL ~sh Angelo/Commands/ADAngelUninstall.sh~
+
+END
+
+ACTION_IF GAME_IS ~eet~ BEGIN
+  LOAD_TRA ~Angelo/%LANGUAGE%/adang25j.tra~
+  INCLUDE ~Angelo/lib/EET_functions.tph~
+  LAF ~EET_NPC_TRANSITION~
+    INT_VAR
+      type = 2
+    STR_VAR
+      dv = "ADANGEL"
+      override_SoA = "ADANGEL"
+      override_ToB = "ADANG25"
+      dialog_ToB = "ADANG25"
+      string = "@0" //Bring me Angelo, the human fighter/mage.
+      stringPosDV = "Anomen"
+  END
+END ELSE BEGIN
+  COMPILE ~Angelo/Dialogue/FATESP.d~ USING ~Angelo/%LANGUAGE%/adang25j.tra~
+END
+
+BEGIN @123
+SUBCOMPONENT @122
+
+COPY ~Angelo/PortraitSisterV/ADAngelL.bmp~ ~override~
+
+ACTION_IF GAME_IS ~BG2EE eet~ BEGIN
+COPY ~Angelo/PortraitSisterV/ADAngEEM.bmp~ ~override/ADAngelM.bmp~
+COPY ~Angelo/PortraitSisterV/ADAngEES.bmp~ ~override/ADAngelS.bmp~
+END ELSE BEGIN
+COPY ~Angelo/PortraitSisterV/ADAngelM.bmp~ ~override~
+COPY ~Angelo/PortraitSisterV/ADAngelS.bmp~ ~override~
+END
+
+BEGIN @124
+SUBCOMPONENT @122
+
+COPY ~Angelo/PortraitAmaurea/ADAngelL.bmp~ ~override~
+
+ACTION_IF GAME_IS ~BG2EE eet~ BEGIN
+COPY ~Angelo/PortraitAmaurea/ADAngEEM.bmp~ ~override/ADAngelM.bmp~
+COPY ~Angelo/PortraitAmaurea/ADAngEES.bmp~ ~override/ADAngelS.bmp~
+END ELSE BEGIN
+COPY ~Angelo/PortraitAmaurea/ADAngelM.bmp~ ~override~
+COPY ~Angelo/PortraitAmaurea/ADAngelS.bmp~ ~override~
+END
+
+BEGIN @125
+SUBCOMPONENT @122
+
+COPY ~Angelo/PortraitCassinus/ADAngelL.bmp~ ~override~
+
+ACTION_IF GAME_IS ~BG2EE eet~ BEGIN
+COPY ~Angelo/PortraitCassinus/ADAngEEM.bmp~ ~override/ADAngelM.bmp~
+COPY ~Angelo/PortraitCassinus/ADAngEES.bmp~ ~override/ADAngelS.bmp~
+END ELSE BEGIN
+COPY ~Angelo/PortraitCassinus/ADAngelM.bmp~ ~override~
+COPY ~Angelo/PortraitCassinus/ADAngelS.bmp~ ~override~
+END

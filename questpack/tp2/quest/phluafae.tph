@@ -1,0 +1,87 @@
+COPY ~questpack/phluafae/suinvis.cre~ ~override~
+COPY ~questpack/phluafae/sumound.cre~ ~override~
+
+COPY ~questpack/phluafae/sudryad.cre~ ~override~
+  SAY NAME1 @135
+  SAY NAME2 @135
+  WRITE_ASCII 0x34 "" #8
+
+COPY ~questpack/phluafae/sufake.itm~ ~override~
+  SAY NAME1 @138
+  SAY NAME2 @138
+  SAY IDENTIFIED_DESC @139
+  SAY UNIDENTIFIED_DESC @139
+
+COPY ~questpack/phluafae/sutear.itm~ ~override~
+  SAY NAME1 @140
+  SAY NAME2 @141
+  SAY UNIDENTIFIED_DESC @142
+  SAY IDENTIFIED_DESC @143
+  PATCH_FOR_EACH parameter1 IN 14672 14780 BEGIN
+    LPF ADD_ITEM_EQEFFECT
+      INT_VAR
+        opcode = 267 // disable display string
+        target = 1
+        parameter1
+        timing = 2
+        resist_dispel = 2
+    END
+  END
+  LPF DELETE_ITEM_EQEFFECT
+    INT_VAR
+      opcode_to_delete = 296
+  END
+  LPF ADD_ITEM_EQEFFECT
+    INT_VAR
+      opcode = 296 // protection from animation
+      target = 1
+      timing = 2
+      resist_dispel = 2
+    STR_VAR
+      resource = spnwchrm
+  END
+
+COPY ~questpack/phluafae/sutear.bam~ ~override~
+     ~questpack/phluafae/sufake.bam~ ~override~
+
+COPY_EXISTING spin770.spl ~override/fl#qpchk.spl~
+  PATCH_FOR_EACH opcode_to_delete IN 215 174 BEGIN
+    LPF DELETE_SPELL_EFFECT
+      INT_VAR
+        opcode_to_delete
+    END
+  END
+
+EXTEND_TOP ~AR1300.bcs~ ~questpack/phluafae/appendAR1300.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~AR1304.bcs~ ~questpack/phluafae/appendAR1300.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~AR1200.bcs~ ~questpack/phluafae/appendAR1200.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~baldur.bcs~ ~questpack/phluafae/baldurappend.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~VAELASA.bcs~ ~questpack/phluafae/appendvae.baf~ EVALUATE_BUFFER
+
+COMPILE EVALUATE_BUFFER ~questpack/phluafae/SUFAKEA.baf~
+        ~questpack/phluafae/SUFAKEB.baf~
+
+COMPILE EVALUATE_BUFFER ~questpack/phluafae/SUINVIS.baf~
+        ~questpack/phluafae/SUMOUND.baf~
+
+ACTION_IF !FILE_EXISTS_IN_GAME j#klsyj.dlg BEGIN
+  COMPILE EVALUATE_BUFFER ~questpack/phluafae/dialog.d~ USING
+          ~%tra_path%/english/phluafae.tra~
+          ~%tra_path%/%LANGUAGE%/phluafae.tra~
+END
+
+/*
+ * Need to be compiled together due to label references
+ */
+ACTION_IF FILE_EXISTS_IN_GAME j#klsyj.dlg BEGIN
+  COMPILE EVALUATE_BUFFER ~questpack/phluafae/dialog.d~
+          ~questpack/phluafae/kelsey.d~ USING
+          ~%tra_path%/english/phluafae.tra~
+          ~%tra_path%/%LANGUAGE%/phluafae.tra~
+END
+
+ADD_JOURNAL EXISTING TITLE (#74415) @137 @138 @139 @140 @141 @142 USING
+            ~%tra_path%/english/phluafae.tra~
+            ~%tra_path%/%LANGUAGE%/phluafae.tra~
+
+COMPILE EVALUATE_BUFFER ~questpack/phluafae/SUDRYAD.baf~

@@ -1,0 +1,169 @@
+// Improved Shouts - We give them grammar!
+STRING_SET 46151 @293
+STRING_SET 49763 @294
+STRING_SET 49766 @295
+STRING_SET 49767 @296
+
+// Basic scripts
+COMPILE EVALUATE_BUFFER ~questpack/AI/compile~
+
+// If Drow Innates are already installed
+ACTION_IF FILE_EXISTS_IN_GAME KRIN400.SPL BEGIN
+  EXTEND_TOP ~WTASIGHT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+  EXTEND_TOP ~WTARSGT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+  EXTEND_TOP ~WDASIGHT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+  EXTEND_TOP ~WDARSGT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+END
+
+// If Spider Web is already installed
+ACTION_IF FILE_EXISTS_IN_GAME d0spiweb.spl BEGIN
+  EXTEND_TOP ~WTASIGHT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+  EXTEND_TOP ~WTARSGT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+  EXTEND_TOP ~WDASIGHT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+  EXTEND_TOP ~WDARSGT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+END
+
+// Druid AI
+COMPILE EVALUATE_BUFFER ~questpack/AI/druid10a.baf~
+COPY_EXISTING ~druid10a.bcs~ ~override/druid10b.bcs~
+              ~druid10a.bcs~ ~override/druid12a.bcs~
+              ~druid10a.bcs~ ~override/druid12b.bcs~
+              ~druid10a.bcs~ ~override/druid14g.bcs~
+              ~druid10a.bcs~ ~override/druid6a.bcs~
+              ~druid10a.bcs~ ~override/druid8a.bcs~
+              ~druid10a.bcs~ ~override/druid8b.bcs~
+
+// Paladin AI
+COMPILE EVALUATE_BUFFER ~questpack/AI/palad10.baf~
+COPY_EXISTING ~palad10.bcs~ ~override/palad16.bcs~
+
+// Mage AI
+/* COMPILE ~questpack/AI/magehigh.baf~
+COPY ~override/magehigh.bcs~ ~override/mage1.bcs~
+     ~override/magehigh.bcs~ ~override/mage10a.bcs~
+     ~override/magehigh.bcs~ ~override/mage10b.bcs~
+     ~override/magehigh.bcs~ ~override/mage10c.bcs~
+     ~override/magehigh.bcs~ ~override/mage10d.bcs~
+     ~override/magehigh.bcs~ ~override/mage11.bcs~
+     ~override/magehigh.bcs~ ~override/mage12a.bcs~
+     ~override/magehigh.bcs~ ~override/mage12b.bcs~
+     ~override/magehigh.bcs~ ~override/mage12c.bcs~
+     ~override/magehigh.bcs~ ~override/mage12d.bcs~
+     ~override/magehigh.bcs~ ~override/mage12e.bcs~
+     ~override/magehigh.bcs~ ~override/mage14a.bcs~
+     ~override/magehigh.bcs~ ~override/mage14b.bcs~
+     ~override/magehigh.bcs~ ~override/mage14c.bcs~
+     ~override/magehigh.bcs~ ~override/mage14d.bcs~
+     ~override/magehigh.bcs~ ~override/mage14m.bcs~
+     ~override/magehigh.bcs~ ~override/mage14t.bcs~
+     ~override/magehigh.bcs~ ~override/mage16a.bcs~
+     ~override/magehigh.bcs~ ~override/mage16b.bcs~
+     ~override/magehigh.bcs~ ~override/mage16c.bcs~
+     ~override/magehigh.bcs~ ~override/mage16m.bcs~
+     ~override/magehigh.bcs~ ~override/mage18a.bcs~
+     ~override/magehigh.bcs~ ~override/mage18b.bcs~
+     ~override/magehigh.bcs~ ~override/mage18c.bcs~
+     ~override/magehigh.bcs~ ~override/mage18d.bcs~
+     ~override/magehigh.bcs~ ~override/mage18e.bcs~
+     ~override/magehigh.bcs~ ~override/mage18y.bcs~
+     ~override/magehigh.bcs~ ~override/mage18z.bcs~
+     ~override/magehigh.bcs~ ~override/mage2.bcs~
+     ~override/magehigh.bcs~ ~override/mage20a.bcs~
+     ~override/magehigh.bcs~ ~override/mage20b.bcs~
+     ~override/magehigh.bcs~ ~override/mage20c.bcs~
+     ~override/magehigh.bcs~ ~override/mage3.bcs~
+     ~override/magehigh.bcs~ ~override/mage4.bcs~
+     ~override/magehigh.bcs~ ~override/mage4a.bcs~
+     ~override/magehigh.bcs~ ~override/mage4b.bcs~
+     ~override/magehigh.bcs~ ~override/mage5.bcs~
+     ~override/magehigh.bcs~ ~override/mage6.bcs~
+     ~override/magehigh.bcs~ ~override/mage6a.bcs~
+     ~override/magehigh.bcs~ ~override/mage6b.bcs~
+     ~override/magehigh.bcs~ ~override/mage6c.bcs~
+     ~override/magehigh.bcs~ ~override/mage7.bcs~
+     ~override/magehigh.bcs~ ~override/mage8.bcs~
+     ~override/magehigh.bcs~ ~override/mage8a.bcs~
+     ~override/magehigh.bcs~ ~override/mage8b.bcs~
+     ~override/magehigh.bcs~ ~override/mage8c.bcs~
+     ~override/magehigh.bcs~ ~override/mage8d.bcs~
+     ~override/magehigh.bcs~ ~override/mage8e.bcs~
+     ~override/magehigh.bcs~ ~override/gpmage1.bcs~
+     ~override/magehigh.bcs~ ~override/gpmage2.bcs~
+     ~override/magehigh.bcs~ ~override/cmage20a.bcs~
+     ~override/magehigh.bcs~ ~override/cmage20b.bcs~
+     ~override/magehigh.bcs~ ~override/figmag06.bcs~
+     ~override/magehigh.bcs~ ~override/figmag10.bcs~
+     ~override/magehigh.bcs~ ~override/figmag16.bcs~
+     ~override/magehigh.bcs~ ~override/ppmag01.bcs~
+     ~override/magehigh.bcs~ ~override/kuomag01.bcs~
+     ~override/magehigh.bcs~ ~override/duemag01.bcs~
+     ~override/magehigh.bcs~ ~override/duemag02.bcs~
+     ~override/magehigh.bcs~ ~override/demmag.bcs~
+     ~override/magehigh.bcs~ ~override/degard2.bcs~
+     ~override/magehigh.bcs~ ~override/cowenf01.bcs~
+     ~override/magehigh.bcs~ ~override/cowenf02.bcs~
+     ~override/magehigh.bcs~ ~override/cowenf03.bcs~
+     ~override/magehigh.bcs~ ~override/cowenf04.bcs~
+     ~override/magehigh.bcs~ ~override/ckmag20a.bcs~
+     ~override/magehigh.bcs~ ~override/ckmag20b.bcs~
+     ~override/magehigh.bcs~ ~override/clone1.bcs~
+     ~override/magehigh.bcs~ ~override/chgood08.bcs~
+     ~override/magehigh.bcs~ ~override/cfmag20b.bcs~
+     ~override/magehigh.bcs~ ~override/cbard12a.bcs~
+     ~override/magehigh.bcs~ ~override/amlich02.bcs~
+     ~override/magehigh.bcs~ ~override/zilmag01.bcs~
+     ~override/magehigh.bcs~ ~override/tief3.bcs~
+     ~override/magehigh.bcs~ ~override/gorstam.bcs~
+     ~override/magehigh.bcs~ ~override/gorlic01.bcs~
+     ~override/magehigh.bcs~ ~override/firlch01.bcs~
+blah ~override/magehigh.bcs~ ~override/cmacl20a.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/magclr06.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/magthf14.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/lavok01.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/kproen02.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/thiefmag.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/shadmt01.bcs~ look here!   all of these may have weirdo stuff in and need compiling separately
+blah ~override/magehigh.bcs~ ~override/sahbeh04.bcs~ look here!   todo: set an "infinite minor spells" variable on CREs that need it
+blah ~override/magehigh.bcs~ ~override/pwarden.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/jatermin.bcs~ look here!  i compile this elsewhere!
+blah ~override/magehigh.bcs~ ~override/ppmag01.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/hlsion.bcs~ look here!   maybe improve guarded compound separately
+blah ~override/magehigh.bcs~ ~override/obshal03.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/neva.bcs~ look here!
+blah ~override/magehigh.bcs~ ~override/gorcamb2.bcs~ look here!
+// These guys need script order changes
+COPY_EXISTING ~kpsham01.cre~ ~override~
+WRITE_ASCII 0x248 "SHOUTDLG" #8
+WRITE_ASCII 0x250 "MAGE12D" #8
+COPY_EXISTING ~lavok01.cre~ ~override~
+WRITE_ASCII 0x250 "SHOUTDLG" #8
+WRITE_ASCII 0x258 "MAGE16A" #8 */
+// Also todo: Improve D0QPTAN2.BAF to account for Tanova.
+
+
+// Cleric AI
+
+// Illusionary AI
+ACTION_DEFINE_ASSOCIATIVE_ARRAY ai_core#illai BEGIN
+  mislead => d0mislea
+  projimag => d0pimag
+  simulacr => d0simul
+END
+
+ACTION_PHP_EACH ai_core#illai AS spell => resource BEGIN
+  COPY_EXISTING ~%spell%.spl~ override
+    PATCH_IF SOURCE_SIZE > 0x71 BEGIN
+      LPF ADD_SPELL_EFFECT
+        INT_VAR
+          insert_point = 0
+          opcode = 82
+          target = 1
+          power = 4
+          parameter2 = 6
+          timing = 9
+        STR_VAR
+          resource
+      END
+    END
+  BUT_ONLY
+END

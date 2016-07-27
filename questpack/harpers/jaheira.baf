@@ -1,0 +1,88 @@
+IF
+  GlobalGT("D0Harpers","GLOBAL",3)
+  InParty(Myself)
+THEN
+  RESPONSE #100
+    StartDialogNoSet(Player1)
+END
+
+IF
+  PartyHasItemIdentified("sw1h50")
+  GlobalLT("D0JahShaz","GLOBAL",2)
+  InParty(Myself)
+  OR(2)
+    GlobalLT("chapter","GLOBAL",%bg2_chapter_4%)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+THEN
+  RESPONSE #100
+    SetGlobal("D0JahShaz","GLOBAL",2)
+    SetGlobalTimer("LookAtShaz","LOCALS",120)
+END
+
+IF
+  PartyHasItemIdentified("sw1h50")
+  OR(2)
+    Global("D0JahShaz","GLOBAL",1)
+    Global("D0JahShaz","GLOBAL",2)
+  GlobalTimerExpired("LookAtShaz","LOCALS")
+  CombatCounter(0)
+  InParty(Myself)
+  !AreaCheck("ar0407")
+  !AreaCheckObject("ar0407",Myself)
+  !AreaCheckObject("ar0407",Player1)
+  !Dead("Bernard")
+  OR(2)
+    GlobalLT("chapter","GLOBAL",%bg2_chapter_4%)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+THEN
+  RESPONSE #100
+    SetGlobal("D0JahShaz","GLOBAL",3)
+    StartDialogNoSet(Player1)
+END
+
+IF
+  PartyHasItem("sw1h50")
+  Global("D0JahShaz","GLOBAL",0)
+  InParty(Myself)
+  OR(2)
+    GlobalLT("chapter","GLOBAL",%bg2_chapter_4%)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+THEN
+  RESPONSE #100
+    SetGlobal("D0JahShaz","GLOBAL",1)
+    SetGlobalTimer("LookAtShaz","LOCALS",1200)
+END
+
+IF
+  PartyHasItem("sw1h50")
+  Global("D0JahShaz","GLOBAL",1)
+  GlobalTimerExpired("LookAtShaz","LOCALS")
+  CombatCounter(0)
+  InParty(Myself)
+  !AreaCheck("ar0407")
+  !AreaCheckObject("ar0407",Myself)
+  !AreaCheckObject("ar0407",Player1)
+  !Dead("Bernard")
+  OR(2)
+    GlobalLT("chapter","GLOBAL",%bg2_chapter_4%)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+THEN
+  RESPONSE #100
+    SetGlobal("D0JahShaz","GLOBAL",3)
+    StartDialogNoSet(Player1)
+END
+
+IF
+  OR(2)
+    Global("D0JahShaz","GLOBAL",5)
+    Global("D0JahShaz","GLOBAL",6)
+  GlobalTimerExpired("D0NotGoingBernard","LOCALS")
+  CombatCounter(0)
+  InParty(Myself)
+  OR(2)
+    GlobalLT("chapter","GLOBAL",%bg2_chapter_4%)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+THEN
+  RESPONSE #100
+    StartDialogNoSet(Player1)
+END

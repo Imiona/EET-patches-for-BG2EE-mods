@@ -1,0 +1,812 @@
+//Renal Diebesgilde Global("PlayerThiefGuild","GLOBAL",1): in C#Ajan.baf
+
+
+//rep decreases for active romance: romance breaks.
+
+
+/* rep < 12 romance breaks AFTER THINKING CYCLE: dialogue activation */
+IF
+	InParty(Myself) CombatCounter(0) !See([ENEMY])
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	ReputationLT(Player1,12)
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisRomRepDown","GLOBAL",0)
+	Global("C#AjantisIsThinking","GLOBAL",2) //after thinking cycle
+THEN
+  RESPONSE #100
+    SetGlobal("C#AjantisRomRepDown","GLOBAL",1)
+END
+
+/* rep < 12 romance breaks: dialogue triggering */
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+  Global("C#AjantisRomRepDown","GLOBAL",1)
+THEN
+  RESPONSE #100
+    StartDialogNoSet(Player1)
+END
+
+
+//If PC sides with Bodhi (for Chapter 2 and 3 only): activation
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	Global("WorkingForBodhi","GLOBAL",1)
+	CombatCounter(0) !See([ENEMY])
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	OR(2)
+		Global("Chapter","GLOBAL",%bg2_chapter_2%)
+		Global("Chapter","GLOBAL",%bg2_chapter_3%)
+	Global("C#AjanPCWorkingBodhi","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjanPCWorkingBodhi","GLOBAL",1)
+END
+
+//If PC sides with Bodhi (for Chapter 2 and 3 only): triggering
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjanPCWorkingBodhi","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+
+
+
+/*After slayer dialogue, if Ajantis was uncapable of speaking after the fight */
+
+/* After slayer dialogue, if Ajantis was uncapable of speaking after the fight: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Global("C#AjantisIsThinking","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisPCNachAvatar2","GLOBAL",0)
+	Global("DrowTalk","GLOBAL",5)
+	Global("C#AjantisEndageredLovedOne","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisPCNachAvatar2","GLOBAL",1)
+END
+
+/* After slayer dialogue, if Ajantis was uncapable of speaking after the fight: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisPCNachAvatar2","GLOBAL",1)
+THEN
+	RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+/* slayer change cycle: after second transformation. Ajantis cares */
+
+/* slayer change cycle: activation */
+IF
+  InParty(Myself)
+  RealGlobalTimerExpired("C#AjantisSlayerTimer","GLOBAL")
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisEngagedMatch","GLOBAL",1)
+  Global("C#AjantisEngaged","GLOBAL",1)
+  !Global("C#AjantisBodhiAbduction","GLOBAL",1) //not during Bodhi-cycle
+  !Global("C#AjantisIsThinking","GLOBAL",1)
+  !See([ENEMY])
+	!Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  CombatCounter(0)
+  !AreaType(DUNGEON)
+    OR(4)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",1)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",3)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",5)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",7)
+THEN
+  RESPONSE #100
+    IncrementGlobal("C#AjantisSlayerLoveTalks","GLOBAL",1)
+END
+
+/* slayer change cycle: triggering */
+IF
+  InParty(Myself)
+  !Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  OR(4)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",2)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",4)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",6)
+    Global("C#AjantisSlayerLoveTalks","GLOBAL",8)
+THEN
+  RESPONSE #100
+    RealSetGlobalTimer("C#AjantisSlayerTimer","GLOBAL",500) //s
+		PlaySong(0)
+		PlaySound("C#AJROM")
+    StartDialogNoSet(Player1)
+END
+
+
+
+//PC's slayer change (by her own will), also for NB romance
+
+//dialogue, if Ajantis is present: dialogue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+//	CombatCounter(0) !See([ENEMY])
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	OR(2)
+	Global("C#AjantisRomanceActive","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	GlobalTimerNotExpired("TheSlayerTimer","GLOBAL")
+	Global("Slayer10","GLOBAL",2)
+	Global("C#AjantisSlayer10","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisSlayer10","GLOBAL",1) 
+END
+
+//dialogue, if Ajantis was present: dialogue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisSlayer10","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+//dialogue, after the PC changed back: dialogue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	OR(2)
+	Global("C#AjantisRomanceActive","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("Slayer10","GLOBAL",0)
+	Global("C#AjantisSlayer10","GLOBAL",2)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisSlayer10","GLOBAL",3) 
+END
+
+//dialogue, after the PC changed back: dialogue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisSlayer10","GLOBAL",3)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+//second change into the salyer
+//dialogue, if Ajantis is present: dialogue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+//	CombatCounter(0) !See([ENEMY])
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	OR(2)
+	Global("C#AjantisRomanceActive","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	GlobalTimerNotExpired("TheSlayerTimer","GLOBAL")
+	Global("Slayer10","GLOBAL",2)
+	Global("C#AjantisSlayer10","GLOBAL",4)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisSlayer10","GLOBAL",5) 
+END
+
+//dialogue, if Ajantis was present: dialogue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisSlayer10","GLOBAL",5)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+/* Ajantis protects his love interest if HP get too low */
+IF
+	InParty(Myself)
+	!GlobalTimerNotExpired("C#AjantisBeschuetzerTimer","GLOBAL")
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	HPPercentLT(Player1,15)
+	Exists(LastAttackerOf(Player1))
+	Global("C#AjantisNichtBeschuetzen","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("C#AjantisBeschuetzerTimer","GLOBAL",60)
+		DisplayStringHead(Myself,@0) 
+		SetGlobal("C#AjantisBeschuetzer","GLOBAL",1)
+		Attack(LastAttackerOf(Player1))
+END
+
+/* First time Ajantis protects CHARNAME they will talk about it */
+
+/* not if Ajantis is thinking */
+IF
+	InParty(Myself)
+	Global("C#AjantisIsThinking","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisBeschuetzer","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisBeschuetzer","GLOBAL",0)
+END
+
+/* Ajantis protected CHARNAME: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Global("C#AjantisIsThinking","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisBeschuetzer","GLOBAL",1)
+	Global("C#AjantisBeschuetzerTalk","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisBeschuetzerTalk","GLOBAL",1)
+END
+
+/* Ajantis protected CHARNAME: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisBeschuetzerTalk","GLOBAL",1)
+THEN
+	RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+/* Keldorn's quest. I hope this is the right trigger. 
+GlobalGT("C#AjantisWeitergehenPID","GLOBAL",0)*/
+IF
+	InParty(Myself)
+	!Global("C#AjantisIsThinking","GLOBAL",1)
+	GlobalGT("LadyMaria","GLOBAL",0)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisKeldornTurmoil","GLOBAL",0)
+	!AreaType(DUNGEON)
+THEN
+  RESPONSE #100
+    SetGlobal("C#AjantisKeldornTurmoil","GLOBAL",1)
+    RealSetGlobalTimer("C#AjantisKeldornTurmoilT","GLOBAL",800) //s
+END
+
+/* Keldorn's turmoil. Dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!AreaType(DUNGEON)
+	!Global("C#AjantisIsThinking","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	GlobalGT("LadyMaria","GLOBAL",0)
+	RealGlobalTimerExpired("C#AjantisKeldornTurmoilT","GLOBAL")
+	Global("C#AjantisKeldornTurmoil","GLOBAL",1) 
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisKeldornTurmoil","GLOBAL",2)
+END
+
+/* Keldorn's turmoil. Dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisKeldornTurmoil","GLOBAL",2) 
+THEN
+	RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+/* PC was in the lust chambers (Ust Natha): dialogue activation */
+IF	
+	InParty(Myself)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	OR(2)
+		Global("C#AjantisRomanceActive","GLOBAL",2)
+		Global("C#AjantisRomanceActive","GLOBAL",1)
+	Global("C#AjanLustChamber","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjanLustChamber","GLOBAL",2)
+END
+
+/* PC was in the lust chambers (Ust Natha): dialogue triggering */
+IF	
+	InParty(Myself)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjanLustChamber","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+//Underdark coincidence
+/*Timer setting in Ust Natha*/
+
+
+IF
+	InParty(Myself)
+	AreaCheck("AR2200")
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisUDBelt1","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt1","GLOBAL",1)
+		RealSetGlobalTimer("C#AjantisUDBelt1T","GLOBAL",800) //
+END
+
+/*Underdark belt: Dialogue activating */
+IF
+	InParty(Myself)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!See("Solaufein") //Solaufein
+	!See("Phaere") //Phaere
+	!See("Ardulace") //Matron Mother	
+	AreaCheck("AR2200")
+	Global("C#AjantisUDBelt1","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisUDBelt","GLOBAL",0)
+	RealGlobalTimerExpired("C#AjantisUDBelt1T","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",1)
+END
+
+/*Underdark belt: Dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisUDBelt","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+/*Underdark belt: Dialogue activating after wake up */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+//	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisUDBelt","GLOBAL",4)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",5)
+END
+
+/*Underdark belt: Dialogue triggering after wake up */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisUDBelt","GLOBAL",5)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+/* Underdark belt: belt turns to dust after Underdark exit for RA = 3 */
+IF
+	OR(4)
+	AreaType(OUTDOOR)
+	AreaType(FOREST)
+	AreaCheck("AR0903")
+	AreaCheck("AR2500")
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisUDBelt","GLOBAL",6)
+	OR(3)
+	Global("C#AjantisRomanceActive","GLOBAL",3)
+	Global("C#AjantisEngaged","GLOBAL",2)
+	Global("C#AjantisEngagedMatch","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",20)
+		TakeItemReplace("DWDust","C#AJCHBE","C#Ajantis")
+END
+
+/*romance case: Ajantis was sent to the Order on his own */
+IF
+	AreaCheck("AR0903")
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisUDBelt","GLOBAL",6)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",19)
+		DestroyItem("C#AJCHBE")
+END
+
+
+/*Underdark belt: Dialogue activating after Underdark exit and Elhan, RA = 2*/
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)	
+	AreaCheck("AR2500")
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("ElhanFinishedSpeaking","GLOBAL",1)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisUDBelt","GLOBAL",6)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",7)
+END
+
+/*Underdark belt: Dialogue triggering after Underdark exit and Elhan*/
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisUDBelt","GLOBAL",7)
+THEN
+	RESPONSE #100
+		RealSetGlobalTimer("C#AjantisUDBeltBeautifulT","GLOBAL",200)
+		StartDialogueNoSet(Player1)
+END
+
+/*Underdark belt: "You are so beautiful" dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)	
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	GlobalGT("C#AjantisUDBelt","GLOBAL",6)
+	RealGlobalTimerExpired("C#AjantisUDBeltBeautifulT","GLOBAL")
+	Global("C#AjantisNoIntimacy","GLOBAL",0)
+	Global("C#AjantisUDBeltBeautiful","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBeltBeautiful","GLOBAL",1)
+END
+
+/*Underdark belt: "You are so beautiful" dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisUDBeltBeautiful","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+
+
+
+
+
+
+
+/* belt not removed, timer expired. Dialogue does not trigger in graveyard, if Bodhi still lives */
+
+/*second remove belt dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	!AreaCheck("AR0334")
+	OR(3)
+		AreaType(CITY)
+		AreaType(OUTDOOR)
+		AreaType(FOREST)
+	OR(2)
+		Global("BodhiDead","GLOBAL",1) //after Bodhi's death
+		!AreaCheck("AR0800")
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisUDBelt","GLOBAL",8)
+	GlobalTimerExpired("C#AjanUDBeltTimer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",9)
+END
+
+/*second remove belt dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisUDBelt","GLOBAL",9)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+/*Master Cromwell remove belt dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)	
+	AreaCheck("AR0334")
+	See("WSMITH01")
+	!StateCheck("WSMITH01",CD_STATE_NOTVALID)
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	OR(2)
+		Global("C#AjantisUDBelt","GLOBAL",8)
+		Global("C#AjantisUDBelt","GLOBAL",10)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",11)
+END
+
+/*Master Cromwell remove belt dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisUDBelt","GLOBAL",11)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet("WSMITH01")
+END
+
+
+/*after Master Cromwell: remove belt dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisUDBelt","GLOBAL",12)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",13)
+END
+
+/*after Master Cromwell: belt dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisUDBelt","GLOBAL",13)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+/*final remove belt dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	!Range([NEUTRAL],20)
+	!Detect([ENEMY])
+	!Detect([EVILBUTBLUE])	
+	!AreaType(CITY)
+	OR(2)
+		AreaType(OUTDOOR)
+		AreaType(FOREST)
+	OR(2)
+		TimeOfDay(DAY)
+		TimeOfDay(MORNING)
+	HasItem("C#AJCHBE","C#Ajantis")
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisUDBelt","GLOBAL",14)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUDBelt","GLOBAL",15)
+		Weather(NOWEATHER)
+END
+
+/*final remove belt dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],20)
+	!Detect([ENEMY])
+	!Detect([EVILBUTBLUE])	
+	Global("C#AjantisUDBelt","GLOBAL",15)
+THEN
+	RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")		
+		StartDialogueNoSet(Player1)
+END
+
+/* End engagement, if PC cleric got kicked out of church of Helm: moved to C#AjanJ.d */
+
+/* PC rejected the Order Stronghold */
+
+/* dialogue activation */
+IF
+	InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisRomanceActive","GLOBAL",2)
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("PaladinOrder","GLOBAL",2)
+	Global("C#AjanPCOrderRejected","GLOBAL",0)
+	!AreaCheck("AR0903")
+THEN  
+  RESPONSE #100
+	SetGlobal("C#AjanPCOrderRejected","GLOBAL",1)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjanPCOrderRejected","GLOBAL",1)
+THEN  
+  RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+
+/* Ajantis initiated flirts */
+
+/* Global("C#AjantisIniFlirts","GLOBAL",3): Ajantis stops flirting */
+
+/* timer activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	ReputationGT(Player1,11)
+	Global("C#AjantisIniFlirts","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisIniFlirts","GLOBAL",1)
+		RealSetGlobalTimer("C#AjantisIniFlirtsTimer","GLOBAL",1000)
+END
+
+/* dialogue activation */
+IF
+  InParty(Myself)
+  RealGlobalTimerExpired("C#AjantisIniFlirtsTimer","GLOBAL")
+	Global("C#AjantisRomanceActive","GLOBAL",2) 
+	Global("C#AjantisEngaged","GLOBAL",1)
+	ReputationGT(Player1,11)
+  !See([ENEMY])
+	!Range([NEUTRAL],10)
+	ReputationGT(Player1,15)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  CombatCounter(0)
+  !AreaType(DUNGEON)
+  !Global("C#AjantisBodhiAbduction","GLOBAL",1) //not during Bodhi-cycle
+  !Global("C#AjantisIsThinking","GLOBAL",1)
+    Global("C#AjantisIniFlirts","GLOBAL",1)
+THEN
+  RESPONSE #100
+    IncrementGlobal("C#AjantisIniFlirts","GLOBAL",1)
+END
+
+/* dialogue triggering */
+IF
+  InParty(Myself)
+  !Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  Global("C#AjantisIniFlirts","GLOBAL",2)
+THEN
+  RESPONSE #100
+    RealSetGlobalTimer("C#AjantisIniFlirtsTimer","GLOBAL",3000) //s
+//		PlaySong(0)
+//		PlaySound("C#AJROM")
+    StartDialogNoSet(Player1)
+END

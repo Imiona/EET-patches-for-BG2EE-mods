@@ -1,0 +1,87 @@
+IF
+InParty(Myself)
+CombatCounter(0) !See([ENEMY])
+Global("P#KivanLoversQuest","GLOBAL",1)
+PartyHasItem("MISC5R")
+!AreaCheck("AR0404")
+!AreaType(DUNGEON)
+GlobalLT("Chapter","GLOBAL",%bg2_chapter_4%)
+THEN
+RESPONSE #100
+IncrementGlobal("P#KivanLoversQuest","GLOBAL",1)
+StartDialogueNoSet(Player1)
+END
+
+IF
+InParty(Myself)
+Global("P#KivanLoversQuest","GLOBAL",6)
+Global("P#RingEntry1","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("P#RingEntry1","GLOBAL",1)
+AddJournalEntry(~The Lover's Ring
+Let the Lover's Ring keep its mystery. I have decided to keep the coins, instead.~ ,QUEST_DONE)
+EraseJournalEntry(~The Lover's Ring
+Kivan thinks that we should talk to the merchant of antiquities, Quataris,  in the Promenade about the Lover's Ring.~)
+END
+
+IF
+InParty(Myself)
+Global("P#KivanLoversQuest","GLOBAL",5)
+Global("P#RingEntry2","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("P#RingEntry2","GLOBAL",1)
+AddJournalEntry(~The Lover's Ring
+Upon having his memory loss 'cured' by paying us less gold pieces than he intended, the merchant of antiquities in the Promenade recalled that the Jysstev family owned a ring similar to the one we found in the sewers. The Jysstevs, according to him, are old money. Perhaps, they'd pay me for bringing the news.~,QUEST)
+END
+
+IF
+InParty(Myself)
+Global("P#SummonChislav","GLOBAL",1)
+Global("P#RingEntry3","GLOBAL",0)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("P#Chislav","GLOBAL",3000)
+SetGlobal("P#RingEntry3","GLOBAL",1)
+AddJournalEntry(~The Lover's Ring
+Lady Jysstev was quite annoyed when I mentioned the Lover's Ring to her. Perhaps I should have talked to someone else. I will have to wait and see...~,QUEST)
+END
+
+IF
+InParty(Myself)
+GlobalGT("P#KivanLoversQuest","GLOBAL",5)
+Global("P#RingEntry4","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("P#RingEntry4","GLOBAL",1)
+EraseJournalEntry(~The Lover's Ring
+Kivan thinks that we should talk to the merchant of antiquities, Quataris,  in the Promenade about the Lover's Ring.~)
+EraseJournalEntry(~The Lover's Ring
+Upon having his memory loss 'cured' by paying us less gold pieces than he intended, the merchant of antiquities in the Promenade recalled that the Jysstev family owned a ring similar to the one we found in the sewers. The Jysstevs, according to him, are old money. Perhaps, they'd pay me for bringing the news.~)
+EraseJournalEntry(~The Lover's Ring
+Lady Jysstev was quite annoyed when I mentioned the Lover's Ring to her. Perhaps I should have talked to someone else. I will have to wait and see...~)
+END
+
+IF
+InParty(Myself)
+Global("P#SummonChislav","GLOBAL",1)
+RealGlobalTimerExpired("P#Chislav","GLOBAL")
+OR(7)
+AreaCheck("AR0500")
+AreaCheck("AR0400")
+AreaCheck("AR0900")
+AreaCheck("AR1000")
+AreaCheck("AR0800")
+AreaCheck("AR0700")
+AreaCheck("AR0300")
+THEN
+RESPONSE #100
+SetGlobal("P#SummonChislav","GLOBAL",2)
+CreateCreatureObject("P#CHISL","P#kivan",0,0,0)
+Wait(1)
+ActionOverride("chislav",Dialogue(Player1))
+END
+
+
+

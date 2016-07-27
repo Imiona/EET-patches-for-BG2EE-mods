@@ -1,0 +1,2229 @@
+//DialogpausenTimer, damit nicht alle "Eventdialoge" direkt hintereinander kommen:
+//RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",100) einfügen!
+//RealGlobalTimerExpired("C#AjantisDialogPausenTimer","GLOBAL")
+
+
+
+
+//friendship path, setting of variables after first joining
+IF
+    InParty(Myself)
+    !Global("C#AjantisEngaged","GLOBAL",1)
+    !Global("C#AjantisRomanceActive","GLOBAL",2)
+    !Global("C#AjantisRomanceActive","GLOBAL",3)
+	Global("C#AjantisFriendTalk","GLOBAL",0)
+THEN  
+  RESPONSE #100
+    SetGlobal("C#AjantisJoined","GLOBAL",1)
+    RealSetGlobalTimer("C#AjantisFriendTalkT","GLOBAL",300)
+    SetGlobal("C#AjantisFriendTalk","GLOBAL",1)
+END
+
+IF
+	InParty(Myself)
+	Global("C#AjantisDialogPausen","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisDialogPausen","GLOBAL",1)
+		RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",200)
+END
+
+//TempleShout0903
+IF
+	Allegiance(Myself,ENEMY)
+	Global("TempleShout0903","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("TempleShout0903","GLOBAL",1)
+END
+
+/* Ajantis hears Templeshout: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("TempleShout0903","GLOBAL",1)
+	Global("C#AjantisTempleShout","GLOBAL",0)
+	!Allegiance(Myself,ENEMY)
+THEN
+	RESPONSE #100
+	     SetGlobal("C#AjantisTempleShout","GLOBAL",1)
+END
+
+/* Ajantis hears Templeshout: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisTempleShout","GLOBAL",1)
+	!Allegiance(Myself,ENEMY)
+THEN
+	RESPONSE #100
+             StartDialogNoSet(Player1)
+END
+
+IF
+	Global("TempleShout0903","GLOBAL",1)
+	!InParty(Myself)
+	!Allegiance(Myself,ENEMY)
+THEN
+	RESPONSE #100
+		Enemy()
+END
+
+
+
+IF
+	AreaCheck("AR0903")
+	!InParty(Myself)
+	Global("C#AjantisWegAlleine","GLOBAL",1)
+THEN
+	RESPONSE #100
+		ApplySpell(Myself,UNDER_NORM)
+		SetGlobal("C#AjantisWegAlleine","GLOBAL",2)
+END
+
+
+
+IF 
+	!InParty(Myself)
+	OR(18)
+	  AreaCheck("AR2100")
+	  AreaCheck("AR2101")
+	  AreaCheck("AR2102")
+	  AreaCheck("AR2200")
+	  AreaCheck("AR2201")
+	  AreaCheck("AR2202")
+	  AreaCheck("AR2203")
+	  AreaCheck("AR2204")
+	  AreaCheck("AR2205")
+	  AreaCheck("AR2206")
+	  AreaCheck("AR2207")
+	  AreaCheck("AR2208")
+	  AreaCheck("AR2209")
+	  AreaCheck("AR2210")
+	  AreaCheck("AR2300")
+	  AreaCheck("AR2400")
+	  AreaCheck("AR2401")
+	  AreaCheck("AR2402")
+	Global("PlayerLooksLikeDrow","GLOBAL",0)
+	GlobalGT("udDrowPlot","GLOBAL",99)
+	Global("C#AjanLooksLikeDrow","GLOBAL",1)
+THEN
+	RESPONSE #100		
+		ApplySpell(Myself,UNDER_NORM)
+		SetGlobal("C#AjanLooksLikeDrow","GLOBAL",0)
+END
+
+
+IF 
+	InParty(Myself)
+	OR(18)
+	  AreaCheck("AR2100")
+	  AreaCheck("AR2101")
+	  AreaCheck("AR2102")
+	  AreaCheck("AR2200")
+	  AreaCheck("AR2201")
+	  AreaCheck("AR2202")
+	  AreaCheck("AR2203")
+	  AreaCheck("AR2204")
+	  AreaCheck("AR2205")
+	  AreaCheck("AR2206")
+	  AreaCheck("AR2207")
+	  AreaCheck("AR2208")
+	  AreaCheck("AR2209")
+	  AreaCheck("AR2210")
+	  AreaCheck("AR2300")
+	  AreaCheck("AR2400")
+	  AreaCheck("AR2401")
+	  AreaCheck("AR2402")
+	Global("C#AjantisImUnterreich","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisImUnterreich","GLOBAL",1)
+END
+
+
+/* PC brought Teddy to dead Wellyn */
+
+/* PC did it without Ajantis in the group */
+IF
+	!InParty(Myself)
+	Global("WellynPeace","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisWellynYes","GLOBAL",3)
+END
+
+
+/* dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	CombatCounter(0) !See([ENEMY])
+	Global("WellynPeace","GLOBAL",1)
+	Global("C#AjantisWellynYes","GLOBAL",0)
+	AreaCheck("AR0800") //Graveyard
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisWellynYes","GLOBAL",2)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisWellynYes","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+/* PC becomes member of the Order. Late reaction. */
+
+/* dialogue activation */
+IF
+	InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("PaladinOrder","GLOBAL",1)
+	Global("C#AjantisCongratPaladinOrder","GLOBAL",0)
+	RealGlobalTimerExpired("C#AjantisDialogPausenTimer","GLOBAL")
+THEN  
+  RESPONSE #100
+	SetGlobal("C#AjantisCongratPaladinOrder","GLOBAL",2)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisCongratPaladinOrder","GLOBAL",2)
+THEN  
+  RESPONSE #100
+		RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",100)
+		StartDialogNoSet(Player1)
+END
+
+
+/* PC failed the Order: Kickout aus dem Orden */
+
+/* dialogue activation */
+IF
+	InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("PaladinOrder","GLOBAL",3)
+	Global("C#AjanPCOrderKickOut","GLOBAL",0)
+	OR(3)
+		Global("C#AjantisRomanceActive","GLOBAL",1)
+		Global("C#AjantisRomanceActive","GLOBAL",2)
+		Global("C#AjantisFailedPaladinOrder","GLOBAL",0) 
+THEN  
+  RESPONSE #100
+	SetGlobal("C#AjanPCOrderKickOut","GLOBAL",1)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjanPCOrderKickOut","GLOBAL",1)
+	OR(3)
+		Global("C#AjantisRomanceActive","GLOBAL",1)
+		Global("C#AjantisRomanceActive","GLOBAL",2)
+		Global("C#AjantisFailedPaladinOrder","GLOBAL",0) 
+THEN  
+  RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+/* PC cleric got kicked out of church of Helm: dialogue activation */
+IF
+	InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("JoinHelm","GLOBAL",1)
+	Global("C#AjanPCHelmKickOut","GLOBAL",0)
+	OR(2)
+		Global("Stripped","GLOBAL",2)
+		Global("Talonwar","GLOBAL",5) 
+THEN  
+  RESPONSE #100
+	SetGlobal("C#AjanPCHelmKickOut","GLOBAL",1)
+END
+
+/* PC cleric got kicked out of church of Helm: dialogue triggering */
+IF
+	InParty(Myself)
+	!Range([NEUTRAL],10)
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjanPCHelmKickOut","GLOBAL",1)
+THEN  
+  RESPONSE #100
+	StartDialogNoSet(Player1)
+END
+
+/* If party member wears the human skin armor: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	OR(6)
+	  HasItemEquiped("LEAT21",Player1)
+	  HasItemEquiped("LEAT21",Player2)
+	  HasItemEquiped("LEAT21",Player3)
+	  HasItemEquiped("LEAT21",Player4)
+	  HasItemEquiped("LEAT21",Player5)
+	  HasItemEquiped("LEAT21",Player6)
+	OR(2)
+	  Global("C#AjantisHautRuestung","GLOBAL",0)
+	  Global("C#AjantisHautRuestung","GLOBAL",2)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisHautRuestung","GLOBAL",3)
+END
+
+/* If party member wears the human skin armor: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisHautRuestung","GLOBAL",3)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+//Entführte Lady Elgea
+//Elgea ist noch (vom HC) gefangen, wenn Ajantis die Gruppe betritt: activation
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("SpawnWelther","GLOBAL",1)
+	Global("ElgeaGone","GLOBAL",0)
+	!Global("ElgeaFree","GLOBAL",1)
+	Global("C#AjantisPCNichtElgea","GLOBAL",0)
+	RealGlobalTimerExpired("C#AjantisDialogPausenTimer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisPCNichtElgea","GLOBAL",4)
+END
+
+//Elgea ist noch (vom HC) gefangen, wenn Ajantis die Gruppe betritt: triggering
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisPCNichtElgea","GLOBAL",4)
+THEN
+	RESPONSE #100
+		RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",100)
+		StartDialogNoSet(Player1)
+END
+
+
+//Engaged romance
+
+//Renal Diebesgilde Global("PlayerThiefGuild","GLOBAL",1): dialogue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Global("C#AjantisRomanceActive","GLOBAL",3) 
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("PlayerThiefGuild","GLOBAL",1)
+	Global("C#AjantisThiefStronghold","GLOBAL",0)
+	!AreaCheck("AR0306")
+	!AreaCheck("AR0903")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisThiefStronghold","GLOBAL",1)
+END
+
+//Renal Diebesgilde Global("PlayerThiefGuild","GLOBAL",1): dialogue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Global("C#AjantisRomanceActive","GLOBAL",3) 
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisThiefStronghold","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+//Mazzy: PC didn't want to free her, dialogue activation
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!InParty("mazzy")
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("MazzyTold","GLOBAL",1)
+	Global("C#AjantisFreeMazzy","GLOBAL",1)
+	AreaCheck("AR1401")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisFreeMazzy","GLOBAL",2)
+END
+
+//Mazzy: PC didn't want to free her, dialogue triggering
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!InParty("mazzy")
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisFreeMazzy","GLOBAL",2)
+	AreaCheck("AR1401")
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+//Valen: dialogue activation
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisValen","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisValen","GLOBAL",2)
+END
+
+//Valen: dialogue triggering
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisValen","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+//Drowsklaven Spinnenopfer: dialogue activation
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisDrowSklaven3","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisDrowSklaven3","GLOBAL",2)
+END
+
+//Drowsklaven Spinnenopfer: dialogue triggering
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisDrowSklaven3","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+//Drowsklaven befreien: dialogue activation
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	OR(2)
+	  Global("DrowSlavesFree","GLOBAL",1)
+	  Global("DrowSlavesFree","GLOBAL",2)
+	Global("C#AjantisDrowSklaven2","GLOBAL",0)
+	Global("C#AjantisDrowSklaven3","GLOBAL",0)
+	Global("C#AjantisDrowSklavenBefreit","GLOBAL",0)
+	Global("C#AjantisImUnterreich","GLOBAL",1)
+	OR(2)
+	  Global("C#AjantisDrowSklaven7","GLOBAL",1)
+	  Global("C#AjantisDrowSklaven8","GLOBAL",1)
+	!AreaCheck("AR2200")
+	!AreaCheck("AR2201")
+	!AreaCheck("AR2202")
+	!AreaCheck("AR2203")
+	!AreaCheck("AR2204")
+	!AreaCheck("AR2205")
+	!AreaCheck("AR2206")
+	!AreaCheck("AR2207")
+	!AreaCheck("AR2208")
+	!AreaCheck("AR2209")
+	!AreaCheck("AR2210")
+	!AreaCheck("AR2100")
+	RealGlobalTimerExpired("C#AjantisDialogPausenTimer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisDrowSklavenBefreit","GLOBAL",1)
+END
+
+//Drowsklaven befreien: dialogue triggering
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisDrowSklavenBefreit","GLOBAL",1)
+THEN
+	RESPONSE #100
+		RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",100)
+		StartDialogNoSet(Player1)
+END
+
+
+//Drowsklaven nicht befreit (Player1,!Mask_EVIL): dialogue activation
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("SlaveResult","GLOBAL",0)
+	Global("DrowSlavesFree","GLOBAL",0)
+	Global("C#AjantisDrowSklaven","GLOBAL",1)
+	AreaCheck("AR2500")
+	!Alignment(Player1,MASK_EVIL)
+	RealGlobalTimerExpired("C#AjantisDialogPausenTimer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisDrowSklaven","GLOBAL",2)
+END
+
+//Drowsklaven nicht befreit (Player1,!Mask_EVIL): dialogue triggering
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisDrowSklaven","GLOBAL",2)
+THEN
+	RESPONSE #100
+		RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",100)
+		StartDialogNoSet(Player1)
+END
+
+//Entführte Lady Elgea
+
+//no Elgea talk for late install: baldur.bcs
+
+
+
+
+
+
+/* PC didn't want to free Elgea, but Keldorn, Mazzy or Ajantis freed her (no comment if Ajantis was not in the party) */
+
+//SetGlobal("C#AjantisPCNichtElgea","GLOBAL",0) for !InPartyMyself: baldur.bcs
+
+//PC didn't want to free Elgea: dialogue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisPCNichtElgea","GLOBAL",1)
+	GlobalGT("ElgeaFree","GLOBAL",0)
+	AreaCheck("AR0508")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisPCNichtElgea","GLOBAL",2)
+END
+
+//PC didn't want to free Elgea: dialogue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisPCNichtElgea","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+//PC freed Elgea: dialogue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("ElgeaFree","GLOBAL",1)
+	!Global("SpawnWelther","GLOBAL",1)
+	Global("C#AjantisElgeaBefreit","GLOBAL",0)
+	Global("C#AjantisPCNichtElgea","GLOBAL",0)
+	AreaCheck("AR0508")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisElgeaBefreit","GLOBAL",1)
+END
+
+//PC freed Elgea: dialogue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisElgeaBefreit","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+
+
+//Sir Sarles: dialoue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#LegierungsLuege","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#LegierungsLuege","GLOBAL",2)
+END
+
+//Sir Sarles: dialoue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#LegierungsLuege","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+
+
+
+
+//Maevarquest Lathandertempel und Thalostempel bestehlen
+
+//Ajantis complaints if PC wants to steal statuette from Lathander temple (RA = 2): dialogue activation
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Global("C#AjantisRomanceActive","GLOBAL",3) 
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	!AreaCheck("AR0301")
+	OR(2)
+		Global("MaeVarWork","GLOBAL",1)
+		Global("C#AjantisFirstMaevarQuestRom","GLOBAL",1)
+	Global("C#AjantisFirstMaevarQuestRom1","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisFirstMaevarQuestRom1","GLOBAL",1)
+		SetGlobal("C#AjantisFirstMaevarQuestRom","GLOBAL",2)
+END
+
+//Ajantis complaints if PC wants to steal statuette from Lathander temple (RA = 2): dialogue triggering
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Global("C#AjantisRomanceActive","GLOBAL",3) 
+	Global("C#AjantisEngagedMatch","GLOBAL",1)
+	Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisFirstMaevarQuestRom","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+/* Ajantis warns PC if she takes the Lathander statuette or Thalos necklace (inside the temple): dialogue activation */
+IF 
+	InParty(Myself)	
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	OR(2)
+		AreaCheck("AR0902")
+		AreaCheck("AR0904")
+	OR(2)
+		Global("MaeVarWork","GLOBAL",1) //Lathander
+		Global("MaeVarWork","GLOBAL",3) //Thalos
+	OR(2)
+		PartyHasItem("MISC4X") //Lathander
+		PartyHasItem("MISC4Y") //Thalos
+	Global("C#AjantisPCStoleForMaeVar","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisPCStoleForMaeVar","GLOBAL",1)
+		Wait(1)
+END
+
+/* Ajantis warns PC if she takes the Lathander statuette or Thalos necklace (inside the temple): dialogue triggering */
+IF 
+	InParty(Myself)	
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisPCStoleForMaeVar","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+/* If the PC left the Lathander or Thalos temple with the stolen item (only triggeres after warning inside the temple): dialogue activation */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!AreaCheck("AR0902")	
+	!AreaCheck("AR0904")
+	OR(2)
+		PartyHasItem("MISC4X")
+		PartyHasItem("MISC4Y")
+	Global("C#AjantisPCStoleForMaeVar","GLOBAL",2)
+THEN
+	RESPONSE #100
+		IncrementGlobal("C#AjantisNoWorkingForMaevar","GLOBAL",1)
+		SetGlobal("C#AjantisPCStoleForMaeVar","GLOBAL",3)
+END
+
+/* If the PC left the Lathander or Thalos temple with the stolen item (only triggeres after warning inside the temple): dialogue triggering */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisPCStoleForMaeVar","GLOBAL",3)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1) 
+END
+
+/* Ajantis complaints if the PC goes into the MaeVar thiefguild with one of the stolen items (independent of whether Ajantis complained already or not): dialogue activation */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Dead("maevar")
+	OR(2)
+		Global("MaeVarWork","GLOBAL",1) //Lathander
+		Global("MaeVarWork","GLOBAL",3) //Thalos
+	OR(2)
+		PartyHasItem("MISC4X") //Lathander
+		PartyHasItem("MISC4Y") //Thalos
+	AreaCheck("AR0301") //Gilde der MaeVar Schattendiebe Untergeschoss
+	Global("C#AjantisWorkingForMaevar","GLOBAL",0)
+THEN
+	RESPONSE #100
+		IncrementGlobal("C#AjantisNoWorkingForMaevar","GLOBAL",1)
+		SetGlobal("C#AjantisWorkingForMaevar","GLOBAL",1)
+END
+
+/* Ajantis complaints if the PC goes into the MaeVar thiefguild with one of the stolen items (independent of whether Ajantis complained already or not): dialogue triggering */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisWorkingForMaevar","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1) 
+END
+
+//Bad decision warning------------------------
+/* 
+First warning for:
+//GlobalGT("C#AjantisWarUnzufrieden","GLOBAL",3)
+
+Attacking for:
+
+GlobalGT("C#AjantisWarUnzufrieden","GLOBAL"5)
+*/
+
+/* first dialogue: activation */
+
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) 
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	GlobalGT("C#AjantisWarUnzufrieden","GLOBAL",3)
+	Global("C#AjantisUnzufriedenWarnung","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUnzufriedenWarnung","GLOBAL",1)
+END
+
+/* first dialogue: triggering */
+
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisUnzufriedenWarnung","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+/* second dialogue: activation */
+
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) 
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	GlobalGT("C#AjantisWarUnzufrieden","GLOBAL",5)
+	Global("C#AjantisUnzufriedenWarnung","GLOBAL",2)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisUnzufriedenWarnung","GLOBAL",3)
+END
+
+/* second dialogue: triggering */
+
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisUnzufriedenWarnung","GLOBAL",3)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+
+
+
+/* Garrens Kind Timer: Ajantis mosert (ddkidnaptimer - mit Anomen abgestimmt): dialogue activation */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!InParty("anomen") 
+	CombatCounter(0) 
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	GlobalTimerExpired("ddKidnapTimer","GLOBAL")
+	Global("C#Ajantis_KidnapComplain","GLOBAL",0)
+	!GlobalGT("Kidnap","GLOBAL",3)
+THEN
+	RESPONSE #100
+		SetGlobal("C#Ajantis_KidnapComplain","GLOBAL",1)
+		SetGlobalTimer("ddKidnapTimer","GLOBAL",THREE_DAYS)
+END
+
+/* Garrens Kind Timer: Ajantis mosert (ddkidnaptimer - mit Anomen abgestimmt): dialogue triggering */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!InParty("anomen")
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#Ajantis_KidnapComplain","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+//für Anomen in Gruppe -> Ajantis beschwert sich mit Anomen
+IF
+	InParty(Myself)
+	InParty("anomen")
+	!GlobalTimerExpired("ddKidnapTimer","GLOBAL")
+	Global("C#Ajantis_Kidnap_Anomen","GLOBAL",1)
+	!GlobalGT("Kidnap","GLOBAL",3)
+THEN
+	RESPONSE #100
+		SetGlobal("C#Ajantis_Kidnap_Anomen","GLOBAL",0)
+END
+
+
+/* fires after Bodhi's dialogue at the beginning of the maze, after the stealing of the soul; PC just learned that Imoen is a child of Bhaal as well. Dialogue activation */
+//dialogue in romance_add.d!!
+
+IF
+    InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("AsylumPlot","GLOBAL",41)
+	AreaCheck("AR1512")
+	Global("C#AjantisHCSeele","GLOBAL",0)
+THEN  
+  RESPONSE #100
+	SetGlobal("C#AjantisHCSeele","GLOBAL",1)
+END
+
+/* fires after Bodhi's dialogue at the beginning of the maze, after the stealing of the soul; PC just learned that Imoen is a child of Bhaal as well. Dialogue triggering */
+
+IF
+    InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisHCSeele","GLOBAL",1)
+THEN  
+  RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+/* PC got transformed into Bhaal's avatar without her will (Bodhi's maze): dialogue activation ALL PATHS */
+
+IF 
+	InParty(Myself) 
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	CombatCounter(0) !See([ENEMY])
+	Global("SelfTalk","GLOBAL",3)
+	AreaCheck("AR1514")
+	Global("C#AjanSlayerChangeAR1514","GLOBAL",0) 
+THEN 
+	RESPONSE #100
+		SetGlobal("C#AjanSlayerChangeAR1514","GLOBAL",1)
+END
+
+
+
+/* PC got transformed into Bhaal's avatar without her will (Bodhi's maze): dialogue triggering  ALL PATHS */
+
+IF 
+	InParty(Myself) 
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjanSlayerChangeAR1514","GLOBAL",1) 
+THEN 
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+
+//reputation commenting-----------------------
+
+
+//usual
+//code taken from BG1NPC project :)
+
+//Ajantis recognises low rep of a freshly joined group
+//memory of rep > 11 by joining
+IF 
+InParty(Myself)
+ReputationGT(Player1,11)
+Global("C#AjantisNoBadRepJoin","GLOBAL",0)
+Global("C#AjantisNoBadRepJoinCheck","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisNoBadRepJoin","GLOBAL",1)
+SetGlobal("C#AjantisNoBadRepJoinCheck","GLOBAL",1)
+RealSetGlobalTimer("C#AjantisGoodRepJoinTimer","GLOBAL",3600) //
+END
+
+/* bad rep join talk after joining a party with rep < 12: dialogue activation */
+IF
+InParty(Myself) 
+InMyArea(Player1)
+CombatCounter(0) 
+!See([ENEMY])
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisNoBadRepJoin","GLOBAL",0)
+ReputationLT(Player1,12)
+Global("C#AjantisBadRepJoinTalk","GLOBAL",0)
+RealGlobalTimerExpired("C#AjantisDialogPausenTimer","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisBadRepJoinTalk","GLOBAL",1)
+END
+
+/* bad rep join talk after joining a party with rep < 12: dialogue triggering */
+IF
+InParty(Myself) 
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisBadRepJoinTalk","GLOBAL",1)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",300)
+StartDialogueNoSet(Player1)
+END
+
+/* long bad rep talk delay for non-evil alignent PC ~and~ if chapter < 3 */
+IF
+InParty(Myself) 
+!Alignment(Player1,MASK_EVIL)
+GlobalLT("chapter","GLOBAL",%bg2_chapter_3%)
+Global("C#AjantisBadRepTimer","GLOBAL",0)
+!Global("C#AjantisNoBadRepJoin","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisBadRepTimer","GLOBAL",1)
+RealSetGlobalTimer("C#AjantisBadRepDelay","GLOBAL",7200) // 2 hour delay
+END
+
+//short bad rep talk delay: chapter > 3 ~or~ for evil PC
+IF
+InParty(Myself) 
+OR(2)
+Alignment(Player1,MASK_EVIL)
+GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_2%)
+Global("C#AjantisBadRepTimer","GLOBAL",0)
+!Global("C#AjantisNoBadRepJoin","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisBadRepTimer","GLOBAL",1)
+RealSetGlobalTimer("C#AjantisBadRepDelay","GLOBAL",1800) //30 min delay
+END
+
+/* rep < 8: attack */
+IF
+  InParty(Myself) 
+InMyArea(Player1)
+CombatCounter(0) !See([ENEMY])
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+  ReputationLT(Player1,8)
+THEN
+  RESPONSE #100
+    StartDialogNoSet(Player1)
+END
+
+/* rep < 10 serious warning: dialogue activation */
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+  ReputationLT(Player1,10)
+  Global("C#AjantisReachedTen","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("C#AjantisReachedTen","GLOBAL",1)
+SetGlobal("C#AjantisBadReputationIncrease","GLOBAL",0)
+SetGlobal("C#AjantisNoBadRepJoin","GLOBAL",2)
+SetGlobal("C#AjantisBadReputationWarning","GLOBAL",1)
+SetGlobal("C#AjantisBadRepTimer","GLOBAL",0)
+END
+
+/* reputation < 12: Ajantis will warn PC: dialogue activation */
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+OR(2)
+Global("C#AjantisBadReputationWarning","GLOBAL",0)
+Global("C#AjantisBadReputationWarning","GLOBAL",2)
+ReputationLT(Player1,12)
+OR(2)
+Global("C#AjantisNoBadRepJoin","GLOBAL",1)
+RealGlobalTimerExpired("C#AjantisBadRepDelay","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisBadReputationIncrease","GLOBAL",0)
+SetGlobal("C#AjantisNoBadRepJoin","GLOBAL",2)
+SetGlobal("C#AjantisBadReputationWarning","GLOBAL",1)
+SetGlobal("C#AjantisBadRepTimer","GLOBAL",0)
+END
+
+/* reputation < 12: Ajantis will warn PC: dialogue triggering
+ALSO rep < 10 serious warning: dialogue triggering */
+IF
+InParty(Myself) 
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisBadReputationWarning","GLOBAL",1)
+THEN
+RESPONSE #100
+StartDialogNoSet(Player1)
+END
+
+
+/* Ajantis recognises rep increase after former bad rep talk: dialogue activation */
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+OR(2)
+Global("C#AjantisBadRepJoinTalk","GLOBAL",2) 
+Global("C#AjantisBadReputationWarning","GLOBAL",2)
+Global("C#AjantisBadReputationIncrease","GLOBAL",0)
+ReputationGT(Player1,11)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("C#AjantisBadRepDelay","GLOBAL",1)
+SetGlobal("C#AjantisBadRepJoinTalk","GLOBAL",3) //to prevent from looping 
+SetGlobal("C#AjantisBadReputationIncrease","GLOBAL",1)
+END
+
+/* Ajantis recognises rep increase after former bad rep talk: dialogue triggering */
+IF
+InParty(Myself) 
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisBadReputationIncrease","GLOBAL",1)
+THEN
+RESPONSE #100
+StartDialogueNoSet(Player1)
+END
+
+/* Ajantis good rep talk for rep >17: dialogue activation */
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisGoodReputationTalk","GLOBAL",0)
+ReputationGT(Player1,17)
+ReputationLT(Player1,20)
+RealGlobalTimerExpired("C#AjantisGoodRepJoinTimer","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisGoodReputationTalk","GLOBAL",1)
+END
+
+/* Ajantis good rep talk for rep >17: dialogue triggering */
+IF
+InParty(Myself)
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisGoodReputationTalk","GLOBAL",1)
+THEN
+RESPONSE #100
+StartDialogueNoSet(Player1)
+END
+
+/* Rep 20: dialogue activation */
+
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisBestReputationTalk","GLOBAL",0)
+Reputation(Player1,20)
+RealGlobalTimerExpired("C#AjantisGoodRepJoinTimer","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisBestReputationTalk","GLOBAL",1)
+END
+
+/* Rep 20: dialogue triggering */
+
+IF
+InParty(Myself)
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisBestReputationTalk","GLOBAL",1)
+THEN
+RESPONSE #100
+StartDialogueNoSet(Player1)
+END
+
+
+
+
+
+
+/* After Firkraag is dead, Sir Ajantis talks to PC: dialogue activation */
+//## timer, falls firkraag bereits tot ist, bevor Ajantis joins?
+
+IF
+!AreaCheck("AR0602")
+!AreaCheck("AR0603")
+!AreaCheck("AR0410")
+!AreaCheck("AR0411")
+!AreaCheck("AR0412")
+!AreaCheck("AR0413")
+!AreaCheck("AR0414")
+!AreaCheck("AR1512")
+!AreaCheck("AR1513")
+!AreaCheck("AR1514")
+!AreaCheck("AR1515")
+!AreaCheck("AR1516")
+!AreaCheck("AR1501")
+!AreaCheck("AR1502")
+!AreaCheck("AR1503")
+!AreaCheck("AR1504")
+!AreaCheck("AR1505")
+!AreaCheck("AR1506")
+!AreaCheck("AR1507")
+!AreaCheck("AR1508")
+!AreaCheck("AR1509")
+!AreaCheck("AR1510")
+!AreaCheck("AR1511")
+!AreaCheck("AR2100")
+!AreaCheck("AR2101")
+!AreaCheck("AR2102")
+!AreaCheck("AR2200")
+!AreaCheck("AR2201")
+!AreaCheck("AR2202")
+!AreaCheck("AR2203")
+!AreaCheck("AR2204")
+!AreaCheck("AR2205")
+!AreaCheck("AR2206")
+!AreaCheck("AR2207")
+!AreaCheck("AR2208")
+!AreaCheck("AR2209")
+!AreaCheck("AR2210")
+!AreaCheck("AR2300")
+!AreaCheck("AR2400")
+!AreaCheck("AR2401")
+!AreaCheck("AR2402")
+!AreaCheck("AR2900")
+!AreaCheck("AR2901")
+!AreaCheck("AR2902")
+!AreaCheck("AR2903")
+!AreaCheck("AR2904")
+!AreaCheck("AR2905")
+!AreaCheck("AR2906")
+!AreaCheck("AR0903")
+	InParty(Myself)
+	InMyArea(Player1)
+	Dead("Firkra02")
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	Global("C#AjantisFirkraagDead","GLOBAL",0)
+	Global("C#ReportFirkraagsTod","GLOBAL",0)
+RealGlobalTimerExpired("C#AjantisDialogPausenTimer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisFirkraagDead","GLOBAL",1)
+END
+
+/* After Firkraag is dead, Sir Ajantis talks to PC: dialogue activation */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisFirkraagDead","GLOBAL",1)
+THEN
+	RESPONSE #100
+		RealSetGlobalTimer("C#AjantisDialogPausenTimer","GLOBAL",300)
+		StartDialogueNoSet(Player1)
+END
+
+
+//After first talk to Firkraag, Sir Ajantis stresses his interest in killing
+//the dragon 
+
+IF
+	InParty(Myself)
+	Global("Firmag01Move","GLOBAL",1)
+	!Dead("Firkra02")
+	Global("C#AjantisKillFirkraag","GLOBAL",0)
+THEN
+  RESPONSE #100
+	SetGlobal("C#AjantisKillFirkraag","GLOBAL",1)
+	RealSetGlobalTimer("C#KillFirkraagReminder","GLOBAL",FIVE_DAYS)
+END
+
+/* kill Firkraag remainder dialogue: activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!See([ENEMY])
+	CombatCounter(0)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("Firmag01Move","GLOBAL",1)
+	RealGlobalTimerExpired("C#KillFirkraagReminder","GLOBAL")
+	!Dead("Firkra02")
+	Global("C#AjantisKillFirkraag","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisKillFirkraag","GLOBAL",2)
+END
+
+/* kill Firkraag remainder dialogue: triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisKillFirkraag","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+
+
+/* Underworld, Snirflebi: dialogue activation */
+
+IF //no combat check!
+        InParty(Myself) 
+	OR(2)
+	  Global("SvirHostile","GLOBAL",1)
+	  Allegiance("UDSVIR03",ENEMY) 
+	Global("C#AjantisSvirHostile","GLOBAL",0)
+THEN 
+  RESPONSE #100
+    	SetGlobal("C#AjantisSvirHostile","GLOBAL",1)
+END
+
+/* Underworld, Snirflebi: dialogue triggering */
+
+IF //no combat check!
+        InParty(Myself) 
+	Global("C#AjantisSvirHostile","GLOBAL",1)
+THEN 
+  RESPONSE #100
+        StartDialogNoSet(Player1)
+END
+
+/* Underworld, demon (Adalons Eier): dialogue activation */
+IF //no combat check!
+        InParty(Myself) 
+	Global("EggsDie","GLOBAL",1)
+	Global("C#AjantisEggsDie","GLOBAL",0)
+THEN 
+  RESPONSE #100
+    	SetGlobal("C#AjantisEggsDie","GLOBAL",1)
+END
+
+/* Underworld, demon (Adalons Eier): dialogue triggering */
+IF //no combat check!
+        InParty(Myself) 
+	Global("C#AjantisEggsDie","GLOBAL",1)
+THEN 
+  RESPONSE #100
+	StartDialogNoSet(Player1)
+END
+
+//Adalon
+IF //no combat check!
+	InParty(Myself)
+		OR(18)
+AreaCheck("AR2100")
+AreaCheck("AR2101")
+AreaCheck("AR2102")
+AreaCheck("AR2200")
+AreaCheck("AR2201")
+AreaCheck("AR2202")
+AreaCheck("AR2203")
+AreaCheck("AR2204")
+AreaCheck("AR2205")
+AreaCheck("AR2206")
+AreaCheck("AR2207")
+AreaCheck("AR2208")
+AreaCheck("AR2209")
+AreaCheck("AR2210")
+AreaCheck("AR2300")
+AreaCheck("AR2400")
+AreaCheck("AR2401")
+AreaCheck("AR2402")
+	OR(2)
+	  Allegiance("udsilver",ENEMY)
+	  Dead("udsilver")
+	Global("C#AjantisAdalonEnemy","GLOBAL",0)	
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisAdalonEnemy","GLOBAL",1)
+		LeaveParty()
+END
+
+IF
+	!InParty(Myself)
+	OR(2)
+	  Allegiance("udsilver",ENEMY)
+	  Dead("udsilver")
+	Global("C#AjantisAdalonEnemy","GLOBAL",0)
+	OR(18)
+AreaCheck("AR2100")
+AreaCheck("AR2101")
+AreaCheck("AR2102")
+AreaCheck("AR2200")
+AreaCheck("AR2201")
+AreaCheck("AR2202")
+AreaCheck("AR2203")
+AreaCheck("AR2204")
+AreaCheck("AR2205")
+AreaCheck("AR2206")
+AreaCheck("AR2207")
+AreaCheck("AR2208")
+AreaCheck("AR2209")
+AreaCheck("AR2210")
+AreaCheck("AR2300")
+AreaCheck("AR2400")
+AreaCheck("AR2401")
+AreaCheck("AR2402")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisAdalonEnemy","GLOBAL",1)
+		Enemy()
+END
+
+/* Transformation into drow. First talk triggers after Adalon's transformation outside of Adalon's Lair. Dialogue activation */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	AreaCheck("AR2100")
+	!GlobalTimerNotExpired("C#AjantisDrowVerwTimer","GLOBAL")
+	OR(2)
+		Global("C#AjantisDrowVerwandlung","GLOBAL",0)
+		Global("C#AjantisDrowVerwandlung","GLOBAL",2)
+	Global("PlayerLooksLikeDrow","GLOBAL",1)
+THEN
+	RESPONSE #100
+		IncrementGlobal("C#AjantisDrowVerwandlung","GLOBAL",1)
+END
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	OR(2)
+		Global("C#AjantisDrowVerwandlung","GLOBAL",3)
+		Global("C#AjantisDrowVerwandlung","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+//The silver lady is leaving her post. Triggers shortly after the exit is open
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	CombatCounter(0)
+	!AreaCheck("AR2402")
+	GlobalGT("Chapter","GLOBAL",%bg2_chapter_5%)
+	Global("C#AjantisAdalonLeaves","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisAdalonLeaves","GLOBAL",1)
+END
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisAdalonLeaves","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+//Keldorn
+IF //no combat check!
+	InParty(Myself)
+	Allegiance("keldorn",ENEMY)
+	Global("C#AjantisKeldornEnemy","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisKeldornEnemy","GLOBAL",1)
+		LeaveParty()
+END
+
+IF
+	!InParty(Myself)
+	Allegiance("keldorn",ENEMY)
+	Global("C#AjantisKeldornEnemy","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisKeldornEnemy","GLOBAL",1)
+		Enemy()
+END
+
+
+
+/* human skin armor: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	PartyHasItem("LEAT21")
+	Global("C#AjantisHautRuestung","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisHautRuestung","GLOBAL",1)
+END
+
+/* human skin armor: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	PartyHasItem("LEAT21")
+	Global("C#AjantisHautRuestung","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisHautRuestung","GLOBAL",1)
+		StartDialogNoSet(Player1)
+END
+
+
+
+//If PC poisens the druid grove
+
+//late install: Ajantis doesn't react (baldur.bcs)
+
+/* : dialogue activation */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	Global("GrovePoisoned","GLOBAL",1)
+	Dead("trevil02")
+	AreaCheck("AR1901")
+	Global("C#AjantisGrovePoisoned","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisGrovePoisoned","GLOBAL",1)
+END
+
+/* : dialogue triggering */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisGrovePoisoned","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet([PC])
+END
+
+
+
+/* Höllenprüfungen. Player1 hat böse gehandelt, wenn:
+Evil choice in hell trials: dialogue activation 
+
+--compatible with Quest Pack Component Revised Hell Trials! --
+*/
+
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	AreaCheck("AR2900")
+	OR(5)
+		Global("Player1Fear","GLOBAL",2)
+		Global("Player1Selfish","GLOBAL",2)
+		Global("Player1Greed","GLOBAL",2)
+		Global("Player1Pride","GLOBAL",2)
+		Global("Player1Wrath","GLOBAL",2)
+	Global("C#AjantisHellTrialsEvil","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisHellTrialsEvil","GLOBAL",1)
+END
+
+/* Höllenprüfungen. Player1 hat böse gehandelt, wenn:
+Evil hell trials: dialogue triggering */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisHellTrialsEvil","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+/* Höllenprüfungen. Player1 turned evil! dialogue activation 
+
+--compatible with Quest Pack Component Revised Hell Trials! --
+Global("C7OriginalAlignment","GLOBAL",2): PC had evil alignment
+*/
+
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	AreaCheck("AR2900")
+	OR(5)
+		Global("Player1Fear","GLOBAL",2)
+		Global("Player1Selfish","GLOBAL",2)
+		Global("Player1Greed","GLOBAL",2)
+		Global("Player1Pride","GLOBAL",2)
+		Global("Player1Wrath","GLOBAL",2)
+	Alignment(Player1,MASK_EVIL)
+	!Global("C7OriginalAlignment","GLOBAL",2)
+	!Global("C#AjantisHellTrialsEvil","GLOBAL",3)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisHellTrialsEvil","GLOBAL",3)
+END
+
+/* Höllenprüfungen. Player1 turned evil!: dialogue triggering */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisHellTrialsEvil","GLOBAL",3)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+/* Höllenprüfungen. Player1 hat gut gehandelt, wenn:
+
+--compatible with Quest Pack Component Revised Hell Trials! --
+
+good hell trials: dialogue activation  */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	AreaCheck("AR2900")
+	GlobalGT("Player1Fear","GLOBAL",0) 
+	GlobalLT("Player1Fear","GLOBAL",2) 
+	GlobalGT("Player1Selfish","GLOBAL",0) 
+	GlobalLT("Player1Selfish","GLOBAL",2) 
+	GlobalGT("Player1Greed","GLOBAL",0) 
+	GlobalLT("Player1Greed","GLOBAL",2) 
+	GlobalGT("Player1Pride","GLOBAL",0) 
+	GlobalLT("Player1Pride","GLOBAL",2) 
+	GlobalGT("Player1Wrath","GLOBAL",0) 
+	GlobalLT("Player1Wrath","GLOBAL",2) 
+	Global("C#AjantisHellTrialsGood","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisHellTrialsGood","GLOBAL",1)
+END
+
+/* Höllenprüfungen. Player1 hat gut gehandelt, wenn:
+good hell trials: dialogue triggering */
+IF 
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisHellTrialsGood","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+/* in hell. First timer, then dialogue triggering.*/
+IF
+	InParty(Myself)
+	AreaCheck("AR2900")
+	Global("C#AjantisInHell","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("C#AjantisInHell","GLOBAL",1)
+    RealSetGlobalTimer("C#AjantisInHellTimer","GLOBAL",200) //s
+END
+
+/* in hell: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	AreaCheck("AR2900") 
+	RealGlobalTimerExpired("C#AjantisInHellTimer","GLOBAL")
+	Global("C#AjantisInHell","GLOBAL",1) 
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisInHell","GLOBAL",2)
+END
+
+/* in hell: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisInHell","GLOBAL",2) 
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+/* Waukeen's promenade: What happened here! - dialogue activation */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	AreaCheck("AR0700")
+	Global("C#AjantisAR0700","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisAR0700","GLOBAL",1)
+END
+
+/* Waukeen's promenade: What happened here! - dialogue triggering */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisAR0700","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogueNoSet(Player1)
+END
+
+
+//Ajantis comments on Anomen romance, Ajantis RA = 0 -----//
+
+IF
+	InParty(Myself)
+	InParty("anomen")
+	OR(2)
+		Global("C#AjantisRomanceActive","GLOBAL",3) 
+		Global("C#AjantisRomanceActive","GLOBAL",0)
+		!Global("C#AjantisEngaged","GLOBAL",1)
+	Global("AnomenRomanceActive","GLOBAL",1)
+	Global("C#AnomenRomanceComment1","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AnomenRomanceComment1","GLOBAL",1)
+		RealSetGlobalTimer("C#AnomenRomanceComment1Timer","GLOBAL",3600) //500//3600
+END
+
+/* dialogue activation */
+IF
+	InParty(Myself)
+	InParty("anomen")
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	CombatCounter(0) !See([ENEMY])
+	OR(2)
+		Global("C#AjantisRomanceActive","GLOBAL",3) 
+		Global("C#AjantisRomanceActive","GLOBAL",0)
+		!Global("C#AjantisEngaged","GLOBAL",1)
+	Global("AnomenRomanceActive","GLOBAL",1)
+	Global("C#AnomenRomanceComment1","GLOBAL",1)
+	RealGlobalTimerExpired("C#AnomenRomanceComment1Timer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AnomenRomanceComment1","GLOBAL",2)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	InParty("anomen")
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AnomenRomanceComment1","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+//Keldorns Familie!
+
+/* leaving party: activation */
+
+IF
+	InParty(Myself)
+	OR(9)
+		Dead("peony") // Peony
+		Allegiance("peony",ENEMY)
+		Dead("maria") // Fürstin Maria
+		Allegiance("maria",ENEMY)
+		Dead("leona") // Leona
+		Allegiance("leona",ENEMY)
+		Dead("vesper") // Vesper
+		Allegiance("vesper",ENEMY)
+		Global("AttackedKeldornsFamily","GLOBAL",1)
+	AreaCheck("AR1003")
+	Global("C#AjanAttackKeldornsFam","GLOBAL",0)
+THEN
+	RESPONSE #100
+		DisplayStringHead(Myself,@0)
+		LeaveParty()
+		Enemy()
+END
+
+/* leaving party: triggering */
+
+IF
+	InParty(Myself)
+	Global("C#AjanAttackKeldornsFam","GLOBAL",1)
+THEN
+	RESPONSE #100
+		DisplayStringHead(Myself,@0)
+		LeaveParty()
+		Enemy()
+END
+
+
+IF
+	!InParty(Myself)
+	OR(9)
+		Dead("peony") // Peony
+		Allegiance("peony",ENEMY)
+		Dead("maria") // Fürstin Maria
+		Allegiance("maria",ENEMY)
+		Dead("leona") // Leona
+		Allegiance("leona",ENEMY)
+		Dead("vesper") // Vesper
+		Allegiance("vesper",ENEMY)
+		Global("AttackedKeldornsFamily","GLOBAL",1)
+	AreaCheck("AR1003")
+	Global("C#AjanAttackKeldornsFam","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjanAttackKeldornsFam","GLOBAL",1)
+		DisplayStringHead(Myself,@0)
+		Enemy()
+END
+
+//Interaction: Keldorn died in battle
+
+/* timer */
+IF
+	InParty(Myself)
+	InParty("Keldorn")
+	Dead("Keldorn") 
+	Global("C#AjantisKeldornDie","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisKeldornDie","GLOBAL",1)
+		RealSetGlobalTimer("C#AjantisKeldornDieT","GLOBAL",200)
+END
+
+/* dialogue activation */
+
+IF
+	InParty(Myself)
+	InParty("Keldorn")
+	Dead("Keldorn") 
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	Global("C#AjantisKeldornDie","GLOBAL",1)
+	RealGlobalTimerExpired("C#AjantisKeldornDieT","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisKeldornDie","GLOBAL",2)
+END
+
+/* dialogue triggering */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisKeldornDie","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+/* Keldorn got revived: dialogue activation */
+
+IF
+	InParty(Myself)
+	InMyArea("Keldorn")
+	!StateCheck("Keldorn",CD_STATE_NOTVALID)
+	!See([ENEMY])
+	!Range([NEUTRAL],10)
+	CombatCounter(0)
+	!Dead("Keldorn") // Feuerschild
+	Global("C#AjantisKeldornDie","GLOBAL",3)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisKeldornDie","GLOBAL",4)
+END
+
+/* Keldorn got revived: dialogue triggering */
+
+IF
+	InParty(Myself)
+	InMyArea("Keldorn")
+	!StateCheck("Keldorn",CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisKeldornDie","GLOBAL",4)
+THEN
+	RESPONSE #100
+		StartDialogNoSet("Keldorn")
+END
+
+
+
+
+//Ajantis comments on Anomen's decision which was influenced by the PC-----//
+
+//timer setting
+IF
+	InParty(Myself)
+	InParty("anomen")
+	!Global("AnomenIsNotKnight","GLOBAL",1)
+	!Global("AnomenIsKnight","GLOBAL",1)
+	OR(3)
+		Global("AnomenDecide","GLOBAL",2)
+		Global("AnomenDecide","GLOBAL",3)  
+		Global("AnomenDecide","GLOBAL",4)
+	Global("C#AnomenDecisionComment1","GLOBAL",0)
+	Global("C#AjantisAnomenNotThere","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AnomenDecisionComment1","GLOBAL",1)
+		RealSetGlobalTimer("C#AnomenDecisionComment1Timer","GLOBAL",500) //500//3600
+END
+
+/* Ajantis comments on Anomen's decision: dialogue activation */
+IF
+	InParty(Myself)
+	InParty("anomen")
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	CombatCounter(0) !See([ENEMY])
+	OR(3)
+		Global("AnomenDecide","GLOBAL",2)
+		Global("AnomenDecide","GLOBAL",3)  
+		Global("AnomenDecide","GLOBAL",4)
+	Global("C#AnomenDecisionComment1","GLOBAL",1)
+	RealGlobalTimerExpired("C#AnomenDecisionComment1Timer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AnomenDecisionComment1","GLOBAL",2)
+END
+
+/* Ajantis comments on Anomen's decision: dialogue triggering */
+IF
+	InParty(Myself)
+	InParty("anomen")
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AnomenDecisionComment1","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+/* Ajantis comments on Anomen's decision which was influenced by the PC. After Anomen's test-----*/
+
+//timer setting
+IF
+	InParty(Myself)
+	InParty("anomen")
+	OR(2)
+		Global("AnomenIsNotKnight","GLOBAL",1)
+		Global("AnomenIsKnight","GLOBAL",1)
+	Global("C#AnomenDecisionComment2","GLOBAL",0)
+	GlobalGT("C#AnomenDecisionComment1","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AnomenDecisionComment2","GLOBAL",1)
+		RealSetGlobalTimer("C#AnomenDecisionComment2Timer","GLOBAL",3600) //500//3600
+END
+
+/* Ajantis comments on Anomen's decision: dialogue activation */
+IF
+	InParty(Myself)
+	InParty("anomen")
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	CombatCounter(0) !See([ENEMY])
+	OR(2)
+		Global("AnomenIsNotKnight","GLOBAL",1)
+		Global("AnomenIsKnight","GLOBAL",1)
+	Global("C#AnomenDecisionComment2","GLOBAL",1)
+	RealGlobalTimerExpired("C#AnomenDecisionComment2Timer","GLOBAL")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AnomenDecisionComment2","GLOBAL",2)
+END
+
+/* Ajantis comments on Anomen's decision: dialogue triggering */
+IF
+	InParty(Myself)
+	InParty("anomen")
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AnomenDecisionComment2","GLOBAL",2)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+
+
+
+
+/* Set Variable: Ajantis has BG1NPC Family Shield */
+IF 
+Global("C#AjantisHasShield","GLOBAL",0)
+OR(4)
+PartyHasItem("C#AJSHLD")
+PartyHasItem("C#AJSHL1")
+PartyHasItem("C#AJSHL2")
+PartyHasItem("C#AJSHL3")
+InParty(Myself)
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisHasShield","GLOBAL",1)
+END
+
+/*set variable to 0 if shield was only shortly gone */
+IF 
+Global("C#AjantisShieldGone","GLOBAL",1)
+OR(4)
+PartyHasItem("C#AJSHLD")
+PartyHasItem("C#AJSHL1")
+PartyHasItem("C#AJSHL2")
+PartyHasItem("C#AJSHL3")
+!RealGlobalTimerExpired("C#AjantisShieldGoneT","GLOBAL")
+InParty(Myself)
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisShieldGone","GLOBAL",0)
+END
+
+/*set shield timer when shield is gone */
+IF 
+Global("C#AjantisShieldGone","GLOBAL",0)
+Global("C#AjantisHasShield","GLOBAL",1) //only triggers if Ajantis had the shield
+!PartyHasItem("C#AJSHLD")
+!PartyHasItem("C#AJSHL1")
+!PartyHasItem("C#AJSHL2")
+!PartyHasItem("C#AJSHL3")
+InParty(Myself)
+Global("C#AjantisDestroyShield","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisShieldGone","GLOBAL",1)
+RealSetGlobalTimer("C#AjantisShieldGoneT","GLOBAL",300)
+END
+
+/* Activate: Ajantis Shield Removed talk */
+IF 
+Global("C#AjantisShieldGone","GLOBAL",1)
+Global("C#AjantisHasShield","GLOBAL",1) //only triggers if Ajantis had the shield
+RealGlobalTimerExpired("C#AjantisShieldGoneT","GLOBAL") 
+!PartyHasItem("C#AJSHLD")
+!PartyHasItem("C#AJSHL1")
+!PartyHasItem("C#AJSHL2")
+!PartyHasItem("C#AJSHL3")
+InParty(Myself)
+!StateCheck(Myself,CD_STATE_NOTVALID)
+InMyArea(Player1)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+CombatCounter(0)
+!See([ENEMY])
+	!Range([NEUTRAL],10)
+Global("C#AjantisDestroyShield","GLOBAL",0) //not for disinheritage
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisShieldGone","GLOBAL",2)
+END
+
+/* Initiate:  Ajantis Shield Removed talk */
+IF 
+Global("C#AjantisShieldGone","GLOBAL",2)
+InParty(Myself)
+!StateCheck(Myself,CD_STATE_NOTVALID)
+InMyArea(Player1)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+CombatCounter(0)
+!See([ENEMY])
+	!Range([NEUTRAL],10)
+Global("C#AjantisDestroyShield","GLOBAL",0)
+THEN
+RESPONSE #100
+StartDialogueNoSet(Player1)
+END
+
+/* Activate: Ajantis Shield Returned talk */
+IF 
+Global("C#AjantisShieldGone","GLOBAL",3)
+OR(4)
+PartyHasItem("C#AJSHLD")
+PartyHasItem("C#AJSHL1")
+PartyHasItem("C#AJSHL2")
+PartyHasItem("C#AJSHL3")
+InParty(Myself)
+!StateCheck(Myself,CD_STATE_NOTVALID)
+InMyArea(Player1)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+CombatCounter(0)
+!See([ENEMY])
+	!Range([NEUTRAL],10)
+THEN
+RESPONSE #100
+SetGlobal("C#AjantisShieldGone","GLOBAL",4)
+END
+
+/* Initiate:  Ajantis Shield Returned talk */
+IF 
+Global("C#AjantisShieldGone","GLOBAL",4)
+InParty(Myself)
+!StateCheck(Myself,CD_STATE_NOTVALID)
+InMyArea(Player1)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+CombatCounter(0)
+!See([ENEMY])
+	!Range([NEUTRAL],10)
+THEN
+RESPONSE #100
+StartDialogueNoSet(Player1)
+END
+
+/* Carsomyr: dialogue activation */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	CombatCounter(0) !See([ENEMY])
+	Global("C#AjantisWieldsCarsomyr","GLOBAL",0)
+	OR(2)
+		HasItemEquiped("sw2h10",Myself)
+		HasItemEquiped("sw2h19",Myself)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisWieldsCarsomyr","GLOBAL",1)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)	
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisWieldsCarsomyr","GLOBAL",1)
+THEN
+	RESPONSE #100
+		StartDialogNoSet(Player1)
+END
+
+
+
+/*
+//quest: move to the portal
+IF 
+	Global("C#AjantisRitterBeimPortal","GLOBAL",1)
+	Global("C#AjantisRitterZumPortalAJ","LOCALS",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisRitterZumPortalAJ","LOCALS",1)
+		MoveBetweenAreas("C#AJ00",[3926.3175],10) 
+END
+*/

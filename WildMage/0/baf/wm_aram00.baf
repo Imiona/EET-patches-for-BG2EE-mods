@@ -1,0 +1,8 @@
+IF
+	Global("wm_bg1book","GLOBAL",0)
+	PartyHasItem("wm_sbook")
+THEN
+	RESPONSE #100
+		SetGlobal("wm_bg1book","GLOBAL",1)
+		Continue()
+END

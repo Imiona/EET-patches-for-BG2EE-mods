@@ -1,0 +1,171 @@
+OUTER_SPRINT "datapath" "questpack/carceri/revisions"
+
+COPY ~%datapath%/copy~ ~override~
+COMPILE EVALUATE_BUFFER ~questpack/carceri/revisions/compile~
+
+COPY + ~%datapath%/creatures.lst~ ~%datapath%/creatures.lst~
+	COUNT_2DA_ROWS 3 "rows"
+	FOR ("currentrow" = 1 ; "%currentrow%" < "%rows%" ; "currentrow" = "%currentrow%" + 1) BEGIN
+		READ_2DA_ENTRY "%currentrow%" 0 4 "crefile"
+		READ_2DA_ENTRY "%currentrow%" 1 4 "name"
+		READ_2DA_ENTRY "%currentrow%" 2 4 "generic"
+		READ_2DA_ENTRY "%currentrow%" 3 4 "specific"
+		INNER_ACTION BEGIN
+			ACTION_IF FILE_EXISTS EVALUATE_BUFFER ~%datapath%/generic/%generic%.dat~ THEN BEGIN
+				COPY + ~%datapath%/generic/%generic%.dat~ ~%datapath%/generic/%generic%.dat~
+					READ_2DA_ENTRY 0 1 2 "anim"
+					READ_2DA_ENTRY 1 1 2 "align"
+					READ_2DA_ENTRY 2 1 2 "race"
+					READ_2DA_ENTRY 3 1 2 "class"
+					READ_2DA_ENTRY 4 1 2 "resistfire"
+					READ_2DA_ENTRY 5 1 2 "resistcold"
+					READ_2DA_ENTRY 6 1 2 "resistelectrical"
+					READ_2DA_ENTRY 7 1 2 "resistacid"
+					READ_2DA_ENTRY 8 1 2 "resistmagic"
+					READ_2DA_ENTRY 10 1 2 "resistslashing"
+					READ_2DA_ENTRY 11 1 2 "resistpiercing"
+					READ_2DA_ENTRY 12 1 2 "resistcrushing"
+					READ_2DA_ENTRY 13 1 2 "resistmissile"
+					READ_2DA_ENTRY 14 1 2 "hp"
+					READ_2DA_ENTRY 15 1 2 "ac"
+					READ_2DA_ENTRY 16 1 2 "thac0"
+					READ_2DA_ENTRY 17 1 2 "attacks"
+					READ_2DA_ENTRY 18 1 2 "str"
+					READ_2DA_ENTRY 19 1 2 "dex"
+					READ_2DA_ENTRY 20 1 2 "con"
+					READ_2DA_ENTRY 21 1 2 "int"
+					READ_2DA_ENTRY 22 1 2 "wis"
+					READ_2DA_ENTRY 23 1 2 "chr"
+					READ_2DA_ENTRY 24 1 2 "weapon"
+					READ_2DA_ENTRY 25 1 2 "genericscript"
+					READ_2DA_ENTRY 26 1 2 "level"
+					READ_2DA_ENTRY 27 1 2 "xpvalue"
+				BUT_ONLY_IF_IT_CHANGES
+
+					OUTER_SPRINT "specificscript" "-"
+					ACTION_IF ("%specific%" STRING_COMPARE "-") THEN BEGIN
+						ACTION_IF FILE_EXISTS EVALUATE_BUFFER ~%datapath%/specific/%specific%.dat~ THEN BEGIN
+							COPY + ~%datapath%/specific/%specific%.dat~ ~%datapath%/specific/%specific%.dat~
+								READ_2DA_ENTRY 0 1 2 "specificscript"
+							BUT_ONLY_IF_IT_CHANGES
+						END
+					END
+					ACTION_IF FILE_EXISTS_IN_GAME EVALUATE_BUFFER ~%crefile%.cre~ THEN BEGIN
+						COPY_EXISTING ~%crefile%.cre~ ~override~
+							PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+								PATCH_IF ("%name%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_LONG 0x8 "%name%"
+									WRITE_LONG 0xc "%name%"
+								END
+								PATCH_IF ("%anim%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_SHORT 0x28 "%anim%"
+								END
+								PATCH_IF ("%align%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x27b "%align%"
+								END
+								PATCH_IF ("%race%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x272 "%race%"
+								END
+								PATCH_IF ("%class%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x273 "%class%"
+								END
+								PATCH_IF ("%resistfire%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x59 "%resistfire%"
+									WRITE_BYTE 0x5e "%resistfire%"
+								END
+								PATCH_IF ("%resistcold%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x5a "%resistcold%"
+									WRITE_BYTE 0x5f "%resistcold%"
+								END
+								PATCH_IF ("%resistelectrical%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x5b "%resistelectrical%"
+								END
+								PATCH_IF ("%resistacid%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x5c "%resistacid%"
+								END
+								PATCH_IF ("%resistmagic%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x5d "%resistmagic%"
+								END
+								PATCH_IF ("%resistslashing%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x60 "%resistslashing%"
+								END
+								PATCH_IF ("%resistcrushing%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x61 "%resistcrushing%"
+								END
+								PATCH_IF ("%resistpiercing%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x62 "%resistpiercing%"
+								END
+								PATCH_IF ("%resistmissile%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x63 "%resistmissile%"
+								END
+								PATCH_IF ("%hp%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_SHORT 0x24 "%hp%"
+									WRITE_SHORT 0x26 "%hp%"
+								END
+								PATCH_IF ("%thac0%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x52 "%thac0%"
+								END
+								PATCH_IF ("%attacks%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x53 "%attacks%"
+								END
+								PATCH_IF ("%str%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x238 "%str%"
+								END
+								PATCH_IF ("%int%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x23a "%int%"
+								END
+								PATCH_IF ("%wis%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x23b "%wis%"
+								END
+								PATCH_IF ("%dex%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x23c "%dex%"
+								END
+								PATCH_IF ("%con%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x23d "%con%"
+								END
+								PATCH_IF ("%chr%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x23e "%chr%"
+								END
+								PATCH_IF ("%level%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_BYTE 0x234 "%level%"
+								END
+								PATCH_IF ("%xpvalue%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_LONG 0x14 "%xpvalue%"
+								END
+
+								PATCH_IF ("%weapon%" STRING_COMPARE "-") THEN BEGIN
+									ADD_CRE_ITEM "%weapon%" #0 #0 #0 ~UNSTEALABLE&UNDROPPABLE~ ~WEAPON1~ EQUIP
+								END
+
+								PATCH_IF ("%specificscript%" STRING_COMPARE "-") THEN BEGIN
+									WRITE_EVALUATED_ASCII 0x248 "%specificscript%" (8)
+									WRITE_ASCII 0x250 "" (8)
+									WRITE_ASCII 0x258 "" (8)
+									WRITE_ASCII 0x260 "" (8)
+									WRITE_ASCII 0x268 "" (8)
+								END
+								PATCH_IF ("%genericscript%" STRING_COMPARE "-") THEN BEGIN
+									SET "scriptpatched" = 0
+									FOR ("scriptlevel" = 0 ; "%scriptlevel%" < 5 ; "scriptlevel" = "%scriptlevel%" + 1) BEGIN
+										READ_ASCII (0x248 + ("%scriptlevel%" * 8)) "scriptname"
+										PATCH_IF ("%scriptpatched%" = 1) THEN BEGIN
+											WRITE_ASCII (0x248 + ("%scriptlevel%" * 8)) "" (8)
+										END ELSE BEGIN
+											PATCH_IF FILE_CONTAINS_EVALUATED (~%datapath%/genericscripts.lst~ "%scriptname%") THEN BEGIN
+												WRITE_EVALUATED_ASCII (0x248 + ("%scriptlevel%" * 8)) "%genericscript%" (8)
+												SET "scriptpatched" = 1
+											END
+										END
+									END
+									PATCH_IF ("%scriptpatched%" = 0) THEN BEGIN
+										WRITE_EVALUATED_ASCII 0x268 "%genericscript%" (8)
+									END
+								END
+
+							END
+					END
+				END
+			END
+		END
+	END
+BUT_ONLY_IF_IT_CHANGES

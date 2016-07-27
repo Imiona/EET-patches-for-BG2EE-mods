@@ -1,0 +1,127 @@
+	/////////////////////////
+	/////////////////////////
+	// Alora NPC Mod       //
+	/////////////////////////
+	/////////////////////////
+
+
+BACKUP ~alora\backup~
+AUTHOR ~"http://chosenofmystra.com"~
+
+VERSION ~1.5~
+
+AUTO_TRA ~alora\%s~
+
+LANGUAGE ~English~
+         ~English~
+         ~alora\English\Setup.tra~
+
+LANGUAGE ~Deutsch (Uebersetzung von Gerri)~
+         ~German~
+         ~alora\German\Setup.tra~
+
+LANGUAGE ~Russian~
+         ~Russian~
+         ~alora\Russian\Setup.tra~
+
+BEGIN @0
+
+// REQUIRE_FILE ~Data/25Dialog.bif~ @1
+
+// Copy Sounds
+
+COPY ~alora/sounds~ ~override~
+
+COPY ~alora/portraits~ ~override~
+
+COPY ~alora/cre/ALORA09.CRE~ ~override/ALORA09.CRE~
+
+SAY BIO @2
+
+COPY ~alora/cre/ALORA25.CRE~ ~override/ALORA25.CRE~
+
+SAY BIO @2
+
+
+// Epilogue stuff
+
+COPY ~alora/2da/CMALOND1.2da~ ~override\CMALOND1.2da~ 
+  REPLACE ~99999~ @3
+
+EXTEND_TOP ~ar6200.bcs~ ~alora/bafs/alora6200.baf~
+
+// Dialogues
+
+COMPILE
+  ~alora/d/alora25.d~
+
+COMPILE
+  ~alora/d/bcmalor.d~
+
+COMPILE
+  ~alora/d/cmalora.d~
+
+COMPILE
+  ~alora/d/aloraint.d~
+
+// Scripts New
+
+COMPILE ~alora/bafs/cmalora.baf~
+
+COMPILE ~alora/bafs/cmalo25.baf~
+
+// Scripts Extensions
+
+EXTEND_BOTTOM ~edwin.bcs~ ~alora/bafs/eddy.baf~
+
+EXTEND_BOTTOM ~edwi25.bcs~ ~alora/bafs/eddy.baf~
+
+
+EXTEND_TOP ~ar0702.bcs~ ~alora/bafs/ucmg702.baf~
+
+// Begin of .2DA patching
+
+APPEND ~pdialog.2da~
+~CMALORA     CMALORAP            CMALORAJ           CMALORAD~
+UNLESS ~CMALORA~
+UNLESS ~25POST~
+
+APPEND ~pdialog.2da~
+~CMALORA     CMALORAP            CMALORAJ           CMALORAD        CMALO25P           CMALO25J              CMALO25D              CMALOR25~
+UNLESS ~CMALORA~
+IF     ~25POST~
+
+APPEND ~interdia.2da~
+~CMALORA    BCMALOR~
+UNLESS ~CMALORA~
+UNLESS ~25FILE~
+
+
+APPEND ~interdia.2da~
+~CMALORA    BCMALOR       BCMALO25~
+UNLESS ~CMALORA~
+IF     ~25FILE~
+
+// End of .2DA patching
+
+ACTION_IF GAME_IS ~eet~ BEGIN
+  LOAD_TRA ~alora/%LANGUAGE%/alora25.tra~
+  INCLUDE ~alora/lib/EET_functions.tph~
+  LAF ~EET_NPC_TRANSITION~
+    INT_VAR
+      type = 2
+      clean_ToB = 1
+    STR_VAR
+      dv = "CMAlora"
+      override_SoA = "CMALORA"
+      override_ToB = "CMALO25"
+      dialog_ToB = "CMALO25A"
+      string = "@0" //Bring me Alora, the happy go lucky thief.
+      stringPosDV = "Anomen"
+      clean_ToB_DV = "Alora"
+  END
+END ELSE BEGIN
+  COMPILE ~alora/d/FATESP.d~ USING ~alora/%LANGUAGE%/alora25.tra~
+END
+
+AT_INTERACTIVE_EXIT ~VIEW alora/README.html~

@@ -1,0 +1,48 @@
+IF
+Global("InnerD","GLOBAL",1)
+THEN
+RESPONSE #100
+ActionOverride(Player1,StartDialog("Player1",Player1))
+END
+
+IF
+Global("ISHGrannyTalk","GLOBAL",5) 
+RealGlobalTimerExpired("ISHGrannyTimer","GLOBAL")
+Global("ISHBoySummon","GLOBAL",0)
+!AreaType(DUNGEON)
+!See([ENEMY])
+!AreaCheck("ARISH6")
+THEN
+RESPONSE #100
+SetGlobal("ISHBoySummon","GLOBAL",1)
+CreateCreatureObjectOffset("9xoboy",Player1,[30.30])
+Continue()
+END
+
+IF
+PartyHasItem("ISHMAP")
+Global("INNERMAP","GLOBAL",0)
+GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_1%)
+THEN
+RESPONSE #100
+SetGlobal("INNERMAP","GLOBAL",1)
+RevealAreaOnMap("ARISH1")
+Continue()
+END
+
+IF
+Global("ISHTD","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("ISHTD","GLOBAL",2)
+RealSetGlobalTimer("ISHSPELLT","GLOBAL",120)
+END
+
+IF
+RealGlobalTimerExpired("ISHSPELLT","GLOBAL")
+Global("ISHTD","GLOBAL",2)
+THEN
+RESPONSE #100
+SetGlobal("ISHTD","GLOBAL",0)
+ApplySpellRES("ISHSPL2",Player1)
+END

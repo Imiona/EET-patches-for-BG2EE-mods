@@ -1,0 +1,534 @@
+// Bugfixes, for Fixpack:
+
+// Fix Parisa's soundset.
+COPY_EXISTING ~vvparis.cre~ ~override~
+              ~ppparis.cre~ ~override~
+  WRITE_BYTE 0x275 0x2
+  SAY 0xa4 #61741
+  SAY 0xb8 #61749
+  SAY 0xc8 #61745
+  SAY 0xcc #61746
+  SAY 0xec #61747
+  SAY 0xf0 #61748
+  SAY 0x10c #61741
+  SAY 0x110 #61742
+  SAY 0x114 #61743
+  SAY 0x118 #61744
+BUT_ONLY
+
+// Alhoon soundset bug
+COPY_EXISTING ~mindal01.cre~ ~override~
+              ~melsum06.cre~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x1b8 BEGIN
+    SAY 0xc8 #-1
+    SAY 0xcc #-1
+    SAY 0xec #-1
+    SAY 0xf0 #-1
+    SAY 0x10c #-1
+    SAY 0x110 #-1
+    SAY 0xc8 #-1
+    SAY 0x1b8 #-1
+  END
+BUT_ONLY
+
+// Fix Yuan-Ti Mage string bug
+STRING_SET 1294 @297
+STRING_SET 1154 @297
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// DROW INNATES /////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Grant Drow use of innates at lowest priority in their scripting.
+
+COPY ~questpack/creatures/drow/KRDL1.BAM~ ~override~
+     ~questpack/creatures/drow/KRDL1.vvc~ ~override~
+     ~questpack/creatures/drow/KRGLOBD.BAM~ ~override~
+     ~questpack/creatures/drow/KRGLOBD.vvc~ ~override~
+     ~questpack/creatures/drow/KRGLOBD2.BAM~ ~override~
+     ~questpack/creatures/drow/KRGLOBD2.vvc~ ~override~
+COPY ~questpack/creatures/drow/KRIN400.SPL~ ~override~
+  SAY 0x8 @279
+  SAY 0x50 @280
+COPY ~questpack/creatures/drow/KRIN401.SPL~ ~override~
+  SAY 0x8 @281
+  SAY 0x50 @282
+COPY ~questpack/creatures/drow/KRIN402.SPL~ ~override~
+  SAY 0x8 @283
+  SAY 0x50 @284
+  SAY 0xfe @285
+  SAY 0x12e @286
+COPY ~questpack/creatures/drow/KRIN403.SPL~ ~override~
+  SAY 0x8 @287
+  SAY 0x50 @288
+EXTEND_TOP ~WTASIGHT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+EXTEND_TOP ~WTARSGT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+EXTEND_TOP ~WDASIGHT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+EXTEND_TOP ~WDARSGT.BCS~ ~questpack/AI/ET_WTA.BAF~ EVALUATE_BUFFER
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// VAMPIRES /////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Standardise naming (Fledgeling Vampire, Vampire, Elder Vampire,
+//   Ancient Vampire) based on power.
+// - Standardise XP based on naming.
+// - Improve AI and redistribute abilities based on naming.
+// - Yield XP rewards upon turning to clouds.
+
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/vampires~
+
+COPY_EXISTING ~C6VAMP01.CRE~ ~override~
+              ~C6VFLM01.CRE~ ~override~
+              ~VAMFLF01.CRE~ ~override~
+              ~VAMFLM01.CRE~ ~override~
+  WRITE_ASCII 0x260 "D0QPVAFL" #8
+  WRITE_LONG 0x14 8000
+BUT_ONLY
+
+COPY_EXISTING ~vamver01.cre~ ~override~
+              ~vampym01.cre~ ~override~
+              ~vampyf01.cre~ ~override~
+              ~nevm4.cre~ ~override~
+  WRITE_ASCIIE 0x280 "%SOURCE_RES%" #32
+BUT_ONLY
+
+COPY_EXISTING ~vamold01.cre~ ~override~
+              ~vamver01.cre~ ~override~
+  SAY NAME1 @291
+  SAY NAME2 @291
+  WRITE_LONG 0x14 10500
+  WRITE_ASCIIE 0x280 "%SOURCE_RES%" #32
+BUT_ONLY
+
+COPY_EXISTING ~vamanc01.cre~ ~override~
+              ~vamemi01.cre~ ~override~
+  SAY NAME1 @292
+  SAY NAME2 @292
+  WRITE_LONG 0x14 12500
+  REPLACE_TEXTUALLY "vampir01" "vamemi01" (8)
+  WRITE_ASCII 0x280 "%SOURCE_RES%" #32
+BUT_ONLY
+
+COPY_EXISTING ~vampat01.cre~ ~override~
+  SAY NAME1 @292
+  SAY NAME2 @292
+  WRITE_LONG 0x14 12500
+  WRITE_ASCII 0x260 "VAMPAT01" #8
+BUT_ONLY
+
+// Tanova needs special handling to prevent vampire scripting cutting
+// off her spellcasting.
+COPY_EXISTING ~BODTAN.CRE~ ~override~
+  WRITE_ASCII 0x248 "D0QPTAN1" #8
+  WRITE_ASCII 0x250 "D0QPTAN2" #8
+  WRITE_ASCII 0x258 "D0QPTAN3" #8
+BUT_ONLY
+
+LAF fix_c6scripts END
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// DJINNI ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Yield XP rewards upon turning to clouds.
+
+COPY_EXISTING ~djinnisu.cre~ ~override~
+  WRITE_LONG 0x14 0
+//  WRITE_ASCII 0x260 "d0sumdji" #8
+BUT_ONLY
+
+COPY_EXISTING ~efreetsu.cre~ ~override~
+  WRITE_LONG 0x14 0
+//  WRITE_ASCII 0x260 "d0sumefr" #8
+BUT_ONLY
+
+COPY_EXISTING ~efreet01.bcs~ ~override/d0sumefr.bcs~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~AddExperienceParty(6000)~ ~~
+    REPLACE_TEXTUALLY ~AddexperienceParty(6000)~ ~~
+  END
+
+COPY_EXISTING ~djinni01.bcs~ ~override/d0sumdji.bcs~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~AddExperienceParty(3750)~ ~~
+    REPLACE_TEXTUALLY ~AddexperienceParty(3750)~ ~~
+  END
+
+COPY_EXISTING ~efreet01.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~AddExperienceParty(6000)~ ~~
+    REPLACE_TEXTUALLY ~AddexperienceParty(6000)~ ~~
+    REPLACE_TEXTUALLY ~ReallyForceSpell(Myself,EFREETI_GAS_FORM_CHANGE)~
+                      ~ReallyForceSpell(Myself,EFREETI_GAS_FORM_CHANGE)
+                       AddExperienceParty(6000)~
+  END
+BUT_ONLY
+
+COPY_EXISTING ~djinni01.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~AddExperienceParty(3750)~ ~~
+    REPLACE_TEXTUALLY ~AddexperienceParty(3750)~ ~~
+    REPLACE_TEXTUALLY ~ReallyForceSpell(Myself,DJINNI_GAS_FORM_CHANGE)~
+                      ~ReallyForceSpell(Myself,DJINNI_GAS_FORM_CHANGE)
+                       AddExperienceParty(3750)~
+  END
+BUT_ONLY
+
+COPY_EXISTING ~efreet04.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~AddExperienceParty(8250)~ ~~
+    REPLACE_TEXTUALLY ~AddexperienceParty(8250)~ ~~
+    REPLACE_TEXTUALLY ~ReallyForceSpell(Myself,EFREETI_GAS_FORM_CHANGE)~
+                      ~ReallyForceSpell(Myself,EFREETI_GAS_FORM_CHANGE)
+                       AddExperienceParty(8250)~
+  END
+BUT_ONLY
+
+COPY_EXISTING ~djinni04.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~AddExperienceParty(7500)~ ~~
+    REPLACE_TEXTUALLY ~AddexperienceParty(7500)~ ~~
+    REPLACE_TEXTUALLY ~ReallyForceSpell(Myself,DJINNI_GAS_FORM_CHANGE)~
+                      ~ReallyForceSpell(Myself,DJINNI_GAS_FORM_CHANGE)
+                       AddExperienceParty(7500)~
+  END
+BUT_ONLY
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// MIND FLAYERS /////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Grant new psionic abilities.
+// - Allow flayers to escape battle and return later on.
+
+COPY ~questpack/creatures/d0qpflay.spl~ ~override~
+  SAY NAME1 @306
+  SAY NAME2 @306
+
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/mindflayers~
+
+EXTEND_BOTTOM ~ar0711.bcs~ ~questpack/creatures/flayers_return.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~ar2400.bcs~ ~questpack/creatures/flayers_return.baf~ EVALUATE_BUFFER
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// MUMMIES //////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Grant use of gaze attacks to mummies.
+// - Label all creature gaze attacks as such.
+
+COPY ~questpack/creatures/d0qpmgaz.spl~ ~override~
+  SAY NAME1 @181
+  SAY NAME1 @181
+
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/misc/d0mummy.baf~
+
+COPY_EXISTING ~FSMUMM.CRE~ ~override~
+              ~FSMUMM2.CRE~ ~override~
+              ~FSMUMM3.CRE~ ~override~
+              ~MUMGRE01.CRE~ ~override~
+              ~MUMMY.CRE~ ~override~
+              ~MUMMY01.CRE~ ~override~
+              ~RIFTCR03.CRE~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN // protects against invalid files
+    WRITE_ASCII 0x258 "D0MUMMY" #8
+  END
+BUT_ONLY
+
+// Gaze attacks are labelled as such
+COPY_EXISTING ~spin784.spl~ ~override~
+  SAY NAME1 @300
+  SAY NAME2 @300
+BUT_ONLY
+
+COPY_EXISTING ~spin839.spl~ ~override~
+  SAY NAME1 @298
+  SAY NAME2 @298
+BUT_ONLY
+
+COPY_EXISTING ~spin883.spl~ ~override~
+  SAY NAME1 @299
+  SAY NAME2 @299
+BUT_ONLY
+
+// Gaze attacks use correct projectiles
+COPY_EXISTING ~spin784.spl~ ~override~
+              ~spin839.spl~ ~override~
+              ~spin883.spl~ ~override~
+  GET_OFFSET_ARRAY ability_array 0x64 4 0x68 2 0 0 0x28
+  PHP_EACH ability_array AS i => off BEGIN
+    WRITE_SHORT off + 0x26 65
+  END
+BUT_ONLY
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// BEHOLDERS ////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Recolour different beholder types to provide visual distinction.
+// - Standardise abilities based on beholder type.
+// - Improve AI.
+// - Allow destruction of eyestalks during battle.
+
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/beholders~ USING
+        ~%tra_path%/english/d0quest.tra~
+        ~%tra_path%/%LANGUAGE%/d0quest.tra~
+
+// Beholder visual distinction. Idea borrowed from Xyx.
+OUTER_SET elder = 0x03030300
+OUTER_SET mother = 0x05000000
+OUTER_SET death = 0x03040000
+OUTER_SET director = 0x00000200
+
+ACTION_DEFINE_ASSOCIATIVE_ARRAY tactical_creature#beholder BEGIN
+  beheld01 => "%elder%"
+  hellbeh1 => "%elder%"
+  hellbeh2 => "%elder%"
+  hlorb => "%elder%"
+  obsdem03 => "%elder%"
+  udelder => "%elder%"
+  bheye => "%elder%"
+  unsee => "%elder%"
+  behhiv01 => "%mother%"
+  gorwom05 => "%mother%"
+  hlhive => "%mother%"
+  behund01 => "%death%"
+  melsum03 => "%death%"
+  rngbeh01 => "%death%"
+  behdir01 => "%director%"
+  firmon03 => "%director%"
+END
+
+ACTION_PHP_EACH tactical_creature#beholder AS res => colour BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%res%.cre~ BEGIN
+    COPY_EXISTING ~%res%.cre~ override
+      PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
+        LPF ADD_CRE_EFFECT
+          INT_VAR
+            insert_point = 0
+            opcode = 52 // character colour 3
+            target = 1 // self
+            parameter1 = colour
+            parameter2 = 2 // major colour
+            timing = 9 // permanent
+        END
+      END
+    BUT_ONLY
+  END
+END
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// UMBER HULKS //////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Standardise use of confusion.
+// - Improve AI.
+
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/umber~
+
+COPY_EXISTING ~umbhul02.cre~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x260 BEGIN
+    WRITE_ASCII 0x260 "D0UMBER" #8
+  END
+BUT_ONLY
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// SHADOWS //////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Add "fizzling away" effect upon death.
+
+DEFINE_PATCH_FUNCTION tactical_creature#shadow BEGIN
+  LPF ADD_CRE_EFFECT
+    INT_VAR
+      insert_point = 0
+      opcode = 295 // no chunky death
+      target = 1 // self
+      parameter2 = 1 // constant
+      timing = 9 // permanent
+  END
+END
+
+COPY_EXISTING ~UHCREAT.CRE~ ~override~
+              ~SHADOW01.CRE~ ~override~
+              ~SHADFI01.CRE~ ~override~
+              ~SDSHADOW.CRE~ ~override~
+              ~SDSHADFI.CRE~ ~override~
+              ~RNGSHA.CRE~ ~override~
+              ~FIRWRA01.CRE~ ~override~
+              ~WRAITH01.CRE~ ~override~
+  WRITE_ASCII 0x248 "D0QPSHAD" #8
+  WRITE_ASCII 0x258 "GENSHT01" #8
+  LPF tactical_creature#shadow END
+BUT_ONLY
+
+COPY_EXISTING ~SEWSHA01.CRE~ ~override~
+              ~SEWSHA02.CRE~ ~override~
+              ~SEWSHA03.CRE~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
+    WRITE_ASCII 0x248 "D0QPSHAD" #8
+    WRITE_ASCIIE 0x250 "%SOURCE_RES%" #8
+    LPF tactical_creature#shadow END
+  END
+BUT_ONLY
+
+COPY_EXISTING ~RNGSHA01.CRE~ ~override~
+              ~RNGSHA03.CRE~ ~override~
+              ~RNGSHA04.CRE~ ~override~
+  WRITE_ASCII 0x248 "D0QPSHAD" #8
+  WRITE_ASCII 0x250 "SHOUTDLG" #8
+  LPF tactical_creature#shadow END
+BUT_ONLY
+
+COPY_EXISTING ~RNGSHA2D.CRE~ ~override~
+              ~KSHADOW.CRE~ ~override~
+              ~SLAYSH01.CRE~ ~override~
+              ~WRAITHSU.CRE~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
+    WRITE_ASCII 0x248 "D0QPSHAD" #8
+    LPF tactical_creature#shadow END
+  END
+BUT_ONLY
+
+COPY_EXISTING ~UHCREAT.CRE~ ~override~
+  WRITE_ASCII 0x248 "D0QPSHAD" #8
+  WRITE_ASCII 0x250 "SHDWKILL" #8
+  WRITE_ASCII 0x258 "GPSHOUT" #8
+  LPF tactical_creature#shadow END
+BUT_ONLY
+
+COPY_EXISTING ~TELWRAI.CRE~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
+    WRITE_ASCII 0x248 "D0QPSHAD" #8
+    WRITE_ASCII 0x250 "GRPSHT01" #8
+    LPF tactical_creature#shadow END
+  END
+BUT_ONLY
+
+COPY ~questpack/creatures/compile/shadows/d0qpshad.vvc~ ~override~
+EXTEND_TOP ~SHDWKILL.BCS~ ~questpack/creatures/compile/shadows/d0qpshad.baf~ EVALUATE_BUFFER
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/shadows/d0qpshad.baf~
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// GIANTS ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Grant Berserk to Elite Fire Giants.
+
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/misc/d0fgiant.baf~
+
+COPY_EXISTING ~HGMAG01.CRE~ ~override~
+              ~HGMAG02.CRE~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
+    WRITE_ASCII 0x268 "WTASIGHT" #8
+  END
+BUT_ONLY
+
+COPY_EXISTING ~HGWAR02.CRE~ ~override~
+  PATCH_IF SOURCE_SIZE > 0x2d3 BEGIN
+    WRITE_ASCII 0x268 "D0FGIANT" #8
+  END
+BUT_ONLY
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// SPIDERS //////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - May now use a single-target web.
+
+COPY ~questpack/creatures/d0spiweb.spl~ ~override~
+EXTEND_TOP ~WTASIGHT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+EXTEND_TOP ~WTARSGT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+EXTEND_TOP ~WDASIGHT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+EXTEND_TOP ~WDARSGT.BCS~ ~questpack/AI/ET_WTA2.BAF~ EVALUATE_BUFFER
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// SALAMANDERS //////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Implement auras from IWD.
+
+COPY_EXISTING ~icsalfir.cre~ ~override~
+              ~wrmons01.cre~ ~override~
+              ~hgsal01.cre~ ~override~
+              ~plysala.cre~ ~override~
+              ~salgrfir.cre~ ~override~
+  LPF ADD_CRE_EFFECT
+    INT_VAR
+      insert_point = 0
+      opcode = 146
+      target = 1
+      parameter1 = 9
+      parameter2 = 1
+      timing = 7
+    STR_VAR
+      resource = D0SALFIR
+  END
+  WRITE_BYTE 0x27b 19
+  SAY NAME1 #2471
+  SAY NAME2 #2471
+BUT_ONLY
+
+COPY_EXISTING ~salgrfir.cre~ ~override~
+  SAY NAME1 #72857
+  SAY NAME2 #72857
+BUT_ONLY
+
+COPY_EXISTING ~telicesa.cre~ ~override~
+              ~salgrice.cre~ ~override~
+              ~icsalcol.cre~ ~override~
+  LPF ADD_CRE_EFFECT
+    INT_VAR
+      insert_point = 0
+      opcode = 146
+      target = 1
+      parameter1 = 9
+      parameter2 = 1
+      timing = 7
+    STR_VAR
+      resource = D0SALICE
+  END
+  SAY NAME1 #72145
+  SAY NAME2 #72145
+  WRITE_BYTE 0x27b 51
+
+COPY_EXISTING ~salgrice.cre~ ~override~
+  SAY NAME1 #2483
+  SAY NAME2 #2483
+
+COPY ~questpack/creatures/salam~ ~override~
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// MISCELLANEOUS ////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Kamikaze kobolds yield XP rewards upon exploding.
+// - Terminsel yields an XP reward if you defeat him.
+// - Reduced Sendai's Derro Slaves' XP from 12000 to 1200.
+// - Slavers get bow to fire the arrows they already have.
+// - Generic liches are now level 20.
+// - FIRARC01 loses their fricking shields
+
+COPY_EXISTING ~lich01.cre~ ~override~
+  WRITE_BYTE 0x234 20
+BUT_ONLY
+
+COMPILE EVALUATE_BUFFER ~questpack/creatures/compile/misc/jatermin.baf~
+        ~questpack/creatures/compile/misc/kobkam.baf~
+
+COPY_EXISTING ~senorc01.cre~ ~override~
+              ~senorc02.cre~ ~override~
+              ~senorc03.cre~ ~override~
+              ~senorc04.cre~ ~override~
+  WRITE_LONG 0x14 1200
+BUT_ONLY
+
+COPY_EXISTING ~refigh01.cre~ ~override~
+  ADD_CRE_ITEM ~bow01~ #0 #0 #0 ~NONE~ ~WEAPON2~ EQUIP TWOHANDED
+  WRITE_ASCII 0x268 "WTARSGT" #8
+BUT_ONLY
+
+COPY_EXISTING firarc01.cre override
+  LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "shld.+" END
+BUT_ONLY

@@ -1,0 +1,1506 @@
+
+BACKUP ~AjantisBG2\Install\backup~
+AUTHOR ~jastey@web.de~ 
+
+//MODDER
+
+VERSION ~13~
+
+README ~AjantisBG2/documentation/readme.%LANGUAGE%.txt~ ~AjantisBG2/documentation/readme.english.txt~
+
+
+AUTO_TRA ~AjantisBG2\Tra\autotra\%s~
+
+
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+
+
+/* romance timer for tob */
+OUTER_SET ROMANCE_TIMER = 1200
+
+ACTION_IF GAME_IS ~bg2 tob bg2ee eet~ AND NOT GAME_IS ~bgt~ THEN BEGIN
+OUTER_SPRINT ~IMOENJ~ ~imoenj~
+OUTER_SPRINT ~ImoenDV~ ~imoen~
+END
+
+ACTION_IF GAME_IS ~bgt~ THEN BEGIN
+OUTER_SPRINT ~IMOENJ~ ~imoen2j~
+OUTER_SPRINT ~ImoenDV~ ~imoen2~
+END
+
+
+  /*
+   * Copies tra files into the autotra-folder (to leave the originals untouched)
+   */
+  DEFINE_ACTION_FUNCTION autotra_workaround BEGIN
+    COPY ~AjantisBG2/tra/english~  ~AjantisBG2/tra/autotra/%LANGUAGE%~
+    COPY ~AjantisBG2/tra/%LANGUAGE%~  ~AjantisBG2/tra/autotra/%LANGUAGE%~
+  END
+
+  LAF autotra_workaround END
+
+
+//ACTION_DEFINE_ARRAY fl#noconvert BEGIN setup END
+
+//ACTION_DEFINE_ARRAY fl#reload BEGIN Setup-AjantisBG2.tra END
+
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~AjantisBG2\Tra\autotra~
+      noconvert_array = fl#noconvert
+      reload_array = fl#reload
+  END
+
+
+
+    //TRAs declared in LANGUAGE must be reloaded
+  LOAD_TRA ~AjantisBG2/tra/autotra/%LANGUAGE%/Setup-AjantisBG2.tra~
+
+
+
+
+//CamDawgs CD_STATE_NOTVALID zum Checken der Dialogfähigkeit eines Char
+//Thank you very much, CamDawg!
+APPEND ~STATE.IDS~ // adds custom IsValidForPartyDialogue state
+ ~0x80101FEF CD_STATE_NOTVALID~
+ UNLESS ~CD_STATE_NOTVALID~
+
+INCLUDE ~AjantisBG2/lib/extra_regexp_vars.tph~
+
+APPEND ~ACTION.IDS~ ~160 ApplySpellRES(S:RES*,O:Target)~
+             UNLESS ~160 ApplySpellRES(S:RES\*,O:Target)~
+
+APPEND ~TRIGGER.IDS~ ~0x40D5 ActuallyInCombat()~
+              UNLESS ~0x40D5 ActuallyInCombat()~
+
+
+
+
+END
+
+
+LANGUAGE ~Deutsch~
+         ~german~   
+         ~AjantisBG2\Tra\autotra\german\Setup-AjantisBG2.tra~
+
+LANGUAGE ~English~
+         ~english~  
+         ~AjantisBG2\Tra\autotra\english\Setup-AjantisBG2.tra~ 
+ 
+
+BEGIN @0
+
+
+
+  /* Tells other mods Ajantis core is installed */
+  COPY ~AjantisBG2/Install/component.xx~ ~override/C#AjantisCore.RR~
+
+
+/* AnomenJ.dlg "tweaks fixes": To fix the Anomen-Garren's kid quest and second "return to my home because my sister is dead" complaint 
+
+-> (THis doesn't really belong here)
+
+COMPILE ~AjantisBG2\Dialogues\AnomenJ_tweaks.d~
+
+COPY_EXISTING ~anomen.bcs~ ~override~
+DECOMPILE_BCS_TO_BAF
+
+/*Fix: Puts the variable setting in front of the dialogue triggering so that Anomen's complaint about delaying Garren kid's quest gets triggered:*/
+REPLACE_TEXTUALLY ~\(StartDialogu?e?NoSet(Player1)[%tab% %lnl%%mnl%%wnl%]+\)\(SetGlobal("ddAnomenWhine","LOCALS",1)\)~
+~\2 \1~
+COMPILE_BAF_TO_BCS
+BUT_ONLY_IF_IT_CHANGES
+
+*/
+
+/*Tweak: Giving Garren a "Wait(2)" before he initiates dialogue with the PC after the Windspear Hill fight, to enable Anomen to start his dialogue: (this tweak I want to keep)*/
+COPY_EXISTING ~garren.bcs~ ~override~
+DECOMPILE_BCS_TO_BAF
+REPLACE_TEXTUALLY ~\(GlobalLT("DomainPaladinBattle","GLOBAL",4)[%tab% %lnl%%mnl%%wnl%]+THEN[%tab% %lnl%%mnl%%wnl%]+RESPONSE #100\)[%tab% %lnl%%mnl%%wnl%]+\(StartDialogu?e?NoSet(Player1)\)~
+~\1 Wait(2) \2~
+COMPILE_BAF_TO_BCS
+BUT_ONLY_IF_IT_CHANGES
+
+
+/* end of "AnomenJ tweaks and fixes" */
+
+
+
+/* Installation of teen or adult romance */
+
+PRINT @14
+PRINT ~~
+PRINT @16
+
+PRINT @17
+
+OUTER_SPRINT ~ajantisadultrom~ ~placeholder_value~
+OUTER_WHILE (!(IS_AN_INT ~ajantisadultrom~) OR (~ajantisadultrom~ > 0x2) OR (~ajantisadultrom~ < 0x1)) BEGIN
+  PRINT @19
+  ACTION_READLN ~ajantisadultrom~
+END
+ACTION_IF ("ajantisadultrom" = 1) THEN BEGIN
+PRINT @20
+END
+      ACTION_IF ("ajantisadultrom" = 2) THEN BEGIN
+
+EXTEND_BOTTOM ~BALDUR.bcs~ ~AjantisBG2\Scripts\C#BALDUR_ROM_AR.BAF~
+PRINT @21
+END
+
+
+PRINT @14
+PRINT ~~
+/* Ajantis' romance timer */
+PRINT @22
+
+PRINT @23
+
+OUTER_SPRINT ~ajantimer~ ~placeholder_value~
+OUTER_WHILE (!(IS_AN_INT ~ajantimer~) OR (~ajantimer~ > 0x5) OR (~ajantimer~ < 0x1)) BEGIN
+  PRINT @24
+  ACTION_READLN ~ajantimer~
+END
+      ACTION_IF ("ajantimer" = 1) THEN BEGIN
+      OUTER_SET C#AJROM_TIMER = 3600
+      PRINT @25
+      END
+      ACTION_IF ("ajantimer" = 2) THEN BEGIN
+      OUTER_SET C#AJROM_TIMER = 2700
+      PRINT @26
+      END
+      ACTION_IF ("ajantimer" = 3) THEN BEGIN
+      OUTER_SET C#AJROM_TIMER = 1800
+      PRINT @27
+      END
+      ACTION_IF ("ajantimer" = 4) THEN BEGIN
+      OUTER_SET C#AJROM_TIMER = 900
+      PRINT @28
+      END
+      ACTION_IF ("ajantimer" = 5) THEN BEGIN
+      OUTER_SET C#AJROM_TIMER = 5400
+      PRINT @29
+      END
+
+COPY ~AjantisBG2\Creatures\C#dkn01.CRE~ ~override\C#dkn01.CRE~
+WRITE_ASCII 0x280 ~C#dkn01~ #8
+
+COPY ~AjantisBG2\Creatures\C#dkn01.CRE~ ~override\C#dkn02.CRE~
+WRITE_ASCII 0x280 ~C#dkn02~ #8
+
+COPY ~AjantisBG2\Creatures\C#dkn01.CRE~ ~override\C#dkn03.CRE~
+WRITE_ASCII 0x280 ~C#dkn03~ #8
+
+COPY ~AjantisBG2\Creatures\C#dkn01.CRE~ ~override\C#dkn04.CRE~
+WRITE_ASCII 0x280 ~C#dkn04~ #8
+
+COPY ~AjantisBG2\Creatures\C#dkn01.CRE~ ~override\C#dkn05.CRE~
+WRITE_ASCII 0x280 ~C#dkn05~ #8
+
+COPY ~AjantisBG2\Creatures\C#AJALEX.CRE~ ~override\C#AJALEX.CRE~
+COPY ~AjantisBG2\Creatures\C#AJKEND.CRE~ ~override\C#AJKEND.CRE~
+COPY ~AjantisBG2\Creatures\C#RYAN.CRE~ ~override\C#RYAN.CRE~
+
+COPY ~AjantisBG2\Creatures\C#KNIG01.cre~ ~override\C#KNIG01.cre~
+SAY NAME1 @1
+SAY NAME2 @1
+COPY ~AjantisBG2\Creatures\C#KNIG02.cre~ ~override\C#KNIG02.cre~
+SAY NAME1 @2
+SAY NAME2 @2
+COPY ~AjantisBG2\Creatures\C#KNIG03.cre~ ~override\C#KNIG03.cre~
+SAY NAME1 @3
+SAY NAME2 @3
+COPY ~AjantisBG2\Creatures\C#KNIG04.cre~ ~override\C#KNIG04.cre~
+SAY NAME1 @4
+SAY NAME2 @4
+
+COPY ~AjantisBG2\Creatures\C#AJSKE1.CRE~ ~override\C#AJSKE1.CRE~
+COPY ~AjantisBG2\Creatures\C#AJSKE2.CRE~ ~override\C#AJSKE2.CRE~
+COPY ~AjantisBG2\Creatures\C#AJSKED.CRE~ ~override\C#AJSKED.CRE~
+
+COPY ~AjantisBG2\Creatures\C#KNIG05.CRE~ ~override\C#KNIG05.CRE~
+SAY NAME1 @5
+SAY NAME2 @5
+
+COPY ~AjantisBG2\Creatures\C#KNIG06.CRE~ ~override\C#KNIG06.CRE~
+SAY NAME1 @6
+SAY NAME2 @6
+
+COPY ~AjantisBG2\Creatures\C#AJSPY1.cre~ ~override\C#AJSPY1.cre~
+SAY NAME1 @7
+SAY NAME2 @7
+
+COPY ~AjantisBG2\Creatures\C#AJTRAE.CRE~ ~override\C#AJTRAE.CRE~
+SAY NAME1 @8
+SAY NAME2 @8
+
+COPY ~AjantisBG2\Creatures\C#AJSHBO.CRE~ ~override\C#AJSHBO.CRE~
+SAY NAME1 @9
+SAY NAME2 @9
+
+COPY ~AjantisBG2\Creatures\C#AJDOUG.CRE~ ~override\C#AJDOUG.CRE~
+SAY NAME1 @10
+SAY NAME2 @10
+
+COPY ~AjantisBG2\Creatures\C#AJLOIL.CRE~ ~override\C#AJLOIL.CRE~
+SAY NAME1 @11
+SAY NAME2 @11
+
+COPY ~AjantisBG2\Creatures\C#AJLAIL.CRE~ ~override\C#AJLAIL.CRE~
+SAY NAME1 @12
+SAY NAME2 @12
+
+COPY ~AjantisBG2\Creatures\C#AJPR01.cre~ ~override\C#AJPR01.cre~
+SAY NAME1 @13
+SAY NAME2 @13
+
+COPY ~AjantisBG2\Creatures\C#AJUDZO.CRE~ ~override\C#AJUDZO.CRE~
+
+
+COPY ~AjantisBG2\Creatures\C#AJPROS.CRE~ ~override\C#AJPROS.CRE~
+
+
+COMPILE ~AjantisBG2\Dialogues\PC_Romance_conflicts.d~ //first, do not move
+
+COMPILE EVALUATE_BUFFER ~AjantisBG2\Dialogues\C#Ajan_pr.d~
+	~AjantisBG2\Dialogues\C#Ajan_andere_pr.d~
+COMPILE ~AjantisBG2\Dialogues\C#AjanP_pr.d~
+COMPILE EVALUATE_BUFFER ~AjantisBG2\Dialogues\C#AjanJ_pr.d~
+COMPILE EVALUATE_BUFFER ~AjantisBG2\Dialogues\C#Orden.d~ 
+COMPILE ~AjantisBG2\Dialogues\C#KNIG05_pr.d~
+COMPILE ~AjantisBG2\Dialogues\C#KNIG06_d_pr.d~
+COMPILE ~AjantisBG2\Dialogues\C#Windspeerritter.d~
+
+COMPILE EVALUATE_BUFFER ~AjantisBG2\Dialogues\Ajantis_Friendshippath.d~
+
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Keldorn_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Anomen.d~ 
+COMPILE ~AjantisBG2\Dialogues\Anomen_conflict.d~
+COMPILE ~AjantisBG2\Dialogues\Anomen_conflict_nb.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_HaerDalis_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Jan_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Jaheira_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Yoshimo_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Viconia_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Imoen_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Aerie_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Korgan_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Minsc_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Nalia_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Mazzy_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Valygar_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Cernd_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Edwin_pr.d~
+COMPILE EVALUATE_BUFFER ~AjantisBG2\Dialogues\C#Player1.d~
+
+COMPILE EVALUATE_BUFFER ~AjantisBG2/Dialogues\C#Interjections_ROM_pr.d~ 
+COMPILE ~AjantisBG2\Dialogues\C#KNIG07.d~
+COMPILE ~AjantisBG2\Dialogues\C#Ringsmith.d~
+COMPILE ~AjantisBG2\Dialogues\C#DSHOP02_pr.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_Cromwell.d~
+
+COMPILE ~AjantisBG2\Dialogues\re_ajantis.d~
+COMPILE ~AjantisBG2\Dialogues\Romance_Add_d.d~ 
+COMPILE ~AjantisBG2\Dialogues\Romance_nighttalks.d~
+COMPILE ~AjantisBG2\Dialogues\Romance_BodhiAbduction.d~
+COMPILE ~AjantisBG2\Dialogues\Romance_Underdark.d~
+COMPILE EVALUATE_BUFFER ~AjantisBG2\Dialogues\Romance.d~
+COMPILE ~AjantisBG2\Dialogues\Romance_IniFlirts.d~
+COMPILE ~AjantisBG2\Dialogues\Ajantis_NBRomance.d~
+COMPILE ~AjantisBG2\Dialogues\AjantisEilaWindspear.d~
+
+
+  /* Tells other mods Ajantis First MaeVar quest expansion is installed */
+// COPY ~AjantisBG2/Install/component.xx~ ~override/C#AjantisThiefQuest.RR~
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~c#aj4x.itm~ THEN BEGIN 
+
+COMPILE ~AjantisBG2\Dialogues\AjantisThiefQuestExpansion.d~
+/* fake items for Mae'Var's quest */
+COPY ~AjantisBG2/Items/C#AJ4X.ITM~ ~override/C#AJ4X.ITM~
+COPY ~AjantisBG2/Items/C#AJ4Y.ITM~ ~override/C#AJ4Y.ITM~
+
+END 
+
+//ToB content
+
+  ACTION_IF GAME_IS ~tob bg2ee eet~ THEN BEGIN 
+
+COMPILE EVALUATE_BUFFER ~AjantisBG2\tob\scripts\C#Ajan25.baf~
+
+COMPILE ~AjantisBG2\tob\scripts\C#Aja25D.baf~  
+
+EXTEND_BOTTOM ~botsmith.bcs~ ~AjantisBG2\tob\scripts\botsmith_add.baf~
+
+
+COMPILE ~AjantisBG2\tob\dialogue\c#ajan25.d~
+COMPILE ~AjantisBG2\tob\dialogue\c#aja25j.d~
+USING ~AjantisBG2\tra\autotra\%s\c#ajanj_pr.tra~
+
+COMPILE ~AjantisBG2\tob\dialogue\tob_romance_core.d~
+COMPILE ~AjantisBG2\tob\dialogue\tob_romance_scene.d~
+COMPILE ~AjantisBG2\tob\dialogue\tob_restdialogues_romance.d~
+COMPILE ~AjantisBG2\tob\dialogue\tob_romance_shieldreturn.d~
+COMPILE ~AjantisBG2\tob\dialogue\tob_FP_scenery_floater.d~
+
+
+
+COMPILE ~AjantisBG2\tob\dialogue\tob_ajantis_npc.d~
+COMPILE ~AjantisBG2\tob\dialogue\tob_ajantis_banter.d~
+
+COMPILE EVALUATE_BUFFER ~AjantisBG2\tob\dialogue\tob_ict.d~
+USING ~AjantisBG2\tra\autotra\%s\c#ajanj_pr.tra~
+
+
+COMPILE ~AjantisBG2\tob\dialogue\cespenar_add.d~
+
+
+
+
+/* masterwraith encounter */
+
+COMPILE ~AjantisBG2\tob\dialogue\masterwraith.d~
+
+COPY ~AjantisBG2\tob\Creatures\c#aj25mw.cre~ ~override\c#aj25mw.cre~
+
+COMPILE ~AjantisBG2\tob\scripts\c#ajmwcu.baf~ //cutscene
+
+EXTEND_BOTTOM ~cut218g.bcs~ ~AjantisBG2\tob\scripts\cut218g_add.baf~
+
+
+
+//  epilogues:
+EXTEND_TOP ~AR6200.bcs~ ~AjantisBG2\tob\scripts\epilog_AR6200.baf~
+
+/* Non-romance ending , RA = 0 no evil god */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep01.2da~
+REPLACE ~99999~ @899
+
+
+/* Non-romance ending , RA = 3 no evil god */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep02.2da~
+REPLACE ~99999~ @900
+
+/* romance ending: PC remained mortal, married */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep03.2da~
+REPLACE ~99999~ @901
+
+/* romance ending: PC remained mortal, not yet married */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep04.2da~
+REPLACE ~99999~ @902
+
+/* romance ending: PC raised to godhood, not evil PPchoices  */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep05.2da~
+REPLACE ~99999~ @903
+
+/* romance ending: PC raised to godhood, evil PP choices */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep06.2da~
+REPLACE ~99999~ @906
+
+/* RA = 0: PC raised to godhood, evil PP choices */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep07.2da~
+REPLACE ~99999~ @907
+
+/* RA = 3: PC raised to godhood, evil PP choices */
+COPY ~AjantisBG2\tob\2da\c#ajepxx.2da~ ~override/c#ajep08.2da~
+REPLACE ~99999~ @908
+
+
+
+
+
+
+
+
+/* give medium shield +2 to Amkethran tavern */
+COPY_EXISTING ~ambar01.sto~ ~override~
+ADD_STORE_ITEM ~SHLD29~ AFTER  ~SHLD14~ #0 #0 #0 ~IDENTIFIED~ #1
+
+
+
+
+/* items */
+
+COPY ~AjantisBG2\tob/Items/C#AJ012B.ITM~ ~override/C#AJ012B.ITM~
+  SAY NAME1 @75
+  SAY NAME2 @76
+  SAY UNIDENTIFIED_DESC @77
+
+SAY IDENTIFIED_DESC @904
+
+
+COPY ~AjantisBG2\tob/Items/C#AJSHL3.ITM~ ~override~
+  SAY NAME1 @69
+  SAY NAME2 @70
+  SAY UNIDENTIFIED_DESC @71
+  SAY DESC @905
+
+
+
+  END
+
+
+
+//The PID, to be compiled at last 
+COMPILE EVALUATE_BUFFER ~AjantisBG2\Dialogues\C#AjanJ_PID.d~ 
+
+ACTION_IF GAME_IS ~tob bg2ee eet~ THEN BEGIN 
+COMPILE ~AjantisBG2\tob\dialogue\tob_pid.d~
+USING ~AjantisBG2\tra\autotra\%s\c#ajanj_pid.tra~
+END
+
+
+//Replacing the dead bodies in the Windspear hills, so they can be taken away
+COPY_EXISTING ~AR1200.bcs~ ~override~ 
+DECOMPILE_BCS_TO_BAF
+REPLACE_TEXTUALLY ~CreateCreatureAtLocation("LOCpalkni01","GLOBAL","deadb01")[%tab% %lnl%%mnl%%wnl%]+CreateCreatureAtLocation("LOCpalkni02","GLOBAL","deadb01")[%tab% %lnl%%mnl%%wnl%]+CreateCreatureAtLocation("LOCpalkni03","GLOBAL","deadb01")[%tab% %lnl%%mnl%%wnl%]+CreateCreatureAtLocation("LOCpalkni04","GLOBAL","deadb01")[%tab% %lnl%%mnl%%wnl%]+CreateCreatureAtLocation("LOCpalkni05","GLOBAL","deadb01")~ ~SetGlobal("C#AjantisRitterLeichen","GLOBAL",1) CreateCreatureAtLocation("LOCpalkni01","GLOBAL","C#dkn01") CreateCreatureAtLocation("LOCpalkni02","GLOBAL","C#dkn02") CreateCreatureAtLocation("LOCpalkni03","GLOBAL","C#dkn03") CreateCreatureAtLocation("LOCpalkni04","GLOBAL","C#dkn04") CreateCreatureAtLocation("LOCpalkni05","GLOBAL","C#dkn05")~
+COMPILE_BAF_TO_BCS
+BUT_ONLY_IF_IT_CHANGES
+
+
+
+
+
+
+
+
+//Bodhi abduction
+
+COPY ~AjantisBG2\Creatures\C#AJVAMP.CRE~ ~override\C#AJVAMP.CRE~
+SAY NAME1 @30
+SAY NAME2 @30
+
+COMPILE ~AjantisBG2\Scripts\C#BOCUT.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJVAMP.baf~
+COMPILE ~AjantisBG2\Scripts\C#VAMP.baf~
+
+EXTEND_BOTTOM ~BODHIAMB.bcs~ ~AjantisBG2\Scripts\C#BODHIA.baf~
+EXTEND_BOTTOM ~AR0809.bcs~ ~AjantisBG2\Scripts\C#ar0809_ROM.baf~
+EXTEND_BOTTOM ~cleanse.bcs~ ~AjantisBG2\Scripts\C#CLEANSE.baf~
+
+COPY ~AjantisBG2/Items/C#AJBODY.ITM~ ~override/C#AJBODY.ITM~
+  SAY NAME1 @31
+  SAY NAME2 @31
+  SAY UNIDENTIFIED_DESC @32
+  SAY DESC @32
+
+
+//Ajantis-Eila encounter / quest
+
+COPY ~AjantisBG2/Items/C#AJRECE.ITM~ ~override/C#AJRECE.ITM~
+  SAY NAME1 @98
+  SAY NAME2 @98
+  SAY UNIDENTIFIED_DESC @90
+  SAY DESC @90
+
+COPY ~AjantisBG2\Creatures\C#AJEILA.CRE~ ~override\C#AJEILA.CRE~
+SAY NAME1 @123
+SAY NAME2 @123
+
+COPY ~AjantisBG2\Creatures\C#AJEIL1.CRE~ ~override\C#AJEIL1.CRE~ //green dress
+SAY NAME1 @123
+SAY NAME2 @123
+
+COPY ~AjantisBG2\Creatures\C#AJENDE.CRE~ ~override\C#AJENDE.CRE~
+SAY NAME1 @106
+SAY NAME2 @106
+
+COPY ~AjantisBG2\Creatures\C#AJEFFL.CRE~ ~override\C#AJEFFL.CRE~
+SAY NAME1 @131
+SAY NAME2 @131
+
+COPY ~AjantisBG2\Creatures\C#AJWAC1.CRE~ ~override\C#AJWAC1.CRE~
+COPY ~AjantisBG2\Creatures\C#AJWAC1.CRE~ ~override\C#AJWAC2.CRE~
+WRITE_ASCII 0x248 ~C#AJWAC2~ #8
+WRITE_ASCII 0x280 ~C#AJWAC2~ #8
+WRITE_ASCII 0x2cc ~C#AJWAC2~ #8
+
+COPY ~AjantisBG2\Creatures\C#AJELER.CRE~ ~override\C#AJELER.CRE~
+SAY NAME1 @97
+SAY NAME2 @97
+
+
+
+COPY ~AjantisBG2/Items/C#AJ0010.ITM~ ~override/C#AJHP50.ITM~ //"Imoens Gürtel"
+
+
+//Dialoguesets 
+APPEND ~pdialog.2da~
+~C#Ajantis 	C#AjanP 	C#AjanJ 	C#AjanD 	C#Aja25P 	C#Aja25J 		C#Aja25D 	C#Ajan25~
+UNLESS ~C#Ajantis~
+
+
+APPEND ~interdia.2da~
+~C#Ajantis 	C#AjanB      C#Aja25B~
+UNLESS ~C#Ajantis~
+
+//Damit Imoen auch was sagen darf [taken from BGII fixpack at G3]
+ACTION_IF FILE_EXISTS_IN_GAME ~saradush.mve~ THEN BEGIN
+  COPY_EXISTING ~interdia.2da~ ~override~
+    SET_2DA_ENTRY 17 1 2 ~BIMOEN2~ // fixes ToB version
+    BUT_ONLY_IF_IT_CHANGES
+END ELSE BEGIN
+  APPEND ~interdia.2da~ ~IMOEN       BIMOEN2~ // fixes SoA version
+    UNLESS ~BIMOEN2~
+END
+
+//Fix-it script
+COMPILE ~AjantisBG2\Scripts\C#Afix.baf~
+COPY_EXISTING ~C#Afix.bcs~ ~override\C#Afix.bcs~
+  REPLACE ~70100~ @33
+  REPLACE ~70101~ @34 
+  REPLACE ~70102~ @35 
+  REPLACE ~70103~ @36 
+  REPLACE ~70104~ @37 
+  REPLACE ~70105~ @38 
+  REPLACE ~70106~ @39 
+  REPLACE ~70107~ @40 
+  REPLACE ~70108~ @41 
+  REPLACE ~70109~ @42 
+  REPLACE ~70110~ @43 
+  REPLACE ~70111~ ~~ [C#AJAN38]
+  REPLACE ~70112~ ~~ [C#AJAN39]
+  REPLACE ~70113~ @46 
+  REPLACE ~70114~ @47  
+  REPLACE ~70115~ @48 
+  REPLACE ~70116~  @49 
+  REPLACE ~70117~ ~~ [C#AJAN15]
+  REPLACE ~70118~ ~~ [C#AJAN16]
+  REPLACE ~70119~ @52 
+  REPLACE ~70120~ @53 
+  REPLACE ~70121~ @54 
+  REPLACE ~70122~ @55 
+  REPLACE ~70123~ @56 
+  REPLACE ~70124~ @57 
+  REPLACE ~70125~ @58 
+  REPLACE ~70126~ @59 
+  REPLACE ~70127~ @60 
+  REPLACE ~70128~ @61 
+  REPLACE ~70129~ @62 
+  REPLACE ~70130~ @63
+  REPLACE ~70131~ @43
+  REPLACE ~70132~ @43
+  REPLACE ~70133~ @43
+  REPLACE ~70134~ @43
+
+COPY_EXISTING ~C#Afix.bcs~ ~override\C#Afixro.bcs~
+  REPLACE ~70100~ @33
+  REPLACE ~70101~ @34 
+  REPLACE ~70102~ @35 
+  REPLACE ~70103~ @36 
+  REPLACE ~70104~ @37 
+  REPLACE ~70105~ @38 
+  REPLACE ~70106~ @39 
+  REPLACE ~70107~ @40 
+  REPLACE ~70108~ @41 
+  REPLACE ~70109~ @42 
+  REPLACE ~70110~ @43 
+  REPLACE ~70111~ ~~ [C#AJAN38]
+  REPLACE ~70112~ ~~ [C#AJAN39]
+  REPLACE ~70113~ @46 
+  REPLACE ~70114~ @47  
+  REPLACE ~70115~ @48 
+  REPLACE ~70116~  @49 
+  REPLACE ~70117~ ~~ [C#AJAN15]
+  REPLACE ~70118~ ~~ [C#AJAN16]
+  REPLACE ~70119~ @52 
+  REPLACE ~70120~ @53 
+  REPLACE ~70121~ @54 
+  REPLACE ~70122~ @55 
+  REPLACE ~70123~ @56 
+  REPLACE ~70124~ @57 
+  REPLACE ~70125~ @58 
+  REPLACE ~70126~ @59 
+  REPLACE ~70127~ @60 
+  REPLACE ~70128~ @61 
+  REPLACE ~70129~ @62 
+  REPLACE ~70130~ @898
+  REPLACE ~70131~ @43
+  REPLACE ~70132~ @43
+  REPLACE ~70133~ @43
+  REPLACE ~70134~ @43
+
+//////////////////////////
+/* ITEMS */
+
+COPY ~AjantisBG2/Items/C#AMUL01.ITM~ ~override/C#AMUL01.ITM~
+  SAY NAME1 @64
+  SAY NAME2 @64
+  SAY UNIDENTIFIED_DESC @65
+  SAY DESC @66
+
+COPY ~AjantisBG2/Items/C#AMUL02.ITM~ ~override/C#AMUL02.ITM~
+  SAY NAME1 @67
+  SAY NAME2 @67
+  SAY UNIDENTIFIED_DESC @68
+  SAY DESC @68
+
+
+/* Ajantis shield, from BG1NPC project, http://forums.gibberlings3.net/index.php?showforum=45 */
+COPY ~AjantisBG2/Items/C#AJSHLD.itm~ ~override~
+  SAY NAME1 @69
+  SAY NAME2 @70
+  SAY UNIDENTIFIED_DESC @71
+  SAY DESC @72
+
+COPY ~AjantisBG2/Items/C#AJSHL2.itm~ ~override~
+  SAY NAME1 @69
+  SAY NAME2 @70
+  SAY UNIDENTIFIED_DESC @71
+  SAY DESC @74
+
+COPY ~AjantisBG2/Items/C#AJ0012.ITM~ ~override/C#AJ0012.ITM~
+  SAY NAME1 @75
+  SAY NAME2 @76
+  SAY UNIDENTIFIED_DESC @77
+
+SAY IDENTIFIED_DESC @78
+
+COPY ~AjantisBG2/Items/C#AJ012A.ITM~ ~override/C#AJ012A.ITM~
+  SAY NAME1 @75
+  SAY NAME2 @76
+  SAY UNIDENTIFIED_DESC @77
+
+SAY IDENTIFIED_DESC @79
+
+COPY ~AjantisBG2/Items/C#AJCHBE.ITM~ ~override/C#AJCHBE.ITM~
+  SAY NAME1 @80
+  SAY NAME2 @80
+  SAY UNIDENTIFIED_DESC @81
+
+  SAY DESC @81
+
+
+COPY ~AjantisBG2/Items/C#AJ0001.ITM~ ~override/C#AJ0001.ITM~
+  SAY NAME1 @82
+  SAY NAME2 @82
+  SAY UNIDENTIFIED_DESC @83
+  SAY DESC @83
+
+COPY ~AjantisBG2/Items/C#AJ0002.ITM~ ~override/C#AJ0002.ITM~
+  SAY NAME1 @84
+  SAY NAME2 @84
+  SAY UNIDENTIFIED_DESC @85
+  SAY DESC @85
+
+COPY ~AjantisBG2/Items/C#AJ0003.ITM~ ~override/C#AJ0003.ITM~
+  SAY NAME1 @86
+  SAY NAME2 @86
+  SAY UNIDENTIFIED_DESC @87
+  SAY DESC @87
+
+COPY ~AjantisBG2/Items/C#AJ0003.ITM~ ~override/C#AJ0006.ITM~
+  SAY NAME1 @86
+  SAY NAME2 @86
+  SAY UNIDENTIFIED_DESC @89
+  SAY DESC @89
+
+COPY ~AjantisBG2/Items/C#AJ0004.ITM~ ~override/C#AJ0004.ITM~
+  SAY NAME1 @91
+  SAY NAME2 @91
+  SAY UNIDENTIFIED_DESC @92
+  SAY DESC @92
+
+COPY ~AjantisBG2/Items/C#AJ0005.ITM~ ~override/C#AJ0005.ITM~
+  SAY NAME1 @93
+  SAY NAME2 @93
+  SAY UNIDENTIFIED_DESC @94
+  SAY DESC @94
+
+COPY ~AjantisBG2/Items/C#AJ0009.ITM~ ~override/C#AJGK.ITM~
+  SAY NAME1 @95
+  SAY NAME2 @95
+  SAY UNIDENTIFIED_DESC @96
+  SAY DESC @96
+
+
+
+COPY ~AjantisBG2/BAMs~ ~override~
+
+COPY ~AjantisBG2/Spells/C#AJ012A.spl~ ~override/C#AJ012A.spl~
+SAY NAME1 #12083
+
+
+COPY ~AjantisBG2/Spells/C#AJ012B.spl~ ~override/C#AJ012B.spl~
+SAY NAME1 #54337 
+
+COPY ~AjantisBG2/Areas~ ~override~
+
+ACTION_IF GAME_IS ~BG2EE eet~ THEN BEGIN
+  COPY ~AjantisBG2/BAMs_ee~ ~override~
+END
+
+
+
+/////////////
+//
+//
+//Romance baf, cre and itm
+////// 
+
+
+
+EXTEND_TOP ~Ar0602.bcs~ ~AjantisBG2\Scripts\C#ar0602_ROM.baf~
+
+
+EXTEND_BOTTOM ~Ar0903.bcs~ ~AjantisBG2\Scripts\C#ar0903_ROM.baf~
+EXTEND_BOTTOM ~Ar0603.bcs~ ~AjantisBG2\Scripts\C#ar0603_ROM.baf~
+EXTEND_BOTTOM ~BALDUR.bcs~ ~AjantisBG2\Scripts\C#BALDUR_ROM.baf~
+
+COMPILE ~AjantisBG2\Scripts\C#KNIG07.baf~
+
+COPY ~AjantisBG2\Creatures\C#KNIG07.cre~ ~override\C#KNIG07.cre~
+SAY NAME1 @99
+SAY NAME2 @99
+
+COPY ~AjantisBG2\Creatures\C#RINGSM.cre~ ~override\C#RINGSM.cre~
+SAY NAME1 @100
+SAY NAME2 @100
+
+COPY ~AjantisBG2/Items/C#AJ0007.ITM~ ~override/C#AJ0007.ITM~
+  SAY NAME1 @101
+  SAY NAME2 @101
+  SAY UNIDENTIFIED_DESC @102
+  SAY DESC @103
+
+COPY ~AjantisBG2/Items/C#AJ0008.ITM~ ~override/C#AJ0008.ITM~
+  SAY NAME1 @104
+  SAY NAME2 @104
+  SAY UNIDENTIFIED_DESC @105
+  SAY DESC @105
+
+//presents
+/*Jahaboam, AR0300 (DSHOP02.DLG) "Anhänger der Aufbewahrung" (Original von der Jaheira-Romanze) */
+
+COPY_EXISTING ~MISC5W.ITM~ ~override/C#MISC5W.ITM~
+  SAY UNIDENTIFIED_DESC #30702
+  SAY DESC @107
+
+//engagement rings
+COPY ~AjantisBG2/Items/C#AJ0011.ITM~ ~override/C#AJ0011.ITM~
+  SAY NAME1 @108
+  SAY NAME2 @108
+  SAY UNIDENTIFIED_DESC @109
+  SAY DESC @110
+
+COPY ~AjantisBG2/Items/C#AJ0011.ITM~ ~override/C#AJ011A.ITM~
+WRITE_ASCII 0x3a ~C#AJ001A~
+  SAY NAME1 @108
+  SAY NAME2 @108
+  SAY UNIDENTIFIED_DESC @109
+  SAY DESC @111
+
+COPY ~AjantisBG2/Items/C#AJ0011.ITM~ ~override/C#AJ011B.ITM~
+WRITE_ASCII 0x3a ~C#AJ001B~
+  SAY NAME1 @108
+  SAY NAME2 @108
+  SAY UNIDENTIFIED_DESC @109
+  SAY DESC @112
+
+COPY ~AjantisBG2/Items/C#AJ0011.ITM~ ~override/C#AJ011C.ITM~
+WRITE_ASCII 0x3a ~C#AJ001C~
+  SAY NAME1 @108
+  SAY NAME2 @108
+  SAY UNIDENTIFIED_DESC @109
+  SAY DESC @113
+
+COPY ~AjantisBG2/Items/C#AJ0011.ITM~ ~override/C#AJ011D.ITM~
+WRITE_ASCII 0x3a ~C#AJ001D~
+  SAY NAME1 @108
+  SAY NAME2 @108
+  SAY UNIDENTIFIED_DESC @109
+  SAY DESC @114
+
+COPY ~AjantisBG2/Items/C#AJ0011.ITM~ ~override/C#AJ011G.ITM~
+WRITE_ASCII 0x3a ~C#AJ001G~
+WRITE_ASCII 0x58 ~CRING31~ #8
+  SAY NAME1 @108
+  SAY NAME2 @108
+  SAY UNIDENTIFIED_DESC @109
+  SAY DESC @115
+
+COPY ~AjantisBG2/Items/C#KRANZ.ITM~ ~override/C#KRANZ.ITM~
+  SAY NAME1 @116
+  SAY NAME2 @116
+  SAY UNIDENTIFIED_DESC @117
+  SAY DESC @118
+
+
+/* new beginnings romance: engagement ring */
+
+COPY ~AjantisBG2/Items/C#AJ0011.ITM~ ~override/C#AJNBRI.ITM~
+WRITE_ASCII 0x3a ~C#AJ001C~ //red stone
+  SAY NAME1 @108
+  SAY NAME2 @108
+  SAY UNIDENTIFIED_DESC @130
+  SAY DESC @130
+
+//ring stores
+COPY ~AjantisBG2/Items/C#AJSTO1.STO~ ~override/C#AJSTO1.STO~
+  SAY NAME2 @100
+
+COPY ~AjantisBG2/Items/C#AJSTO2.STO~ ~override/C#AJSTO2.STO~
+  SAY NAME2 @100
+
+//wedding rings
+
+COPY ~AjantisBG2/Items/C#AJBA02.STO~ ~override/C#AJBA02.STO~
+
+COPY ~AjantisBG2/Items/C#AJBA02.ITM~ ~override/C#AJBA02.ITM~
+  SAY NAME1 @119
+  SAY NAME2 @119
+  SAY UNIDENTIFIED_DESC @119
+  SAY DESC @121
+
+COPY ~AjantisBG2/Items/C#AJBA01.STO~ ~override/C#AJBA01.STO~
+
+COPY ~AjantisBG2/Items/C#AJBA01.ITM~ ~override/C#AJBA01.ITM~
+  SAY NAME2 @122
+  SAY UNIDENTIFIED_DESC @124
+  SAY DESC @124
+
+//ornamented
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ020A.ITM~
+WRITE_ASCII 0x3a ~C#AJ020A~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @125
+  SAY NAME2 @125
+  SAY UNIDENTIFIED_DESC @125
+
+SAY DESC @127
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02AA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02AA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @128
+  SAY NAME2 @128
+  SAY UNIDENTIFIED_DESC @128
+SAY DESC @129
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02BA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02BA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @132
+  SAY NAME2 @132
+  SAY UNIDENTIFIED_DESC @132
+SAY DESC @133
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02CA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02CA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @134
+  SAY NAME2 @134
+  SAY UNIDENTIFIED_DESC @134
+SAY DESC @135
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02DA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02DA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @136
+  SAY NAME2 @136
+  SAY UNIDENTIFIED_DESC @136
+SAY DESC @137
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ020B.ITM~
+WRITE_ASCII 0x3a ~C#AJ020B~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @138
+  SAY NAME2 @138
+  SAY UNIDENTIFIED_DESC @138
+SAY DESC @140
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02AB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02AB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @141
+  SAY NAME2 @141
+  SAY UNIDENTIFIED_DESC @141
+SAY DESC @142
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02BB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02BB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @143
+  SAY NAME2 @143
+  SAY UNIDENTIFIED_DESC @143
+SAY DESC @144
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02CB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02CB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @145
+  SAY NAME2 @145
+  SAY UNIDENTIFIED_DESC @145
+SAY DESC @146
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02DB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02DB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @147
+  SAY NAME2 @147
+  SAY UNIDENTIFIED_DESC @147
+SAY DESC @148
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02AC.ITM~
+WRITE_ASCII 0x3a ~C#AJ020C~
+WRITE_ASCII 0x58 ~CRING34~ #8
+  SAY NAME1 @149
+  SAY NAME2 @149
+  SAY UNIDENTIFIED_DESC @149
+SAY DESC @151
+
+COPY ~AjantisBG2/Items/C#AJ0020.ITM~ ~override/C#AJ02BC.ITM~
+WRITE_ASCII 0x3a ~C#AJ021C~
+  SAY NAME1 @152
+  SAY NAME2 @152
+  SAY UNIDENTIFIED_DESC @152
+SAY DESC @154
+
+
+//CHARNAME's wedding rings
+
+//ornamented
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ021A.ITM~
+WRITE_ASCII 0x3a ~C#AJ020A~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @126
+
+SAY DESC @156
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21AA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02AA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @126
+
+SAY DESC @157
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21BA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02BA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @126
+
+SAY DESC @158
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21CA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02CA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @126
+
+SAY DESC @159
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21DA.ITM~
+WRITE_ASCII 0x3a ~C#AJ02DA~
+WRITE_ASCII 0x58 ~C#AJ02AI~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @126
+
+SAY DESC @160
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ021B.ITM~
+WRITE_ASCII 0x3a ~C#AJ020B~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @161
+
+SAY DESC @162
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21AB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02AB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @161
+
+SAY DESC @163
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21BB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02BB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @161
+
+SAY DESC @164
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21CB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02CB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @161
+
+SAY DESC @165
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21DB.ITM~
+WRITE_ASCII 0x3a ~C#AJ02DB~
+WRITE_ASCII 0x58 ~CRING36~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @161
+
+SAY DESC @166
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21AC.ITM~
+WRITE_ASCII 0x3a ~C#AJ020C~
+WRITE_ASCII 0x58 ~CRING34~ #8
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @149
+
+SAY DESC @167
+
+COPY ~AjantisBG2/Items/C#AJ0021.ITM~ ~override/C#AJ21BC.ITM~
+WRITE_ASCII 0x3a ~C#AJ021C~
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @152
+
+SAY DESC @168
+
+
+COPY ~AjantisBG2/Items/C#AJ01AJ.ITM~ ~override/C#AJ01AJ.ITM~
+  SAY NAME1 @155
+  SAY NAME2 @155
+  SAY UNIDENTIFIED_DESC @169
+  SAY DESC @169
+
+
+/* Kit choice: Should Ajantis be a plain paladin or Cavalier */
+
+PRINT @170
+
+PRINT @171
+
+OUTER_SPRINT ~ajantiskit~ ~placeholder_value~
+OUTER_WHILE (!(IS_AN_INT ~ajantiskit~) OR (~ajantiskit~ > 0x2) OR (~ajantiskit~ < 0x1)) BEGIN
+  PRINT @19
+ACTION_READLN ~ajantiskit~
+END
+      
+ACTION_IF ("ajantiskit" = 1) THEN BEGIN
+      COPY 	~AjantisBG2\Creatures\Paladin\C#Ajan08.cre~ ~override\C#Ajan08.cre~
+	~AjantisBG2\Creatures\Paladin\C#Ajan09.cre~ ~override\C#Ajan09.cre~
+	~AjantisBG2\Creatures\Paladin\C#Ajan10.cre~ ~override\C#Ajan10.cre~
+	~AjantisBG2\Creatures\Paladin\C#Ajan12.cre~ ~override\C#Ajan12.cre~
+	~AjantisBG2\Creatures\Paladin\C#Ajan14.cre~ ~override\C#Ajan14.cre~
+	~AjantisBG2\Creatures\Paladin\C#Ajan16.cre~ ~override\C#Ajan16.cre~
+SAY NAME1 @33
+SAY NAME2 @33
+//SAY INITIAL_MEETING @34  
+SAY MORALE @35   
+SAY HAPPY @36   
+SAY UNHAPPY_ANNOYED @37  
+SAY UNHAPPY_SERIOUS @38  
+SAY UNHAPPY_BREAKING @39  
+SAY LEADER  @40 
+SAY TIRED @41  
+SAY BORED @42  
+SAY BATTLE_CRY1 @43  
+SAY BATTLE_CRY2 @43  
+SAY BATTLE_CRY3 @43  
+SAY BATTLE_CRY4 @43  
+SAY BATTLE_CRY5 @43  
+SAY DAMAGE ~~ [C#AJAN38]
+SAY DYING ~~ [C#AJAN39]
+SAY HURT @46  
+SAY AREA_FOREST @47  
+SAY AREA_CITY @48  
+SAY AREA_DUNGEON @49  
+SAY AREA_DAY ~~ [C#AJAN15]
+SAY AREA_NIGHT ~~ [C#AJAN16]
+SAY SELECT_COMMON1 @52  
+SAY SELECT_COMMON2 @53  
+SAY SELECT_COMMON3 @54  
+SAY SELECT_ACTION1 @55  
+SAY SELECT_ACTION2 @56 
+SAY SELECT_ACTION3 @57 
+SAY SELECT_ACTION4 @58  
+SAY SELECT_ACTION5 @59  
+SAY SELECT_ACTION6 @60  
+SAY SELECT_ACTION7 @61  
+SAY REACT_TO_DIE_GENERAL @62  
+SAY BIO @63
+
+ACTION_IF GAME_IS ~tob bg2ee eet~ THEN BEGIN
+
+COPY 	~AjantisBG2\Creatures\Paladin\c#ajatob.cre~ ~override\c#ajatob.cre~
+SAY NAME1 @33
+SAY NAME2 @33
+//SAY INITIAL_MEETING @34  
+SAY MORALE @35   
+SAY HAPPY @36   
+SAY UNHAPPY_ANNOYED @37  
+SAY UNHAPPY_SERIOUS @38  
+SAY UNHAPPY_BREAKING @39  
+SAY LEADER  @40 
+SAY TIRED @41  
+SAY BORED @42  
+SAY BATTLE_CRY1 @43  
+SAY BATTLE_CRY2 @43  
+SAY BATTLE_CRY3 @43  
+SAY BATTLE_CRY4 @43  
+SAY BATTLE_CRY5 @43  
+SAY DAMAGE ~~ [C#AJAN38]
+SAY DYING ~~ [C#AJAN39]
+SAY HURT @46  
+SAY AREA_FOREST @47  
+SAY AREA_CITY @48  
+SAY AREA_DUNGEON @49  
+SAY AREA_DAY ~~ [C#AJAN15]
+SAY AREA_NIGHT ~~ [C#AJAN16]
+SAY SELECT_COMMON1 @52  
+SAY SELECT_COMMON2 @53  
+SAY SELECT_COMMON3 @54  
+SAY SELECT_ACTION1 @55  
+SAY SELECT_ACTION2 @56 
+SAY SELECT_ACTION3 @57 
+SAY SELECT_ACTION4 @58  
+SAY SELECT_ACTION5 @59  
+SAY SELECT_ACTION6 @60  
+SAY SELECT_ACTION7 @61  
+SAY REACT_TO_DIE_GENERAL @62  
+SAY BIO @63
+
+END
+
+
+      PRINT @172
+END
+
+ACTION_IF ("ajantiskit" = 2) THEN BEGIN
+      COPY 	~AjantisBG2\Creatures\Knight\C#Ajan08.cre~ ~override\C#Ajan08.cre~
+	~AjantisBG2\Creatures\Knight\C#Ajan09.cre~ ~override\C#Ajan09.cre~
+	~AjantisBG2\Creatures\Knight\C#Ajan10.cre~ ~override\C#Ajan10.cre~
+	~AjantisBG2\Creatures\Knight\C#Ajan12.cre~ ~override\C#Ajan12.cre~
+	~AjantisBG2\Creatures\Knight\C#Ajan14.cre~ ~override\C#Ajan14.cre~
+	~AjantisBG2\Creatures\Knight\C#Ajan16.cre~ ~override\C#Ajan16.cre~
+SAY NAME1 @33
+SAY NAME2 @33
+//SAY INITIAL_MEETING @34  
+SAY MORALE @35   
+SAY HAPPY @36  
+SAY UNHAPPY_ANNOYED @37  
+SAY UNHAPPY_SERIOUS @38  
+SAY UNHAPPY_BREAKING @39  
+SAY LEADER  @40  
+SAY TIRED @41  
+SAY BORED @42  
+SAY BATTLE_CRY1 @43   
+SAY BATTLE_CRY2 @43  
+SAY BATTLE_CRY3 @43  
+SAY BATTLE_CRY4 @43  
+SAY BATTLE_CRY5 @43  
+SAY DAMAGE ~~ [C#AJAN38]
+SAY DYING ~~ [C#AJAN39]
+SAY HURT @46 
+SAY AREA_FOREST @47  
+SAY AREA_CITY @48  
+SAY AREA_DUNGEON @49  
+SAY AREA_DAY ~~ [C#AJAN15]
+SAY AREA_NIGHT ~~ [C#AJAN16]
+SAY SELECT_COMMON1 @52  
+SAY SELECT_COMMON2 @53  
+SAY SELECT_COMMON3 @54  
+SAY SELECT_ACTION1 @55  
+SAY SELECT_ACTION2 @56 
+SAY SELECT_ACTION3 @57  
+SAY SELECT_ACTION4 @58  
+SAY SELECT_ACTION5 @59  
+SAY SELECT_ACTION6 @60  
+SAY SELECT_ACTION7 @61  
+SAY REACT_TO_DIE_GENERAL @62  
+SAY BIO @63
+
+ACTION_IF GAME_IS ~tob bg2ee eet~ THEN BEGIN
+
+COPY 	~AjantisBG2\Creatures\Knight\c#ajatob.cre~ ~override\c#ajatob.cre~
+SAY NAME1 @33
+SAY NAME2 @33
+//SAY INITIAL_MEETING @34  
+SAY MORALE @35   
+SAY HAPPY @36   
+SAY UNHAPPY_ANNOYED @37  
+SAY UNHAPPY_SERIOUS @38  
+SAY UNHAPPY_BREAKING @39  
+SAY LEADER  @40 
+SAY TIRED @41  
+SAY BORED @42  
+SAY BATTLE_CRY1 @43  
+SAY BATTLE_CRY2 @43  
+SAY BATTLE_CRY3 @43  
+SAY BATTLE_CRY4 @43  
+SAY BATTLE_CRY5 @43  
+SAY DAMAGE ~~ [C#AJAN38]
+SAY DYING ~~ [C#AJAN39]
+SAY HURT @46  
+SAY AREA_FOREST @47  
+SAY AREA_CITY @48  
+SAY AREA_DUNGEON @49  
+SAY AREA_DAY ~~ [C#AJAN15]
+SAY AREA_NIGHT ~~ [C#AJAN16]
+SAY SELECT_COMMON1 @52  
+SAY SELECT_COMMON2 @53  
+SAY SELECT_COMMON3 @54  
+SAY SELECT_ACTION1 @55  
+SAY SELECT_ACTION2 @56 
+SAY SELECT_ACTION3 @57 
+SAY SELECT_ACTION4 @58  
+SAY SELECT_ACTION5 @59  
+SAY SELECT_ACTION6 @60  
+SAY SELECT_ACTION7 @61  
+SAY REACT_TO_DIE_GENERAL @62  
+SAY BIO @63
+
+END
+
+
+      PRINT @173
+END
+
+
+
+COMPILE ~AjantisBG2\Scripts\C#Ajan.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~C#Ajan.bcs~ ~AjantisBG2\Scripts\Romance_conflicts.baf~
+EXTEND_BOTTOM ~C#Ajan.bcs~ ~AjantisBG2\Scripts\Romance_core.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~C#Ajan.bcs~ ~AjantisBG2\Scripts\Romance_add.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~C#Ajan.bcs~ ~AjantisBG2\Scripts\Ajantis_NBRomance_baf.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~C#Ajan.bcs~ ~AjantisBG2\Scripts\Ajantis_friendship.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~C#Ajan.bcs~ ~AjantisBG2\Scripts\Ajantis_NPCbanter.baf~
+EXTEND_BOTTOM ~C#Ajan.bcs~ ~AjantisBG2\Scripts\AjantisEilaWindspear_baf.baf~ EVALUATE_BUFFER
+
+COMPILE ~AjantisBG2\Scripts\C#AjanD.baf~  
+EXTEND_BOTTOM ~C#AjanD.bcs~ ~AjantisBG2\Scripts\NBRom_Restbanter.BAF~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~C#AjanD.bcs~ ~AjantisBG2\Scripts\NPC_Restbanter.BAF~
+COMPILE ~AjantisBG2\Scripts\C#Ajcu0A.baf~   
+COMPILE ~AjantisBG2\Scripts\C#Ajcu0B.baf~   
+COMPILE ~AjantisBG2\Scripts\C#Ajcu0C.baf~   
+COMPILE ~AjantisBG2\Scripts\C#Ajcu0D.baf~   
+COMPILE ~AjantisBG2\Scripts\C#Ajcu0E.baf~   
+COMPILE ~AjantisBG2\Scripts\C#Ajcu0F.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcut1.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcut2.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcu3A.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcu3B.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcu3C.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcu3D.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcu3E.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcu3F.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcut4.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcut5.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcut6.baf~ 
+COMPILE ~AjantisBG2\Scripts\C#Ajcut7.baf~
+COMPILE ~AjantisBG2\Scripts\C#Ajcut8.baf~  
+COMPILE ~AjantisBG2\Scripts\C#Ajcut9.baf~   
+COMPILE ~AjantisBG2\Scripts\C#ILME01.baf~  
+COMPILE ~AjantisBG2\Scripts\C#ILME02.baf~  
+COMPILE ~AjantisBG2\Scripts\C#WED1.baf~  
+COMPILE ~AjantisBG2\Scripts\C#WED2.baf~
+COMPILE ~AjantisBG2\Scripts\C#Ajtrae.baf~
+COMPILE ~AjantisBG2\Scripts\C#KNIG01.baf~
+COMPILE ~AjantisBG2\Scripts\C#KNIG02.baf~
+COMPILE ~AjantisBG2\Scripts\C#KNIG03.baf~
+COMPILE ~AjantisBG2\Scripts\C#KNIG04.baf~
+COMPILE ~AjantisBG2\Scripts\C#KNIG05.baf~
+COMPILE ~AjantisBG2\Scripts\C#KNIG06.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJKA01.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJSKE1.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJPR01.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJ00.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJ01.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJ04.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJ0042.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJDOUG.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJCUD1.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJCUD2.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJCUD3.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJPROS.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJWAC1.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJEILA.baf~
+COMPILE ~AjantisBG2\Scripts\C#AJENDE.baf~
+
+EXTEND_BOTTOM ~Ar1202.bcs~ ~AjantisBG2\Scripts\C#ar1202.baf~
+EXTEND_BOTTOM ~Ar1200.bcs~ ~AjantisBG2\Scripts\C#ar1200.baf~
+EXTEND_BOTTOM ~Ar0903.bcs~ ~AjantisBG2\Scripts\C#ar0903.baf~
+EXTEND_BOTTOM ~Ar0406.bcs~ ~AjantisBG2\Scripts\C#ar0406.baf~
+EXTEND_BOTTOM ~BALDUR.bcs~ ~AjantisBG2\Scripts\C#BALDUR.baf~
+EXTEND_BOTTOM ~ANOMEN.BCS~ ~AjantisBG2\Scripts\C#ANOMEN.baf~
+EXTEND_TOP ~ANOMEN.BCS~ ~AjantisBG2\Scripts\C#ANOMEN_windspear.baf~
+EXTEND_BOTTOM ~MINSC.BCS~ ~AjantisBG2\Scripts\C#MINSC.baf~
+EXTEND_BOTTOM ~KELDORN.BCS~ ~AjantisBG2\Scripts\C#KELDORN.baf~
+EXTEND_TOP ~KAYL1.BCS~ ~AjantisBG2\Scripts\C#KAYL1.baf~
+EXTEND_BOTTOM ~AR0704.BCS~ ~AjantisBG2\Scripts\C#ar0704_ROM.baf~
+EXTEND_BOTTOM ~AR0512.BCS~ ~AjantisBG2\Scripts\C#ar0512_ROM.baf~
+EXTEND_BOTTOM ~AR0901.BCS~ ~AjantisBG2\Scripts\C#ar0901_ROM.baf~
+EXTEND_BOTTOM ~AR0334.BCS~ ~AjantisBG2\Scripts\C#ar0334.baf~
+
+EXTEND_BOTTOM ~Ar1200.bcs~ ~AjantisBG2\Scripts\C#ar1200.baf~
+EXTEND_TOP ~Ar1002.bcs~ ~AjantisBG2\Scripts\C#ar1002.baf~
+EXTEND_BOTTOM ~Ar1007.bcs~ ~AjantisBG2\Scripts\C#ar1007.baf~
+EXTEND_TOP ~AR0020.bcs~ ~AjantisBG2\Scripts\C#ar0020.baf~
+EXTEND_BOTTOM ~Ar1204.bcs~ ~AjantisBG2\Scripts\C#ar1204.baf~
+EXTEND_BOTTOM ~GARREN.BCS~ ~AjantisBG2\Scripts\C#Garren.baf~
+EXTEND_BOTTOM ~imoen.BCS~ ~AjantisBG2\Scripts\C#imoen.baf~
+
+
+
+/*
+PRINT @14
+PRINT ~~
+
+PRINT ~Anomen romance conflict installation (only skip this if you want to play multiromances)~
+
+PRINT ~Please choose whether to install the Ajantis-Anomen romance conflict. Please install the conflict if you want to play the mod as it is intended from the author. Not installing the conflict will enable to play multiromances.
+[1] Install Ajantis-Anomen romance conflict: yes.
+[2] Install Ajantis-Anomen romance conflict: no. This will enable multiromancing, but might lead to implausible romance situations.~
+
+OUTER_SPRINT ~ajantisromconflict~ ~placeholder_value~
+OUTER_WHILE (!(IS_AN_INT ~ajantisromconflict~) OR (~ajantisromconflict~ > 0x2) OR (~ajantisromconflict~ < 0x1)) BEGIN
+PRINT @19
+  ACTION_READLN ~ajantisromconflict~
+END
+ACTION_IF ("ajantisromconflict" = 1) THEN BEGIN 
+*/
+EXTEND_BOTTOM ~BALDUR.bcs~ ~AjantisBG2\Scripts\C#BALDUR_ROM_CONFLICTS.BAF~
+
+/* PRINT ~Ajantis-Anomen romance conflict installed.~
+END
+      ACTION_IF ("ajantisromconflict" = 2) THEN BEGIN
+
+PRINT ~Ajantis-Anomen romance conflict not installed.~
+END
+*/
+
+ 
+
+/* detection of Tweakpack turned NORH-building */
+/* Thank you CamDawg for the code */
+
+
+// ajantis compat code for flipped NORH
+ACTION_IF ((MOD_IS_INSTALLED ~BG2_TWEAKS/SETUP-BG2_TWEAKS.TP2~ ~3220~) OR
+                   (FILE_EXISTS_IN_GAME ~oh6000.are~)) THEN BEGIN
+
+COPY_EXISTING ~ar0903.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~CreateCreature("C#KNIG05",\[820\.1500\],8)~ ~CreateCreature("C#KNIG05",[1548.1500],8)~
+    REPLACE_TEXTUALLY ~CreateCreature("C#Ajan\([01][0-9]\)",\[1730\.400\],0)~ ~CreateCreature("C#Ajan\1",[638.400],0)~
+    REPLACE_TEXTUALLY ~CreateCreature("C#KNIG07",\[500\.410\],8)~ ~CreateCreature("C#KNIG07",[1868.410],8)~
+  END
+
+  <<<<<<<< .../ajantis/inlined/dammit_cam.d
+  REPLACE_ACTION_TEXT_REGEXP ~c#ajan[jp]?~ ~EscapeAreaMove("AR0903",1730,\([0-9]+\),0)~ ~EscapeAreaMove("AR0903",638,\1,0)~
+  >>>>>>>>
+  COMPILE ~.../ajantis/inlined/dammit_cam.d~
+
+END
+
+
+
+
+
+
+//Portrait
+COPY ~AjantisBG2/DefaultPortrait~ ~override~
+
+ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+COPY ~AjantisBG2/DefaultPortrait/ee~ ~override~
+END
+
+//BGII:EE - ADD_JOURNAL
+
+
+ADD_JOURNAL @10003 @10004 @10005 @10006 @10007 @10008 @10009 @10010 @10011 @10012 @10013 @10014 @10015 @10016 @10017 @10018 @10019 @10020 @10021 @10022 @10023 @10024 @10025 @10026 @10027 @10028 @10029 @10030 @10041 @10042 @10043 @10044 @10045 @10046 @10047 @10048 USING ~AjantisBG2\tra\autotra\%LANGUAGE%/Setup-AjantisBG2.tra~
+
+/* The Final Battle with Bodhi. */
+ADD_JOURNAL EXISTING TITLE (#74337) @10008 @10009 USING ~AjantisBG2\tra\autotra\%LANGUAGE%/Setup-AjantisBG2.tra~
+
+/* Journey to the Windspear Hills. */
+ADD_JOURNAL EXISTING TITLE (#74363) @10000 @10001 @10002 USING ~AjantisBG2\tra\autotra\%LANGUAGE%/Setup-AjantisBG2.tra~
+
+
+
+
+//Romance music and soundset
+
+
+/* mute sound */
+  COPY ~AjantisBG2/Sound/C#ABLANK.wav~ ~override~
+
+
+ACTION_IF GAME_IS ~BG2 ToB BGT~ THEN BEGIN
+COPY ~AjantisBG2/Sound/blank.mus~ ~music~
+
+COPY_EXISTING ~songlist.2da~ ~override~
+SET_2DA_ENTRY 2 1 2 ~Blank~
+SET_2DA_ENTRY 2 2 2 ~Blank.mus~ 
+END
+
+
+
+ACTION_IF (FILE_EXISTS ~AjantisBG2/sound/%LANGUAGE%~) BEGIN
+  LAF HANDLE_AUDIO
+    STR_VAR
+      audio_path = EVAL ~AjantisBG2/sound/%LANGUAGE%~
+      oggdec_path = ~AjantisBG2/sound~
+  END
+END
+ELSE BEGIN
+  LAF HANDLE_AUDIO
+    STR_VAR
+      audio_path = ~AjantisBG2/sound/english~
+      oggdec_path = ~AjantisBG2/sound~
+  END
+END
+
+
+LAF HANDLE_AUDIO
+  INT_VAR
+    music = 1
+  STR_VAR
+    audio_path = ~AjantisBG2/sound/music~
+    oggdec_path = ~AjantisBG2/sound~
+ //   sox_path = ~AjantisBG2/sound~
+END
+
+ACTION_IF GAME_IS ~eet~ BEGIN
+  LOAD_TRA ~AjantisBG2/tra/autotra/%LANGUAGE%/c#ajanj_pr.tra~
+  INCLUDE ~AjantisBG2/lib/EET_functions.tph~
+  LAF ~EET_NPC_TRANSITION~
+    INT_VAR
+      type = 2
+      clean_ToB = 1
+    STR_VAR
+      dv = "C#Ajantis"
+      override_SoA = "C#AJAN"
+      override_ToB = "C#AJAN25"
+      dialog_ToB = "C#AJAN25"
+      string = "@749" //Bring me Ajantis, the paladin and knight
+      stringPosDV = "Alora"
+      clean_ToB_DV = "Ajantis"
+  END
+END ELSE BEGIN
+  COMPILE ~ajantisbg2/tob/dialogue/FATESP.d~ USING ~AjantisBG2/tra/autotra/%LANGUAGE%/c#ajanj_pr.tra~
+END

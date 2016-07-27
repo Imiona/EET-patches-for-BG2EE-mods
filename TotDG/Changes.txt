@@ -1,0 +1,13 @@
+Manual patches:
+
+1. ALWAYS section expanded:
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 2283
+  END ELSE BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 0
+  END
+
+2. OUTER_SET xCoord  = 490 => OUTER_SET xCoord  = 505 + wmp_xCoordAdd_SoA
+3. OUTER_SET yCoord  = 40 => OUTER_SET yCoord  = 40 + wmp_yCoordAdd_SoA

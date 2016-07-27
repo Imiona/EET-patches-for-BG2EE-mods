@@ -1,0 +1,278 @@
+IF
+  OnCreation()
+  RandomNumGT(7,3)
+  GlobalLT("chapter","GLOBAL",%bg2_chapter_6%)
+  OR(2)
+    !TimeGT(5)
+    !TimeLT(DUSK_END)
+  !GlobalGT("WorkingForBodhi","GLOBAL",0)
+  GlobalLT("LassalVampires","GLOBAL",3)
+  !DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    CreateCreature("VAMPIF01",[488.558],10)
+    CreateCreature("VAMPIM01",[500.454],10)
+    CreateCreature("VAMFLM01",[552.476],10)
+  RESPONSE #150
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMPIF01",[500.454],10)
+    CreateCreature("VAMPIM01",[552.476],10)
+  RESPONSE #250
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMEMI01",[500.454],10)
+    CreateCreature("VAMFLM01",[552.476],10)
+    CreateCreature("VAMFLF01",[427.548],10)
+  RESPONSE #300
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMPIF01",[500.454],10)
+    CreateCreature("VAMFLF01",[552.476],10)
+    CreateCreature("VAMPIM01",[427.548],10)
+    CreateCreature("VAMFLM01",[525.591],10)
+  RESPONSE #300
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMPIF01",[500.454],10)
+    CreateCreature("VAMFLM01",[552.476],10)
+    CreateCreature("VAMPIF01",[427.548],10)
+    CreateCreature("VAMPIM01",[525.591],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(7,3)
+  GlobalLT("chapter","GLOBAL",%bg2_chapter_6%)
+  OR(2)
+    !TimeGT(5)
+    !TimeLT(DUSK_END)
+  !GlobalGT("WorkingForBodhi","GLOBAL",0)
+  GlobalLT("LassalVampires","GLOBAL",3)
+  DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    CreateCreature("VAMPIF01",[488.558],10)
+    CreateCreature("VAMPIM01",[500.454],10)
+    CreateCreature("VAMFLM01",[552.476],10)
+  RESPONSE #150
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMPIF01",[500.454],10)
+    CreateCreature("VAMPIM01",[552.476],10)
+  RESPONSE #250
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMEMI01",[500.454],10)
+    CreateCreature("VAMFLM01",[552.476],10)
+    CreateCreature("VAMFLF01",[427.548],10)
+  RESPONSE #300
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMPIF01",[500.454],10)
+    CreateCreature("VAMFLF01",[552.476],10)
+    CreateCreature("VAMPIM01",[427.548],10)
+    CreateCreature("VAMFLM01",[525.591],10)
+  RESPONSE #300
+    CreateCreature("VAMEMI01",[488.558],10)
+    CreateCreature("VAMPIF01",[500.454],10)
+    CreateCreature("VAMFLM01",[552.476],10)
+    CreateCreature("VAMPIF01",[427.548],10)
+    CreateCreature("VAMPIM01",[525.591],10)
+  RESPONSE #500
+    CreateCreature("VAMFLM01",[488.558],10)
+    CreateCreature("VAMFLF01",[500.454],10)
+    CreateCreature("VAMFLM01",[500.454],10)
+    CreateCreature("VAMFLM01",[552.476],10)
+    CreateCreature("VAMFLF01",[427.548],10)
+    CreateCreature("VAMFLM01",[427.548],10)
+    CreateCreature("VAMFLM01",[525.591],10)
+    CreateCreature("VAMFLF01",[525.591],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(7,4)
+  GlobalLT("chapter","GLOBAL",%bg2_chapter_6%)
+  !Dead("Aran")
+  OR(2)
+    Global("AttackedThieves","GLOBAL",1)
+    GlobalGT("WorkingForBodhi","GLOBAL",0)
+  !DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+  RESPONSE #150
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+  RESPONSE #250
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+  RESPONSE #300
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(7,4)
+  GlobalLT("chapter","GLOBAL",%bg2_chapter_6%)
+  !Dead("Aran")
+  OR(2)
+    Global("AttackedThieves","GLOBAL",1)
+    GlobalGT("WorkingForBodhi","GLOBAL",0)
+  DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+  RESPONSE #150
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+  RESPONSE #250
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+  RESPONSE #300
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[488.558],10)
+    CreateCreature("ARNWAR05",[500.454],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+    CreateCreature("ARNWAR03",[427.548],10)
+    CreateCreature("ARNWAR09",[525.591],10)
+    CreateCreature("FLYFGT04",[552.476],10)
+END
+
+IF
+  OnCreation()
+  OR(4)
+    PartyHasItem("blun14")
+    PartyHasItem("blun30")
+    PartyHasItem("blun30c")
+    PartyHasItem("blun30d")
+  Global("D0RandEncFlailHunt","GLOBAL",0)
+  LevelGT(Player1,14)
+  RandomNum(2,1)
+THEN
+  RESPONSE #100
+    SetGlobal("D0RandEncFlailHunt","GLOBAL",1)
+    CreateCreatureDoor("RAKSHA01",[488.558],10)
+    CreateCreatureDoor("RAKSHA01",[552.476],10)
+    CreateCreatureDoor("RAKSHA01",[525.591],10)
+END
+
+IF
+  OnCreation()
+  Global("D0RandEncAranRevenge","GLOBAL",0)
+  Dead("Aran")
+  RandomNumGT(4,2)
+THEN
+  RESPONSE #100
+    SetGlobal("D0RandEncAranRevenge","GLOBAL",1)
+    CreateCreature("REPTHF2",[488.558],10)
+    CreateCreature("REPTHF2",[500.454],10)
+    CreateCreature("REPTHF2",[427.548],10)
+    CreateCreature("REPTHF3",[525.591],10)
+END
+
+IF
+  OnCreation()
+  Global("D0RandEncRuneRevenge","GLOBAL",0)
+  Dead("hlshang")
+  RandomNumGT(5,2)
+THEN
+  RESPONSE #100
+    SetGlobal("D0RandEncRuneRevenge","GLOBAL",1)
+    SetGlobalTimer("D0RuneReinforce","MYAREA",12)
+    CreateCreature("TANTHF01",[488.558],10)
+    CreateCreature("TANTHF01",[427.548],10)
+    CreateCreature("TANWIZ02",[525.591],10)
+END
+
+IF
+  OnCreation()
+  ReputationLT(Player1,3)
+  RandomNumGT(12,9)
+THEN
+  RESPONSE #100
+    CreateCreature("AMNCEN1",[488.558],10)
+    CreateCreature("AMNLEG1",[500.454],10)
+    CreateCreature("AMNLEG1",[552.476],10)
+    CreateCreature("AMNLEG1",[427.548],10)
+    CreateCreature("AMNLEG1",[525.591],10)
+  RESPONSE #100
+    CreateCreature("D0BOHUN2",[488.558],10)
+    CreateCreature("D0BOHUN1",[500.454],10)
+    CreateCreature("D0BOHUN2",[552.476],10)
+    CreateCreature("D0BOHUN1",[427.548],10)
+    CreateCreature("D0BOHUN2",[525.591],10)
+END
+
+IF
+  OnCreation()
+THEN
+  RESPONSE #100
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+  RESPONSE #200
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND03",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND05",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+  RESPONSE #300
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND05",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND05",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND01",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+  RESPONSE #500
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[500.454],10) // Bandit
+    CreateCreature("REBAND01",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+    CreateCreature("REBAND04",[525.591],10) // Bandit
+END
+
+IF
+  Global("D0RandEncRuneRevenge","GLOBAL",1)
+  GlobalTimerExpired("D0RuneReinforce","MYAREA")
+THEN
+  RESPONSE #100
+    SetGlobal("D0RandEncRuneRevenge","GLOBAL",2)
+    CreateCreatureObjectDoor("TANTHF01",Player1,0,0,0)
+    CreateCreatureObjectDoor("TANTHF01",[PC],0,0,0)
+END

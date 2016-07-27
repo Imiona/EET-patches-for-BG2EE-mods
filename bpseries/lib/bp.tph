@@ -1,0 +1,1424 @@
+
+DEFINE_ACTION_FUNCTION zero_byte_files BEGIN
+  
+  // overrides zero-byte files in the biffs, if not overridden already
+  ACTION_IF NOT FILE_EXISTS ~override/iplot01k.itm~ BEGIN
+    COPY_EXISTING ~sw1h01.itm~ ~override/iplot01k.itm~
+  END
+  ACTION_IF NOT FILE_EXISTS ~override/iplot04g.itm~ BEGIN
+    COPY_EXISTING ~sw1h01.itm~ ~override/iplot04g.itm~
+  END
+  ACTION_IF NOT FILE_EXISTS ~override/iplot04h.itm~ BEGIN
+    COPY_EXISTING ~sw1h01.itm~ ~override/iplot04h.itm~
+  END
+  ACTION_IF NOT FILE_EXISTS ~override/iplot04i.itm~ BEGIN
+    COPY_EXISTING ~sw1h01.itm~ ~override/iplot04i.itm~
+  END
+
+END
+
+//////////////////////////////////////
+DEFINE_ACTION_FUNCTION script_fixer BEGIN
+
+PRINT ~Also fixing scripts to use CastSpellInnateRES instead of CastSpellInnate (important)~
+  COPY_EXISTING_REGEXP GLOB ~.*\.bcs~ ~override~
+
+PATCH_IF NOT (~%SOURCE_RES%~ STRING_EQUAL_CASE ~sarvie01~) BEGIN
+
+  DECOMPILE_AND_PATCH BEGIN
+
+  REPLACE_EVALUATE CASE_INSENSITIVE ~SpellCastInnate(\(.*\),\([^0].*\))~
+    BEGIN
+      TEXT_SPRINT z "BUGGED"
+      TEXT_SPRINT bs "0"
+      TEXT_SPRINT whynow "%MATCH2%"
+      PATCH_PRINT "%SOURCE_FILE%: MATCH2 = %whynow%"
+      PATCH_IF ("%whynow%" STRING_EQUAL_CASE "0" != 1) BEGIN
+        y = IDS_OF_SYMBOL(~spell~ ~%MATCH2%~)
+        PATCH_PRINT "%SOURCE_FILE%: spell id = %y%"
+        PATCH_IF (%y% > 3999) BEGIN
+          y -= 4000
+          PATCH_IF (y < 10) BEGIN
+            TEXT_SPRINT z "SPCL00%y%"
+          END ELSE PATCH_IF (y > 9) AND (y <100) BEGIN
+            TEXT_SPRINT z "SPCL0%y%"
+          END ELSE BEGIN
+            TEXT_SPRINT z "SPCL%y%"
+          END
+        END ELSE PATCH_IF (%y% > 2999 AND y < 4000) BEGIN
+          y -= 3000 
+          PATCH_IF (y < 10) BEGIN
+            TEXT_SPRINT z "SPIN00%y%"
+          END ELSE PATCH_IF (y > 9) AND (y <100) BEGIN
+            TEXT_SPRINT z "SPIN0%y%"
+          END ELSE BEGIN
+            TEXT_SPRINT z "SPIN%y%"
+          END
+        END
+        PATCH_PRINT "%SOURCE_FILE%: spell name = %z%"
+      END ELSE BEGIN
+        PATCH_PRINT "%SOURCE_FILE%:  Modder chose I:Spell = 0, and it slipped through the cracks somehow."
+      END
+    END
+    ~SpellCastInnateRES("%z%",%MATCH1%)~
+  END
+
+END
+BUT_ONLY_IF_IT_CHANGES
+
+END
+
+/////////////////////////////////////////////////////////////////////////
+
+
+DEFINE_ACTION_FUNCTION level_one_innates_bg2 BEGIN
+
+PRINT ~Setting the innate spells to level one (with exceptions).....~
+
+COPY_EXISTING_REGEXP GLOB ~.*\.spl~ ~override~
+  READ_SHORT 0x1c spell_type
+  PATCH_IF (%spell_type% = 4) BEGIN
+    READ_LONG 0x34 spell_level
+    PATCH_IF (((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL412~) AND (%spell_level% != 4)) OR // SET_SNARE_TRAP
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL414~) AND (%spell_level% != 4)) OR // SET_SPECIAL_SNARE_TRAP
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN592~) AND (%spell_level% != 5)) OR // HELM_RITUAL_SCROLL
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN593~) AND (%spell_level% != 5)) OR // ODREN_RITUAL_SCROLL
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN642~) AND (%spell_level% != 6)) OR // POISONOUS_CLOUD - eSeries
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN666~) AND (%spell_level% != 6)) OR // ZOMBIE_LEVEL_DRAIN
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL910~) AND (%spell_level% != 9)) OR // ROGUE_SET_SPIKE_TRAP
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL911~) AND (%spell_level% != 9)) OR // ROGUE_SET_EXPLODING_TRAP
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL912~) AND (%spell_level% != 9)) OR // ROGUE_SET_TIME_TRAP
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN940~) AND (%spell_level% != 9)) OR // MEPHIT_STINKING_CLOUD - eSeries
+              ((~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN979~) AND (%spell_level% != 9))) BEGIN // GOLEM_GASCLOUD - eSeries
+      PATCH_IF (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL412~) OR
+               (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL414~) BEGIN
+        WRITE_LONG 0x34 ~4~
+      END ELSE
+      PATCH_IF (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN592~) OR
+               (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN593~) BEGIN
+        WRITE_LONG 0x34 ~5~
+      END ELSE
+      PATCH_IF (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN642~) OR
+               (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN666~) BEGIN
+        WRITE_LONG 0x34 ~6~
+      END ELSE
+      PATCH_IF (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL910~) OR
+               (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL911~) OR
+               (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPCL912~) OR
+               (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN940~) OR
+               (~%SOURCE_RES%~ STRING_EQUAL_CASE ~SPIN979~) BEGIN
+        WRITE_LONG 0x34 ~9~
+      END
+    END ELSE
+    PATCH_IF (%spell_level% != 1) BEGIN
+      WRITE_LONG 0x34 ~1~
+    END
+  END
+BUT_ONLY_IF_IT_CHANGES
+
+LAF script_fixer END
+
+END
+/////////////////////////////////////////////////////////////////////////
+
+
+DEFINE_ACTION_FUNCTION level_one_innates BEGIN
+
+PRINT ~Setting the innate spells to level one (with exceptions).....~
+
+
+COPY_EXISTING_REGEXP GLOB ~.*\.spl~ ~override~
+  READ_SHORT 0x1c spell_type
+  PATCH_IF (%spell_type% = 4) BEGIN
+    READ_LONG 0x34 spell_level
+    PATCH_IF (%spell_level% =0) BEGIN
+      WRITE_LONG 0x34 ~1~
+    END
+    PATCH_IF (%spell_level% > 1) BEGIN
+      WRITE_LONG 0x34 ~1~
+    END
+  END
+BUT_ONLY_IF_IT_CHANGES
+
+ACTION_IF GAME_IS ~tob bg2 bgt~ BEGIN
+  LAF script_fixer END
+END
+
+END
+
+///////////////////////////////////////////////////////////////////////////////////////
+DEFINE_ACTION_FUNCTION special_cases BEGIN
+
+COPY_EXISTING ~sppr409.spl~ ~override~
+ READ_LONG  0x64  "ability_offset"
+ READ_SHORT 0x68  "abil_cnt"
+ READ_LONG  0x6a  "eff_offset"
+ FOR( cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+   READ_BYTE ("%ability_offset%"+cnt*0x28)  "type"
+   PATCH_IF("%type%"=1) BEGIN        //Melee ability
+     READ_SHORT ("%ability_offset%"+cnt*0x28+0x1e)  eff_cnt
+     READ_SHORT ("%ability_offset%"+cnt*0x28+0x20)  eff_idx
+     FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+       READ_SHORT ("%eff_offset%"+0x30*(cnt2+eff_idx))  "eff_type"
+       PATCH_IF( "%eff_type%"=282) BEGIN
+         SET offset = ("%eff_offset%"+0x30*(cnt2+eff_idx))
+         WRITE_BYTE   offset+2  2       //TargetPresetTarget - was TargetSelf(1) that is wrong
+       END
+     END
+   END
+ END
+BUT_ONLY
+
+
+COPY_EXISTING ~staf15.itm~ ~override~
+ READ_LONG  0x64  "ability_offset"
+ READ_SHORT 0x68  "abil_cnt"
+ READ_LONG  0x6a  "eff_offset"
+ SET found = 0
+ SET offset = 0
+ SET extra_effects = 0
+ FOR( cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+   READ_BYTE ("%ability_offset%"+cnt*0x38)  "type"
+
+   PATCH_IF( found>0) BEGIN    //shift effects indexes for all possible abilities after 1st effect entry
+     READ_SHORT ("%ability_offset%"+cnt*0x38+0x20)  eff_idx
+     WRITE_SHORT ("%ability_offset%"+cnt*0x38+0x20) eff_idx+extra_effects
+   END
+
+   PATCH_IF( "%type%"=3 AND found=0) BEGIN  //necessary ability found - Magical
+     READ_SHORT ("%ability_offset%"+cnt*0x38+0x1e)  eff_cnt
+     READ_SHORT ("%ability_offset%"+cnt*0x38+0x20)  eff_idx
+     FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+       READ_SHORT ("%eff_offset%"+0x30*(cnt2+eff_idx))  "eff_type"
+       PATCH_IF( "%eff_type%" = 39) BEGIN       //right ability
+         SET offset = "%eff_offset%"+0x30*(cnt2+eff_idx)
+       END
+       PATCH_IF( "%eff_type%"=282 AND offset>0) BEGIN       //effect found
+         found=1
+       END
+     END
+   END
+
+   PATCH_IF( found=0 AND offset>0) BEGIN
+       WRITE_SHORT ("%ability_offset%"+cnt*0x38+0x1e)  eff_cnt+1
+       INSERT_BYTES offset    0x30               //1 new effect
+       WRITE_SHORT  offset    282                //effect
+       WRITE_BYTE   offset+2  2                  //TargetSelf
+       WRITE_BYTE   offset+3  0                  //Power
+       WRITE_LONG   offset+4  11                 //stars
+       WRITE_LONG   offset+8  24                 //code
+       WRITE_BYTE   offset+12 0                  //Instant/Limited
+       WRITE_BYTE   offset+13 2                  //Not Dispell/Not Bypass Resistance
+       WRITE_LONG   offset+14 6           //Time
+       WRITE_BYTE   offset+18 100          //Probability 1
+       WRITE_BYTE   offset+19 0          //Probability 2
+       SET extra_effects = extra_effects + 1
+       SET found = 1
+   END
+ END //FOR - ability loop
+BUT_ONLY
+
+
+COPY_EXISTING ~wand14.itm~ ~override~
+ READ_LONG  0x64  "ability_offset"
+ READ_SHORT 0x68  "abil_cnt"
+ READ_LONG  0x6a  "eff_offset"
+ SET found = 0
+ SET offset = 0
+ SET extra_effects = 0
+ FOR( cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+   READ_BYTE ("%ability_offset%"+cnt*0x38)  "type"
+
+   PATCH_IF( found>0) BEGIN    //shift effects indexes for all possible abilities after 1st effect entry
+     READ_SHORT ("%ability_offset%"+cnt*0x38+0x20)  eff_idx
+     WRITE_SHORT ("%ability_offset%"+cnt*0x38+0x20) eff_idx+extra_effects
+   END
+
+   PATCH_IF( "%type%"=3 AND found=0) BEGIN  //necessary ability found - Magical
+     READ_SHORT ("%ability_offset%"+cnt*0x38+0x1e)  eff_cnt
+     READ_SHORT ("%ability_offset%"+cnt*0x38+0x20)  eff_idx
+     FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+       READ_SHORT ("%eff_offset%"+0x30*(cnt2+eff_idx))  "eff_type"
+       PATCH_IF( "%eff_type%" = 157) BEGIN       //right ability
+         SET offset = "%eff_offset%"+0x30*(cnt2+eff_idx)
+       END
+       PATCH_IF( "%eff_type%"=282 AND offset>0) BEGIN       //effect found
+         found=1
+       END
+     END
+   END
+
+   PATCH_IF( found=0 AND offset>0) BEGIN
+       WRITE_SHORT ("%ability_offset%"+cnt*0x38+0x1e)  eff_cnt+1
+       INSERT_BYTES offset    0x30               //1 new effect
+       WRITE_SHORT  offset    282                //effect
+       WRITE_BYTE   offset+2  2                  //TargetSelf
+       WRITE_BYTE   offset+3  0                  //Power
+       WRITE_LONG   offset+4  14                 //stars
+       WRITE_LONG   offset+8  24                 //code
+       WRITE_BYTE   offset+12 0                  //Instant/Limited
+       WRITE_BYTE   offset+13 2                  //Not Dispell/Not Bypass Resistance
+       WRITE_LONG   offset+14 6           //Time
+       WRITE_BYTE   offset+18 100          //Probability 1
+       WRITE_BYTE   offset+19 0          //Probability 2
+       SET extra_effects = extra_effects + 1
+       SET found = 1
+   END
+ END //FOR - ability loop
+BUT_ONLY
+
+// Fix for in-game spell
+COPY_EXISTING ~spwi609.spl~ ~override~
+ READ_LONG  0x64  "ability_offset"
+ READ_SHORT 0x68  "abil_cnt"
+ READ_LONG  0x6a  "eff_offset"
+ FOR( cnt=0; cnt<"%abil_cnt%"; cnt=cnt+1) BEGIN
+   READ_BYTE ("%ability_offset%"+cnt*0x28)  "type"
+   PATCH_IF("%type%"=1) BEGIN        //Melee ability
+     READ_SHORT ("%ability_offset%"+cnt*0x28+0x1e)  eff_cnt
+     READ_SHORT ("%ability_offset%"+cnt*0x28+0x20)  eff_idx
+     FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+       READ_SHORT ("%eff_offset%"+0x30*(cnt2+eff_idx))  "eff_type"
+       PATCH_IF( "%eff_type%"=146) BEGIN  //fixing wrong sppr950 reference 'coz it already has (233) set
+         WRITE_ASCII ("%eff_offset%"+0x30*(cnt2+eff_idx)+0x14)  ~spwi609D~ #8
+       END
+     END
+   END
+ END
+BUT_ONLY
+
+END
+
+/////////////////////////////////////////////////////////////////////////////////////////
+ //
+////////////////////////////////////////////////////////////////////////////////////
+
+
+DEFINE_ACTION_FUNCTION fix_cloud_detection BEGIN
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~bpinviso.itm~ BEGIN
+  COPY ~bpseries/source/bpinviso.itm~ ~override~
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~bpinviso.cre~ BEGIN
+  COPY ~bpseries/source/bpinviso.cre~ ~override~
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~bpinviso.eff~ BEGIN
+  COPY ~bpseries/source/bpinviso.eff~ ~override~
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~bpinviso.bcs~ BEGIN
+  COMPILE ~bpseries/source/bpinviso.baf~
+END
+
+// Not really cloud detection, but also needed if BP isn't installed
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~bpmisled.bcs~ BEGIN
+  COMPILE ~bpseries/source/bpmisled.baf~
+END
+
+ACTION_FOR_EACH ~bad_cloud~ IN spdr201 spin688 spin719 spin723 spin897 spin917 spin940
+                               spin979 sppr105 sppr705 spwi004 spwi101 spwi213 spwi215
+                               spwi404 spwi502 spwi614 spwi810 spwi911 spwm187 BEGIN
+COPY_EXISTING ~%bad_cloud%.spl~ ~override~
+  READ_LONG  0x64  ability_offset
+  READ_SHORT 0x68  abil_cnt
+  READ_LONG  0x6a  eff_offset
+  FOR( cnt=0; cnt<%abil_cnt%; cnt=cnt+1) BEGIN
+    READ_BYTE (%ability_offset%+cnt*0x28)  type
+    READ_SHORT (%ability_offset%+cnt*0x28+0x1e)  eff_cnt
+    READ_SHORT (%ability_offset%+cnt*0x28+0x20)  eff_idx
+    FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+      READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx))  eff_type
+      PATCH_IF( %eff_type%=282) BEGIN
+        READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+4)  value
+        READ_LONG  (%eff_offset%+0x30*(cnt2+eff_idx)+8)  state
+        PATCH_IF (state = 24) AND (value > 10) BEGIN
+          WRITE_BYTE (%eff_offset%+0x30*(cnt2+eff_idx)+13) 0 // Non-magical
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+28) 0      // Dice Amt
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+32) 0     // Dice Type
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+36) 0
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+40) 0x00000000
+        END
+      END ELSE PATCH_IF( %eff_type%=177) BEGIN
+        // Fix the creature summons
+        SET offset = (%eff_offset%+0x30*(eff_idx+cnt2))
+        WRITE_BYTE   offset+2  1         // Target Self
+        WRITE_SHORT  offset+4  0  // Anyone
+        WRITE_SHORT  offset+8  2  //EA             
+        WRITE_BYTE   offset+12 0 // Instant/Limited                
+        WRITE_BYTE   offset+13 0 // Non-magical
+        WRITE_LONG   offset+14 999999           //Time
+        WRITE_BYTE   offset+18 100
+        WRITE_BYTE   offset+19 0
+        WRITE_ASCIIE offset+20 ~bpinviso~ #8
+        WRITE_LONG   offset+28 0      // Dice Amt
+        WRITE_LONG   offset+32 0     // Dice Type
+        WRITE_LONG  offset+36 0      // Save Type
+        WRITE_LONG  offset+40 0     // Save Bonus
+      END
+    END
+  END
+END
+COPY_EXISTING ~wand13.itm~ ~override~
+  READ_LONG  0x64  ability_offset
+  READ_SHORT 0x68  abil_cnt
+  READ_LONG  0x6a  eff_offset
+  FOR( cnt=0; cnt<%abil_cnt%; cnt=cnt+1) BEGIN
+    READ_BYTE (%ability_offset%+cnt*0x28)  type
+    READ_SHORT (%ability_offset%+cnt*0x28+0x1e)  eff_cnt
+    READ_SHORT (%ability_offset%+cnt*0x28+0x20)  eff_idx
+    FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+      READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx))  eff_type
+      PATCH_IF( %eff_type%=282) BEGIN
+        READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+4)  value
+        READ_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+8)  state
+        READ_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+36) save_type
+        READ_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+40) save_bonus
+        PATCH_IF (state = 24) AND (value > 10) BEGIN
+          WRITE_BYTE (%eff_offset%+0x30*(cnt2+eff_idx)+13) 0 // Non-magical
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+28) 0      // Dice Amt
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+32) 0     // Dice Type
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+36) 0
+          WRITE_LONG (%eff_offset%+0x30*(cnt2+eff_idx)+40) 0x00000000
+        END
+      END ELSE PATCH_IF( %eff_type%=177) BEGIN
+        // Fix the creature summons
+        SET offset = (%eff_offset%+0x30*(eff_idx+cnt2))
+        WRITE_BYTE   offset+2  1         // Target Self
+        WRITE_SHORT  offset+4  0  // Anyone
+        WRITE_SHORT  offset+8  2  //EA             
+        WRITE_BYTE   offset+12 0 // Instant/Limited                
+        WRITE_BYTE   offset+13 0 // Non-magical
+        WRITE_BYTE   offset+18 100
+        WRITE_BYTE   offset+19 0
+        WRITE_ASCIIE offset+20 ~bpinviso~ #8
+        WRITE_LONG   offset+28 0      // Dice Amt
+        WRITE_LONG   offset+32 0     // Dice Type
+        WRITE_LONG   offset+36 0      // Save Type
+        WRITE_LONG   offset+40 0     // Save Bonus
+      END
+    END
+  END
+
+  ACTION_IF GAME_IS ~bg2 tob bgt~ BEGIN
+    LAF special_cases END
+  END
+
+END
+
+
+
+//////////////////////////////////STATE_DISEASED FIX///////////////////////////////////
+//
+// STATE_DISEASED was broken in BG2:ToB, and to date remains broken in BGEE
+//To detect the state, we assign a Stats value to it (#134, STATE_DISEASED_FIX)
+// This also allows us to assign "severity values"
+// Num Stars  Disease Type
+//    1         [EMPTY --some mods may still use this for old DS #134 LEVELDRAIN)
+//    2         Slowing
+//    3         Ability Draining
+//    4         Hit-Point Draining
+//    5         Mummy Rot [Reserved for aTweaks special-case: Mummy Rot disease -- no healing possible while so diseased]
+//
+// The proficiency value is assigned to a custom secodary spell school (fl#Disease, also in sync w/ aTweaks package)
+// To make this work, all curative spells (and items) are assigned a Remove Secondary School effect
+//
+//
+
+DEFINE_ACTION_FUNCTION fix_state_diseased BEGIN
+
+COPY_EXISTING ~msectype.2da~ ~override~
+  COUNT_2DA_ROWS 2 school
+  SET school = %school% - 1 // Subtract 1 line for the header
+  SET found = 0
+  FOR (x=1; x<school; x=x+1) BEGIN
+    READ_2DA_ENTRY x 1 2 type
+    PATCH_IF (type STRING_EQUAL "FL#DISEASE") BEGIN
+      SET found = 1
+    END
+  END
+  ACTION_IF (found=0) BEGIN
+    ADD_SECTYPE ~fl#Disease~ #26195
+  END
+
+
+COPY ~bpseries/spl/disease/diseas_2.spl~ ~override~
+  WRITE_BYTE 0x27  ~fl#Disease~
+
+COPY ~bpseries/spl/disease/diseas_3.spl~ ~override~
+  WRITE_BYTE 0x27  ~fl#Disease~
+
+COPY ~bpseries/spl/disease/diseas_4.spl~ ~override~
+  WRITE_BYTE 0x27  ~fl#Disease~
+
+COPY ~bpseries/spl/disease/diseas_5.spl~ ~override~
+  WRITE_BYTE 0x27  ~fl#Disease~
+
+
+
+COPY_EXISTING_REGEXP GLOB ~.*\.spl~  ~override~
+  PATCH_IF (~%SOURCE_RES%~ STRING_EQUAL_CASE ~FL#MUM~) OR (~%SOURCE_RES%~ STRING_EQUAL_CASE ~FL#GMUM~) BEGIN    READ_SHORT 0x34  spell_level
+    READ_LONG  0x64  ability_offset
+    READ_SHORT 0x68  abil_cnt
+    READ_LONG  0x6a  eff_offset
+    FOR( cnt=0; cnt<%abil_cnt%; cnt=cnt+1) BEGIN
+      READ_BYTE (%ability_offset%+cnt*0x28)  type
+      PATCH_IF(%type%=1) BEGIN        //Melee ability
+        READ_SHORT (%ability_offset%+cnt*0x28+0x1e)  eff_cnt
+        READ_SHORT (%ability_offset%+cnt*0x28+0x20)  eff_idx
+        FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+          READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx))  eff_type
+          PATCH_IF( %eff_type%=206) BEGIN
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+2)  target
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+3)  power
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+12) dur_type
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+13) dispel_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+14) duration
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+18) prob_1
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+19) prob_2
+			READ_ASCII (%eff_offset%+0x30*(cnt2+eff_idx)+20) resource
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+36) save_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+40) save_bonus
+			
+			PATCH_IF ~%resource%~ STRING_EQUAL_CASE ~spin101~ BEGIN  // only need this done once
+
+              SET eff_cnt = eff_cnt+1
+              WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+              
+              SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+              INSERT_BYTES offset    0x30               //1 new effect
+              WRITE_SHORT  offset    146                //effect: Cast Spell at object
+              WRITE_BYTE   offset+2  %target%         // Target
+              WRITE_BYTE   offset+3  %power%                  //Power
+              WRITE_SHORT  offset+4  40     //Spell Level
+              WRITE_SHORT  offset+8  1                // Cast Instantly
+              WRITE_BYTE    offset+12 4 // delay/permanent
+              WRITE_SHORT   offset+14 2 // slight delay
+              WRITE_BYTE   offset+13 %dispel_type%    // Dispel Type
+              WRITE_BYTE   offset+18 %prob_1%     //Probability 1
+              WRITE_BYTE   offset+19 %prob_2%     // Probability 2
+              WRITE_ASCIIE offset+20 ~DISEAS_5~     // Spell File Name
+              WRITE_SHORT  offset+36 %save_type%      // Save Type
+              WRITE_SHORT  offset+40 %save_bonus%     // Save Bonus
+			END
+          END
+		END
+	  END
+	END
+  END ELSE
+
+  PATCH_IF (SOURCE_SIZE > 0x71) BEGIN // protects against invalid files
+    READ_SHORT 0x34  spell_level
+    READ_LONG  0x64  ability_offset
+    READ_SHORT 0x68  abil_cnt
+    READ_LONG  0x6a  eff_offset
+    FOR( cnt=0; cnt<%abil_cnt%; cnt=cnt+1) BEGIN
+      READ_BYTE (%ability_offset%+cnt*0x28)  type
+      PATCH_IF(%type%=1) BEGIN        //Melee ability
+        READ_SHORT (%ability_offset%+cnt*0x28+0x1e)  eff_cnt
+        READ_SHORT (%ability_offset%+cnt*0x28+0x20)  eff_idx
+        FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+          READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx))  eff_type
+          PATCH_IF( %eff_type%=78) BEGIN
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+2)  target
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+3)  power
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+8)  disease_type
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+12) dur_type
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+13) dispel_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+14) duration
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+18) prob_1
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+19) prob_2
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+36) save_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+40) save_bonus
+            					
+            PATCH_IF( %disease_type%=2) OR ( %disease_type%=3) BEGIN
+              SET eff_cnt = eff_cnt+1
+              WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+              
+              SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+              INSERT_BYTES offset    0x30               //1 new effect
+              WRITE_SHORT  offset    146                //effect: Cast Spell at object
+              WRITE_BYTE   offset+2  %target%         // Target
+              WRITE_BYTE   offset+3  %power%                  //Power
+              WRITE_SHORT  offset+4  %spell_level%     //Spell Level
+              WRITE_SHORT  offset+8  0                // Cast Instantly
+              PATCH_IF ( %dur_type% = 1) OR (%dur_type% = 9) BEGIN // If duration permanent, change it
+                WRITE_BYTE    offset+12 4 // delay/permanant
+                WRITE_SHORT   offset+14 2 // brief delay
+              END ELSE BEGIN
+                WRITE_BYTE   offset+12 %dur_type%       // Duration Type
+                WRITE_SHORT  offset+14 %duration%           //Time
+              END
+              WRITE_BYTE   offset+13 %dispel_type%    // Dispel Type
+              WRITE_BYTE   offset+18 %prob_1%     //Probability 1
+              WRITE_BYTE   offset+19 %prob_2%     // Probability 2
+              WRITE_ASCIIE offset+20 ~DISEAS_4~     // Spell File Name
+              WRITE_SHORT  offset+36 %save_type%      // Save Type
+              WRITE_SHORT  offset+40 %save_bonus%     // Save Bonus
+            END ELSE
+              PATCH_IF( %disease_type%>3) AND ( %disease_type%< 10) BEGIN
+                SET eff_cnt = eff_cnt+1
+                WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+              
+              SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+              INSERT_BYTES offset    0x30               //1 new effect
+              WRITE_SHORT  offset    146                //effect: Cast Spell at object
+              WRITE_BYTE   offset+2  %target%         // Target
+              WRITE_BYTE   offset+3  %power%                  //Power
+              WRITE_SHORT  offset+4  %spell_level%     //Spell Level
+              WRITE_SHORT  offset+8  0                // Cast Instantly
+              PATCH_IF ( %dur_type% = 1) OR (%dur_type% = 9) BEGIN
+                WRITE_BYTE    offset+12 4 // delay/permanant
+                WRITE_SHORT   offset+14 2 // brief delay
+              END ELSE BEGIN
+                WRITE_BYTE   offset+12 %dur_type%       // Duration Type
+                WRITE_SHORT  offset+14 %duration%           //Time
+              END
+              WRITE_BYTE   offset+13 %dispel_type%    // Dispel Type
+              WRITE_BYTE   offset+18 %prob_1%     //Probability 1
+              WRITE_BYTE   offset+19 %prob_2%     // Probability 2
+              WRITE_ASCIIE offset+20 ~DISEAS_3~     // Spell File Name
+              WRITE_SHORT  offset+36 %save_type%      // Save Type
+              WRITE_SHORT  offset+40 %save_bonus%     // Save Bonus
+            END ELSE
+              PATCH_IF( %disease_type%>9) BEGIN
+                SET eff_cnt = eff_cnt+1
+                WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+              
+              
+              SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+              INSERT_BYTES offset    0x30               //1 new effect
+              WRITE_SHORT  offset    146                //effect: Cast Spell at object
+              WRITE_BYTE   offset+2  %target%         // Target
+              WRITE_BYTE   offset+3  %power%                  //Power
+              WRITE_SHORT  offset+4  %spell_level%     //Spell Level
+              WRITE_SHORT  offset+8  0                // Cast Instantly
+              PATCH_IF ( %dur_type% = 1) OR (%dur_type% = 9) BEGIN
+                WRITE_BYTE    offset+12 4 // delay/permanant
+                WRITE_SHORT   offset+14 2 // brief delay
+              END ELSE BEGIN
+                WRITE_BYTE   offset+12 %dur_type%       // Duration Type
+                WRITE_SHORT  offset+14 %duration%           //Time
+              END
+              WRITE_BYTE   offset+13 %dispel_type%    // Dispel Type
+              WRITE_BYTE   offset+18 %prob_1%     //Probability 1
+              WRITE_BYTE   offset+19 %prob_2%     // Probability 2
+              WRITE_ASCIIE offset+20 ~DISEAS_2~     // Spell File Name
+              WRITE_SHORT  offset+36 %save_type%      // Save Type
+              WRITE_SHORT  offset+40 %save_bonus%     // Save Bonus
+            END
+          END
+        END
+      END
+    END
+  END
+BUT_ONLY
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
+  PATCH_IF (SOURCE_SIZE > 0x71) BEGIN // protects against invalid files
+    READ_LONG  0x64  ability_offset
+    READ_SHORT 0x68  abil_cnt
+    READ_LONG  0x6a  eff_offset
+    FOR( cnt=0; cnt<%abil_cnt%; cnt=cnt+1) BEGIN
+      READ_BYTE (%ability_offset%+cnt*0x38)  type
+      PATCH_IF(%type%=1) BEGIN        //Melee ability
+        READ_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+        READ_SHORT (%ability_offset%+cnt*0x38+0x20)  eff_idx
+        FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+          READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx))  eff_type
+          PATCH_IF( %eff_type%=78) BEGIN
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+2)  target
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+3)  power
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+8)  disease_type
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+12) dur_type
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+13) dispel_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+14) duration
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+18) prob_1
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+19) prob_2
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+36) save_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+40) save_bonus
+            PATCH_IF( %disease_type%=2) OR ( %disease_type%=3) BEGIN            
+              SET eff_cnt = eff_cnt+1
+              WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+              SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+              INSERT_BYTES offset    0x30               //1 new effect
+              WRITE_SHORT  offset    146                //effect: Cast Spell at object
+              WRITE_BYTE   offset+2  %target%         // Target
+              WRITE_BYTE   offset+3  %power%                  //Power
+              WRITE_SHORT  offset+4  1              //Spell Level 1
+              WRITE_SHORT  offset+8  0                // Cast Instantly
+              PATCH_IF ( %dur_type% = 1) OR (%dur_type% = 9) BEGIN
+                WRITE_BYTE    offset+12 4 // delay/permanant
+                WRITE_SHORT   offset+14 2 // brief delay
+              END ELSE BEGIN
+                WRITE_BYTE   offset+12 %dur_type%       // Duration Type
+                WRITE_SHORT  offset+14 %duration%           //Time
+              END
+              WRITE_BYTE   offset+13 %dispel_type%    // Dispel Type
+              WRITE_BYTE   offset+18 %prob_1%     //Probability 1
+              WRITE_BYTE   offset+19 %prob_2%     // Probability 2
+              WRITE_ASCIIE offset+20 ~DISEAS_4~     // Spell File Name
+              WRITE_SHORT  offset+36 %save_type%      // Save Type
+              WRITE_SHORT  offset+40 %save_bonus%     // Save Bonus
+            END ELSE
+              PATCH_IF( %disease_type%>3) AND ( %disease_type%< 10) BEGIN
+                SET eff_cnt = eff_cnt+1
+                WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+                SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+                INSERT_BYTES offset    0x30               //1 new effect
+                WRITE_SHORT  offset    146                //effect: Cast Spell at object
+                WRITE_BYTE   offset+2  %target%         // Target
+                WRITE_BYTE   offset+3  %power%                  //Power
+                WRITE_SHORT  offset+4  1                  //Spell Level
+                WRITE_SHORT  offset+8  0                // Cast Instantly
+                PATCH_IF ( %dur_type% = 1) OR (%dur_type% = 9) BEGIN
+                  WRITE_BYTE    offset+12 4 // delay/permanant
+                  WRITE_SHORT   offset+14 2 // brief delay
+                END ELSE BEGIN
+                  WRITE_BYTE   offset+12 %dur_type%       // Duration Type
+                  WRITE_SHORT  offset+14 %duration%           //Time
+                END
+                WRITE_BYTE   offset+13 %dispel_type%    // Dispel Type
+                WRITE_BYTE   offset+18 %prob_1%     //Probability 1
+                WRITE_BYTE   offset+19 %prob_2%     // Probability 2
+                WRITE_ASCIIE offset+20 ~DISEAS_3~     // Spell File Name
+                WRITE_SHORT  offset+36 %save_type%      // Save Type
+                WRITE_SHORT  offset+40 %save_bonus%     // Save Bonus
+            END ELSE
+              PATCH_IF( %disease_type%>9) BEGIN       // Slow effect, or a mod-added effect
+                SET eff_cnt = eff_cnt+1
+                WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+              
+                SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+                INSERT_BYTES offset    0x30               //1 new effect
+                WRITE_SHORT  offset    146                //effect: Cast Spell at object
+                WRITE_BYTE   offset+2  %target%         // Target
+                WRITE_BYTE   offset+3  %power%                  //Power
+                WRITE_SHORT  offset+4  1                //Spell Level
+                WRITE_SHORT  offset+8  0                // Cast Instantly
+                PATCH_IF ( %dur_type% = 1) OR (%dur_type% = 9) BEGIN
+                  WRITE_BYTE    offset+12 4 // delay/permanant
+                  WRITE_SHORT   offset+14 2 // brief delay
+               END ELSE BEGIN
+                  WRITE_BYTE   offset+12 %dur_type%       // Duration Type
+                  WRITE_SHORT  offset+14 %duration%           //Time
+                END
+                WRITE_BYTE   offset+13 %dispel_type%    // Dispel Type
+                WRITE_BYTE   offset+18 %prob_1%     //Probability 1
+                WRITE_BYTE   offset+19 %prob_2%     // Probability 2
+                WRITE_ASCIIE offset+20 ~DISEAS_2~     // Spell File Name
+                WRITE_SHORT  offset+36 %save_type%      // Save Type
+                WRITE_SHORT  offset+40 %save_bonus%     // Save Bonus
+            END
+          END
+        END
+      END
+    END
+  END
+BUT_ONLY_IF_IT_CHANGES
+
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.spl$~ ~override~ 
+  PATCH_IF (SOURCE_SIZE > 0x71) BEGIN // protects against invalid files
+    READ_SHORT 0x34  spell_level
+    READ_LONG  0x64  ability_offset
+    READ_SHORT 0x68  abil_cnt
+    READ_LONG  0x6a  eff_offset
+    FOR( cnt=0; cnt<%abil_cnt%; cnt=cnt+1) BEGIN
+      READ_BYTE (%ability_offset%+cnt*0x28)  type
+      PATCH_IF(%type%=1) BEGIN        //Melee ability
+        READ_SHORT (%ability_offset%+cnt*0x28+0x1e)  eff_cnt
+        READ_SHORT (%ability_offset%+cnt*0x28+0x20)  eff_idx
+        FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+          READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx))  eff_type
+          PATCH_IF( %eff_type%=79) BEGIN  // cure disease effect
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+2)  target
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+3)  power
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+12) dur_type
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+13) dispel_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+14) duration
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+18) prob_1
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+19) prob_2
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+36) save_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+40) save_bonus
+            SET eff_cnt = eff_cnt+1
+            WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+            SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+            INSERT_BYTES offset    0x30               //1 new effect
+            WRITE_SHORT  offset    221                //effect: Remove Secondary Type
+            WRITE_BYTE   offset+2  %target%         // Target
+            WRITE_BYTE   offset+3  %power%                  //Power
+            WRITE_SHORT  offset+4  9              //Max Level
+            WRITE_SHORT  offset+8  ~fl#Disease~         // Secondary School Type
+            WRITE_BYTE   offset+12 %dur_type%              // should be 0-instant/permanent
+            WRITE_SHORT  offset+14 %duration%             // no duration - infinite
+            WRITE_BYTE   offset+13 %dispel_type%              // Dispel Type--not
+            WRITE_BYTE   offset+18 %prob_1%             //Probability 1
+            WRITE_BYTE   offset+19 %prob_2%          // Probability 2
+            WRITE_SHORT  offset+36 %save_type%            // Save Type - none
+            WRITE_SHORT  offset+40 %save_bonus%            // Save Bonus
+          END
+        END
+      END
+    END
+  END
+BUT_ONLY
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
+  PATCH_IF (SOURCE_SIZE > 0x71) BEGIN // protects against invalid files
+    READ_LONG  0x64  ability_offset
+    READ_SHORT 0x68  abil_cnt
+    READ_LONG  0x6a  eff_offset
+    FOR( cnt=0; cnt<%abil_cnt%; cnt=cnt+1) BEGIN
+      READ_BYTE (%ability_offset%+cnt*0x38)  type
+      PATCH_IF(%type%=1) BEGIN        //Melee ability
+        READ_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+        READ_SHORT (%ability_offset%+cnt*0x38+0x20)  eff_idx
+        FOR( cnt2=0; cnt2<eff_cnt; cnt2=cnt2+1) BEGIN
+          READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx))  eff_type
+          PATCH_IF( %eff_type%=79) BEGIN  // cure disease effect
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+2)  target
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+3)  power
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+12) dur_type
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+13) dispel_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+14) duration
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+18) prob_1
+            READ_BYTE  (%eff_offset%+0x30*(cnt2+eff_idx)+19) prob_2
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+36) save_type
+            READ_SHORT (%eff_offset%+0x30*(cnt2+eff_idx)+40) save_bonus
+            SET eff_cnt = eff_cnt+1
+            WRITE_SHORT (%ability_offset%+cnt*0x38+0x1e)  eff_cnt
+            SET offset = (%eff_offset%+0x30*(eff_idx+cnt2+1))
+            INSERT_BYTES offset    0x30               //1 new effect
+            WRITE_SHORT  offset    221                //effect: Remove Secondary Type
+            WRITE_BYTE   offset+2  %target%         // Target
+            WRITE_BYTE   offset+3  %power%                  //Power
+            WRITE_SHORT  offset+4  9              //Max Level
+            WRITE_SHORT  offset+8  ~fl#Disease~         // Secondary School Type
+            WRITE_BYTE   offset+12 %dur_type%              // should be 0-instant/permanent
+            WRITE_SHORT  offset+14 %duration%             // no duration - infinite
+            WRITE_BYTE   offset+13 %dispel_type%              // Dispel Type--not
+            WRITE_BYTE   offset+18 %prob_1%             //Probability 1
+            WRITE_BYTE   offset+19 %prob_2%          // Probability 2
+            WRITE_SHORT  offset+36 %save_type%            // Save Type - none
+            WRITE_SHORT  offset+40 %save_bonus%            // Save Bonus
+          END
+        END
+      END
+    END
+  END
+BUT_ONLY
+
+END
+
+
+
+DEFINE_ACTION_FUNCTION fix_wyvern_mages BEGIN
+
+ACTION_IF FILE_EXISTS_IN_GAME ~oh1000.are~ BEGIN
+// Fixing Wyverns and other obviously non-mages so they aren't Class Mage
+COPY_EXISTING ~WYVERBA.cre~ ~override~
+              ~WYVERN.cre~   ~override~
+              ~WYVERNBI.cre~ ~override~
+              ~PLYWYVRN.cre~ ~override~
+              ~AIRASPEC.cre~ ~override~
+  READ_BYTE 0x273 class
+  PATCH_IF (%class% = 1) BEGIN //Class mage, never seen a wyvern in a pointy hat before
+    WRITE_BYTE 0x273 149 // Race: Wyvern---proper race already existed, that's what really makes this dumb
+  END
+
+COPY_EXISTING ~COW.cre~      ~override~
+              ~COWH.cre~     ~override~
+              ~CHICKDEF.cre~ ~override~
+              ~CHICKE.cre~   ~override~
+              ~CHICKER.cre~  ~override~
+              ~NECHICK1.cre~ ~override~
+  READ_BYTE 0x273 class
+  PATCH_IF (%class% = 1) BEGIN //Class mage, never seen a wyvern in a pointy hat before
+    WRITE_BYTE 0x273 199 // Race: Food Creature--proper race already existed, that's what really makes this dumb
+  END
+
+COPY_EXISTING ~WOLFCH.cre~   ~override~              
+  READ_BYTE 0x273 class
+  PATCH_IF (%class% = 1) BEGIN //Class mage, never seen a wyvern in a pointy hat before
+    WRITE_BYTE 0x273 143 // Race: Wolf--proper race already existed, that's what really makes this dumb
+  END
+END ELSE ACTION_IF GAME_IS ~bg2 tob bgt~ BEGIN
+// Fixing Wyverns and other obviously non-mages so they aren't Class Mage
+COPY_EXISTING ~WYVERN01.cre~ ~override~
+              ~WYVGRE01.cre~   ~override~
+              ~WYVBAB01.cre~ ~override~
+              ~PLYWYVRN.cre~ ~override~
+  READ_BYTE 0x273 class
+  PATCH_IF (%class% = 1) BEGIN //Class mage, never seen a wyvern in a pointy hat before
+    WRITE_BYTE 0x273 149 // Race: Wyvern---proper race already existed, that's what really makes this dumb
+  END
+
+COPY_EXISTING ~COW.cre~      ~override~
+              ~COWH.cre~     ~override~
+              ~CHICKDEF.cre~ ~override~
+              ~CHICKE.cre~   ~override~
+              ~CHICKER.cre~  ~override~
+  READ_BYTE 0x273 class
+  PATCH_IF (%class% = 1) BEGIN //Class mage, never seen a wyvern in a pointy hat before
+    WRITE_BYTE 0x273 199 // Race: Food Creature--proper race already existed, that's what really makes this dumb
+  END
+END
+
+COPY_EXISTING ~sword01.cre~ ~override~ // Mordenkainen's Sword is not a Gnoll
+  READ_BYTE 0x271 general
+  READ_BYTE 0x272 race
+  READ_BYTE 0x273 class
+  PATCH_IF (%general% = 1) BEGIN
+    WRITE_BYTE 0x271 101 // Weapon
+  END
+  PATCH_IF (%race% = 110) BEGIN
+    WRITE_BYTE 0x272 201 // Sword
+  END
+  PATCH_IF (%class% = 120) BEGIN
+    WRITE_BYTE 0x273 201 // Long Sword
+  END
+
+END
+
+DEFINE_ACTION_FUNCTION ids_additions BEGIN
+
+// More IDS additions Some are modder, but most are from ToB:
+// I did leave the HLA's out of spell.ids, on purpose
+
+
+COPY_EXISTING ~action.ids~ ~override~
+  REPLACE_TEXTUALLY ~UseItemSlot(O:Target\*,I:Slot\*SLOTS)~ ~UseItemExt(S:Item*,O:Object*,I:Slot*SLOTS,I:Abil*)~ UNLESS ~UseItemExt~
+  
+APPEND ~action.ids~ ~34 UseItemExt(S:Item*,O:Object*,I:Slot*SLOTS,I:Abil*)~ UNLESS ~UseItemExt~
+APPEND ~action.ids~ ~34 UseItemSlot(O:Target*,I:Slot*SLOTS)~ UNLESS ~UseItemSlot(O:Target\*,I:Slot\*SLOTS)~
+
+
+//A few vanilla BG2/EE scripts used UseItemSlot, in a limited fashion. So, we fix these easily w/ UseItem instead
+
+ACTION_IF FILE_EXISTS_IN_GAME ~gpuse.bcs~ BEGIN
+  COPY_EXISTING ~gpuse.bcs~ ~override~
+  DECOMPILE_BCS_TO_BAF
+    REPLACE_TEXTUALLY ~UseItemSlot(Myself,SLOT_MISC0)~ ~UseItem("POTN10",Myself)~
+    REPLACE_TEXTUALLY ~UseItemSlot(Myself,SLOT_MISC1)~ ~UseItem("POTN52",Myself)~
+	REPLACE_TEXTUALLY ~UseItemSlot(Myself,SLOT_MISC2)~ 
+	~UseItem("POTN04",Myself)
+	UseItem("POTN09",Myself)
+	UseItem("POTN11",Myself)
+	UseItem("POTN14",Myself)~
+  COMPILE_BAF_TO_BCS
+  BUT_ONLY
+END
+
+ACTION_FOR_EACH ~item_slot~ IN kaysmg01 neb hlketta BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%item_slot%.bcs~ BEGIN
+    COPY_EXISTING ~%item_slot%.bcs~ ~override~
+    DECOMPILE_BCS_TO_BAF
+      REPLACE_TEXTUALLY ~UseItemSlot(Myself,SLOT_MISC0)~ ~UseItem("POTN10",Myself)~
+      REPLACE_TEXTUALLY ~UseItemSlot(Myself,SLOT_MISC1)~ ~UseItem("POTN52",Myself)~
+	  REPLACE_TEXTUALLY ~UseItemSlot(Myself,SLOT_MISC2)~ ~UseItem("POTN14",Myself)~
+    COMPILE_BAF_TO_BCS
+    BUT_ONLY
+  END
+END
+
+
+APPEND ~areatype.ids~  ~128 CANRESTOTHER~ UNLESS ~CANRESTOTHER~
+
+APPEND ~slots.ids~ ~0     SLOT_AMULET~ UNLESS ~SLOT_AMULET~
+
+APPEND ~ea.ids~ ~254 CHARMED_PC~ UNLESS ~CHARMED_PC~
+
+APPEND ~gender.ids~ ~10 EXTRA2~ UNLESS ~EXTRA2~
+
+APPEND ~gtimes.ids~ ~6 ONE_ROUND~  UNLESS ~ONE_ROUND~
+APPEND ~gtimes.ids~ ~12 TWO_ROUNDS~ UNLESS ~TWO_ROUNDS~
+APPEND ~gtimes.ids~ ~18 THREE_ROUNDS~ UNLESS ~THREE_ROUNDS~
+APPEND ~gtimes.ids~ ~24 FOUR_ROUNDS~ UNLESS ~FOUR_ROUNDS~
+APPEND ~gtimes.ids~ ~30 FIVE_ROUNDS~ UNLESS ~FIVE_ROUNDS~
+APPEND ~gtimes.ids~ ~36 SIX_ROUNDS~ UNLESS ~SIX_ROUNDS~
+APPEND ~gtimes.ids~ ~42 SEVEN_ROUNDS~ UNLESS ~SEVEN_ROUNDS~
+APPEND ~gtimes.ids~ ~48 EIGHT_ROUNDS~ UNLESS ~EIGHT_ROUNDS~
+APPEND ~gtimes.ids~ ~54 NINE_ROUNDS~ UNLESS ~NINE_ROUNDS~
+APPEND ~gtimes.ids~ ~60 TEN_ROUNDS~ UNLESS ~TEN_ROUNDS~
+APPEND ~gtimes.ids~ ~60 ONE_TURN~ UNLESS ~ONE_TURN~
+APPEND ~gtimes.ids~ ~120 TWO_TURNS~ UNLESS ~TWO_TURNS~
+APPEND ~gtimes.ids~ ~180 THREE_TURNS~ UNLESS ~THREE_TURNS~
+APPEND ~gtimes.ids~ ~240 FOUR_TURNS~ UNLESS ~FOUR_TURNS~
+APPEND ~gtimes.ids~ ~300 FIVE_TURNS~ UNLESS ~FIVE_TURNS~
+APPEND ~gtimes.ids~ ~300 ONE_HOUR~ UNLESS ~ONE_HOUR~
+APPEND ~gtimes.ids~ ~360 SIX_TURNS~ UNLESS ~SIX_TURNS~
+APPEND ~gtimes.ids~ ~420 SEVEN_TURNS~ UNLESS ~SEVEN_TURNS~
+APPEND ~gtimes.ids~ ~480 EIGHT_TURNS~ UNLESS ~EIGHT_TURNS~
+APPEND ~gtimes.ids~ ~540 NINE_TURNS~ UNLESS ~NINE_TURNS~
+APPEND ~gtimes.ids~ ~600 TEN_TURNS~ UNLESS ~TEN_TURNS~
+APPEND ~gtimes.ids~ ~600 TWO_HOURS~ UNLESS ~TWO_HOURS~
+APPEND ~gtimes.ids~ ~900 FIFTEEN_TURNS~ UNLESS ~FIFTEEN_TURNS~
+APPEND ~gtimes.ids~ ~900 THREE_HOURS~ UNLESS ~THREE_HOURS~
+APPEND ~gtimes.ids~ ~1200 FOUR_HOURS~ UNLESS ~FOUR_HOURS~
+APPEND ~gtimes.ids~ ~1500 FIVE_HOURS~ UNLESS ~FIVE_HOURS~
+APPEND ~gtimes.ids~ ~1800 SIX_HOURS~ UNLESS ~SIX_HOURS~
+APPEND ~gtimes.ids~ ~2100 SEVEN_HOURS~ UNLESS ~SEVEN_HOURS~
+APPEND ~gtimes.ids~ ~2400 EIGHT_HOURS~ UNLESS ~EIGHT_HOURS~
+APPEND ~gtimes.ids~ ~2700 NINE_HOURS~ UNLESS ~NINE_HOURS~
+APPEND ~gtimes.ids~ ~3000 TEN_HOURS~ UNLESS ~TEN_HOURS~
+APPEND ~gtimes.ids~ ~3300 ELEVEN_HOURS~ UNLESS ~ELEVEN_HOURS~
+APPEND ~gtimes.ids~ ~3600 TWELVE_HOURS~ UNLESS ~TWELVE_HOURS~
+
+
+APPEND ~specific.ids~ ~205 NEEDS_BREACH~ UNLESS ~NEEDS_BREACH~
+APPEND ~specific.ids~ ~207 SIMULACRUM~ UNLESS ~SIMULACRUM~
+APPEND ~specific.ids~ ~211 HAS_SHIELDS~ UNLESS ~HAS_SHIELDS~
+APPEND ~specific.ids~ ~212 HAS_SHIELD~ UNLESS ~HAS_SHIELD~
+APPEND ~specific.ids~ ~214 PROTECTION_FROM_MAGIC_WEAPONS~ UNLESS ~PROTECTION_FROM_MAGIC_WEAPONS~
+APPEND ~specific.ids~ ~218 TRIED_ANTISHIELD~ UNLESS ~TRIED_ANTISHIELD~
+
+
+
+APPEND ~spell.ids~ ~1718 CLERIC_SYMBOL_STUN~ UNLESS ~CLERIC_SYMBOL_STUN~
+APPEND ~spell.ids~ ~1719 CLERIC_SYMBOL_DEATH~ UNLESS ~CLERIC_SYMBOL_DEATH~
+APPEND ~spell.ids~ ~2493 WIZARD_POLYMORPH_FLIND~ UNLESS ~WIZARD_POLYMORPH_FLIND~
+APPEND ~spell.ids~ ~2495 WIZARD_POLYMORPH_SPIDER~ UNLESS ~WIZARD_POLYMORPH_SPIDER~
+APPEND ~spell.ids~ ~2499 WIZARD_POLYMORPH_WOLF~ UNLESS ~WIZARD_POLYMORPH_WOLF~
+APPEND ~spell.ids~ ~3101 INNATE_CURE_LIGHT_WOUNDS~ UNLESS ~INNATE_CURE_LIGHT_WOUNDS~
+APPEND ~spell.ids~ ~3102 INNATE_SLOW_POISON~ UNLESS ~INNATE_SLOW_POISON~
+APPEND ~spell.ids~ ~3103 INNATE_DRAW_UPON_HOLY_MIGHT~ UNLESS ~INNATE_DRAW_UPON_HOLY_MIGHT~
+APPEND ~spell.ids~ ~3104 INNATE_LARLOCHS_MINOR_DRAIN~ UNLESS ~INNATE_LARLOCHS_MINOR_DRAIN~
+APPEND ~spell.ids~ ~3105 INNATE_HORROR~ UNLESS ~INNATE_HORROR~
+APPEND ~spell.ids~ ~3106 INNATE_VAMPIRIC_TOUCH~ UNLESS ~INNATE_VAMPIRIC_TOUCH~
+APPEND ~spell.ids~ ~3107 INNATE_SHAPESHIFT_BROWNBEAR~ UNLESS ~INNATE_SHAPESHIFT_BROWNBEAR~
+APPEND ~spell.ids~ ~3108 INNATE_CHARM_ANIMAL~ UNLESS ~INNATE_CHARM_ANIMAL~
+APPEND ~spell.ids~ ~3109 INNATE_LAY_ON_HANDS~ UNLESS ~INNATE_LAY_ON_HANDS~
+APPEND ~spell.ids~ ~3110 INNATE_SHAPESHIFT_WOLF~ UNLESS ~INNATE_SHAPESHIFT_WOLF~
+APPEND ~spell.ids~ ~3111 INNATE_SHAPESHIFT_BLACKBEAR~ UNLESS ~INNATE_SHAPESHIFT_BLACKBEAR~
+APPEND ~spell.ids~ ~3112 INNATE_DISPEL_MAGIC~ UNLESS ~INNATE_DISPEL_MAGIC~
+APPEND ~spell.ids~ ~3113 INNATE_SPIRITUAL_HAMMER~ UNLESS ~INNATE_SPIRITUAL_HAMMER~
+APPEND ~spell.ids~ ~3114 INNATE_SUMMON_DREADWOLF~ UNLESS ~INNATE_SUMMON_DREADWOLF~
+APPEND ~spell.ids~ ~3115 INNATE_SUMMON_GHAST~ UNLESS ~INNATE_SUMMON_GHAST~
+APPEND ~spell.ids~ ~3116 INNATE_POISON_ARROWS~ UNLESS ~INNATE_POISON_ARROWS~
+APPEND ~spell.ids~ ~3118 INNATE_INVISIBILITY~ UNLESS ~INNATE_INVISIBILITY~
+APPEND ~spell.ids~ ~3119 INNATE_CHARM_PERSON~ UNLESS ~INNATE_CHARM_PERSON~
+APPEND ~spell.ids~ ~3120 INNATE_DETECT_EVIL~ UNLESS ~INNATE_DETECT_EVIL~
+APPEND ~spell.ids~ ~3121 INNATE_PROTECTION_FROM_EVIL~ UNLESS ~INNATE_PROTECTION_FROM_EVIL~
+APPEND ~spell.ids~ ~3122 DRUID_SHAPESHIFT_FROM_WOLF~ UNLESS ~DRUID_SHAPESHIFT_FROM_WOLF~
+APPEND ~spell.ids~ ~3123 DRUID_SHAPESHIFT_FROM_BLACKBEAR~ UNLESS ~DRUID_SHAPESHIFT_FROM_BLACKBEAR~
+APPEND ~spell.ids~ ~3124 DRUID_SHAPESHIFT_FROM_BROWNBEAR~ UNLESS ~DRUID_SHAPESHIFT_FROM_BROWNBEAR~
+APPEND ~spell.ids~ ~3125 INNATE_SHAPESHIFT_SPIDER~ UNLESS ~INNATE_SHAPESHIFT_SPIDER~
+APPEND ~spell.ids~ ~3126 INNATE_SHAPESHIFT_BABY_WYVERN~ UNLESS ~INNATE_SHAPESHIFT_BABY_WYVERN~
+APPEND ~spell.ids~ ~3127 INNATE_SHAPESHIFT_FIRE_SALAMANDER~ UNLESS ~INNATE_SHAPESHIFT_FIRE_SALAMANDER~
+APPEND ~spell.ids~ ~3150 NATFORM2~ UNLESS ~NATFORM2~
+APPEND ~spell.ids~ ~3151 NATFORM1~ UNLESS ~NATFORM1~
+APPEND ~spell.ids~ ~3152 SHAPECHANGE_MIND_FLAYER~ UNLESS ~SHAPECHANGE_MIND_FLAYER~
+APPEND ~spell.ids~ ~3153 SHAPECHANGE_IRON_GOLEM~ UNLESS ~SHAPECHANGE_IRON_GOLEM~
+APPEND ~spell.ids~ ~3154 SHAPECHANGE_GIANT_TROLL~ UNLESS ~SHAPECHANGE_GIANT_TROLL~
+APPEND ~spell.ids~ ~3155 SHAPECHANGE_GREATER_WOLFWERE~ UNLESS ~SHAPECHANGE_GREATER_WOLFWERE~
+APPEND ~spell.ids~ ~3156 SHAPECHANGE_FIRE_ELEMENTAL~ UNLESS ~SHAPECHANGE_FIRE_ELEMENTAL~
+APPEND ~spell.ids~ ~3157 SHAPECHANGE_EARTH_ELEMENTAL~ UNLESS ~SHAPECHANGE_EARTH_ELEMENTAL~
+APPEND ~spell.ids~ ~3200 INNATE_CURE_SERIOUS_WOUNDS~ UNLESS ~INNATE_CURE_SERIOUS_WOUNDS~
+APPEND ~spell.ids~ ~3201 INNATE_NEUTRALIZE_POISON~ UNLESS ~INNATE_NEUTRALIZE_POISON~
+APPEND ~spell.ids~ ~3202 INNATE_CAUSE_SERIOUS_WOUNDS~ UNLESS ~INNATE_CAUSE_SERIOUS_WOUNDS~
+APPEND ~spell.ids~ ~3203 INNATE_CLOAK_OF_FEAR~ UNLESS ~INNATE_CLOAK_OF_FEAR~
+APPEND ~spell.ids~ ~3645 WILD_MAGIC_AREA~ UNLESS ~WILD_MAGIC_AREA~
+APPEND ~spell.ids~ ~3646 DEAD_MAGIC_AREA~ UNLESS ~DEAD_MAGIC_AREA~
+APPEND ~spell.ids~ ~3676 INVOKE_COURAGE~ UNLESS ~INVOKE_COURAGE~
+APPEND ~spell.ids~ ~4152 BARBARIAN_RAGE~ UNLESS ~BARBARIAN_RAGE~
+APPEND ~spell.ids~ ~4212 PALADIN_DETECT_EVIL~ UNLESS ~PALADIN_DETECT_EVIL~
+APPEND ~spell.ids~ ~4213 PALADIN_PROTECTION_FROM_EVIL~ UNLESS ~PALADIN_PROTECTION_FROM_EVIL~
+APPEND ~spell.ids~ ~4222 PALADIN_REMOVE_FEAR~ UNLESS ~PALADIN_REMOVE_FEAR~
+APPEND ~spell.ids~ ~4233 PROTECTION_FROM_EVIL_10_FOOT~ UNLESS ~PROTECTION_FROM_EVIL_10_FOOT~
+APPEND ~spell.ids~ ~4321 BERSERKER_RAGE~ UNLESS ~BERSERKER_RAGE~
+APPEND ~spell.ids~ ~4412 SET_SNARE_TRAP~ UNLESS ~SET_SNARE_TRAP~
+APPEND ~spell.ids~ ~4414 SET_SPECIAL_SNARE_TRAP~ UNLESS ~SET_SPECIAL_SNARE_TRAP~
+APPEND ~spell.ids~ ~4417 SPECIAL_SNARE~ UNLESS ~SPECIAL_SNARE~
+APPEND ~spell.ids~ ~4422 POISON~ UNLESS ~POISON~
+APPEND ~spell.ids~ ~4432 ASSASSIN_POISON~ UNLESS ~ASSASSIN_POISON~
+APPEND ~spell.ids~ ~4521 BLADE_OFFENSIVE_SPIN~ UNLESS ~BLADE_OFFENSIVE_SPIN~
+APPEND ~spell.ids~ ~4522 BLADE_DEFENSIVE_SPIN~ UNLESS ~BLADE_DEFENSIVE_SPIN~
+APPEND ~spell.ids~ ~4611 DRUID_SHAPESHIFT_BROWNBEAR~ UNLESS ~DRUID_SHAPESHIFT_BROWNBEAR~
+APPEND ~spell.ids~ ~4612 DRUID_SHAPESHIFT_WOLF~ UNLESS ~DRUID_SHAPESHIFT_WOLF~
+APPEND ~spell.ids~ ~4613 DRUID_SHAPESHIFT_BLACKBEAR~ UNLESS ~DRUID_SHAPESHIFT_BLACKBEAR~
+APPEND ~spell.ids~ ~4621 TOTEMICDRUID_SUMMON_ANIMAL_SPIRIT~ UNLESS ~TOTEMICDRUID_SUMMON_ANIMAL_SPIRIT~
+APPEND ~spell.ids~ ~4632 AVENGER_SHAPESHIFT_SWORDSPIDER~ UNLESS ~AVENGER_SHAPESHIFT_SWORDSPIDER~
+APPEND ~spell.ids~ ~4633 AVENGER_SHAPESHIFT_WYVERN~ UNLESS ~AVENGER_SHAPESHIFT_WYVERN~
+APPEND ~spell.ids~ ~4634 AVENGER_SHAPESHIFT_FIRESALAMANDER~ UNLESS ~AVENGER_SHAPESHIFT_FIRESALAMANDER~
+APPEND ~spell.ids~ ~4641 CHARM_PERSON_OR_MAMMAL~ UNLESS ~CHARM_PERSON_OR_MAMMAL~
+APPEND ~spell.ids~ ~4643 SHAPESHIFTER_SHAPESHIFT_WEREWOLF~ UNLESS ~SHAPESHIFTER_SHAPESHIFT_WEREWOLF~
+APPEND ~spell.ids~ ~4644 SHAPESHIFTER_SHAPESHIFT_GREATERWERE~ UNLESS ~SHAPESHIFTER_SHAPESHIFT_GREATERWERE~
+APPEND ~spell.ids~ ~4721 TALOS_STORMSHIELD~ UNLESS ~TALOS_STORMSHIELD~
+APPEND ~spell.ids~ ~4722 TALOS_LIGHTNING_BOLT~ UNLESS ~TALOS_LIGHTNING_BOLT~
+APPEND ~spell.ids~ ~4731 HELM_SEEINGSWORD~ UNLESS ~HELM_SEEINGSWORD~
+APPEND ~spell.ids~ ~4732 HELM_TRUESIGHT~ UNLESS ~HELM_TRUESIGHT~
+APPEND ~spell.ids~ ~4741 LATHANDER_BOON~ UNLESS ~LATHANDER_BOON~
+APPEND ~spell.ids~ ~4742 LATHANDER_HOLD_UNDEAD~ UNLESS ~LATHANDER_HOLD_UNDEAD~
+APPEND ~spell.ids~ ~4811 MONK_STUNNING_BLOW~ UNLESS ~MONK_STUNNING_BLOW~
+APPEND ~spell.ids~ ~4815 MONK_LAY_ON_HANDS~ UNLESS ~MONK_LAY_ON_HANDS~
+APPEND ~spell.ids~ ~4820 MONK_QUIVERING_PALM~ UNLESS ~MONK_QUIVERING_PALM~
+
+
+
+APPEND ~state.ids~ ~0x00102029 STATE_HARMLESS~ UNLESS ~STATE_HARMLESS~
+APPEND ~state.ids~ ~0x80040004 STATE_RANGED_TARGET~ UNLESS ~STATE_RANGED_TARGET~
+APPEND ~state.ids~ ~0x8014202D STATE_OUT_OF_ACTION~ UNLESS ~STATE_OUT_OF_ACTION~
+APPEND ~state.ids~ ~0x00400010 STATE_NOT_VISIBLE~ UNLESS ~STATE_NOT_VISIBLE~
+APPEND ~state.ids~ ~0x60400010 STATE_ILLUSIONS~ UNLESS ~STATE_ILLUSIONS~
+APPEND ~state.ids~ ~0x63C08010 STATE_ENCHANTED~ UNLESS ~STATE_ENCHANTED~
+APPEND ~state.ids~ ~0x8000380F STATE_INVALID~ UNLESS ~STATE_INVALID~
+APPEND ~state.ids~ ~0xfc0 STATE_REALLY_DEAD~ UNLESS ~STATE_REALLY_DEAD~
+APPEND ~state.ids~ ~0x6fe08010 STATE_DISPEL_GOOD~ UNLESS ~STATE_DISPEL_GOOD~
+APPEND ~state.ids~ ~0x8015300d STATE_DISPEL_BAD~ UNLESS ~STATE_DISPEL_BAD~
+
+COPY_EXISTING ~stats.ids~ ~override~
+REPLACE_TEXTUALLY ~EXTRAPROFICIENCY20~ ~STATE_DISEASED_FIX~ UNLESS ~STATE_DISEASED_FIX~
+APPEND ~stats.ids~ ~194 SPELL_FAILURE_INNATE~ UNLESS ~SPELL_FAILURE_INNATE~
+APPEND ~stats.ids~ ~196 DEAD_MAGIC~ UNLESS ~DEAD_MAGIC~
+
+APPEND ~SHOUTIDS.IDS~ ~2000 PC_POISONED_2000~ UNLESS ~PC_POISONED_2000~
+APPEND ~SHOUTIDS.IDS~ ~2001 PC_DYING_ASSIST~ UNLESS ~PC_DYING_ASSIST~
+APPEND ~SHOUTIDS.IDS~ ~2018 PC_NEARDEATH~ UNLESS ~PC_NEARDEATH~
+APPEND ~SHOUTIDS.IDS~ ~2020 PC_INJURED~ UNLESS ~PC_INJURED~
+APPEND ~SHOUTIDS.IDS~ ~2101 PC_DISEASED~ UNLESS ~PC_DISEASED~
+APPEND ~SHOUTIDS.IDS~ ~2250 PC_JUSTHEALED~ UNLESS ~PC_JUSTHEALED~
+APPEND ~SHOUTIDS.IDS~ ~5003 PC_ENEMY_SPOTTED~ UNLESS ~PC_ENEMY_SPOTTED~
+APPEND ~SHOUTIDS.IDS~ ~5050 PC_ALL_CLEAR~ UNLESS ~PC_ALL_CLEAR~
+
+// additional ToB triggers for SoA
+APPEND ~trigger.ids~ ~0x00A1 SpellCastOnMeRES(S:Spell*,O:Caster*)~ UNLESS ~SpellCastOnMeRES(S:Spell\*,O:Caster\*)~
+APPEND ~trigger.ids~ ~0x0091 SpellCastRES(S:Spell*,O:Object*)~ UNLESS ~SpellCastRES(S:Spell\*,O:Object\*)~
+APPEND ~trigger.ids~ ~0x00A6 SpellCastPriestRES(S:Spell*,O:Object*)~ UNLESS ~SpellCastPriestRES(S:Spell\*,O:Object\*)~
+APPEND ~trigger.ids~ ~0x00A7 SpellCastInnateRES(S:Spell*,O:Object*)~ UNLESS ~SpellCastInnateRES(S:Spell\*,O:Object\*)~
+APPEND ~trigger.ids~ ~0x4031 HaveSpellRES(S:Spell*)~ UNLESS ~HaveSpellRES(S:Spell\*)~
+APPEND ~trigger.ids~ ~0x40D5 ActuallyInCombat()~ UNLESS ~ActuallyInCombat()~
+APPEND ~trigger.ids~ ~0x40D7 LevelParty(I:Num*)~ UNLESS ~LevelParty(I:Num\*)~
+APPEND ~trigger.ids~ ~0x40D8 LevelPartyGT(I:Num*)~ UNLESS ~LevelPartyGT(I:Num\*)~
+APPEND ~trigger.ids~ ~0x40D9 LevelPartyLT(I:Num*)~ UNLESS ~LevelPartyLT(I:Num\*)~
+APPEND ~trigger.ids~ ~0x40DB InWatchersKeep()~ UNLESS ~InWatchersKeep()~
+
+
+ACTION_IF GAME_IS ~bg2ee eet~ BEGIN
+  APPEND ~trigger.ids~ ~0x40E0 NextTriggerObject(O:Object*)~ UNLESS ~NextTriggerObject(O:Object\*)~
+END
+
+
+CLEAR_IDS_MAP
+
+END
+
+
+
+DEFINE_ACTION_FUNCTION bp_series_setup BEGIN
+
+
+MKDIR ~override~
+
+MKDIR ~script compiler~
+MKDIR ~script compiler\compiled~
+MKDIR ~script compiler\decompiled~
+
+ACTION_IF NOT FILE_EXISTS ~script compiler/AICompile.exe~ BEGIN
+  COPY ~BPSeries/source/AICompile.exe~ ~script compiler~
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~gb-smage.bcs~ BEGIN
+  COMPILE ~bpseries/source/gb-smage.baf~
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~gb-summ.bcs~ BEGIN
+  COMPILE ~bpseries/source/gb-summ.baf~
+END
+
+ACTION_IF GAME_IS ~bg2ee eet~ BEGIN
+  EXTEND_BOTTOM ~AR0602.bcs~ ~bpseries/source/bp-reset.baf~
+  COPY ~bpseries/spl/bpreset~ ~override~
+END
+
+END
+      
+DEFINE_ACTION_FUNCTION bp_series_scripts BEGIN
+
+
+  COMPILE EVALUATE_BUFFER ~%scriptpath%\BP-Bard.baf~
+                          ~%scriptpath%\BPCL-MG.baf~
+                          ~%scriptpath%\BPFT-CL.baf~
+                          ~%scriptpath%\BPHEALC2.baf~
+                          ~%scriptpath%\BPHEALD2.baf~
+                          ~%scriptpath%\BPHEALM2.baf~
+                          ~%scriptpath%\BPFT-DR.baf~
+                          ~%scriptpath%\BPFT-TH.baf~
+                          ~%scriptpath%\BP-Mage.baf~
+                          ~%scriptpath%\bp-bmage.baf~
+                          ~%scriptpath%\BPFT-MGT.baf~
+                          ~%scriptpath%\BP-Multi.baf~
+                          ~%scriptpath%\BP-PureF.baf~
+                          ~%scriptpath%\BPRanger.baf~
+                          ~%scriptpath%\BPPaldin.baf~                         
+                          ~%scriptpath%\BP-Range.baf~
+                          ~%scriptpath%\BPFT-RNG.baf~
+                          ~%scriptpath%\BP-MONK.baf~
+
+ACTION_IF GAME_IS ~BGEE BG2EE eet~ BEGIN
+  COMPILE EVALUATE_BUFFER ~%scriptpath%\BPBlkGrd.baf~ 
+END
+
+COPY_EXISTING   ~BP-Bard.bcs~  ~scripts\BP-Bard.bs~
+                ~BPCL-MG.bcs~  ~scripts\BPCL-MG.bs~
+                ~BPFT-CL.bcs~  ~scripts\BPFT-CL.bs~
+                ~BPHEALC2.bcs~ ~scripts\BPHEALC2.bs~
+                ~BPHEALD2.bcs~ ~scripts\BPHEALD2.bs~
+                ~BPHEALM2.bcs~ ~scripts\BPHEALM2.bs~
+                ~BPFT-DR.bcs~  ~scripts\BPFT-DR.bs~
+                ~BPFT-TH.bcs~  ~scripts\BPFT-TH.bs~
+                ~BP-Mage.bcs~  ~scripts\BP-Mage.bs~
+                ~bp-bmage.bcs~ ~scripts\bp-bmage.bs~
+                ~BPFT-MGT.bcs~ ~scripts\BPFT-MGT.bs~
+                ~BP-Multi.bcs~ ~scripts\BP-Multi.bs~
+                ~BP-PureF.bcs~ ~scripts\BP-PureF.bs~
+                ~BPRanger.bcs~ ~scripts\BPRanger.bs~
+                ~BPPaldin.bcs~ ~scripts\BPPaldin.bs~
+                ~BP-Range.bcs~ ~scripts\BP-Range.bs~
+                ~BPFT-RNG.bcs~ ~scripts\BPFT-RNG.bs~
+                ~BP-MONK.bcs~  ~scripts\BP-MONK.bs~
+
+    REPLACE~969999~ @3038
+    REPLACE~969998~ @3039
+    REPLACE~969997~ @3040
+    REPLACE~969996~ @3041
+    REPLACE~969995~ @3042
+    REPLACE~969994~ @3043
+    REPLACE~969993~ @3044
+    REPLACE~969992~ @3045
+    REPLACE~969991~ @3046
+    REPLACE~969990~ @3047
+    REPLACE~969989~ @3048
+    REPLACE~969988~ @3049
+    REPLACE~969987~ @3050
+    REPLACE~969986~ @3051
+    REPLACE~969985~ @3052
+    REPLACE~969984~ @3053
+    REPLACE~969983~ @3054
+    REPLACE~969982~ @3055
+    REPLACE~969981~ @3056
+    REPLACE~969980~ @3057
+    REPLACE~969979~ @3058
+    REPLACE~969978~ @3059
+    REPLACE~969977~ @3060
+    REPLACE~969976~ @3061
+    REPLACE~969975~ @3062
+    REPLACE~969974~ @3063
+    REPLACE~969973~ @3064
+
+    REPLACE~968100~ @7050
+    REPLACE~968101~ @7051
+    REPLACE~968102~ @7052
+    REPLACE~968103~ @7053
+    REPLACE~968104~ @7054
+    REPLACE~968105~ @7055
+    REPLACE~968106~ @7056
+
+    REPLACE~950001~ @3201 // Wild Mage Nahal's Warning
+	REPLACE~950002~ @3202
+	REPLACE~950003~ @3203
+	REPLACE~950004~ @3204
+	REPLACE~950005~ @3205
+	REPLACE~950006~ @3206
+	REPLACE~950007~ @3207
+	REPLACE~950008~ @3208
+	REPLACE~950009~ @3209
+	REPLACE~950010~ @3210
+	REPLACE~950011~ @3211
+	REPLACE~950012~ @3212
+	REPLACE~950013~ @3213
+	REPLACE~950014~ @3214
+	
+    REPLACE~999979~ @3080
+    REPLACE~999984~ @3081
+    REPLACE~999985~ @3082
+    REPLACE~999986~ @3083
+    REPLACE~999978~ @3084
+    REPLACE~999990~ @3085
+    REPLACE~999991~ @3086
+    REPLACE~999992~ @3087
+    REPLACE~999977~ @3088
+    REPLACE~999996~ @3089
+    REPLACE~999997~ @3090
+    REPLACE~999998~ @3091
+    REPLACE~999999~ @3092
+    REPLACE~999981~ @3093
+    REPLACE~999973~ @3094
+    REPLACE~999982~ @3095
+    REPLACE~999983~ @3096
+    REPLACE~999987~ @3097
+    REPLACE~999988~ @3098
+    REPLACE~999989~ @3099
+    REPLACE~999993~ @3300
+    REPLACE~999994~ @3301
+    REPLACE~999995~ @3302
+    REPLACE~999980~ @3303
+	
+	
+	
+ACTION_IF GAME_IS ~bgee bg2ee eet~ BEGIN
+  COPY_EXISTING ~BPBlkGrd.bcs~ ~scripts\BPBlkGrd.bs~
+    REPLACE~969999~ @3038
+    REPLACE~969998~ @3039
+    REPLACE~969997~ @3040
+    REPLACE~969996~ @3041
+    REPLACE~969995~ @3042
+    REPLACE~969994~ @3043
+    REPLACE~969993~ @3044
+    REPLACE~969992~ @3045
+    REPLACE~969991~ @3046
+    REPLACE~969990~ @3047
+    REPLACE~969989~ @3048
+    REPLACE~969988~ @3049
+    REPLACE~969987~ @3050
+    REPLACE~969986~ @3051
+    REPLACE~969985~ @3052
+    REPLACE~969984~ @3053
+
+    REPLACE~969980~ @3057
+
+    REPLACE~969979~ @3058
+    REPLACE~969978~ @3059
+    REPLACE~969977~ @3060
+    REPLACE~969976~ @3061
+    REPLACE~969975~ @3062
+    REPLACE~969974~ @3063
+    REPLACE~969973~ @3064
+
+	REPLACE~950008~ @3208
+	REPLACE~950009~ @3209
+	REPLACE~950010~ @3210
+	REPLACE~950011~ @3211
+	REPLACE~950012~ @3212
+	REPLACE~950013~ @3213
+	REPLACE~950014~ @3214
+  END
+
+END
+
+
+
+
+
+
+
+DEFINE_ACTION_FUNCTION scrpdesc_append BEGIN
+
+
+
+// Scripts
+APPEND ~scrpdesc.2DA~
+~BP-BARD    999956      999955~
+APPEND ~scrpdesc.2DA~
+~BPCL-MG    999934      999933~
+APPEND ~scrpdesc.2DA~
+~BPFT-CL    999970      999969~
+APPEND ~scrpdesc.2DA~
+~BPFT-DR    999944      999943~
+APPEND ~scrpdesc.2DA~
+~BPFT-TH    999968      999967~
+APPEND ~scrpdesc.2DA~
+~BP-PUREF    999962      999961~
+APPEND ~scrpdesc.2DA~
+~BP-MAGE    999946      999945~
+APPEND ~scrpdesc.2DA~
+~BPFT-MGT    999954      999953~
+APPEND ~scrpdesc.2DA~
+~BPFT-RNG    999958      999957~
+APPEND ~scrpdesc.2DA~
+~BP-MULTI    999964      999963~
+APPEND ~scrpdesc.2DA~
+~BP-RANGE    999960      999959~
+APPEND ~scrpdesc.2DA~
+~BPPALDIN    999952      999951~
+APPEND ~scrpdesc.2DA~
+~BPRANGER    999950      999949~
+APPEND ~scrpdesc.2DA~
+~BPHEALC2    999942      999941~
+APPEND ~scrpdesc.2DA~
+~BPHEALD2    999940      999939~
+APPEND ~scrpdesc.2DA~
+~BPHEALM2    999938      999937~
+APPEND ~scrpdesc.2DA~
+~BP-MONK     999936      999935~
+APPEND ~scrpdesc.2DA~
+~BP-BMAGE    999932      999931~
+
+ACTION_IF GAME_IS ~bgee bg2ee eet~ BEGIN
+  APPEND ~scrpdesc.2DA~
+  ~BPBLKGRD    999948      999947~
+END
+
+END
+
+
+
+DEFINE_ACTION_FUNCTION scrpdesc_replace BEGIN
+COPY_EXISTING ~scrpdesc.2da~ ~override/scrpdesc.2da~
+REPLACE ~999970~ @3026
+REPLACE ~999969~ @3027
+REPLACE ~999968~ @3028
+REPLACE ~999967~ @3029
+REPLACE ~999964~ @3032
+REPLACE ~999963~ @3033
+REPLACE ~999962~ @3034
+REPLACE ~999961~ @3035
+REPLACE ~999960~ @3036
+REPLACE ~999959~ @3037
+REPLACE ~999958~ @3101
+REPLACE ~999957~ @3102
+REPLACE ~999956~ @3103
+REPLACE ~999955~ @3104
+REPLACE ~999954~ @3105
+REPLACE ~999953~ @3106
+REPLACE ~999952~ @3107
+REPLACE ~999951~ @3108
+REPLACE ~999950~ @3109
+REPLACE ~999949~ @3110
+REPLACE ~999948~ @3111
+REPLACE ~999947~ @3112
+REPLACE ~999946~ @3113
+REPLACE ~999945~ @3114
+REPLACE ~999944~ @3115
+REPLACE ~999943~ @3116
+REPLACE ~999942~ @3117
+REPLACE ~999941~ @3118
+REPLACE ~999940~ @3119
+REPLACE ~999939~ @3120
+REPLACE ~999938~ @3121
+REPLACE ~999937~ @3122
+REPLACE ~999936~ @3123
+REPLACE ~999935~ @3124
+REPLACE ~999934~ @3125
+REPLACE ~999933~ @3126
+REPLACE ~999932~ @3127
+REPLACE ~999931~ @3128
+
+END
+
+
+
+DEFINE_ACTION_FUNCTION fix_weapon_enchantment BEGIN
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
+  READ_SHORT 0x1c type
+  PATCH_IF (type = 5) OR (type > 13 AND type < 31) OR (type = 44) OR (type = 57) OR (type = 69) BEGIN
+    READ_LONG  0x18 flags
+    READ_LONG  0x60 ench
+    READ_LONG  0x64 abil_off
+    READ_SHORT 0x68 num_abil
+    FOR( cnt=0; cnt<%num_abil%; cnt=cnt+1) BEGIN
+      READ_SHORT %abil_off% + 0x14 thac0
+      PATCH_IF (ench < thac0) BEGIN
+        WRITE_LONG 0x60 %thac0%
+      END
+    END
+  END
+BUT_ONLY
+
+END
+      
+
+    
+    

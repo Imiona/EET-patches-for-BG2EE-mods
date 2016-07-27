@@ -1,0 +1,601 @@
+IF
+Global("SkieItemTalk1","GLOBAL",1)
+Global("SkieItemStore","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("SkieItemStore","GLOBAL",1)
+END
+
+IF
+Global("SkieItemTalk1","GLOBAL",3)
+Global("SkieItemGive","GLOBAL",0)
+THEN
+RESPONSE #100
+GiveItemCreate("skiei1",Player1,0,0,0)
+SetGlobal("SkieItemGive","GLOBAL",1)
+END
+
+////////vampire
+
+IF
+InParty(Myself)
+Dead("1xSkieVa")
+Global("SkieVampirePlot","GLOBAL",1)
+THEN
+RESPONSE #100
+GiveItemCreate("SkieSC","SKIEDV",0,0,0)
+SetGlobal("SkieVampirePlot","GLOBAL",2)
+END
+
+IF
+InParty(Myself)
+Global("SkieVampirePlot","GLOBAL",2)
+THEN
+RESPONSE #100
+LeaveParty()
+END
+
+//////// Rozmowa
+
+IF
+InParty(Myself)
+Global("SkieFirtTimerTime","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("SkieFirtTimerTime","GLOBAL",1)
+RealSetGlobalTimer("SkiePCTalk","GLOBAL",1000)
+END
+
+IF
+!See([ENEMY])
+RealGlobalTimerExpired("SkiePCTalk","GLOBAL")
+InParty(Myself)
+OR(5)
+Global("SkieIsTalking","GLOBAL",0)
+Global("SkieIsTalking","GLOBAL",2)
+Global("SkieIsTalking","GLOBAL",4)
+Global("SkieIsTalking","GLOBAL",6)
+Global("SkieIsTalking","GLOBAL",8)
+THEN
+RESPONSE #100
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+InParty(Myself)
+!Dead("SkieDV")
+RealGlobalTimerExpired("SkiePCTalk","GLOBAL")
+OR(4)
+Global("SkieIsTalking","GLOBAL",1)
+Global("SkieIsTalking","GLOBAL",3)
+Global("SkieIsTalking","GLOBAL",5)
+Global("SkieIsTalking","GLOBAL",7)
+THEN
+RESPONSE #100
+IncrementGlobal("SkieIsTalking","GLOBAL",1)
+RealSetGlobalTimer("SkiePCTalk","GLOBAL",1500)
+END
+
+//////// BANTERY
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",0)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+SetGlobal("SkieBanterTimer","GLOBAL",1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",1)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",2)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",2)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",3)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",3)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",4)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",4)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",5)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",5)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",6)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",6)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",7)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",7)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",8)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+IF
+InParty("SkieDV")
+Global("SkieBanterTimer","GLOBAL",8)
+RealGlobalTimerExpired("SkieBanter","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("SkieBanterTimer","GLOBAL",9)
+RealSetGlobalTimer("SkieBanter","GLOBAL",1400)
+Interact(Player1)
+END
+
+//// SKILL
+
+IF
+InParty(Myself)
+Global("SkieSkill","GLOBAL",0)
+LevelGT(Myself,10)
+THEN
+RESPONSE #100
+AddSpecialAbility("SKIE01")
+SetGlobal("SkieSkill","GLOBAL",1)
+END
+
+
+//////////////////////////////////////////ROMANS
+
+///match
+
+IF
+  Global("SkieMatch","GLOBAL",0)
+  OR(4)
+    Race(Player1,ELF)
+    Race(Player1,HUMAN)
+    Race(Player1,HALF_ELF)
+    Race(Player1,TIEFLING)
+  Gender(Player1,MALE)
+THEN
+  RESPONSE #100
+  SetGlobal("SkieMatch","GLOBAL",1)
+END
+
+///kill
+
+IF
+Global("SkieRomanceActive","GLOBAL",2)
+Global("SkieRomanceActiveCon","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceActiveCon","GLOBAL",1)
+SetGlobal("JaheiraRomanceActive","GLOBAL",3)
+SetGlobal("ViconiaRomanceActive","GLOBAL",3)
+SetGlobal("AerieRomanceActive","GLOBAL",3)
+SetGlobal("SaerilethRomanceActive","GLOBAL",3)
+SetGlobal("SimeRomanceActive","GLOBAL",3)
+SetGlobal("NathanielRomanceActive","GLOBAL",3)
+SetGlobal("TashiaRomanceActive","GLOBAL",3)
+SetGlobal("E3FadeRomanceActive","GLOBAL",3)
+SetGlobal("AnomenRomanceActive","GLOBAL",3)
+SetGlobal("AviRelationsActive","GLOBAL",3)
+END
+
+
+IF
+InParty(Myself)
+Global("SkieRomanceActiveConf","GLOBAL",0)
+OR(2)
+Global("SkieRomanceActive","GLOBAL",1)
+Global("SkieRomanceActive","GLOBAL",2)
+OR(10)
+Global("AviRelationsActive","GLOBAL",2)
+Global("JaheiraRomanceActive","GLOBAL",2)
+Global("ViconiaRomanceActive","GLOBAL",2)
+Global("AerieRomanceActive","GLOBAL",2)
+Global("SaerilethRomanceActive","GLOBAL",2)
+Global("SimeRomanceActive","GLOBAL",2)
+Global("NathanielRomanceActive","GLOBAL",2)
+Global("TashiaRomanceActive","GLOBAL",2)
+Global("E3FadeRomanceActive","GLOBAL",2)
+Global("AnomenRomanceActive","GLOBAL",2)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceActive","GLOBAL",3)
+SetGlobal("SkieRomanceActiveConf","GLOBAL",1)
+END
+
+///begin romance
+
+IF
+Global("SkieIsTalking","GLOBAL",14)
+Global("SkieMatch","GLOBAL",1)
+Global("SkieRomanceActive","GLOBAL",0)
+Global("SkieRomanceTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceActive","GLOBAL",1)
+SetGlobal("SkieRomanceTalk","GLOBAL",1)
+RealSetGlobalTimer("SkieRomanceTimer","GLOBAL",1500)
+END
+
+
+//ZADANIE ROM
+
+IF
+InParty(Myself)
+Global("SkieRomanceTalk","GLOBAL",18)
+Global("SkieRomanceQuest","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceQuest","GLOBAL",1)
+AddJournalEntry(@500,QUEST)
+END
+
+IF
+InParty(Myself)
+PartyHasItem("MISC42")
+PartyHasItem("MISC36")
+PartyHasItem("MISC45")
+Global("SkieAdditionalQTalk","LOCALS",0)
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+Global("SkieRomanceQuest","GLOBAL",2)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceQuest","GLOBAL",3)
+EraseJournalEntry(@500)
+AddJournalEntry(@501,QUEST)
+END
+
+IF
+Global("SkieRomanceQuest","GLOBAL",4)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceQuest","GLOBAL",5)
+EraseJournalEntry(@501)
+AddJournalEntry(@502,QUEST_DONE)
+RealSetGlobalTimer("SkieRomanceTimer","GLOBAL",100)
+END
+
+/////Timers and starters
+
+IF
+InParty(Myself)
+CombatCounter(0)
+!See([ENEMY])
+!Dead("SkieDV")
+!AreaType(DUNGEON)
+See(Player1)
+RealGlobalTimerExpired("SkieRomanceTimer","GLOBAL")
+OR(2)
+Global("SkieRomanceActive","GLOBAL",1)
+Global("SkieRomanceActive","GLOBAL",2)
+OR(14)
+Global("SkieRomanceTalk","GLOBAL",1)
+Global("SkieRomanceTalk","GLOBAL",3)
+Global("SkieRomanceTalk","GLOBAL",5)
+Global("SkieRomanceTalk","GLOBAL",7)
+Global("SkieRomanceTalk","GLOBAL",9)
+Global("SkieRomanceTalk","GLOBAL",11)
+Global("SkieRomanceTalk","GLOBAL",13)
+Global("SkieRomanceTalk","GLOBAL",15)
+Global("SkieRomanceTalk","GLOBAL",17)
+Global("SkieRomanceTalk","GLOBAL",20)
+Global("SkieRomanceTalk","GLOBAL",22)
+Global("SkieRomanceTalk","GLOBAL",25)
+Global("SkieRomanceTalk","GLOBAL",27)
+Global("SkieRomanceTalk","GLOBAL",29)
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+InParty(Myself)
+RealGlobalTimerExpired("SkieRomanceTimer","GLOBAL")
+OR(2)
+Global("SkieRomanceActive","GLOBAL",1)
+Global("SkieRomanceActive","GLOBAL",2)
+OR(12)
+Global("SkieRomanceTalk","GLOBAL",2)
+Global("SkieRomanceTalk","GLOBAL",4)
+Global("SkieRomanceTalk","GLOBAL",6)
+Global("SkieRomanceTalk","GLOBAL",8)
+Global("SkieRomanceTalk","GLOBAL",10)
+Global("SkieRomanceTalk","GLOBAL",12)
+Global("SkieRomanceTalk","GLOBAL",14)
+Global("SkieRomanceTalk","GLOBAL",16)
+Global("SkieRomanceTalk","GLOBAL",19)
+Global("SkieRomanceTalk","GLOBAL",21)
+Global("SkieRomanceTalk","GLOBAL",24)
+Global("SkieRomanceTalk","GLOBAL",28)
+THEN
+RESPONSE #100
+IncrementGlobal("SkieRomanceTalk","GLOBAL",1)
+RealSetGlobalTimer("SkieRomanceTimer","GLOBAL",1600)
+END
+
+IF
+InParty(Myself)
+Global("SkieRomanceActive","GLOBAL",1)
+Global("SkieRomanceTalk","GLOBAL",18)
+Global("SkieRomanceQuest","GLOBAL",5)
+RealGlobalTimerExpired("SkieRomanceTimer","GLOBAL")
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+InParty(Myself)
+Global("SkieRomanceActive","GLOBAL",1)
+Global("SkieRomanceTalk","GLOBAL",23)
+GlobalTimerExpired("SkieRomanceRestTime","GLOBAL")
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+InParty(Myself)
+Global("SkieRomanceActive","GLOBAL",1)
+Global("SkieRomanceTalk","GLOBAL",26)
+GlobalTimerExpired("SkieRomanceRestTime","GLOBAL")
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+
+//zamiana
+
+IF
+Global("SkieRomanceActive","GLOBAL",2)
+Global("AsylumPlot","GLOBAL",43)
+InParty(Myself)
+Global("SkieRomanceSlayer","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobalTimer("SkieRomChange","GLOBAL",ONE_DAY)
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+InParty(Myself)
+GlobalTimerExpired("SkieRomChange","GLOBAL")
+Global("SkieRomanceActive","GLOBAL",2)
+Global("SkieRomanceSlayer","GLOBAL",1)
+!See([ENEMY])
+See(Player1)
+CombatCounter(0)
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+//Underdark romance talk
+
+IF
+AreaCheck("AR2100")
+Global("SkieUnderLov","GLOBAL",0)
+Global("SkieRomanceActive","GLOBAL",2)
+THEN
+RESPONSE #100
+SetGlobal("SkieUnderLov","GLOBAL",1)
+RealSetGlobalTimer("SkieRomanceUnder","GLOBAL",400)
+END
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+Global("SkieRomanceActive","GLOBAL",2)
+Global("SkieUnderLov","GLOBAL",1)
+RealGlobalTimerExpired("SkieRomanceUnder","GLOBAL")
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+AreaCheck("AR2100")
+Global("SkieRomanceActive","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceActive","GLOBAL",3)
+END
+
+//Rom Chap6
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+Global("CHAPTER","GLOBAL",%bg2_chapter_6%)
+Global("SkieRomanceActive","GLOBAL",2)
+Global("SkieRomanceC6","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("SkieRomanceC6","GLOBAL",1)
+RealSetGlobalTimer("SkieTimerC6","GLOBAL",1200)
+END
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+Global("CHAPTER","GLOBAL",%bg2_chapter_6%)
+Global("SkieRomanceActive","GLOBAL",2)
+Global("SkieRomanceC6","GLOBAL",1)
+RealGlobalTimerExpired("SkieTimerC6","GLOBAL")
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+Global("SkieRomanceC6","GLOBAL",2)
+Global("SkieRomanceActive","GLOBAL",2)
+RealGlobalTimerExpired("SkieTimerC6","GLOBAL")
+THEN 
+RESPONSE #100
+RealSetGlobalTimer("SkieTimerC6","GLOBAL",700)
+SetGlobal("SkieRomanceC6","GLOBAL",3)
+END
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+Global("SkieRomanceActive","GLOBAL",2)
+Global("SkieRomanceC6","GLOBAL",3)
+RealGlobalTimerExpired("SkieTimerC6","GLOBAL")
+THEN
+RESPONSE #100
+PlaySong(0)
+PlaySound("SKIER")
+StartDialogue("1xSKIEJ",Player1)
+END
+
+
+//TotDG
+
+IF
+InParty(Myself)
+See(Player1)
+CombatCounter(0)
+AreaCheck("ARLDV2")
+Global("SkieTotDGStan","GLOBAL",0)
+THEN
+RESPONSE #100
+StartDialogue("1xSKIEJ",Player1)
+END
+
+IF
+InParty(Myself)
+See(Player1)
+CombatCounter(0)
+AreaCheck("ARLDV1")
+Global("SkieTotDGRom","GLOBAL",0)
+OR(2)
+Global("SkieRomanceActive","GLOBAL",1)
+Global("SkieRomanceActive","GLOBAL",2)
+OR(2)
+GlobalGT("DGGentleChoice","GLOBAL",2)
+GlobalGT("DGTemperChoice","GLOBAL",2)
+THEN
+RESPONSE #100
+StartDialogue("1xSKIEJ",Player1)
+END
+
+//Dragon
+
+IF
+InParty(Myself)
+See(Player1)
+CombatCounter(0)
+Dead("FIRKRA02")
+AreaCheck("AR1203")
+Global("SkieDragon","GLOBAL",0)
+THEN
+RESPONSE #100
+StartDialogue("1xSKIEJ",Player1)
+END
+
+//Mae'var
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+Dead("MAEVAR")
+AreaCheck("AR0301")
+Global("SkieMVTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+StartDialogue("1xSKIEJ",Player1)
+END
+
+//Copper
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+AreaCheck("AR0406")
+Global("SkieCopTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+StartDialogue("1xSKIEJ",Player1)
+END
+

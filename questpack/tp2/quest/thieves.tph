@@ -1,0 +1,551 @@
+COMPILE EVALUATE_BUFFER ~questpack/thieves/dialog0.d~ // Rayic
+        ~questpack/thieves/dialog1.d~ // Chapter 2
+        ~questpack/thieves/dialog2.d~ // Chapter 6 for Mae'Var
+        ~questpack/thieves/dialog3.d~ USING // Chapter 6 for Brega
+        ~%tra_path%/english/thieves.tra~
+        ~%tra_path%/%LANGUAGE%/thieves.tra~
+
+ADD_JOURNAL @75 @121 @224 USING
+            ~%tra_path%/english/thieves.tra~
+            ~%tra_path%%LANGUAGE%/thieves.tra~
+
+ADD_JOURNAL TITLE (@583) @357 @358 @359 @363 @364 @365 @366 @367 @368 @369 @370 @371 @372 @373 @374 @375 USING
+            ~%tra_path%/english/thieves.tra~
+            ~%tra_path%%LANGUAGE%/thieves.tra~
+
+ADD_JOURNAL TITLE (@584) @360 @361 @362 @515 @516 @517 USING
+            ~%tra_path%/english/thieves.tra~
+            ~%tra_path%%LANGUAGE%/thieves.tra~
+
+ADD_JOURNAL TITLE (@585) @574 @575 USING
+            ~%tra_path%/english/thieves.tra~
+            ~%tra_path%%LANGUAGE%/thieves.tra~
+
+// REFERENCES TO NIGHT KNIVES
+STRING_SET 6320 @192
+STRING_SET 18386 @193
+STRING_SET 18389 @194
+STRING_SET 21292 @195
+STRING_SET 33039 @196
+STRING_SET 33041 @197
+STRING_SET 34733 @198
+
+// MAE-VAR
+STRING_SET 62159 @260
+STRING_SET 62160 @259
+
+// KACHIKO
+STRING_SET 53172 @269
+
+COPY_EXISTING ~c6kach.cre~ ~override~
+              ~c6kach2.cre~ ~override~
+  WRITE_SHORT 0x28 25360
+  WRITE_BYTE 0x237 2
+  WRITE_BYTE 0x275 2
+BUT_ONLY
+
+// CORRECTED ALIGNMENTS FOR BREGA AND BYLANNA
+COPY_EXISTING ~habrega.cre~ ~override~
+  WRITE_BYTE 0x27b 33
+BUT_ONLY
+
+COPY_EXISTING ~bylanna.cre~ ~override~
+  WRITE_BYTE 0x27b 18
+BUT_ONLY
+
+// BOOTER IS A GNOME
+COPY_EXISTING ~booter.cre~ ~override~
+              ~booter02.cre~ ~override~
+  WRITE_SHORT 0x28 24836
+BUT_ONLY
+
+// FIX STEALING STATUETTE OF LATHANDER
+COPY_EXISTING ~LATHALRM.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~OR(2)~ ~~
+  END
+BUT_ONLY
+
+// Ghrey IM8
+COMPILE EVALUATE_BUFFER ~questpack/thieves/dialog4.d~
+        ~questpack/thieves/ghrey/j#im8grd.baf~ USING
+        ~%tra_path%/english/thieves.tra~
+        ~%tra_path%/%LANGUAGE%/thieves.tra~
+
+COPY_EXISTING ~AR0527.are~ ~override~
+  WRITE_ASCII 0x94 ~AR0527~ #8
+BUT_ONLY
+
+COPY_EXISTING ~AR0528.are~ ~override~
+  WRITE_ASCII 0x94 ~AR0528~ #8
+BUT_ONLY
+
+COPY ~questpack/thieves/ghrey/j#im8grd.cre~ ~override~
+  SAY NAME1 @261
+  SAY NAME2 @261
+
+COPY ~questpack/thieves/ghrey/j#im8thg.cre~ ~override~
+  SAY NAME1 #22657
+  SAY NAME2 #22657
+
+COPY ~questpack/thieves/ghrey/j#im8gr2.cre~ ~override~
+  SAY NAME1 @261
+  SAY NAME2 @261
+
+COPY ~questpack/thieves/ghrey/j#im8wif.cre~ ~override~
+  SAY NAME1 @262
+  SAY NAME2 @262
+
+COPY ~questpack/thieves/ghrey/j#im8kid.cre~ ~override~
+  SAY NAME1 @263
+  SAY NAME2 @263
+
+COPY ~questpack/thieves/ghrey/j#im8ki2.cre~ ~override~
+  SAY NAME1 @264
+  SAY NAME2 @264
+
+COPY ~questpack/thieves/ghrey/j#im8boo.cre~ ~override~
+  SAY NAME1 #35922
+  SAY NAME2 #35922
+
+COPY ~questpack/thieves/ghrey/j#im8tor.cre~ ~override~
+     ~questpack/thieves/ghrey/j#im8to2.cre~ ~override~
+  SAY NAME1 @265
+  SAY NAME2 @265
+
+COPY ~questpack/thieves/ghrey/d0qpgude.cre~ ~override~
+  WRITE_ASCII 0x248 "d0qpgude" #8
+
+EXTEND_TOP ~AR0500.bcs~ ~questpack/thieves/ghrey/adar0500.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~AR0527.bcs~ ~questpack/thieves/ghrey/adar0527.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~AR0528.bcs~ ~questpack/thieves/ghrey/adar0528.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~AR0307.bcs~ ~questpack/thieves/ghrey/adar0307.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~AR0329.bcs~ ~questpack/thieves/ghrey/et_0329.baf~ EVALUATE_BUFFER
+
+COMPILE EVALUATE_BUFFER ~questpack/thieves/ghrey/d0qpgude.baf~
+
+// RAYIC STUFF
+STRING_SET 34211 @99948
+
+COPY ~questpack/thieves/items/d0qprayi.itm~ ~override~
+  SAY NAME2 @145
+  SAY IDENTIFIED_DESC @144
+
+COPY_EXISTING dcowl1.cre override
+  ADD_CRE_ITEM d0qprayi #0 #0 #0 identified ~rring lring~
+BUT_ONLY
+
+COPY ~questpack/thieves/creatures/d0qpback.cre~ ~override~
+  SAY NAME1 @146
+  SAY NAME2 @146
+
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/rayic.baf~
+        ~questpack/thieves/scripts/d0edwinh.baf~
+
+COPY_EXISTING ~ar0317.are~ ~override~
+  GET_OFFSET_ARRAY triggers 0x5c 4 0x5a 2 0 0 0xc4
+  PHP_EACH triggers AS i => off BEGIN
+    READ_ASCII off name (32) NULL
+    PATCH_IF "%name%" STRING_EQUAL_CASE tran0316 BEGIN
+      WRITE_LONG off + 0x60 BIT9 // Cannot be passed by NPCs; clobber everything else
+    END
+  END
+BUT_ONLY
+
+ACTION_IF GAME_IS ~tob bgt bg2ee eet~ BEGIN
+  COMPILE EVALUATE_BUFFER ~questpack/thieves/25dialog0.d~ USING
+          ~%tra_path%/english/thieves.tra~
+          ~%tra_path%/%LANGUAGE%/thieves.tra~
+
+  EXTEND_BOTTOM ~ar5500.bcs~ ~questpack/thieves/scripts/et_5500.baf~ EVALUATE_BUFFER
+END
+
+// BASIC THIEVES STUFF
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/shouts/stdeath.baf~
+        ~questpack/thieves/scripts/shouts/ptdeath.baf~
+        ~questpack/thieves/scripts/shouts/stguard1.baf~
+        ~questpack/thieves/scripts/shouts/mvally.baf~
+        ~questpack/thieves/scripts/shouts/mvally2.baf~
+
+EXTEND_TOP ~edwin.bcs~ ~questpack/thieves/scripts/et_edwin.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~ar0301.are~ ~override~
+              ~ar0302.are~ ~override~
+              ~ar0303.are~ ~override~
+  REPLACE_TEXTUALLY "ptdeath" "stdeath" (8)
+BUT_ONLY
+
+EXTEND_TOP ~baldur.bcs~ ~questpack/thieves/scripts/et_spawn.baf~ EVALUATE_BUFFER
+
+EXTEND_TOP ~ar0300.bcs~ ~questpack/thieves/scripts/et_0300.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~ar0300.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~TriggerActivation("Tran0303a",FALSE)~ ~~
+    REPLACE_TEXTUALLY ~TriggerActivation("Tran0329",TRUE)~
+                      ~TriggerActivation("Tran0329a",FALSE)
+                       TriggerActivation("Tran0329b",FALSE)~
+  END
+BUT_ONLY
+
+COPY_EXISTING ~ar0300.are~ ~override~
+  GET_OFFSET_ARRAY triggers 0x5c 4 0x5a 2 0 0 0xc4
+  PHP_EACH triggers AS i => off BEGIN
+    READ_ASCII off name (32) NULL
+    // There is no "Tran0329", bug?
+    PATCH_IF "%name%" STRING_EQUAL_CASE Tran0329 BEGIN
+      WRITE_LONG off + 0x34 30 // Cursor index
+    END
+  END
+BUT_ONLY
+
+EXTEND_TOP ~ar0301.bcs~ ~questpack/thieves/scripts/et_0301.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~ar0306.are~ ~override~
+  WRITE_ASCII 0x94 "ar0306" #8
+BUT_ONLY
+
+EXTEND_TOP ~ar0306.bcs~ ~questpack/thieves/scripts/et_0306.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~ar0328.bcs~ ~questpack/thieves/scripts/et_0306.baf~ EVALUATE_BUFFER
+
+EXTEND_TOP ~ar0307.bcs~ ~questpack/thieves/scripts/et_0307.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~ar0329.bcs~ ~questpack/thieves/scripts/et_0307.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~ar0305.are~ ~override~
+  WRITE_ASCII 0x94 "AR0305" #8
+BUT_ONLY
+
+COPY_EXISTING ~ar0327.are~ ~override~
+  WRITE_ASCII 0x94 "AR0327" #8
+BUT_ONLY
+
+EXTEND_TOP ~ar0305.bcs~ ~questpack/thieves/scripts/et_0305.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~ar0327.bcs~ ~questpack/thieves/scripts/et_0305.baf~ EVALUATE_BUFFER
+
+// LARELL'S GOONS
+COPY ~questpack/thieves/creatures/larell/d0nightk.cre~ ~override~
+  SAY NAME1 @103
+  SAY NAME2 @103
+
+COPY ~questpack/thieves/creatures/larell/d0night2.cre~ ~override~
+  SAY NAME1 @109
+  SAY NAME2 @109
+
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/d0nightk.baf~
+        ~questpack/thieves/scripts/d0night2.baf~
+
+COPY_EXISTING maevar.cre override
+  WRITE_SHORT 0x24 70 // HP
+  WRITE_SHORT 0x26 70 // HP
+  WRITE_BYTE  0x52 11 // THAC0
+  WRITE_BYTE  0x53 2  // APR
+  WRITE_BYTE  0x23c 18 // DEX
+  WRITE_LONG  0x244 0x400 << 16 // Kit (Illusionist)
+  REPLACE_TEXTUALLY "gpshout" "" (8)
+  REPLACE_TEXTUALLY "useitem" "" (8)
+  WRITE_BYTE  0x274 242 // Specifics
+  WRITE_BYTE  0x27b 51 // Alignment (CE)
+  REPLACE_CRE_ITEM bow02 #0 #0 #0 unstealable weapon2 TWOHANDED
+  REPLACE_TEXTUALLY "arow01" "arow02" (8)
+  ADD_CRE_ITEM d0leat08 #0 #0 #0 "unstealable&undroppable" armor
+  REPLACE_CRE_ITEM arow05 #10 #0 #0 "unstealable&undroppable" quiver1
+BUT_ONLY
+
+COPY_EXISTING mvguard1.cre override
+  WRITE_BYTE 0x45 90 // Hide in Shadows
+  WRITE_BYTE 0x52 10 // THAC0
+  WRITE_BYTE 0x68 90 // Move Silently
+  REPLACE_TEXTUALLY "gpshout" "" (8)
+  REPLACE_TEXTUALLY "gparcher" "" (8)
+  WRITE_ASCII 0x260 D0MVGUAR #8 // General script
+  WRITE_BYTE 0x274 242 // Specifics
+  WRITE_BYTE 0x27b 35 // Alignment (NE)
+  ADD_CRE_ITEM potn10 #2 #0 #0 none qitem1
+BUT_ONLY
+
+COPY_EXISTING mvpries.cre override
+  REPLACE_TEXTUALLY "gpshout" "" (8)
+  REPLACE_TEXTUALLY "pries8b" "" (8)
+  WRITE_ASCIIL 0x258 "PTDEATH" "D0MVCLER"
+  WRITE_BYTE 0x274 242 // Specifics
+  WRITE_BYTE 0x27b 51 // Alignment (CE)
+  ADD_CRE_ITEM helm01 #0 #0 #0 none helmet
+BUT_ONLY
+
+COPY ~questpack/thieves/creatures/maevar/d0msngr.cre~ ~override~
+     ~questpack/thieves/items/d0leat08.itm~ ~override~
+
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/maevar.baf~
+        ~questpack/thieves/scripts/d0mvguar.baf~
+        ~questpack/thieves/scripts/d0mvcler.baf~
+
+COPY_EXISTING aran.cre override
+  WRITE_BYTE 0x234 16 // Level 1
+  WRITE_BYTE 0x235 16 // Level 2
+  WRITE_BYTE 0x23c 19 // DEX
+  WRITE_BYTE 0x23d 18 // CON
+  WRITE_BYTE 0x23e 16 // CHA
+  WRITE_BYTE 0x23f 20 // Morale
+  WRITE_BYTE 0x240 1  // Morale break
+  WRITE_ASCIIL 0x250 "D0ARAN" "STDEATH" ""
+  WRITE_BYTE 0x274 240 // Specifics
+  WRITE_BYTE 0x27b 35 // Alignment (NE)
+  ADD_CRE_ITEM potn10 #2 #0 #0 none qitem1
+  ADD_CRE_ITEM potn52 #3 #0 #0 none qitem2
+  ADD_CRE_ITEM aifast #0 #0 #0 "unstealable&undroppable" "lring rring"
+BUT_ONLY
+
+COPY_EXISTING aran02.cre override
+  WRITE_BYTE 0x234 16 // Level 1
+  WRITE_BYTE 0x235 16 // Level 2
+  WRITE_ASCIIL 0x248 "SHOUTDLG" "D0ARAN" ""
+  REPLACE_TEXTUALLY "gpuse" "" (8)
+  WRITE_BYTE 0x274 240 // Specifics
+  WRITE_BYTE 0x27b 35 // Alignment (NE)
+  REMOVE_CRE_ITEM misc6w potn10
+  ADD_CRE_ITEM misc6w #3 #0 #0 none inv7
+  ADD_CRE_ITEM potn10 #2 #0 #0 none qitem1
+  ADD_CRE_ITEM aifast #0 #0 #0 "unstealable&undroppable" "lring rring"
+  ADD_CRE_ITEM d0rewar2 #0 #0 #0 unstealable inv1
+BUT_ONLY
+
+COPY_EXISTING arnfgt03.cre override
+  WRITE_BYTE 0x52 9 // THAC0
+  WRITE_BYTE 0x53 2 // APR
+  WRITE_ASCII 0x268 "D0QPARGU" #8
+  WRITE_BYTE 0x274 240 // Specifics
+  ADD_CRE_ITEM potn10 #2 #0 #0 none qitem1
+BUT_ONLY
+
+COPY_EXISTING arnfgt04.cre override
+  WRITE_LONG 0x14 2400 // XP value
+  WRITE_BYTE 0x52 8 // THAC0
+  WRITE_BYTE 0x53 3 // APR
+  WRITE_BYTE 0x234 12 // Level 1
+  WRITE_ASCII 0x260 "D0QPARGU" #8
+  WRITE_BYTE 0x274 240 // Specifics
+  REPLACE_TEXTUALLY "hamm01" "hamm02" (8)
+  ADD_CRE_ITEM potn14 #1 #0 #0 none qitem1
+  ADD_CRE_ITEM ax1h04 #8 #0 #0 none weapon2
+BUT_ONLY
+
+// ARAN'S GOONS
+COPY ~questpack/thieves/creatures/aran/d0magcle.cre~ ~override~
+     ~questpack/thieves/creatures/aran/d0renrev.cre~ ~override~
+     ~questpack/thieves/creatures/aran/d0renal.cre~ ~override~
+     ~questpack/thieves/creatures/aran/d0arbkup.cre~ ~override~
+
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/d0aran.baf~
+        ~questpack/thieves/scripts/d0aranm.baf~
+        ~questpack/thieves/scripts/stdeathm.baf~
+        ~questpack/thieves/scripts/d0magcle.baf~
+        ~questpack/thieves/scripts/d0qpargu.baf~
+        ~questpack/thieves/scripts/d0aranbk.baf~
+        ~questpack/thieves/scripts/d0renal.baf~
+        ~questpack/thieves/scripts/d0awbuff.baf~
+
+COPY_EXISTING ~FLYFGT02.CRE~ ~override~
+              ~FLYFGT03.CRE~ ~override~
+  WRITE_ASCII 0x250 "D0ARANBK" #8
+BUT_ONLY
+
+COPY_EXISTING ~FLYFGT04.CRE~ ~override~
+  WRITE_ASCII 0x250 "D0ARANBK" #8
+  WRITE_ASCII 0x258 "MAGE12D" #8
+BUT_ONLY
+
+COPY_EXISTING ~renal.cre~ ~override~
+  WRITE_ASCII 0x250 "D0RENAL" #8
+  WRITE_ASCII 0x258 "USEITEM" #8
+  WRITE_ASCII 0x260 "STDEATH" #8
+BUT_ONLY
+
+COPY_EXISTING ~ARNWAR01.CRE~ ~override~
+              ~ARNWAR02.CRE~ ~override~
+              ~ARNWAR03.CRE~ ~override~
+              ~ARNWAR04.CRE~ ~override~
+              ~ARNWAR05.CRE~ ~override~
+  WRITE_ASCII 0x250 "D0AWBUFF" #8
+BUT_ONLY
+
+COPY_EXISTING ~ARNWAR07.CRE~ ~override~
+  WRITE_ASCII 0x248 "D0AWBUFF" #8
+BUT_ONLY
+
+COPY_EXISTING ~ARNWAR06.CRE~ ~override/D0ARNLIE.CRE~
+  SAY NAME1 @122
+  SAY NAME2 @122
+  REPLACE_TEXTUALLY ~STAF01~ ~STAF02~ (8)
+  WRITE_ASCII 0x2cc "D0ARNLIE" #8
+BUT_ONLY
+
+COPY_EXISTING ~STASS1.CRE~ ~override~
+  WRITE_ASCII 0x248 "STDEATH" #8
+BUT_ONLY
+
+COPY_EXISTING ~stguard2.cre~ ~override~
+              ~stguard3.cre~ ~override~
+              ~thief1.cre~ ~override~
+  WRITE_LONG 0x14 600
+  WRITE_SHORT 0x24 45
+  WRITE_SHORT 0x26 45
+  WRITE_BYTE 0x52 8
+BUT_ONLY
+
+COPY_EXISTING ~tassa.cre~ ~override~
+  WRITE_ASCII 0x248 "D0NOTHIN" #8
+BUT_ONLY
+
+// ITEMS
+COPY_EXISTING ~misc4v.itm~ ~override/d0letter.itm~
+  SAY NAME1 @101
+  SAY NAME2 @101
+  SAY UNIDENTIFIED_DESC @102
+  SAY IDENTIFIED_DESC @102
+
+COPY ~questpack/thieves/items/d0reward.itm~ ~override~
+  SAY NAME1 #6797
+  SAY NAME2 @105
+  SAY UNIDENTIFIED_DESC #6798
+   SAY IDENTIFIED_DESC @106
+
+COPY ~questpack/thieves/items/d0rewar2.itm~ ~override~
+  SAY NAME1 #6348
+  SAY NAME2 @107
+  SAY UNIDENTIFIED_DESC #17054
+  SAY IDENTIFIED_DESC @108
+
+COPY ~questpack/thieves/items/d0reward.bam~ ~override~
+
+COPY ~questpack/thieves/items/d0dart01.itm~ ~override~
+  SAY NAME2 @316
+  SAY IDENTIFIED_DESC @317
+
+COPY ~questpack/thieves/items/d0dart01.bam~ ~override~
+
+// CHAPTER 6
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/C6SPWN3.BAF~
+        ~questpack/thieves/scripts/C6SPWN4.BAF~
+        ~questpack/thieves/scripts/C6SPWN5.BAF~
+
+COPY_EXISTING ~C6TANOV.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~Global("ArkanisSpawn","AR0808",0)~
+                      ~Global("ArkanisSpawn","AR0808",0)
+                       Global("D0AranHostile","GLOBAL",0)~
+  END
+BUT_ONLY
+
+COPY_EXISTING ~vvtanov.cre~ ~override~
+  WRITE_BYTE 0x275 2
+BUT_ONLY
+
+COPY_EXISTING ~AR0809.BCS~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~!Dead("C6Arkan")~
+                      ~!Dead("C6Arkan")
+                       Global("D0AranHostile","GLOBAL",0)~
+  END
+BUT_ONLY
+
+// GUARDS
+COPY ~questpack/thieves/creatures/d0msngr2.cre~ ~override~
+     ~questpack/thieves/creatures/d0guard.cre~ ~override~
+     ~questpack/thieves/creatures/d0guard2.cre~ ~override~
+
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/d0guards.baf~
+        ~questpack/thieves/scripts/d0guard4.baf~
+
+COPY ~questpack/thieves/creatures/d0guard.cre~ ~override/d0guard3.cre~
+  WRITE_ASCII 0x248 "D0NOTHIN" #8
+  WRITE_SHORT 0x28 24832
+  WRITE_ASCII 0x2cc "D0GUARD3" #8
+
+COPY ~questpack/thieves/creatures/d0guard4.cre~ ~override~
+  SAY NAME1 @205
+  SAY NAME2 @205
+
+COPY_EXISTING ~arntra01.bcs~ ~override~
+              ~arntra02.bcs~ ~override~
+              ~arntra04.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~IF~ ~IF !Allegiance(Myself,ENEMY)~
+  END
+BUT_ONLY
+
+COPY_EXISTING ~arnboy01.cre~ ~override~
+  WRITE_ASCII 0x260 "WTRUNSGT" #8
+BUT_ONLY
+
+COPY_EXISTING ~arnman03.cre~ ~override~
+              ~arnman04.cre~ ~override~
+              ~arnman08.cre~ ~override~
+              ~arnman09.cre~ ~override~
+              ~arnman10.cre~ ~override~
+              ~arnman11.cre~ ~override~
+              ~arntra03.cre~ ~override~
+              ~arntra04.cre~ ~override~
+              ~arntra05.cre~ ~override~
+              ~arntra06.cre~ ~override~
+  WRITE_ASCII 0x260 "WTASIGHT" #8
+BUT_ONLY
+
+COPY_EXISTING ~arnman01.cre~ ~override~
+              ~arnman02.cre~ ~override~
+              ~arnman06.cre~ ~override~
+              ~arnman07.cre~ ~override~
+  WRITE_ASCII 0x268 "D0PRISON" #8
+BUT_ONLY
+
+COPY_EXISTING ~arnman05.cre~ ~override~
+//  WRITE_ASCII 0x250 "D0PRISON" #8
+  WRITE_ASCII 0x260 "WTASIGHT" #8
+BUT_ONLY
+
+COMPILE EVALUATE_BUFFER ~questpack/thieves/scripts/d0prison.baf~
+
+COPY_EXISTING ~arnfgt04.cre~ ~override/d0arbku2.cre~
+  WRITE_ASCII 0x280 "d0arbkup" #32
+
+COPY_EXISTING ~arnwar09.cre~ ~override~
+  WRITE_ASCII 0x280 "arnwar09" #32
+
+// Suppress jouurnal entry on killing Aran
+COPY_EXISTING ~ar0329.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~Global("DearAranJournal","AR0329",0)~
+                      ~Global("DearAranJournal","AR0329",0)
+                       GlobalGT("BodhiJob","GLOBAL",0)~
+  END
+BUT_ONLY
+
+// Replace orcs and shadows with something less stupid
+COPY_EXISTING ~ar0329.are~ ~override~
+  GET_OFFSET_ARRAY spawns 0x60 4 0x64 4 0 0 0xc8
+  PHP_EACH spawns AS i => off BEGIN
+    READ_ASCII off name (32) NULL
+    PATCH_MATCH "%name%" WITH
+      "Spawn Point 1"
+      BEGIN
+        WRITE_ASCII off + 0x24 "ARNWAR01" #8
+        WRITE_SHORT off + 0x84 5
+      END
+      "Spawn Point 2"
+      BEGIN
+        WRITE_ASCII off + 0x24 "ARNWAR01" #8
+        WRITE_ASCII off + 0x2c "ARNWAR03" #8
+        WRITE_SHORT off + 0x84 7
+      END
+      "Spawn Point 3" "Spawn Point 4"
+      BEGIN
+        WRITE_ASCII off + 0x24 "ARNWAR01" #8
+        WRITE_SHORT off + 0x84 6
+      END
+      DEFAULT
+    END
+  END
+BUT_ONLY
+
+// Gaelan turns hostile when he should
+EXTEND_BOTTOM ~ar0311.bcs~ ~questpack/thieves/scripts/et_gae1.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~ar0312.bcs~ ~questpack/thieves/scripts/et_gae2.baf~ EVALUATE_BUFFER

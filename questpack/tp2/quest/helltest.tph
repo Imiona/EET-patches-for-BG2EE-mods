@@ -1,0 +1,62 @@
+COPY ~questpack/helltest/data/copy~ ~override~
+
+// Construct new silver dragon creature (Nythrun)
+COPY_EXISTING ~hdragsil.cre~ ~override~
+  PATCH_IF (SOURCE_SIZE > 0x02d3) THEN BEGIN
+    WRITE_SHORT  0x0028 0x1202
+    WRITE_SHORT  0x002c 0x00 // Why?
+    FOR ("i1" = 0x6e; "i1" < 0x76; "i1" += 0x01) BEGIN
+      WRITE_BYTE "i1" 0x00   // Why?
+    END
+    WRITE_BYTE   0x0083 0x64 // Why?
+    WRITE_BYTE   0x0237 0x02 // Why?
+    WRITE_ASCII  0x0248 ~shoutdlg~ #8
+    WRITE_ASCII  0x0250 ~draghell~ #8
+    WRITE_BYTE   0x0271 0xff
+    WRITE_BYTE   0x0273 0xc0
+    WRITE_BYTE   0x0275 0x02
+    WRITE_BYTE   0x027b 0x12
+    ADD_CRE_ITEM ~scrl9r~ #1  #0 #0 IDENTIFIED QITEM2
+    ADD_CRE_ITEM ~scrl9v~ #1  #0 #0 IDENTIFIED INV1
+    ADD_CRE_ITEM ~scrl8m~ #1  #0 #0 IDENTIFIED INV2
+    ADD_CRE_ITEM ~bolt03~ #20 #0 #0 IDENTIFIED INV3
+    ADD_CRE_ITEM ~arow07~ #8  #0 #0 IDENTIFIED INV4
+  END
+BUT_ONLY
+
+COMPILE EVALUATE_BUFFER ~questpack/helltest/data/teardoor.baf~
+        ~questpack/helltest/data/hellself.baf~
+        ~questpack/helltest/data/ar2904.baf~
+
+EXTEND_BOTTOM ~ar2900.bcs~ ~questpack/helltest/data/ar2900.baf~ EVALUATE_BUFFER
+
+EXTEND_TOP ~tearfear.bcs~ ~questpack/helltest/data/tearfear.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~ar2905.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~SetGlobal("GivenTear","AR2905",1)~
+                      ~SetGlobal("GivenTear","AR2905",1)
+                       SetGlobal("StatBoost","AR2905",1)
+                       SetGlobal("DisableExit","AR2905",2)
+                       TriggerActivation("Tran2900",TRUE)~
+  END
+BUT_ONLY
+
+EXTEND_TOP ~ar2905.bcs~ ~questpack/helltest/data/ar2905.baf~ EVALUATE_BUFFER
+
+COMPILE EVALUATE_BUFFER ~questpack/helltest/data/draghell.baf~
+
+ACTION_IF GAME_IS ~tob bgt bg2ee eet~ BEGIN
+  EXTEND_TOP ~ar4500.bcs~ ~questpack/helltest/data/ar4500.baf~ EVALUATE_BUFFER
+END
+
+COMPILE EVALUATE_BUFFER ~questpack/helltest/fear.d~
+        ~questpack/helltest/pride.d~
+        ~questpack/helltest/greed.d~
+        ~questpack/helltest/selfish.d~
+USING   ~%tra_path%/english/helltest.tra~
+        ~%tra_path%/%LANGUAGE%/helltest.tra~
+
+ADD_JOURNAL EXISTING TITLE (#74342) @30 @55 USING
+            ~%tra_path%/english/helltest.tra~
+            ~%tra_path%/%LANGUAGE%/helltest.tra~

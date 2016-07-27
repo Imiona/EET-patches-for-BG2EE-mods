@@ -1,0 +1,79 @@
+DO THIS IN REVERSE: ITERATE AREAS, FIND THOSE WHICH LINK BACK TO AR0020, ADD ENCOUNTER.
+
+
+
+COPY_EXISTING ~worldmap.wmp~ ~override~
+// Assume that the WMP doesn't have multiple map entries. Is this even supported by the engine?
+READ_LONG 0x30 "#areas"
+READ_LONG 0x34 "areaoffset"
+READ_LONG 0x38 "linkoffset"
+READ_LONG 0x3c "#links"
+SET "currentarea" = 0
+SET "currentlink" = 0
+WHILE ("%currentarea%" < "%#areas%") BEGIN
+//PATCH_PRINT "currentarea = %currentarea%"
+  READ_ASCII ("%areaoffset%" + ("%currentarea%" * 240) + 8) "currentareaname"
+//PATCH_PRINT "currentareaname = %currentareaname%"
+  PATCH_IF (("%currentareaname%" STRING_COMPARE_CASE "AR0020") = 0) BEGIN
+    READ_LONG ("%areaoffset%" + ("%currentarea%" * 240) + 104) "firstlinkeast"
+    READ_LONG ("%areaoffset%" + ("%currentarea%" * 240) + 108) "#linkseast"
+    SET "currentlink" = "%firstlinkeast%"
+    WHILE ("%currentlink%" < ("%firstlinkeast%" + "%#linkseast%")) BEGIN
+//  PATCH_PRINT "currentlink = %currentlink%"
+
+	  READ_LONG  ("%linkoffset%" + ("%currentlink%" * 216)) "dest_area_entry"
+	  READ_ASCII ("%areaoffset%" + ("%dest_area_entry%" * 240) + 8) "dest_area_name"
+
+      READ_ASCII ("%linkoffset%" + ("%currentlink%" * 216) + 44) "encounterarea0"
+//    READ_ASCII ("%linkoffset%" + ("%currentlink%" * 216) + 52) "encounterarea1"
+//    READ_ASCII ("%linkoffset%" + ("%currentlink%" * 216) + 60) "encounterarea2"
+//    READ_ASCII ("%linkoffset%" + ("%currentlink%" * 216) + 68) "encounterarea3"
+//    READ_ASCII ("%linkoffset%" + ("%currentlink%" * 216) + 76) "encounterarea4"
+      READ_LONG ("%linkoffset%" + ("%currentlink%" * 216) + 84) "encounterprob"
+      PATCH_IF ((("%encounterarea0%" STRING_COMPARE_CASE "") = 0) AND ("%encounterprob%" = 0)) BEGIN
+        WRITE_ASCII ("%linkoffset%" + ("%currentlink%" * 216) + 44) "D00040"
+        WRITE_LONG ("%linkoffset%" + ("%currentlink%" * 216) + 84) 0 // 101 causes encounter to occur only once
+
+	    INNER_ACTION BEGIN
+			COPY ~questpack/ormand/et_baldur.baf~ ~questpack/ormand/et_baldur.baf~
+			REPLACE_TEXTUALLY ~SetGlobal("D0Ormand","GLOBAL",3)~
+							  ~SetGlobal("D0Ormand","GLOBAL",3)
+							   SetEncounterProbability("ar0020","%dest_area_name%",101)~
+			COPY ~questpack/ormand/randenc/d00040.baf~ ~questpack/ormand/randenc/d00040.baf~
+			REPLACE_TEXTUALLY ~RESPONSE #100~
+							  ~RESPONSE #100
+							   SetEncounterProbability("ar0020","%dest_area_name%",0)~
+	    END
+
+      END
+    SET "currentlink" = ("%currentlink%" + 1)
+    END
+  END
+  SET "currentarea" = ("%currentarea%" + 1)
+END
+BUT_ONLY_IF_IT_CHANGES
+
+COPY ~questpack/ormand/d0qpore0.cre~ ~override~
+SAY NAME1 @310
+SAY NAME2 @310
+COPY ~questpack/ormand/d0qpore1.cre~ ~override~
+SAY NAME1 @311
+SAY NAME2 @311
+COPY ~questpack/ormand/d0qpore2.cre~ ~override~
+SAY NAME1 @312
+SAY NAME2 @312
+COPY ~questpack/ormand/d0qpore3.cre~ ~override~
+SAY NAME1 @313
+SAY NAME2 @313
+COPY ~questpack/ormand/d0qpore4.cre~ ~override~
+SAY NAME1 @314
+SAY NAME2 @314
+
+COMPILE EVALUATE_BUFFER ~questpack/ormand/compile~
+
+COMPILE EVALUATE_BUFFER ~questpack/ormand/randenc/d00040.baf~
+
+EXTEND_TOP ~baldur.bcs~ ~questpack/ormand/et_baldur.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~bow12.itm~ ~override~
+SAY IDENTIFIED_DESC @315

@@ -1,0 +1,4605 @@
+// CONTENTS:
+// Ending music after talks
+// Kick-out stuff
+// Flatter Amber
+// Setting Combat AI
+// Bodhi Abduction
+// Setting Amber Romance Active
+// Setting the Amber like variable
+// Ending romance and leaving party based on AmberLike variable
+// Joining stuff
+// Amber is turned from stone to flesh
+// Jill's Bracelet quest
+// Amber's Kidnapping Quest
+// Phaere Innuendo
+// Slums Slavers
+// Amber's Talk Timing
+// Player 2 only talks
+// Amber's Floating Talk timing
+// Amber's Chapter Talk timing
+// Lovetalk Timing
+// Floating Lovetalk Timing
+// Friendship talk timing
+// Floating friendship talk timing
+//
+// Demonic Sphere (Planar Sphere Quest)
+// Reputation talks
+// Pick Up Talk Timing
+// For talks that require seeing somebody or something
+// Timed banter with HD, Imoen & Vic
+// Underdark Banter
+// Aerie romance conflict
+// Sola romance conflict
+// Breaking the romance if others finish first
+// Start flirt timer for first time
+// Reset flirt timer after flirting
+// Resets Amber's flirt timer if in combat or dungeon
+// Amber flirts with PC1
+// Amber flirts with PC2
+// Amber's racial special abilities
+// Items to be dropped upon equipping
+// Amber's dialog.tlk fix script
+
+// Ending music after talks
+
+IF
+	Global("M#EndMusic","GLOBAL",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#EndMusic","GLOBAL",0)
+	StartMusic(0,2)
+END
+
+// Kick-out stuff
+IF
+	Global("M#AmberFiveFlagons","GLOBAL",1)
+	!AreaCheck("AR0509")
+THEN
+	RESPONSE #100
+	EscapeAreaMove("AR0509",439,300,0)	
+	SetGlobal("M#AmberFiveFlagons","GLOBAL",2)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberLeave","GLOBAL")
+	!InParty("M#Amber")
+	Global("M#AmberFiveFlagons","GLOBAL",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberFiveFlagons","GLOBAL",1)
+END
+
+IF
+	Global("M#AmberFiveFlagons","GLOBAL",1)
+	AreaCheck("AR0509")
+THEN
+	RESPONSE #100
+	MoveToPoint([439.300])
+	Face(0)
+	SetGlobal("M#AmberFiveFlagons","GLOBAL",2)
+END
+
+IF
+	Global("M#AmberDestroy","GLOBAL",1)
+THEN
+	RESPONSE #100
+	EscapeAreaDestroy(30)	
+END
+
+// Flatter Amber
+IF
+	OR(2)
+	  Killed([0.0.LICH]) 
+	  Killed([0.0.DEMILICH]) 
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledLich","Locals",1)
+	SetGlobalTimer("M#KilledMonsterTimer","Locals",250)
+END
+
+//IF
+//	Killed([0.MONSTER.BEHOLDER.BEHOLDER.0.NEITHER]) //Unseeing eye Not spesific enough
+//THEN
+//	RESPONSE #100
+//	SetGlobal("M#KilledUnseeingEye","Locals",1)
+//	SetGlobalTimer("M#KilledMonsterTimer","Locals",250)
+//END
+
+//IF
+//	Killed([0.UNDEAD.VAMPIRE.VAMPIRE.0.FEMALE.0]) // Bodhi Not spesific enough
+//THEN
+//	RESPONSE #100
+//	SetGlobal("M#KilledBodhi","Locals",1)
+// 	SetGlobalTimer("M#KilledMonsterTimer","Locals",250)
+//END
+
+IF
+	Killed([0.UNDEAD.SHADOW.SHADOW.0.FEMALE]) // Shade Lord
+	OR(2)
+	  AreaCheck("AR1400") // Temple ruins
+	  AreaCheck("AR1404") // Temple ruins unshadowed?
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledShadeLord","Locals",1)
+	SetGlobalTimer("M#KilledMonsterTimer","Locals",250)
+END
+
+IF
+	Killed([0.0.DRAGON]) 
+	!AreaCheck("AR2102") // Adalon's cave
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledDragon","Locals",1)
+	SetGlobalTimer("M#KilledMonsterTimer","Locals",250)
+END
+
+//IF
+//	Killed([0.MONSTER.TROLL.TROLL.0.NEITHER]) // TorGal Not spesific enough
+//THEN
+//	RESPONSE #100
+//	SetGlobal("M#KilledTorGal","Locals",1)
+//	SetGlobalTimer("M#KilledMonsterTimer","Locals",250)
+//END
+
+IF
+	Killed([0.HUMANOID.DEMONIC.FIGHTER_MAGE.0.MALE]) // Warden
+	AreaCheck("AR0516") // Warden's prison plane
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledWarden","Locals",1)
+	SetGlobalTimer("M#KilledMonsterTimer","Locals",250)
+END
+
+//IF 
+//	GlobalTimerExpired("M#KilledMonsterTimer","Locals")
+//	Global("M#KilledUnseeingEye","Locals",1)
+//THEN
+//	RESPONSE #100
+//	SetGlobal("M#KilledUnseeingEye","Locals",0)
+//END
+
+//IF 
+//	GlobalTimerExpired("M#KilledMonsterTimer","Locals")
+//	Global("M#KilledBodhi","Locals",1)
+//THEN
+//	RESPONSE #100
+//	SetGlobal("M#KilledBodhi","Locals",0)
+//END
+
+IF 
+	GlobalTimerExpired("M#KilledMonsterTimer","Locals")
+	Global("M#KilledLich","Locals",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledLich","Locals",0)
+END
+
+IF 
+	GlobalTimerExpired("M#KilledMonsterTimer","Locals")
+	Global("M#KilledShadeLord","Locals",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledShadeLord","Locals",0)
+END
+
+IF 
+	GlobalTimerExpired("M#KilledMonsterTimer","Locals")
+	Global("M#KilledDragon","Locals",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledDragon","Locals",0)
+END
+
+//IF 
+//	GlobalTimerExpired("M#KilledMonsterTimer","Locals")
+//	Global("M#KilledTorGal","Locals",1)
+//THEN
+//	RESPONSE #100
+//	SetGlobal("M#KilledTorGal","Locals",0)
+//END
+
+IF 
+	GlobalTimerExpired("M#KilledMonsterTimer","Locals")
+	Global("M#KilledWarden","Locals",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#KilledWarden","Locals",0)
+END
+
+// Setting Combat AI
+IF
+	InParty(Myself)
+	Global("M#AmberAISet","Locals",0)
+THEN
+	RESPONSE #100
+	ChangeAIScript("M#AmbeAI",CLASS)
+	SetGlobal("M#AmberAISet","Locals",1)
+END
+
+IF
+	!InParty(Myself)
+	!Global("M#AmberAISet","Locals",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberAISet","Locals",0)
+END
+
+// Bodhi Abduction
+IF
+  	!InParty("M#Amber")
+  	Global("M#AmberVampire","GLOBAL",4)
+THEN
+    	RESPONSE #100
+    	PlaySong(999997)
+   	SetGlobal("M#AmberVampire","GLOBAL",5)
+    	StartDialogNoSet(Player1)
+END
+
+// Setting Amber Romance Active
+IF
+	Global("M#AmberRomanceActive","GLOBAL",0)
+	OR(2)
+	   Global("M#AmberMatch","GLOBAL",1)
+	   Global("M#AmberMatch","GLOBAL",3)
+	InParty(Myself)
+	
+THEN
+	RESPONSE #100
+	   SetGlobal("M#AmberRomanceActive","GLOBAL",1)
+END
+
+IF
+	Global("M#AmberRomanceActive","GLOBAL",0)
+	Global("M#AmberMatch","GLOBAL",4)
+	InParty(Myself)
+	
+THEN
+	RESPONSE #100
+	   SetGlobal("M#AmberRomanceActive","GLOBAL",3)
+END
+
+// Setting the Amber like variable
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStatLT(Player1,13,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	   SetGlobal("M#AmberLike","Locals",100)
+	   SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player1,13,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",101)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player1,14,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",102)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player1,15,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",103)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	OR(2)
+	  CheckStat(Player1,16,CHR)
+	  CheckStat(Player1,17,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",104)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player1,18,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",105)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player1,19,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",108)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStatGT(Player1,19,CHR)	
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",109)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStatLT(Player2,13,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",100)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player2,13,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",101)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player2,14,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",102)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player2,15,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",103)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	OR(2)
+	  CheckStat(Player2,16,CHR)
+	  CheckStat(Player2,17,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",104)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player2,18,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",105)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStat(Player2,19,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",108)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+IF
+	Global("M#AmberLike","Locals",0)
+	Global("M#AmberLikeSet","Locals",0)
+	CheckStatGT(Player2,19,CHR)	
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLike","Locals",109)
+	SetGlobal("M#AmberLikeSet","Locals",1)
+END
+
+// Ending romance and leaving party based on AmberLike variable.
+IF
+	GlobalLT("M#AmberLike","Locals",95)
+	Global("M#AmberLikeSet","Locals",1)
+	OR(2)
+	  Global("M#AmberRomanceActive","GLOBAL",1)
+	  Global("M#AmberRomanceActive","GLOBAL",2)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberRomanceActive","GLOBAL",3)
+END
+
+IF
+	GlobalLT("M#Amberlike","Locals",90)
+	Global("M#AmberLikeSet","Locals",0)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty(Myself)
+THEN
+	RESPONSE #100
+	LeaveParty()
+	SetDialog("m#amberp")
+	Dialogue(Player1)
+END
+
+// Joining stuff
+IF
+	Global("M#DialogueSet","Locals",0)
+THEN
+	RESPONSE #100
+	SetDialog("M#AMBER")
+	SetGlobal("M#DialogueSet","Locals",1)
+END
+
+IF
+	Global("M#AmberTalked","Locals",0)
+	!Global("M#AmberRescue","GLOBAL",6)
+	See([PC])
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberRescue","GLOBAL",6)
+END
+
+IF
+	Global("M#AmberRescue","GLOBAL",6)
+	Global("M#AmberTalked","Locals",0)
+THEN
+	RESPONSE #100
+	MoveToObject(Player1)
+	SetGlobal("M#AmberTalked","Locals",1)
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	HasItem("M#BUNDLE",Myself)
+THEN
+	RESPONSE #100
+	DestroyItem("M#BUNDLE")
+	CreateItem("LEAT01",1,0,0)
+	CreateItem("M#SPEAR2",1,0,0)
+	CreateItem("SW1H04",1,0,0)
+	CreateItem("M#BUCK2",1,0,0)
+	CreateItem("POTN52",1,0,0)
+	CreateItem("POTN20",1,0,0)
+	CreateItem("POTN14",2,0,0)
+	CreateItem("POTN10",2,0,0)
+END
+
+// Amber is turned from stone to flesh
+IF
+	Global("M#AmberStoned","GLOBAL",1)
+	!StateCheck("M#Amber",STATE_STONE_DEATH)
+	!StateCheck(Player1,STATE_OUT_OF_ACTION)
+THEN
+	RESPONSE #100
+	Dialog(Player1)
+END
+
+// Jill's Bracelet quest
+IF
+	Global("M#JillBracelet","GLOBAL",0)
+	GlobalTimerExpired("M#AmberQuestTime","GLOBAL")
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#JillBracelet","GLOBAL",1)
+	SetGlobal("M#AmberQuestRemind","Locals",0)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",1)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",2)
+	!InParty("m#amber")
+THEN
+	RESPONSE #100
+	EscapeArea()
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberQuestTime","GLOBAL")
+	OR(3)
+	  Global("M#JillBracelet","GLOBAL",3)
+	  Global("M#JillBracelet","GLOBAL",5)
+	  Global("M#JillBracelet","GLOBAL",6)
+	OR(3)
+	  Global("M#AmberQuestRemind","Locals",0)
+	  Global("M#AmberQuestRemind","Locals",2)
+	  Global("M#AmberQuestRemind","Locals",4)
+	InParty("m#amber")	
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	OR(3)
+	  Global("M#JillBracelet","GLOBAL",3)
+	  Global("M#JillBracelet","GLOBAL",5)
+	  Global("M#JillBracelet","GLOBAL",6)
+	OR(3)
+	  Global("M#AmberQuestRemind","Locals",1)
+	  Global("M#AmberQuestRemind","Locals",3)
+	  Global("M#AmberQuestRemind","Locals",5)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",3)
+	See("M#EDTG")
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog("M#EDTG")
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	Global("M#JBracePromise","GLOBAL",5)
+	PartyGoldGT(499)
+	Global("M#AmberQuestRemind","Locals",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	Global("M#JBracePromise","GLOBAL",7)
+	PartyGoldGT(699)
+	Global("M#AmberQuestRemind","Locals",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	Global("M#JBracePromise","GLOBAL",10)
+	PartyGoldGT(999)
+	Global("M#AmberQuestRemind","Locals",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	Global("M#JBracePromise","GLOBAL",15)
+	PartyGoldGT(1499)
+	Global("M#AmberQuestRemind","Locals",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	Global("M#JBracePromise","GLOBAL",20)
+	PartyGoldGT(1999)
+	Global("M#AmberQuestRemind","Locals",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	Global("M#JBracePromise","GLOBAL",50)
+	PartyGoldGT(4999)
+	Global("M#AmberQuestRemind","Locals",0)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	OR(2)
+	  Global("M#AmberQuestRemind","Locals",2)
+	  Global("M#AmberQuestRemind","Locals",4)
+	RealGlobalTimerExpired("M#AmberQuestTime","GLOBAL")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberQuestRemind","Locals",1)
+END
+
+IF
+	Global("M#JillBracelet","GLOBAL",7)
+	OR(3)
+	  Global("M#AmberQuestRemind","Locals",1)
+	  Global("M#AmberQuestRemind","Locals",3)
+	  Global("M#AmberQuestRemind","Locals",5)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	Global("M#JillBraceletWorkingForBodhi","Locals",0)
+	Global("M#JillBracelet","GLOBAL",6)
+	Global("WorkingForBodhi","GLOBAL",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#JillBraceletWorkingForBodhi","Locals",1)
+END
+
+IF
+	Global("M#JillBraceletWorkingForBodhi","Locals",1)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Amber's Kidnapping Quest
+IF
+	Global("M#AmberKidnap","GLOBAL",8)
+	AreaCheck("m#ar01")
+	Detect(Player1)
+THEN
+	RESPONSE #100
+	Wait(1)
+	FaceObject(Player1)
+	DisplayStringHead(Myself,@77)
+	Wait(2)
+	SetDialog("m#amberp")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Phaere Innuendo
+IF
+	OR(2)
+	  Global("PhaereInnuendo","GLOBAL",2)
+	  Global("PhaereInnuendo","GLOBAL",3)
+	Global("M#AmberPhaereInnuendo","Locals",0)
+	Global("M#AmberMatch","GLOBAL",1)
+	OR(2)
+	  Global("M#AmberRomanceActive","GLOBAL",1)
+	  Global("M#AmberRomanceActive","GLOBAL",2)
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberPhaereInnuendo","Locals",1)
+END
+
+IF
+	Global("M#AmberPhaereInnuendo","Locals",1)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Slums Slavers
+IF
+	Global("M#AmberSlaver","Locals",0)
+	See("SlumsSlaver2")
+	See("SlumsSlaver3")
+	See("SlumsSlave1")
+
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberSlaver","Locals",1)
+END
+
+IF
+	Global("M#AmberSlaver","Locals",1)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player1)
+END
+
+// Amber's Talk Timing
+IF
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	OR(6)
+	  GlobalLT("M#AmberTalk","Locals",1)
+	  Global("M#AmberTalk","Locals",2)
+	  Global("M#AmberTalk","Locals",4)
+	  Global("M#AmberTalk","Locals",6)
+	  Global("M#AmberTalk","Locals",8)
+	  Global("M#AmberTalk","Locals",10)	  
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	Global("M#JillBracelet","GLOBAL",9)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	OR(3)
+	  Global("M#AmberTalk","Locals",12)
+	  Global("M#AmberTalk","Locals",14)
+	  Global("M#AmberTalk","Locals",16)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	Global("M#AmberKidnap","GLOBAL",9)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF	
+	OR(9)
+	  Global("M#AmberTalk","Locals",1)
+	  Global("M#AmberTalk","Locals",3)
+	  Global("M#AmberTalk","Locals",5)
+	  Global("M#AmberTalk","Locals",7)
+	  Global("M#AmberTalk","Locals",9)
+	  Global("M#AmberTalk","Locals",11)
+	  Global("M#AmberTalk","Locals",13)
+	  Global("M#AmberTalk","Locals",15)
+	  Global("M#AmberTalk","Locals",17)
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)  
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	OR(9)
+	  Global("M#AmberTalk","Locals",1)
+	  Global("M#AmberTalk","Locals",3)
+	  Global("M#AmberTalk","Locals",5)
+	  Global("M#AmberTalk","Locals",7)
+	  Global("M#AmberTalk","Locals",9)
+	  Global("M#AmberTalk","Locals",11)
+	  Global("M#AmberTalk","Locals",13)
+	  Global("M#AmberTalk","Locals",15)
+	  Global("M#AmberTalk","Locals",17)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","Locals",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	!StateCheck(Player2,STATE_PANIC)
+	!StateCheck(Player2,STATE_BERSERK)
+	!StateCheck(Player2,STATE_CHARMED)
+	!StateCheck(Player2,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player2)
+END
+
+// Player 2 only talks
+IF
+	Global("M#AskPlayer1Bhaal","Locals",1)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	Global("M#AmberTalk","Locals",99)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","Locals",3)
+	InParty("M#Amber")
+	
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AskPlayer1Bhaal","Locals",1)
+END
+
+IF
+	Global("M#AskPlayer1Bhaal","Locals",2)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	Global("M#AskPlayer1Bhaal","Locals",3)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	Global("M#AmberTalk","Locals",99)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AskPlayer1Bhaal","Locals",1)
+END
+
+IF
+	Global("M#AskPlayer1Bhaal","Locals",4)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	!StateCheck(Player2,STATE_PANIC)
+	!StateCheck(Player2,STATE_BERSERK)
+	!StateCheck(Player2,STATE_CHARMED)
+	!StateCheck(Player2,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player2)
+END
+
+// Amber's Floating Talk timing
+IF 
+	Global("M#AmberStarTalk","Locals",0)
+	!AreaType(CITY)
+	AreaType(OUTDOOR)
+	AreaType(WEATHER)
+	TimeOfDay(NIGHT)
+	GlobalGT("M#AmberLike","Locals",104)
+	InParty("M#Amber")	
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberStarTalk","Locals",1)
+	Weather(NOWEATHER)
+END
+
+IF
+	Global("M#AmberStarTalk","Locals",1)
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	Global("M#AmberStarTalk","Locals",1)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","Locals",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	!StateCheck(Player2,STATE_PANIC)
+	!StateCheck(Player2,STATE_BERSERK)
+	!StateCheck(Player2,STATE_CHARMED)
+	!StateCheck(Player2,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+THEN
+ 	RESPONSE #100
+ 	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player2)
+END
+
+IF
+	Global("M#AmberLeadershipTalk","Locals",0)
+	Name("m#amber",Player1Fill)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberLeadershipTalk","Locals",1)
+END
+
+IF
+	Global("M#AmberLeadershipTalk","Locals",1)
+	Name("m#amber",Player2Fill)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)	
+END
+
+// Amber's Chapter Talk timing
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",1)
+	GlobalGT("M#AmberTalk","Locals",1)
+	Global("Chapter","GLOBAL",%bg2_chapter_3%)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",120)
+	SetGlobal("M#AmberChapterTalk","Locals",2)
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",4)
+	Global("Chapter","GLOBAL",%bg2_chapter_4%)
+	GlobalGT("AsylumPlot","GLOBAL",4)
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",30)
+	SetGlobal("M#AmberChapterTalk","Locals",4)
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",6)
+	AreaCheck("AR2300") // Sagauhin City
+	Global("Chapter","GLOBAL",%bg2_chapter_4%)
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",240)
+	SetGlobal("M#AmberChapterTalk","Locals",6)
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",10)
+	AreaCheck("AR2401")
+	Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberChapterTalk","Locals",10)
+END
+
+IF
+	GlobalGT("M#AmberChapterTalk","Locals",6)
+	GlobalLT("M#AmberChapterTalk","Locals",12)
+	AreaType(OUTDOOR)
+	OR(2)
+	  TimeOfDay(MORNING)
+ 	  TimeOfDay(DAY)
+	Global("Chapter","GLOBAL",%bg2_chapter_6%)
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",15)
+	SetGlobal("M#AmberChapterTalk","Locals",12)
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",14)
+	Global("Chapter","GLOBAL",%bg2_chapter_6%)
+	OR(7)
+	  AreaCheck("AR0400") //Slums
+	  AreaCheck("AR0300") //Docks
+	  AreaCheck("AR0900") //Temple
+	  AreaCheck("AR0700") //Promenade	  
+	  AreaCheck("AR0020") //Gate
+	  AreaCheck("AR0500") //Bridge	  
+	  AreaCheck("AR1000") //Goverment
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",1200)
+	SetGlobal("M#AmberChapterTalk","Locals",14)
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",16)
+	AreaCheck("AR2600") //Forest of Tethir
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",60)
+	SetGlobal("M#AmberChapterTalk","Locals",16)
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",18)
+	AreaCheck("AR2800") //Suldanesselar
+	Global("Chapter","GLOBAL",%bg2_chapter_7%)
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",15)
+	SetGlobal("M#AmberChapterTalk","Locals",18)	
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",20)
+	AreaCheck("AR2900") //Hell
+	Global("Chapter","GLOBAL",%bg2_chapter_7%)
+	GlobalGT("M#AmberTalk","Locals",1)
+	CombatCounter(0)
+	InParty("M#Amber")	
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberChapterTalkTime","GLOBAL",100)
+	SetGlobal("M#AmberChapterTalk","Locals",20)	
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberChapterTalkTime","GLOBAL")
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	OR(8) 
+	  Global("M#AmberChapterTalk","Locals",2) //Chapter talk 1 (3.1) aka Imoen & Irenicus	
+	  Global("M#AmberChapterTalk","Locals",4) //Chapter talk 2 (4.1) aka Brynnlaw
+	  Global("M#AmberChapterTalk","Locals",6) //Chapter talk 3 (5.1) aka Sahuagin city
+	  Global("M#AmberChapterTalk","Locals",12) //Chapter talk 6 (6.1) aka Leaving underdark & the drow
+	  Global("M#AmberChapterTalk","Locals",14) //Chapter talk 7 (6.2) aka Bodhi
+	  Global("M#AmberChapterTalk","Locals",16) //Chapter talk 8 (7.1) aka Forest of Tethir
+	  Global("M#AmberChapterTalk","Locals",18) //Chapter talk 9 (7.2) aka Suldanesselar
+	  Global("M#AmberChapterTalk","Locals",20) //Chapter talk 10 (7.3) aka Hell
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberChapterTalkTime","GLOBAL")
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	Global("M#AmberChapterTalk","Locals",10) //Chapter talk 5 (5.3) aka Underdark exit
+	OR(2)
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberMatch","GLOBAL",4)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player1)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberChapterTalkTime","GLOBAL")
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	OR(8) 
+	  Global("M#AmberChapterTalk","Locals",2) //Chapter talk 1 (3.1) aka Imoen & Irenicus	
+	  Global("M#AmberChapterTalk","Locals",4) //Chapter talk 2 (4.1) aka Brynnlaw
+	  Global("M#AmberChapterTalk","Locals",6) //Chapter talk 3 (5.1) aka Sahuagin city
+	  Global("M#AmberChapterTalk","Locals",12) //Chapter talk 6 (6.1) aka Leaving underdark & the drow
+	  Global("M#AmberChapterTalk","Locals",14) //Chapter talk 7 (6.2) aka Bodhi
+	  Global("M#AmberChapterTalk","Locals",16) //Chapter talk 8 (7.1) aka Forest of Tethir
+	  Global("M#AmberChapterTalk","Locals",18) //Chapter talk 9 (7.2) aka Suldanesselar
+	  Global("M#AmberChapterTalk","Locals",20) //Chapter talk 10 (7.3) aka Hell
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","Locals",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW     
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player2)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberChapterTalkTime","GLOBAL")
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	Global("M#AmberChapterTalk","Locals",10) //Chapter talk 5 (5.3) aka Underdark exit
+	!Global("M#AmberRomanceActive","Locals",3)
+	Global("M#AmberMatch","GLOBAL",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW     
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	CombatCounter(0)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player2)
+END
+
+// Lovetalk Timing
+IF
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	OR(7)
+	  Global("M#AmberTalk","Locals",50)
+	  Global("M#AmberTalk","Locals",54)
+	  Global("M#AmberTalk","Locals",56)
+	  Global("M#AmberTalk","Locals",62)
+	  Global("M#AmberTalk","Locals",64)
+	  Global("M#AmberTalk","Locals",66)
+	  Global("M#AmberTalk","Locals",76)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	GlobalLT("M#AmberMad","GLOBAL",1)  
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	Global("M#AmberTalk","Locals",60)
+	PartyRested()
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	Global("M#AmberTalk","Locals",68)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	Global("M#IamSorry","Locals",1)
+	Global("M#AmberTalk","Locals",70)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberTalk","Locals",71)
+	SetGlobal("M#IamSorry","Locals",3)
+END
+
+IF
+	Global("M#AmberTalk","Locals",72)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	OR(4)
+	  AreaCheck("AR0300") //Docks
+	  AreaCheck("AR0500") //Bridge
+	  AreaCheck("AR1500") //Spellhold outside
+	  AreaCheck("AR1600") //Brynnlaw
+	GlobalLT("M#AmberMad","GLOBAL",1)  
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	Global("M#AmberTalk","Locals",74)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	!AreaType(DUNGEON)
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_5%)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	OR(12)
+	  Global("M#AmberTalk","Locals",51)
+	  Global("M#AmberTalk","Locals",55)
+	  Global("M#AmberTalk","Locals",57)
+	  Global("M#AmberTalk","Locals",61)
+	  Global("M#AmberTalk","Locals",63)
+	  Global("M#AmberTalk","Locals",65)
+	  Global("M#AmberTalk","Locals",67)
+	  Global("M#AmberTalk","Locals",69)
+	  Global("M#AmberTalk","Locals",71)
+	  Global("M#AmberTalk","Locals",73)
+	  Global("M#AmberTalk","Locals",75)
+	  Global("M#AmberTalk","Locals",77)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	Global("M#AmberMatch","GLOBAL",1)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	OR(12)
+	  Global("M#AmberTalk","Locals",51)
+	  Global("M#AmberTalk","Locals",55)
+	  Global("M#AmberTalk","Locals",57)
+	  Global("M#AmberTalk","Locals",61)
+	  Global("M#AmberTalk","Locals",63)
+	  Global("M#AmberTalk","Locals",65)
+	  Global("M#AmberTalk","Locals",67)
+	  Global("M#AmberTalk","Locals",69)
+	  Global("M#AmberTalk","Locals",71)
+	  Global("M#AmberTalk","Locals",73)
+	  Global("M#AmberTalk","Locals",75)
+	  Global("M#AmberTalk","Locals",77)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	!StateCheck(Player2,STATE_PANIC)
+	!StateCheck(Player2,STATE_BERSERK)
+	!StateCheck(Player2,STATE_CHARMED)
+	!StateCheck(Player2,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player2)
+END
+
+// Floating Lovetalk Timing
+IF
+	Global("M#SoulTalk","Locals",0)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_5%)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#SoulTalk","Locals",3)
+END
+
+IF
+	Global("M#SoulTalk","Locals",3)
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	AreaType(CITY)
+	!AreaType(DUNGEON)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)	
+END
+
+IF
+	Global("M#HurtTalk","GLOBAL",0)
+	HPLT(Player1,10)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	GlobalLT("M#AmberMad","Locals",1)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#HurtTalk","GLOBAL",1)
+END
+
+IF
+	Global("M#HurtTalk","GLOBAL",1)
+	HPGT(Player1,10)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+THEN
+	RESPONSE #100
+	SetGlobal("M#HurtTalk","GLOBAL",2)
+END
+
+IF
+	Global("M#HurtTalk","GLOBAL",1)
+	See(Player1)
+	Global("M#AmberMatch","GLOBAL",1)
+	!See([ENEMY])
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player1)
+END
+
+IF
+	Global("M#Player2Help","GLOBAL",1)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player2)
+END
+
+IF
+	Global("M#HurtTalk","GLOBAL",0)
+	HPLT(Player2,10)
+	Global("M#AmberMatch","GLOBAL",3)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	GlobalLT("M#AmberMad","Locals",1)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#HurtTalk","GLOBAL",1)
+END
+
+IF
+	Global("M#HurtTalk","GLOBAL",1)
+	HPGT(Player2,10)
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	SetGlobal("M#HurtTalk","GLOBAL",2)
+END
+
+IF
+	Global("M#HurtTalk","GLOBAL",1)
+	See(Player2)
+	Global("M#AmberMatch","GLOBAL",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW	
+	!See([ENEMY])
+	!StateCheck(Player2,STATE_PANIC)
+	!StateCheck(Player2,STATE_BERSERK)
+	!StateCheck(Player2,STATE_CHARMED)
+	!StateCheck(Player2,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player2)
+END
+
+IF
+	Global("M#Player1Help","GLOBAL",1)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player1)
+END
+
+IF
+	CheckStatGT(Player1,5,FATIGUE)
+	Global("M#AmberFatigueTalk","Locals",0)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberFatigueTalk","Locals",1)
+END
+
+IF
+	Global("M#AmberFatigueTalk","Locals",1)
+	Global("M#AmberMatch","GLOBAL",1)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	CheckStatGT(Player2,5,FATIGUE)
+	Global("M#AmberFatigueTalk","Locals",0)
+	Global("M#AmberMatch","GLOBAL",3)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	See(Player2)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberFatigueTalk","Locals",1)
+END
+
+IF
+	Global("M#AmberFatigueTalk","Locals",1)
+	Global("M#AmberMatch","GLOBAL",3)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player2)
+END
+
+IF
+	Global("M#VampireTalk","Locals",0)
+	Global("M#AmberVampire","GLOBAL",6)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+THEN
+	RESPONSE #100
+	SetGlobal("M#VampireTalk","Locals",1)
+END
+
+IF
+	Global("M#VampireTalk","Locals",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	!AreaType(DUNGEON)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)	
+END
+
+IF
+	Global("M#AmberPhaereInnuendoTalk","Locals",0)
+	Global("PhaereInnuendo","GLOBAL",1)
+	GlobalLT("M#AmberRomanceActive","GLOBAL",3)
+	Global("M#AmberMatch","GLOBAL",1)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberPhaereInnuendoTalk","Locals",1)
+END
+
+IF
+	Global("M#AmberPhaereInnuendoTalk","Locals",1)
+	AreaCheck("ar2200")
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Friendship talk timing 
+IF
+	
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	OR(6)
+	 Global("M#AmberTalk","Locals",20)
+	 Global("M#AmberTalk","Locals",22)
+	 Global("M#AmberTalk","Locals",26)
+	 Global("M#AmberTalk","Locals",28)
+	 Global("M#AmberTalk","Locals",30)
+	 Global("M#AmberTalk","Locals",32)
+	GlobalGT("M#AmberLike","Locals",101)
+	!AreaType(DUNGEON)
+	GlobalGT("Chapter","GLOBAL",%bg2_chapter_5%)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	Global("M#AmberTalk","Locals",24)
+	ReputationGT(Player1,14)
+	GlobalGT("M#AmberLike","Locals",101)
+	!AreaType(DUNGEON)
+	GlobalGT("Chapter","GLOBAL",%bg2_chapter_5%)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+END
+
+IF
+	OR(7)
+	 Global("M#AmberTalk","Locals",21)
+	 Global("M#AmberTalk","Locals",23)
+	 Global("M#AmberTalk","Locals",25)
+	 Global("M#AmberTalk","Locals",27)
+	 Global("M#AmberTalk","Locals",29)
+	 Global("M#AmberTalk","Locals",31)
+	 Global("M#AmberTalk","Locals",33)
+	Global("M#AmberFriend","GLOBAL",1)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Floating friendship talk timing
+IF
+	Global("M#InLoveTalk","Locals",0)
+	GlobalGT("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	OR(13)
+	 Global("AerieRomanceActive","GLOBAL",2)
+	 Global("JaheiraRomanceActive","GLOBAL",2)
+	 Global("ViconiaRomanceActive","GLOBAL",2)
+	 Global("AnomenRomanceActive","GLOBAL",2)
+	 Global("J#KelseyRomanceActive","GLOBAL",2)
+	 GlobalGT("SolaTalk","GLOBAL",12)
+	 Global("ChloeRomanceActiveCR","GLOBAL",2)
+	 Global("KiaraRomanceActive","GLOBAL",2)
+	 Global("H#ValygarRomanceActive","GLOBAL",2)
+	 Global("TsujathaRomanceActive","GLOBAL",2)
+	 Global("E3FadeRomanceActive","GLOBAL",2)
+	 Global("EdwinRomanceActive","GLOBAL",2)
+	 Global("SaerilethRomanceActive","GLOBAL",2)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#InLoveTalk","Locals",1)
+	RealSetGlobalTimer("M#InLoveTalkTimer","Locals",2000)
+END
+
+IF
+	Global("M#InLoveTalk","Locals",1)
+	RealGlobalTimerExpired("M#InLoveTalkTimer","Locals")
+	!AreaType(DUNGEON)
+	OR(13)
+	 Global("AerieRomanceActive","GLOBAL",2)
+	 Global("JaheiraRomanceActive","GLOBAL",2)
+	 Global("ViconiaRomanceActive","GLOBAL",2)
+	 Global("AnomenRomanceActive","GLOBAL",2)
+	 Global("J#KelseyRomanceActive","GLOBAL",2)
+	 GlobalGT("SolaTalk","GLOBAL",12)
+	 Global("ChloeRomanceActiveCR","GLOBAL",2)
+	 Global("KiaraRomanceActive","GLOBAL",2)
+	 Global("H#ValygarRomanceActive","GLOBAL",2)
+	 Global("TsujathaRomanceActive","GLOBAL",2)
+	 Global("E3FadeRomanceActive","GLOBAL",2)
+	 Global("EdwinRomanceActive","GLOBAL",2)
+	 Global("SaerilethRomanceActive","GLOBAL",2)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#InLoveTalk","Locals",2)
+END
+
+IF
+	Global("M#InLoveTalk","Locals",2)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	Global("M#AmberDreamTalk","Locals",0)
+	Global("HadEllesimeDream1","GLOBAL",1)
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	!Global("M#AmberMatch","GLOBAL",3)
+	OR(3)
+	  Global("M#AmberRomanceActive","GLOBAL",1)
+	  Global("M#AmberRomanceActive","GLOBAL",2)
+	  Global("M#AmberFriend","GLOBAL",1)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberDreamTalk","Locals",1)
+END
+
+IF
+	Global("M#AmberDreamTalk","Locals",1)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	Global("M#AmberDreamTalk","Locals",0)
+	Global("HadEllesimeDream1","GLOBAL",1)
+	!Global("M#AmberMad","GLOBAL",0)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberDreamTalk","Locals",2)
+END
+
+IF
+	Global("M#AmberDreamTalk","Locals",0)
+	Global("HadEllesimeDream1","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",3)
+	!Global("M#AmberFriend","GLOBAL",1)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberDreamTalk","Locals",2)
+END
+
+IF
+	Global("M#AmberDreamTalk","Locals",0)
+	Global("HadEllesimeDream1","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",3)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberDreamTalk","Locals",2)
+END
+
+// Vulgar Monkey
+IF
+	CheckStatGT(Myself,50,INTOXICATION)
+	AreaCheck("AR1602")
+	Global("M#AmberSong","Locals",0)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	CombatCounter(0)
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberSong","Locals",1)
+END
+
+IF
+	Global("M#AmberSong","Locals",1)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog(Player1)
+END
+
+// Demonic Sphere (Planar Sphere Quest)
+IF
+	AreaCheck("ar0414")
+	Global("M#AmberDemonicPlane","Locals",0)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberDemonicPlane","Locals",1)
+END
+
+IF
+	Global("M#AmberDemonicPlane","Locals",1)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	Dialog(Player1)
+END
+
+// Reputation talks
+IF
+	ReputationLT(Player1,7)
+	ReputationGT(Player1,3)
+	Global("M#AmberRepTalk1","Locals",0)
+	GlobalGT("M#AmberTalk","Locals",6)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberRepTalk1","Locals",1)
+END
+
+IF
+	Global("M#AmberRepTalk1","Locals",1)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	ReputationLT(Player1,4)
+	ReputationGT(Player1,1)
+	Global("M#AmberRepTalk2","Locals",0)
+	GlobalGT("M#AmberTalk","Locals",6)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberRepTalk2","Locals",1)
+END
+
+IF
+	Global("M#AmberRepTalk2","Locals",1)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Pick Up Talk Timing
+IF
+	Global("M#Betrayed","Locals",1)
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+THEN
+	RESPONSE #100
+	SetGlobal("M#Betrayed","Locals",2)	
+END
+
+IF
+	OR(6)
+	 Global("M#Reconsider1","Locals",2)
+	 Global("M#Reconsider2","Locals",2)
+	 Global("M#MakeUp","Locals",2)
+	 Global("M#AreWeThereYet","Locals",2)
+	 Global("M#Betrayed","Locals",2)
+	 Global("M#IamSorry","Locals",2)
+	OR(2) 
+	  Global("M#AmberMatch","GLOBAL",1)
+	  Global("M#AmberFriend","GLOBAL",1)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player2)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+IF
+	OR(6)
+	 Global("M#Reconsider1","Locals",2)
+	 Global("M#Reconsider2","Locals",2)
+	 Global("M#MakeUp","Locals",2)
+	 Global("M#AreWeThereYet","Locals",2)
+	 Global("M#Betrayed","Locals",2)
+	 Global("M#IamSorry","Locals",2)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","Locals",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	!StateCheck(Player2,STATE_PANIC)
+	!StateCheck(Player2,STATE_BERSERK)
+	!StateCheck(Player2,STATE_CHARMED)
+	!StateCheck(Player2,STATE_CONFUSED)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player2)
+END
+
+// For talks that require seeing somebody or something
+IF
+	Global("M#SeenSahuaginCity","Locals",0)
+	AreaCheck("AR2300")
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#SeenSahuaginCity","Locals",1)
+END
+
+IF
+	Global("M#SeenTiefling","Locals",0)
+	OR(10)
+	  See("HaerDalis")
+	  See("Raelis")
+	  See("GorCamb2")
+	  See("GorCamb3")
+	  See("GorCamb4")
+	  See("GorCamb5")
+	  See("teltief1")
+	  See("teltief2")
+	  See("teltief3")
+	  See("E3Fade")
+THEN
+	RESPONSE #100
+	SetGlobal("M#SeenTiefling","Locals",1)
+END
+
+IF
+	Global("M#SeenPooky","GLOBAL",0)
+	See("sevpat03")
+THEN
+	RESPONSE #100
+	SetGlobal("M#SeenPooky","GLOBAL",1)
+END
+
+// Timed banter with HD, Imoen & Vic
+IF
+    	Global("M#AmberHaerDalisTimerActivated","GLOBAL",0)
+    	InParty("HaerDalis")
+    	InParty("m#amber")
+THEN
+    	RESPONSE #100
+        SetGlobal("M#AmberHaerDalisTimerActivated","GLOBAL",1)
+        RealSetGlobalTimer("M#AmberHaerDalisTalkTime","GLOBAL",600)
+END
+
+IF
+    	OR(2)
+    	 !InParty("HaerDalis")
+    	 !InParty("m#amber")
+    	Global("M#AmberHaerDalisTimerActivated","GLOBAL",1)
+THEN
+    	RESPONSE #100
+        SetGlobal("M#AmberHaerDalisTimerActivated","GLOBAL",0)
+END
+
+IF
+    	Global("M#AmberImoenTimerActivated","GLOBAL",0)
+    	InParty("Imoen2")
+    	InParty("m#amber")
+THEN
+    	RESPONSE #100
+        SetGlobal("M#AmberImoenTimerActivated","GLOBAL",1)
+        RealSetGlobalTimer("M#AmberImoenTalkTime","GLOBAL",600)
+END
+
+IF
+    	OR(2)
+     	  !InParty("Imoen2")
+     	  !InParty("m#amber")
+    	Global("M#AmberImoenTimerActivated","GLOBAL",1)
+THEN
+	RESPONSE #100
+        SetGlobal("M#AmberImoenTimerActivated","GLOBAL",0)
+END
+
+IF
+	Global("M#AmberViconiaTimerActivated","GLOBAL",0)
+	InParty("Viconia")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+        SetGlobal("M#AmberViconiaTimerActivated","GLOBAL",1)
+        RealSetGlobalTimer("M#AmberViconiaTalkTime","GLOBAL",3500)
+END
+
+IF
+    	OR(2)
+    	 !InParty("Viconia")
+    	 !InParty("m#amber")
+    	Global("M#AmberViconiaTimerActivated","GLOBAL",1)
+THEN
+    	RESPONSE #100
+        SetGlobal("M#AmberViconiaTimerActivated","GLOBAL",0)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberHaerDalisTalkTime","GLOBAL")
+	Global("M#AmberHaerDalisTalk","GLOBAL",6)
+	Global("M#AmberHaerDalisTimerActivated","GLOBAL",1)
+	!AreaType(DUNGEON)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	InParty("HaerDalis")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberHaerDalisTalk","GLOBAL",1)
+END
+
+IF
+	Global("M#AmberHaerDalisTalk","GLOBAL",7)
+	!StateCheck("HaerDalis",STATE_PANIC)
+	!StateCheck("HaerDalis",STATE_BERSERK)
+	!StateCheck("HaerDalis",STATE_CHARMED)
+	!StateCheck("HaerDalis",STATE_CONFUSED)
+	See("HaerDalis")
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("HaerDalis")
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberImoenTalkTime","GLOBAL")
+	Global("M#AmberImoenTalk","GLOBAL",4)
+	Global("M#AmberImoenTimerActivated","GLOBAL",1)
+	!AreaType(DUNGEON)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	InParty("Imoen2")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberImoenTalk","GLOBAL",1)
+END
+
+IF
+	Global("M#AmberImoenTalk","GLOBAL",5)
+	!StateCheck("Imoen2",STATE_PANIC)
+	!StateCheck("Imoen2",STATE_BERSERK)
+	!StateCheck("Imoen2",STATE_CHARMED)
+	!StateCheck("Imoen2",STATE_CONFUSED)
+	See("Imoen2")
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Imoen2")
+END
+
+IF  
+	RealGlobalTimerExpired("M#AmberViconiaTalkTime","GLOBAL")
+	Global("M#AmberViconiaTimerActivated","GLOBAL",1)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	OR(2)
+	  Global("M#AmberViconiaTalk","GLOBAL",2)
+	  Global("M#AmberViconiaTalk","GLOBAL",6)
+	!AreaType(DUNGEON)
+	InParty("Viconia")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberViconiaTalk","GLOBAL",1)
+END
+
+IF
+	OR(2)
+	  Global("M#AmberViconiaTalk","GLOBAL",3)
+	  Global("M#AmberViconiaTalk","GLOBAL",7)
+	!StateCheck("Viconia",STATE_PANIC)
+	!StateCheck("Viconia",STATE_BERSERK)
+	!StateCheck("Viconia",STATE_CHARMED)
+	!StateCheck("Viconia",STATE_CONFUSED)
+	See("Viconia")
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	SetDialog("m#ambern")
+	Dialog("Viconia")
+END
+
+// Underdark Banter
+IF
+	GlobalLT("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+ 	AreaCheck("AR2100")
+	Global("Chapter","GLOBAL",%bg2_chapter_5%)
+THEN
+	RESPONSE #100
+   	SetGlobal("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+   	RealSetGlobalTimer("M#AmberUnderdarkBanterTimer","Locals",1000)
+END
+
+IF
+	OR(2)
+ 	 !AreaCheck("AR2100")
+	 !Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+THEN
+	RESPONSE #100
+   	SetGlobal("M#AmberUnderdarkBanterActivated","GLOBAL",0)	
+END
+
+IF
+    	RealGlobalTimerExpired("M#AmberUnderdarkBanterTimer","Locals")
+    	Global("M#AmberUnderdarkBanter","Locals",2)
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberUnderdarkBanter","Locals",0)
+        RealSetGlobalTimer("M#AmberUnderdarkBanterTimer","Locals",1000)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberUnderdarkBanterTimer","Locals")
+	GlobalLT("M#AmberUnderdarkBanter","Locals",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberUnderdarkBanter","Locals",1)
+END
+
+IF
+    	RealGlobalTimerExpired("M#AmberUnderdarkBanterTimer","Locals")
+    	GlobalGT("M#AmberUnderdarkBanter","Locals",0)
+    	!CombatCounter(0)
+THEN
+    	RESPONSE #100
+        SetGlobal("M#AmberUnderdarkBanter","Locals",0)
+        RealSetGlobalTimer("M#AmberUnderdarkBanterTimer","Locals",200)
+END
+
+IF
+	Global("M#AmberDrowTalkMorningAfter","Locals",1)
+	!See([ENEMY])
+	See("Viconia")
+	!StateCheck("Viconia",STATE_PANIC)
+	!StateCheck("Viconia",STATE_BERSERK)
+	!StateCheck("Viconia",STATE_CHARMED)
+	!StateCheck("Viconia",STATE_CONFUSED)
+	CombatCounter(0)
+	InParty("m#amber")
+	InParty("Viconia")
+THEN
+    	RESPONSE #100
+	Interact("Viconia")
+END
+
+IF
+	GlobalLT("M#AmberViconiaBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Viconia")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberViconiaBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberViconiaBanterUD","Locals",1)
+	See("Viconia")
+	!StateCheck("Viconia",STATE_PANIC)
+	!StateCheck("Viconia",STATE_BERSERK)
+	!StateCheck("Viconia",STATE_CHARMED)
+	!StateCheck("Viconia",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Viconia")
+END
+
+IF
+	GlobalLT("M#AmberImoenBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Imoen2")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberImoenBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberImoenBanterUD","Locals",1)
+	See("Imoen2")
+	!StateCheck("Imoen2",STATE_PANIC)
+	!StateCheck("Imoen2",STATE_BERSERK)
+	!StateCheck("Imoen2",STATE_CHARMED)
+	!StateCheck("Imoen2",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Imoen2")	
+END
+
+IF
+	GlobalLT("M#AmberHaerDalisBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("HaerDalis")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberHaerDalisBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberHaerDalisBanterUD","Locals",1)
+	See("HaerDalis")
+	!StateCheck("HaerDalis",STATE_PANIC)
+	!StateCheck("HaerDalis",STATE_BERSERK)
+	!StateCheck("HaerDalis",STATE_CHARMED)
+	!StateCheck("HaerDalis",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("HaerDalis")	
+END
+
+IF
+	GlobalLT("M#AmberKeldornBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Keldorn")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberKeldornBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberKeldornBanterUD","Locals",1)
+	See("Keldorn")
+	!StateCheck("Keldorn",STATE_PANIC)
+	!StateCheck("Keldorn",STATE_BERSERK)
+	!StateCheck("Keldorn",STATE_CHARMED)
+	!StateCheck("Keldorn",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Keldorn")	
+END
+
+IF
+	GlobalLT("M#AmberCerndBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Cernd")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberCerndBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberCerndBanterUD","Locals",1)
+	See("Cernd")
+	!StateCheck("Keldorn",STATE_PANIC)
+	!StateCheck("Keldorn",STATE_BERSERK)
+	!StateCheck("Keldorn",STATE_CHARMED)
+	!StateCheck("Keldorn",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Cernd")	
+END
+
+IF
+	GlobalLT("M#AmberJanBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Jan")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberJanBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberJanBanterUD","Locals",1)
+	See("Jan")
+	!StateCheck("Jan",STATE_PANIC)
+	!StateCheck("Jan",STATE_BERSERK)
+	!StateCheck("Jan",STATE_CHARMED)
+	!StateCheck("Jan",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Jan")
+END
+
+IF
+	GlobalLT("M#AmberAnomenBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Anomen")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberAnomenBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberAnomenBanterUD","Locals",1)
+	See("Anomen")
+	!StateCheck("Anomen",STATE_PANIC)
+	!StateCheck("Anomen",STATE_BERSERK)
+	!StateCheck("Anomen",STATE_CHARMED)
+	!StateCheck("Anomen",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Anomen")	
+END
+
+IF
+	GlobalLT("M#AmberAerieBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Aerie")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberAerieBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberAerieBanterUD","Locals",1)
+	See("Aerie")
+	!StateCheck("Aerie",STATE_PANIC)
+	!StateCheck("Aerie",STATE_BERSERK)
+	!StateCheck("Aerie",STATE_CHARMED)
+	!StateCheck("Aerie",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Aerie")	
+END
+
+IF
+	GlobalLT("M#AmberMinscBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Minsc")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberMinscBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberMinscBanterUD","Locals",1)
+	See("Minsc")
+	!StateCheck("Minsc",STATE_PANIC)
+	!StateCheck("Minsc",STATE_BERSERK)
+	!StateCheck("Minsc",STATE_CHARMED)
+	!StateCheck("Minsc",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Minsc")	
+END
+
+IF
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	GlobalLT("M#AmberEdwinBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	InParty(Myself)
+	InParty("Edwin")
+	!See([ENEMY])
+	!See([NEUTRAL])
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberEdwinBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberEdwinBanterUD","Locals",1)
+	See("Edwin")
+	!Dead("Edwin")
+	!StateCheck("Edwin",STATE_PANIC)
+	!StateCheck("Edwin",STATE_BERSERK)
+	!StateCheck("Edwin",STATE_CHARMED)
+	!StateCheck("Edwin",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Edwin")	
+END
+
+IF
+	GlobalLT("M#AmberNaliaBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Nalia")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberNaliaBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberNaliaBanterUD","Locals",1)
+	See("Nalia")
+	!StateCheck("Nalia",STATE_PANIC)
+	!StateCheck("Nalia",STATE_BERSERK)
+	!StateCheck("Nalia",STATE_CHARMED)
+	!StateCheck("Nalia",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Nalia")	
+END
+
+IF
+	GlobalLT("M#AmberKorganBanterUD","Locals",1)
+	Global("M#AmberUnderdarkBanter","Locals",1)
+	Global("M#AmberUnderdarkBanterActivated","GLOBAL",1)
+	!See([ENEMY])
+	!See([NEUTRAL])
+	InParty("Korgan")
+	InParty("m#amber")
+THEN
+    	RESPONSE #100
+	SetGlobal("M#AmberKorganBanterUD","Locals",1)
+END
+
+IF
+	Global("M#AmberKorganBanterUD","Locals",1)
+	See("Korgan")
+	!Dead("Korgan")
+	!StateCheck("Korgan",STATE_PANIC)
+	!StateCheck("Korgan",STATE_BERSERK)
+	!StateCheck("Korgan",STATE_CHARMED)
+	!StateCheck("Korgan",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("Korgan")	
+END
+
+// Romance conflicts
+IF
+	Global("M#AmberTalk","Locals",16)
+	Global("M#AmberJaheiraRomanceConflict","GLOBAL",0)
+	Global("M#AmberRomanceActive","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",1)
+        InParty("M#Amber")
+	InParty("Jaheira")
+        !Dead("Jaheira")
+        !Global("JaheiraRomanceActive","GLOBAL",3)
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberJaheiraRomanceConflictTime","GLOBAL",1000)
+	SetGlobal("M#AmberJaheiraRomanceConflict","GLOBAL",1)
+END
+
+IF
+	Global("M#AmberTalk","Locals",50)
+	Global("M#AmberAerieRomanceConflict","GLOBAL",0)
+	Global("M#AmberRomanceActive","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",1)
+        InParty("M#Amber")
+	InParty("Aerie")
+        !Dead("Aerie")
+        !Global("AerieRomanceActive","GLOBAL",3)
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberAerieRomanceConflictTime","GLOBAL",1000)
+	SetGlobal("M#AmberAerieRomanceConflict","GLOBAL",1)
+END
+
+IF
+	Global("M#AmberTalk","Locals",14)
+	Global("M#AmberViconiaRomanceConflict","GLOBAL",0)
+	Global("M#AmberRomanceActive","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",1)
+        InParty("M#Amber")
+	InParty("Viconia")
+        !Dead("Viconia")
+        !Global("ViconiaRomanceActive","GLOBAL",3)
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberViconiaRomanceConflictTime","GLOBAL",1000)
+	SetGlobal("M#AmberViconiaRomanceConflict","GLOBAL",1)
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberAerieRomanceConflictTime","GLOBAL")
+	Global("M#AmberAerieRomanceConflict","GLOBAL",1)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	InParty("M#Amber")
+	InParty("Aerie")
+	Global("M#AmberRomanceActive","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",1)
+	!Global("M#AmberMad","GLOBAL",1)
+	Global("AerieRomanceActive","GLOBAL",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberAerieRomanceConflict","GLOBAL",2)
+END
+
+IF
+	Global("M#AmberAerieRomanceConflict","GLOBAL",2)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	See(Player1)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Sola romance conflict
+IF
+	Global("M#AmberSolaRomanceConflict","GLOBAL",0)
+	Global("SolaTalk","GLOBAL",12)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	!AreaType(DUNGEON)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("Sola")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberSolaRomanceConflict","GLOBAL",1)
+END
+
+IF
+	GlobalLT("M#AmberSolaRomanceConflict","GLOBAL",3)
+	GlobalGT("SolaTalk","GLOBAL",12)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	!AreaType(DUNGEON)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("Sola")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberSolaRomanceConflict","GLOBAL",3)
+END
+
+IF
+	GlobalLT("M#AmberSolaRomanceConflict","GLOBAL",5)
+	Global("SolaMoon","GLOBAL",6)
+	!Global("SolaTalk","GLOBAL",-1)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	!AreaType(DUNGEON)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("Sola")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberSolaRomanceConflict","GLOBAL",5)
+END
+
+IF
+	GlobalLT("M#AmberSolaRomanceConflict","GLOBAL",7)
+	Global("SolaSleep","GLOBAL",4)
+	Global("SolaTalk","GLOBAL",-1)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	!AreaType(DUNGEON)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	CombatCounter(0)
+	InParty("Sola")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberSolaRomanceConflict","GLOBAL",7)
+END
+
+IF
+	Global("M#AmberSolaRomanceConflict","GLOBAL",3)
+	Global("M#AmberSolaRomanceConflict","GLOBAL",5)
+	Global("M#AmberSolaRomanceConflict","GLOBAL",7)
+THEN
+	RESPONSE #100
+	Wait(3)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	Dialog(Player1)
+END
+
+// Breaking the romance if others finish first. And patch for killing Amber's romance if multiromance script is in use. And patch to prevent the friendship and romance paths being active at the same time.
+IF
+	Global("M#AmIUsingMultiRomanceScript","Locals",10)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	OR(6)
+	  Global("AerieRomanceActive","GLOBAL",1)
+	  Global("AerieRomanceActive","GLOBAL",2)
+	  Global("JaheiraRomanceActive","GLOBAL",1)
+	  Global("JaheiraRomanceActive","GLOBAL",2)
+	  Global("ViconiaRomanceActive","GLOBAL",1)
+	  Global("ViconiaRomanceActive","GLOBAL",2)
+	InParty("m#amber")  
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberRomanceActive","GLOBAL",3)
+END
+
+IF
+	
+	Global("M#AmberMatch","GLOBAL",1)
+	OR(2)
+	 Global("M#AmberRomanceActive","GLOBAL",1)
+	 Global("M#AmberRomanceActive","GLOBAL",2)
+	OR(12)	 
+	 Global("AerieRomanceActive","GLOBAL",2)
+	 Global("JaheiraRomanceActive","GLOBAL",2)
+	 Global("ViconiaRomanceActive","GLOBAL",2)
+	 GlobalGT("SolaTalk","GLOBAL",13)
+	 Global("KiaraRomanceActive","GLOBAL",2)
+	 Global("E3FadeRomanceActive","GLOBAL",2)
+	 Global("imoenromanceactive","GLOBAL",2)
+	 Global("SaerilethRomanceActive","GLOBAL",2)
+	 Global("TashiaRomanceActive","GLOBAL",2)
+	 Global("SimeRomanceActive","GLOBAL",2)
+	 Global("NathRomanceActive","GLOBAL",2)
+	 Global("AnomenRomanceActive","GLOBAL",2)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberRomanceActive","GLOBAL",3) 
+END
+
+IF
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	Global("M#AmberMatch","GLOBAL",1)
+	OR(2)
+	  Global("ViconiaRomanceActive","GLOBAL",1)
+	  Global("ViconiaRomanceActive","GLOBAL",2)
+	InParty("viconia")
+	InParty("m#amber")  
+THEN
+	RESPONSE #100
+	SetGlobal("ViconiaRomanceActive","GLOBAL",3)
+	IncrementGlobal("M#AmIUsingMultiromanceScript","Locals",1)
+END
+
+IF
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	Global("M#AmberMatch","GLOBAL",1)
+	OR(2)
+	  Global("JaheiraRomanceActive","GLOBAL",1)
+	  Global("JaheiraRomanceActive","GLOBAL",2)
+	InParty("jaheira")
+	InParty("m#amber")  
+THEN
+	RESPONSE #100
+	SetGlobal("JaheiraRomanceActive","GLOBAL",3)
+	IncrementGlobal("M#AmIUsingMultiromanceScript","Locals",1)
+END
+
+IF
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	Global("M#AmberMatch","GLOBAL",1)
+	OR(2)
+	  Global("AerieRomanceActive","GLOBAL",1)
+	  Global("AerieRomanceActive","GLOBAL",2)
+	InParty("aerie")
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("AerieRomanceActive","GLOBAL",3)
+	IncrementGlobal("M#AmIUsingMultiromanceScript","Locals",1)
+END
+
+IF
+	Global("M#AmberFriend","GLOBAL",1)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberRomanceActive","GLOBAL",3)
+END
+
+// Start flirt timer for first time
+IF
+    Global("M#AmberFlirtsActivated","Locals",0)
+    GlobalGT("M#AmberFlirt","Locals",0)
+    !Global("M#AmberRomanceActive","GLOBAL",3)
+THEN
+    RESPONSE #100
+        SetGlobal("M#AmberFlirtsActivated","Locals",1)
+        RealSetGlobalTimer("M#AmberFlirtTimer","Locals",600)
+END
+
+// Resets Amber's flirt timer if in combat or dungeon or mad
+IF
+    RealGlobalTimerExpired("M#AmberFlirtTimer","Locals")
+    OR(3)
+      AreaType(DUNGEON)
+      !CombatCounter(0)
+      Global("Chapter","GLOBAL",%bg2_chapter_5%)
+    !Global("M#AmberInitiateFlirt","Locals",2)
+THEN
+    RESPONSE #100
+        SetGlobal("M#AmberInitiateFlirt","Locals",0)
+        RealSetGlobalTimer("M#AmberFlirtTimer","Locals",600)
+END
+
+// Amber flirts with PC1
+IF
+    RealGlobalTimerExpired("M#AmberFlirtTimer","Locals")
+    Global("M#AmberInitiateFlirt","Locals",0)
+    !Global("Chapter","GLOBAL",%bg2_chapter_5%)
+    !AreaType(DUNGEON)
+    !See([ENEMY])
+    !Range([NEUTRAL],10)
+    Global("M#AmberMatch","GLOBAL",1)
+    Global("M#AmberMad","GLOBAL",0)
+    !StateCheck(Player1,STATE_SLEEPING)
+    !Global("M#AmberRomanceActive","GLOBAL",3)
+    OR(3)
+      Global("M#AmberFlirt","Locals",1)
+      Global("M#AmberFlirt","Locals",2)
+      Global("M#AmberFlirt","Locals",3)
+    See(Player1)
+    !StateCheck(Player1,STATE_PANIC)
+    !StateCheck(Player1,STATE_BERSERK)
+    !StateCheck(Player1,STATE_CHARMED)
+    !StateCheck(Player1,STATE_CONFUSED)
+    CombatCounter(0)
+    InParty("m#amber")
+THEN
+    RESPONSE #100
+        SetGlobal("M#AmberInitiateFlirt","Locals",1)
+        StartDialogueNoSet(Player1)
+        Wait(1)
+END
+
+// Amber flirts with PC2
+IF
+    	RealGlobalTimerExpired("M#AmberFlirtTimer","Locals")
+    	Global("M#AmberInitiateFlirt","Locals",0)
+    	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+    	!AreaType(DUNGEON)
+    	!See([ENEMY])
+    	!Range([NEUTRAL],10)
+    	Global("M#AmberMad","GLOBAL",0)
+    	Global("M#AmberMatch","GLOBAL",3)
+    	!Global("M#AmberRomanceActive","GLOBAL",3)
+    	OR(3)
+    	  Global("M#AmberFlirt","Locals",1)
+    	  Global("M#AmberFlirt","Locals",2)
+    	  Global("M#AmberFlirt","Locals",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW   
+   	See(Player2)  
+    	!StateCheck(Player2,STATE_PANIC)
+    	!StateCheck(Player2,STATE_BERSERK)
+    	!StateCheck(Player2,STATE_CHARMED)
+    	!StateCheck(Player2,STATE_CONFUSED)
+    	!StateCheck(Player2,STATE_DEAD)
+    	CombatCounter(0)
+    	InParty("m#amber")
+THEN
+    	RESPONSE #100
+        SetGlobal("M#AmberInitiateFlirt","Locals",1)
+        StartDialogueNoSet(Player2)
+        Wait(1)
+END
+
+// Amber's racial special abilities
+IF
+	XPGT(Myself,220000)
+	GlobalLT("M#AmberLvl","GLOBAL",11)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,440000)
+	GlobalLT("M#AmberLvl","GLOBAL",12)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,660000)
+	GlobalLT("M#AmberLvl","GLOBAL",13)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,880000)
+	GlobalLT("M#AmberLvl","GLOBAL",14)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,1100000)
+	GlobalLT("M#AmberLvl","GLOBAL",15)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,1320000)
+	GlobalLT("M#AmberLvl","GLOBAL",16)
+THEN
+	RESPONSE #100
+	AddSpecialAbility("M#CONTAG")
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,1540000)
+	GlobalLT("M#AmberLvl","GLOBAL",17)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,1760000)
+	GlobalLT("M#AmberLvl","GLOBAL",18)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,1980000)
+	GlobalLT("M#AmberLvl","GLOBAL",19)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,2200000)
+	GlobalLT("M#AmberLvl","GLOBAL",20)
+THEN
+	RESPONSE #100
+	AddSpecialAbility("M#CONTAG")
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,2420000)
+	GlobalLT("M#AmberLvl","GLOBAL",21)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,2640000)
+	GlobalLT("M#AmberLvl","GLOBAL",22)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,2860000)
+	GlobalLT("M#AmberLvl","GLOBAL",23)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,3080000)
+	GlobalLT("M#AmberLvl","GLOBAL",24)
+THEN
+	RESPONSE #100
+	AddSpecialAbility("M#CONTAG")
+	AddSpecialAbility("SPCL423")
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,3300000)
+	GlobalLT("M#AmberLvl","GLOBAL",25)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,3520000)
+	GlobalLT("M#AmberLvl","GLOBAL",26)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,3740000)
+	GlobalLT("M#AmberLvl","GLOBAL",27)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,3960000)
+	GlobalLT("M#AmberLvl","GLOBAL",28)
+THEN
+	RESPONSE #100
+	AddSpecialAbility("M#CONTAG")
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,4180000)
+	GlobalLT("M#AmberLvl","GLOBAL",29)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)	
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,4400000)
+	GlobalLT("M#AmberLvl","GLOBAL",30)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,4620000)
+	GlobalLT("M#AmberLvl","GLOBAL",31)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,4840000)
+	GlobalLT("M#AmberLvl","GLOBAL",32)
+THEN
+	RESPONSE #100
+	AddSpecialAbility("M#BLIND")
+	AddSpecialAbility("SPCL423")
+	AddSpecialAbility("M#DISINT")
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,5060000)
+	GlobalLT("M#AmberLvl","GLOBAL",33)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,5280000)
+	GlobalLT("M#AmberLvl","GLOBAL",34)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,5500000)
+	GlobalLT("M#AmberLvl","GLOBAL",35)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,5720000)
+	GlobalLT("M#AmberLvl","GLOBAL",36)
+THEN
+	RESPONSE #100
+	AddSpecialAbility("M#DISINT")
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,5940000)
+	GlobalLT("M#AmberLvl","GLOBAL",37)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,6160000)
+	GlobalLT("M#AmberLvl","GLOBAL",38)
+THEN
+	RESPONSE #100
+	AddSpecialAbility("M#CONTAG")	
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+IF
+	XPGT(Myself,6380000)
+	GlobalLT("M#AmberLvl","GLOBAL",39)
+THEN
+	RESPONSE #100
+	ApplySpellRES("M#INCFR",Myself)
+	IncrementGlobal("M#AmberLvl","GLOBAL",1)
+END
+
+// Mod items to be dropped upon equipping (in case mods are installed after Amber) 
+// Ascension 1.4.17 (Weidu) 1 item
+IF	  
+	HasItemEquiped("finsarev",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("finsarev",[-1.-1])
+	PickUpItem("finsarev")
+END
+
+// Check the Bodies 150 (FW) 16 items
+IF	  
+	HasItemEquiped("CB2HCONV",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CB2HCONV",[-1.-1])
+	PickUpItem("CB2HCONV")
+END
+IF	  
+	HasItemEquiped("CBXTGCbb",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBXTGCbb",[-1.-1])
+	PickUpItem("CBXTGCbb")
+END
+IF	  
+	HasItemEquiped("CB2HAXE3",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CB2HAXE3",[-1.-1])
+	PickUpItem("CB2HAXE3")
+END
+IF	  
+	HasItemEquiped("CBHLYTA+",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBHLYTA+",[-1.-1])
+	PickUpItem("CBHLYTA+")
+END
+IF	  
+	HasItemEquiped("CBHLYTAX",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBHLYTAX",[-1.-1])
+	PickUpItem("CBHLYTAX")
+END
+
+// CoM Encounters 1 (CoM) 5 items
+IF 
+	HasItemEquiped("UCMGSH01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("UCMGSH01",[-1.-1])
+	PickUpItem("UCMGSH01")
+END
+IF 
+	HasItemEquiped("UCMGSH02",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("UCMGSH02",[-1.-1])
+	PickUpItem("UCMGSH02")
+END
+IF	  
+	HasItemEquiped("UCMGSW03",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("UCMGSW03",[-1.-1])
+	PickUpItem("UCMGSW03")
+END
+IF	  
+	HasItemEquiped("CM2H07",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CM2H07",[-1.-1])
+	PickUpItem("CM2H07")
+END
+IF	  
+	HasItemEquiped("UCMGHA01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("UCMGHA01",[-1.-1])
+	PickUpItem("UCMGHA01")
+END
+
+// Crusader item pack 4 (Modlist) 2 items
+IF	  
+	HasItemEquiped("MGMAGBN",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("MGMAGBN",[-1.-1])
+	PickUpItem("MGMAGBN")
+END
+IF	  
+	HasItemEquiped("MGCARMAG",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("MGCARMAG",[-1.-1])
+	PickUpItem("MGCARMAG")
+END
+
+// Dark Ritual 1.01 (CoM) 4 items
+IF	  
+	HasItemEquiped("CMG2AX04",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CMG2AX04",[-1.-1])
+	PickUpItem("CMG2AX04")
+END
+IF	  
+	HasItemEquiped("CMG2AX05",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CMG2AX05",[-1.-1])
+	PickUpItem("CMG2AX05")
+END
+IF 
+	HasItemEquiped("CMGFORG8",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CMGFORG8",[-1.-1])
+	PickUpItem("CMGFORG8")
+END
+
+// Desecration of Souls (CoM) 4 items
+IF	  
+	HasItemEquiped("CM2H06",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CM2H06",[-1.-1])
+	PickUpItem("CM2H06")
+END
+IF	  
+	HasItemEquiped("CM2H04",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CM2H04",[-1.-1])
+	PickUpItem("CM2H04")
+END
+IF	  
+	HasItemEquiped("sw2hgr01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("sw2hgr01",[-1.-1])
+	PickUpItem("sw2hgr01")
+END
+IF 
+	HasItemEquiped("COMS02",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("COMS02",[-1.-1])
+	PickUpItem("COMS02")
+END
+
+// Freedom's Reign & Reign of Virtue 3 (TeamBG) 6 items
+IF	  
+	HasItemEquiped("DE2HFS",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("DE2HFS",[-1.-1])
+	PickUpItem("DE2HFS")
+END
+IF	  
+	HasItemEquiped("DEHLBETS",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("weapon",[-1.-1])
+	PickUpItem("weapon")
+END
+IF	  
+	HasItemEquiped("DEHLBPIK",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("DEHLBPIK",[-1.-1])
+	PickUpItem("DEHLBPIK")
+END
+IF	  
+	HasItemEquiped("DEMIHAL",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("DEMIHAL",[-1.-1])
+	PickUpItem("DEMIHAL")
+END
+IF 
+	HasItemEquiped("DESHLDGB",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("DESHLDGB",[-1.-1])
+	PickUpItem("DESHLDGB")
+END
+IF 
+	HasItemEquiped("DESHLDME",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("DESHLDME",[-1.-1])
+	PickUpItem("DESHLDME")
+END
+
+// FW Item Pack 0.1 (FW) 6 items
+IF	  
+	HasItemEquiped("FWSW2H05",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("FWSW2H05",[-1.-1])
+	PickUpItem("FWSW2H05")
+END
+IF	  
+	HasItemEquiped("FWHALB01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("FWHALB01",[-1.-1])
+	PickUpItem("FWHALB01")
+END
+IF	  
+	HasItemEquiped("FWHALB02",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("FWHALB02",[-1.-1])
+	PickUpItem("FWHALB02")
+END
+IF	  
+	HasItemEquiped("FWHALB03",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("FWHALB03",[-1.-1])
+	PickUpItem("FWHALB03")
+END
+IF 
+	HasItemEquiped("FWSHLD01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("FWSHLD01",[-1.-1])
+	PickUpItem("FWSHLD01")
+END
+
+// Improved Anvil 1 (BWL) 8 items
+IF	  
+	HasItemEquiped("S!halb01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!halb01",[-1.-1])
+	PickUpItem("S!halb01")
+END
+IF	  
+	HasItemEquiped("S!sw07",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!sw07",[-1.-1])
+	PickUpItem("S!sw07")
+END
+IF	  
+	HasItemEquiped("S!sw08",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!sw08",[-1.-1])
+	PickUpItem("S!sw08")
+END
+IF	  
+	HasItemEquiped("S!sw09",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!sw09",[-1.-1])
+	PickUpItem("S!sw09")
+END
+IF	  
+	HasItemEquiped("S!sw10",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!sw10",[-1.-1])
+	PickUpItem("S!sw10")
+END
+IF	  
+	HasItemEquiped("S!sw11",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!sw11",[-1.-1])
+	PickUpItem("S!sw11")
+END
+IF	  
+	HasItemEquiped("S!sw12",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!sw12",[-1.-1])
+	PickUpItem("S!sw12")
+END
+IF	  
+	HasItemEquiped("S!halb02",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("S!halb02",[-1.-1])
+	PickUpItem("S!halb02")
+END
+
+// Improved Asylum 0.92 (RPG Dungeon) 1 item
+IF 
+	HasItemEquiped("FWSHLD01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("FWSHLD01",[-1.-1])
+	PickUpItem("FWSHLD01")
+END
+
+// Improved Battles 5 (FW) 1 item
+IF	  
+	HasItemEquiped("b#sw2h01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("b#sw2h01",[-1.-1])
+	PickUpItem("b#sw2h01")
+END
+
+// Improved Horns of Valhalla 1.1 (G3) 1 item
+IF	  
+	HasItemEquiped("BSW2H03",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("BSW2H03",[-1.-1])
+	PickUpItem("BSW2H03")
+END
+
+// Item Upgrade 31 (WeiDU) 3 items
+IF	  
+	HasItemEquiped("c2sw2h01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("c2sw2h01",[-1.-1])
+	PickUpItem("c2sw2h01")
+END
+IF	  
+	HasItemEquiped("c2sw2h02",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("c2sw2h02",[-1.-1])
+	PickUpItem("c2sw2h02")
+END
+IF 
+	HasItemEquiped("c2shld01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("c2shld01",[-1.-1])
+	PickUpItem("c2shld01")
+END
+
+// Magnificen Magic Store 1 (Modlist) 1 item  
+IF 
+	HasItemEquiped("tzshld01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("tzshld01",[-1.-1])
+	PickUpItem("tzshld01")
+END
+
+// Muncmod 2.6 (Modlist) 4 items
+IF	  
+	HasItemEquiped("SGSW2H1",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("SGSW2H1",[-1.-1])
+	PickUpItem("SGSW2H1")
+END
+IF	  
+	HasItemEquiped("SGHALB1",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("SGHALB1",[-1.-1])
+	PickUpItem("SGHALB1")
+END
+IF	  
+	HasItemEquiped("SGHALB2",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("SGHALB2",[-1.-1])
+	PickUpItem("SGHALB2")
+END
+IF 
+	HasItemEquiped("SGSHLD1",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("SGSHLD1",[-1.-1])
+	PickUpItem("SGSHLD1")
+END
+
+// Neth'Taniel 1.8 (Blacksheep) 1 item
+IF 
+	HasItemEquiped("SHGHOST",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("SHGHOST",[-1.-1])
+	PickUpItem("SHGHOST")
+END
+
+// Planar Sphere Mod 2 (FW) 5 items
+IF 
+	HasItemEquiped("psq58",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("psq58",[-1.-1])
+	PickUpItem("psq58")
+END
+IF 
+	HasItemEquiped("psq59",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("psq59",[-1.-1])
+	PickUpItem("psq59")
+END
+IF 
+	HasItemEquiped("psq61",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("psq61",[-1.-1])
+	PickUpItem("psq61")
+END
+IF	  
+	HasItemEquiped("psq118",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("psq118",[-1.-1])
+	PickUpItem("psq118")
+END
+IF	  
+	HasItemEquiped("psq100",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("psq100",[-1.-1])
+	PickUpItem("psq100")
+END
+
+// Rolles 1 (Modlist) 3 items
+IF 
+	HasItemEquiped("s#helm01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@7)
+	DropItem("s#helm01",[-1.-1])
+	PickUpItem("s#helm01")
+END
+IF 
+	HasItemEquiped("s#shld01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("s#shld01",[-1.-1])
+	PickUpItem("s#shld01")
+END
+IF	  
+	HasItemEquiped("s#sw2h03",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("s#sw2h03",[-1.-1])
+	PickUpItem("s#sw2h03")
+END
+
+// RTT Items 1 (ShS) 5 items
+IF 
+	HasItemEquiped("RTT020",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("RTT020",[-1.-1])
+	PickUpItem("RTT020")
+END
+IF	  
+	HasItemEquiped("RTT021",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("RTT021",[-1.-1])
+	PickUpItem("RTT021")
+END
+IF	  
+	HasItemEquiped("RTT032",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("RTT032",[-1.-1])
+	PickUpItem("RTT032")
+END
+IF	  
+	HasItemEquiped("RTT034",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("RTT034",[-1.-1])
+	PickUpItem("RTT034")
+END
+IF	  
+	HasItemEquiped("RTT036",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("RTT036",[-1.-1])
+	PickUpItem("RTT036")
+END
+
+// Ruad 19 (TAR) 5 items
+IF	  
+	HasItemEquiped("u#sw2h01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("u#sw2h01",[-1.-1])
+	PickUpItem("u#sw2h01")
+END
+IF	  
+	HasItemEquiped("u#ax2h01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("u#ax2h01",[-1.-1])
+	PickUpItem("u#ax2h01")
+END
+IF	  
+	HasItemEquiped("u#halb01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("u#halb01",[-1.-1])
+	PickUpItem("u#halb01")
+END
+
+IF 
+	HasItemEquiped("u#helm04",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@7)
+	DropItem("u#helm04",[-1.-1])
+	PickUpItem("u#helm04")
+END
+IF 
+	HasItemEquiped("u#shld01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("u#shld01",[-1.-1])
+	PickUpItem("u#shld01")
+END
+
+// Saerileth 4 (CoM) 2 items
+IF 
+	HasItemEquiped("NSSHLD01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("NSSHLD01",[-1.-1])
+	PickUpItem("NSSHLD01")
+END
+IF 
+	HasItemEquiped("NSSHLD01",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("NSSHLD01",[-1.-1])
+	PickUpItem("NSSHLD01")
+END
+
+// Selune's amory 4 (Modlist) 2 items
+IF 
+	HasItemEquiped("MGISHLD1",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("MGISHLD1",[-1.-1])
+	PickUpItem("MGISHLD1")
+END
+IF 
+	HasItemEquiped("MGISHLD2",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("MGISHLD2",[-1.-1])
+	PickUpItem("MGISHLD2")
+END
+
+// Shadows over Soubar 1 (FW) 18 items
+IF 
+	HasItemEquiped("CBCL037",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBCL037",[-1.-1])
+	PickUpItem("CBCL037")
+END
+IF 
+	HasItemEquiped("CB351G03",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CB351G03",[-1.-1])
+	PickUpItem("CB351G03")
+END
+IF 
+	HasItemEquiped("CBCL005",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBCL005",[-1.-1])
+	PickUpItem("CBCL005")
+END
+IF 
+	HasItemEquiped("CBCL058",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBCL058",[-1.-1])
+	PickUpItem("CBCL058")
+END
+IF 
+	HasItemEquiped("CBLYSHLD",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBLYSHLD",[-1.-1])
+	PickUpItem("CBLYSHLD")
+END
+IF 
+	HasItemEquiped("CBMILT03",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBMILT03",[-1.-1])
+	PickUpItem("CBMILT03")
+END
+IF 
+	HasItemEquiped("CBMILT13",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBMILT13",[-1.-1])
+	PickUpItem("CBMILT13")
+END
+IF 
+	HasItemEquiped("CBRJR015",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBRJR015",[-1.-1])
+	PickUpItem("CBRJR015")
+END
+IF 
+	HasItemEquiped("CBROLFSH",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBROLFSH",[-1.-1])
+	PickUpItem("CBROLFSH")
+END
+IF 
+	HasItemEquiped("CBSBMLTW",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBSBMLTW",[-1.-1])
+	PickUpItem("CBSBMLTW")
+END
+IF 
+	HasItemEquiped("shield",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("shield",[-1.-1])
+	PickUpItem("shield")
+END
+IF 
+	HasItemEquiped("CBSBMLTX",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBSBMLTX",[-1.-1])
+	PickUpItem("CBSBMLTX")
+END
+IF 
+	HasItemEquiped("CBSBMLTY",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBSBMLTY",[-1.-1])
+	PickUpItem("CBSBMLTY")
+END
+IF 
+	HasItemEquiped("CBSHSOUB",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("CBSHSOUB",[-1.-1])
+	PickUpItem("CBSHSOUB")
+END
+IF	  
+	HasItemEquiped("CBCL012",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBCL012",[-1.-1])
+	PickUpItem("CBCL012")
+END
+IF	  
+	HasItemEquiped("CBCL046",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBCL046",[-1.-1])
+	PickUpItem("CBCL046")
+END
+IF	  
+	HasItemEquiped("CBUHGVSD",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBUHGVSD",[-1.-1])
+	PickUpItem("CBUHGVSD")
+END
+IF	  
+	HasItemEquiped("CBCL031",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBCL031",[-1.-1])
+	PickUpItem("CBCL031")
+END
+IF	  
+	HasItemEquiped("CBCL054",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBCL054",[-1.-1])
+	PickUpItem("CBCL054")
+END
+IF	  
+	HasItemEquiped("CBSBMLTN",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBSBMLTN",[-1.-1])
+	PickUpItem("CBSBMLTN")
+END
+IF	  
+	HasItemEquiped("CBSBMLTO",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("CBSBMLTO",[-1.-1])
+	PickUpItem("CBSBMLTO")
+END
+
+// SP Collection 1.1.1 (G3) 1 item
+IF	  
+	HasItemEquiped("C!Joorg",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("C!Joorg",[-1.-1])
+	PickUpItem("C!Joorg")
+END
+
+// SP Items ? (SP) 2 items
+IF	  
+	HasItemEquiped("WAAXE",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("WAAXE",[-1.-1])
+	PickUpItem("WAAXE")
+END
+IF 
+	HasItemEquiped("ELEMSHLD",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("ELEMSHLD",[-1.-1])
+	PickUpItem("ELEMSHLD")
+END
+
+// The Darkest Day 301A (Modlist) 24 items
+
+IF 
+	HasItemEquiped("SHLDGRAZ",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("SHLDGRAZ",[-1.-1])
+	PickUpItem("SHLDGRAZ")
+END
+IF 
+	HasItemEquiped("SHLDXZ",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("SHLDXZ",[-1.-1])
+	PickUpItem("SHLDXZ")
+END
+IF 
+	HasItemEquiped("SNGOG",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("SNGOG",[-1.-1])
+	PickUpItem("SNGOG")
+END
+IF 
+	HasItemEquiped("USHLD3B",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("USHLD3B",[-1.-1])
+	PickUpItem("USHLD3B")
+END
+IF 
+	HasItemEquiped("WAUKEEN",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("shield",[-1.-1])
+	PickUpItem("shield")
+END
+IF	  
+	HasItemEquiped("BLADETRM",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("BLADETRM",[-1.-1])
+	PickUpItem("BLADETRM")
+END
+IF	  
+	HasItemEquiped("GEMINI",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("GEMINI",[-1.-1])
+	PickUpItem("GEMINI")
+END
+IF	  
+	HasItemEquiped("GIANTGRC",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("GIANTGRC",[-1.-1])
+	PickUpItem("GIANTGRC")
+END
+IF	  
+	HasItemEquiped("GRUNTSWX",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("GRUNTSWX",[-1.-1])
+	PickUpItem("GRUNTSWX")
+END
+IF	  
+	HasItemEquiped("LOHVAR",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("LOHVAR",[-1.-1])
+	PickUpItem("LOHVAR")
+END
+IF	  
+	HasItemEquiped("MINTSWZZ",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("MINTSWZZ",[-1.-1])
+	PickUpItem("MINTSWZZ")
+END
+IF	  
+	HasItemEquiped("SKELSSSS",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("SKELSSSS",[-1.-1])
+	PickUpItem("SKELSSSS")
+END
+IF	  
+	HasItemEquiped("SWDRAGX",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("SWDRAGX",[-1.-1])
+	PickUpItem("SWDRAGX")
+END
+IF	  
+	HasItemEquiped("TYRANT",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("TYRANT",[-1.-1])
+	PickUpItem("TYRANT")
+END
+IF	  
+	HasItemEquiped("TYREYES",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("TYREYES",[-1.-1])
+	PickUpItem("TYREYES")
+END
+IF	  
+	HasItemEquiped("VORPX1",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("VORPX1",[-1.-1])
+	PickUpItem("VORPX1")
+END
+IF	  
+	HasItemEquiped("AXERESIS",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("AXERESIS",[-1.-1])
+	PickUpItem("AXERESIS")
+END
+IF	  
+	HasItemEquiped("DMAIDEN",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("DMAIDEN",[-1.-1])
+	PickUpItem("DMAIDEN")
+END
+IF	  
+	HasItemEquiped("JORILXX",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("JORILXX",[-1.-1])
+	PickUpItem("JORILXX")
+END
+IF	  
+	HasItemEquiped("U2HAX4B",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("U2HAX4B",[-1.-1])
+	PickUpItem("U2HAX4B")
+END
+IF	  
+	HasItemEquiped("U2HAX5A",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("U2HAX5A",[-1.-1])
+	PickUpItem("U2HAX5A")
+END
+IF	  
+	HasItemEquiped("UHALB5A",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("UHALB5A",[-1.-1])
+	PickUpItem("UHALB5A")
+END
+IF	  
+	HasItemEquiped("VIOLET",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("VIOLET",[-1.-1])
+	PickUpItem("VIOLET")
+END
+IF	  
+	HasItemEquiped("MOONBLA",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("MOONBLA",[-1.-1])
+	PickUpItem("MOONBLA")
+END
+IF	  
+	HasItemEquiped("SKELBADX",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("SKELBADX",[-1.-1])
+	PickUpItem("SKELBADX")
+END
+
+// The Unusual Oddities Shop 1.6 (RPG Dungeon) 2 items
+IF 
+	HasItemEquiped("SShldMag",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("SShldMag",[-1.-1])
+	PickUpItem("SShldMag")
+END
+
+IF	  
+	HasItemEquiped("HalbKnow",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("HalbKnow",[-1.-1])
+	PickUpItem("HalbKnow")
+END
+
+// Tsujatha 5 (CoM) 1 items
+IF	  
+	HasItemEquiped("jkvahl",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("jkvahl",[-1.-1])
+	PickUpItem("jkvahl")
+END
+
+// Under-represented items 2 (WeiDU) 4 items
+IF	  
+	HasItemEquiped("U#HALB96",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("U#HALB96",[-1.-1])
+	PickUpItem("U#HALB96")
+END
+IF	  
+	HasItemEquiped("U#HALB95",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("U#HALB95",[-1.-1])
+	PickUpItem("U#HALB95")
+END
+IF	  
+	HasItemEquiped("U#HALB97",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("U#HALB97",[-1.-1])
+	PickUpItem("U#HALB97")
+END
+IF	  
+	HasItemEquiped("U#HFHBPB",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("U#HFHBPB",[-1.-1])
+	PickUpItem("U#HFHBPB")
+END
+
+// Victor's Improvements Pack 1.6 (Modlist) 1 item
+IF 
+	HasItemEquiped("PShield",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("PShield",[-1.-1])
+	PickUpItem("PShield")
+END
+
+// Volcano Pack 1.8 (SP) 1 item
+IF	  
+	HasItemEquiped("VOLCANO",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("VOLCANO",[-1.-1])
+	PickUpItem("VOLCANO")
+END
+
+/* Templates
+IF
+	HasItemEquiped("armor",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@6)
+	DropItem("armor",[-1.-1])
+	PickUpItem("armor")
+END
+IF 
+	HasItemEquiped("helmet",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@7)
+	DropItem("helmet",[-1.-1])
+	PickUpItem("helmet")
+END
+IF 
+	HasItemEquiped("shield",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@8)
+	DropItem("shield",[-1.-1])
+	PickUpItem("shield")
+END
+IF	  
+	HasItemEquiped("weapon",Myself)
+THEN
+	RESPONSE #100
+	DisplayString(Myself,@9)
+	DropItem("weapon",[-1.-1])
+	PickUpItem("weapon")
+END
+*/
+// Amber's dialog.tlk fix script
+IF
+    HotKey(K)
+THEN
+    RESPONSE #100
+        StartCutSceneMode()
+        StartCutScene("M#ambfix")
+END

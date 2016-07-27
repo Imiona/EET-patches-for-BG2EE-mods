@@ -1,0 +1,50 @@
+IF
+  GlobalTimerExpired("DegardanSpawn","GLOBAL")
+  Global("TalkedDegardan","GLOBAL",0)
+  Global("DegardanComes","LOCALS",0)
+  CombatCounter(0)
+  !Global("Chapter","GLOBAL",%bg2_chapter_4%)
+  !Global("Chapter","GLOBAL",%bg2_chapter_5%)
+  !Global("Chapter","GLOBAL",%bg2_chapter_7%)
+  !AreaType(DUNGEON)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR0300")
+  !AreaCheck("AR0400")
+  !AreaCheck("AR0500")
+  !AreaCheck("AR0700")
+  !AreaCheck("AR0900")
+  !AreaCheck("AR1000")
+  InParty(Myself)
+  !Exists("DEGARD")
+THEN
+  RESPONSE #100
+    SetGlobal("DegardanComes","LOCALS",1)
+    CreateCreatureObjectOffScreen("DEGARD",Myself,0,0,0)
+END
+
+IF
+  GlobalTimerExpired("DegardanSpawn","GLOBAL")
+  Global("TalkedDegardan","GLOBAL",1)
+  Global("DegardanComesAgain","LOCALS",0)
+  CombatCounter(0)
+  !Global("Chapter","GLOBAL",%bg2_chapter_4%)
+  !Global("Chapter","GLOBAL",%bg2_chapter_5%)
+  !Global("Chapter","GLOBAL",%bg2_chapter_7%)
+  !AreaCheck("AR2500")
+  !AreaType(DUNGEON)
+  !AreaCheck("AR2500")
+  !AreaCheck("AR0300")
+  !AreaCheck("AR0400")
+  !AreaCheck("AR0500")
+  !AreaCheck("AR0700")
+  !AreaCheck("AR0900")
+  !AreaCheck("AR1000")
+  InParty(Myself)
+  !Exists("DEGARD")
+  !Dead("DEGARD")
+THEN
+  RESPONSE #100
+    SetGlobal("DegardanComesAgain","LOCALS",1)
+    CreateCreatureObjectOffScreen("DEGARD",Myself,0,0,0)
+END
+

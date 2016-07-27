@@ -1,0 +1,794 @@
+BACKUP ~WhiteQueen\backup~
+AUTHOR ~Lava Del'Vortel~
+
+AUTO_TRA ~WhiteQueen/Translations/%s~
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 2283
+  END ELSE BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 0
+  END
+
+  // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+  INCLUDE ~%MOD_FOLDER%/handle_charsets.tpa~
+
+  // No exception, everything needs to be converted
+  ACTION_DEFINE_ARRAY WQxnoconvert BEGIN END
+
+  // Only setup-Wh.tra needs to be reloaded
+  ACTION_DEFINE_ARRAY WQxreload BEGIN WhiteQueen END
+
+  // There is no "language" folder so the root of all languages in %MOD_FOLDER%
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~%MOD_FOLDER%/translations~
+      // charset_table = WQxcharsets // Included for illustrative purposes.
+      noconvert_array = WQxnoconvert
+      reload_array = WQxreload
+  END
+END
+
+LANGUAGE ~English~ ~English~ ~WhiteQueen/Translations/English/WhiteQueen.tra~
+LANGUAGE ~German~ ~German~ ~WhiteQueen/Translations/German/WhiteQueen.tra~
+LANGUAGE ~Russian~ ~Russian~ ~WhiteQueen/Translations/Russian/WhiteQueen.tra~
+LANGUAGE ~Polish~ ~Polish~ ~WhiteQueen/Translations/Polish/WhiteQueen.tra~
+LANGUAGE ~French~ ~French~ ~WhiteQueen/Translations/French/WhiteQueen.tra~
+
+BEGIN @0 /* Colours of Infinity - The White Queen */
+
+
+
+///////////Add CD_STATE_NOTVALID state
+
+APPEND ~STATE.IDS~ ~0x80101FEF CD_STATE_NOTVALID~
+UNLESS ~CD_STATE_NOTVALID~ 
+
+
+
+//////////AddBook
+
+COPY_EXISTING ~shop08.sto~ ~override/shop08.sto~
+ADD_STORE_ITEM ~WQxBook~ #10 #0 #0 ~IDENTIFIED~ #5
+
+
+
+//////////AREAS
+
+COPY ~WhiteQueen/Areas~ ~Override~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COPY ~WhiteQueen/MinimapsEE~ ~override~
+END
+
+
+//////////AUDIO
+
+COPY ~WhiteQueen/Audio~ ~Override~
+
+
+
+//////////BAMS
+
+COPY ~WhiteQueen/Bams~ ~Override~
+
+
+
+//////////PORTRAITS
+
+COPY ~WhiteQueen/Portraits~ ~Override~
+
+
+
+//////////MOS
+
+COPY ~WhiteQueen/MOS/WQxTS.mos~ ~override/WQxTS.mos~
+COPY ~WhiteQueen/MOS/WQxTS.2da~ ~override/WQxTS.2da~
+
+    REPLACE ~1001~ @1 /* Having arrived to the place you read about in the book, you step into a wet ground. When you look around you see fireflies, frogs and other small creatures, all crawling, jumping or flying. You can hear many types of insects playing their music. Every step at Lonely Swamp brings out the sensation of falling into dark water and brown mud. Roots and rotting branches catch your feet as if they were the bones of those swallowed by this forgotten place. 
+In the distance, just after where the small river cuts swamp into two parts, you can see some dark shapes. It seems there are some buildings just beyond the still water. You can also see something moving - something human-sized. It's hard to say if that's a real person, or just your imagination. */
+
+
+
+//////////CREATURES
+
+COPY ~WhiteQueen/Creatures/WQxHama.cre~ ~Override/WQxHama.cre~
+SAY NAME1 @2 /* Hamadryad */
+SAY NAME2 @2 /* Hamadryad */
+
+COPY ~WhiteQueen/Creatures/WQxEnt.cre~ ~Override/WQxEnt.cre~
+SAY NAME1 @3 /* White Archer */
+SAY NAME2 @3 /* White Archer */
+
+COPY ~WhiteQueen/Creatures/WQxDem.cre~ ~Override/WQxDem.cre~
+SAY NAME1 @4 /* Bound Demon */
+SAY NAME2 @4 /* Bound Demon */
+
+COPY ~WhiteQueen/Creatures/WQxM1.cre~ ~Override/WQxM1.cre~
+SAY NAME1 @5 /* White Servant */
+SAY NAME2 @5 /* White Servant */
+
+COPY ~WhiteQueen/Creatures/WQxM2.cre~ ~Override/WQxM2.cre~
+SAY NAME1 @5 /* White Servant */
+SAY NAME2 @5 /* White Servant */
+
+COPY ~WhiteQueen/Creatures/WQxM3.cre~ ~Override/WQxM3.cre~
+SAY NAME1 @5 /* White Servant */
+SAY NAME2 @5 /* White Servant */
+
+COPY ~WhiteQueen/Creatures/WQxM4.cre~ ~Override/WQxM4.cre~
+SAY NAME1 @5 /* White Servant */
+SAY NAME2 @5 /* White Servant */
+
+COPY ~WhiteQueen/Creatures/WQxN.cre~ ~Override/WQxN.cre~
+SAY NAME1 @6 /* Necromancer */
+SAY NAME2 @6 /* Necromancer */
+
+COPY ~WhiteQueen/Creatures/WQxTre.cre~ ~Override/WQxTre.cre~
+SAY NAME1 @7 /* Old Druid */
+SAY NAME2 @7 /* Old Druid */
+
+COPY ~WhiteQueen/Creatures/WQxTre0.cre~ ~Override/WQxTre0.cre~
+SAY NAME1 @7 /* Old Druid */
+SAY NAME2 @7 /* Old Druid */
+
+COPY ~WhiteQueen/Creatures/WQxST.cre~ ~Override/WQxST.cre~
+SAY NAME1 @5 /* White Servant */
+SAY NAME2 @5 /* White Servant */
+
+COPY ~WhiteQueen/Creatures/WQxKEE.cre~ ~Override/WQxKEE.cre~
+SAY NAME1 @8 /* White Keeper */
+SAY NAME2 @8 /* White Keeper */
+
+COPY ~WhiteQueen/Creatures/WQxKEE2.cre~ ~Override/WQxKEE2.cre~
+SAY NAME1 @8 /* White Keeper */
+SAY NAME2 @8 /* White Keeper */
+
+COPY ~WhiteQueen/Creatures/WQxIENT.cre~ ~Override/WQxIENT.cre~
+SAY NAME1 @9 /* White Guard */
+SAY NAME2 @9 /* White Guard */
+
+COPY ~WhiteQueen/Creatures/WQxT1.cre~ ~Override/WQxT1.cre~
+SAY NAME1 @10 /* White Enchanter */
+SAY NAME2 @10 /* White Enchanter */
+
+COPY ~WhiteQueen/Creatures/WQxT2.cre~ ~Override/WQxT2.cre~
+SAY NAME1 @11 /* White Beastmaster */
+SAY NAME2 @11 /* White Beastmaster */
+
+COPY ~WhiteQueen/Creatures/WQxWQ.cre~ ~Override/WQxWQ.cre~
+SAY NAME1 @12 /* The White Queen */
+SAY NAME2 @12 /* The White Queen */
+
+COPY ~WhiteQueen/Creatures/WQxWol.cre~ ~Override/WQxWol.cre~
+SAY NAME1 @13 /* White Wolf */
+SAY NAME2 @13 /* White Wolf */
+
+COPY ~WhiteQueen/Creatures/WQxPri.cre~ ~Override/WQxPri.cre~
+SAY NAME1 @14 /* Prisoner */
+SAY NAME2 @14 /* Prisoner */
+
+COPY ~WhiteQueen/Creatures/WQxGol.cre~ ~Override/WQxGol.cre~
+SAY NAME1 @15 /* White Golem */
+SAY NAME2 @15 /* White Golem */
+
+COPY ~WhiteQueen/Creatures/WQXWYV.cre~ ~Override/WQXWYV.cre~
+SAY NAME1 @16 /* Tamed Wyvern */
+SAY NAME2 @16 /* Tamed Wyvern */
+
+COPY ~WhiteQueen/Creatures/WQxMou.cre~ ~Override/WQxMou.cre~
+SAY NAME1 @17 /* Shambling Mound */
+SAY NAME2 @17 /* Shambling Mound */
+
+COPY ~WhiteQueen/Creatures/WQxNym.cre~ ~Override/WQxNym.cre~
+SAY NAME1 @18 /* Nymph */
+SAY NAME2 @18 /* Nymph */
+
+COPY ~WhiteQueen/Creatures/WQxHag.cre~ ~Override/WQxHag.cre~
+SAY NAME1 @19 /* Shaneelah */
+SAY NAME2 @19 /* Shaneelah */
+
+COPY ~WhiteQueen/Creatures/WQxWin.cre~ ~Override/WQxWin.cre~
+SAY NAME1 @20 /* Wine Collector */
+SAY NAME2 @20 /* Wine Collector */
+
+
+
+//////////SCRIPTS
+
+COMPILE ~WhiteQueen/Scripts/WQ0001.baf~
+        ~WhiteQueen/Scripts/WQ0003.baf~
+        ~WhiteQueen/Scripts/WQ0004.baf~
+        ~WhiteQueen/Scripts/WQ0005.baf~
+        ~WhiteQueen/Scripts/WQ0008.baf~
+        ~WhiteQueen/Scripts/WQxIPIT.baf~
+        ~WhiteQueen/Scripts/WQxDEM.baf~
+        ~WhiteQueen/Scripts/WQxENT.baf~
+        ~WhiteQueen/Scripts/WQxIENT.baf~
+        ~WhiteQueen/Scripts/WQxM1.baf~
+        ~WhiteQueen/Scripts/WQxM2.baf~
+        ~WhiteQueen/Scripts/WQxTRE.baf~
+        ~WhiteQueen/Scripts/WQxTRE0.baf~
+        ~WhiteQueen/Scripts/WQxKEE.baf~
+        ~WhiteQueen/Scripts/WQxFINF.baf~
+        ~WhiteQueen/Scripts/WQxN.baf~
+        ~WhiteQueen/Scripts/WQxHama.baf~
+        ~WhiteQueen/Scripts/WQxSTON.baf~
+        ~WhiteQueen/Scripts/WQxTINF.baf~
+        ~WhiteQueen/Scripts/WQxT1.baf~
+        ~WhiteQueen/Scripts/WQxT2.baf~
+        ~WhiteQueen/Scripts/WQxWQ.baf~
+        ~WhiteQueen/Scripts/WQxCD.baf~
+        ~WhiteQueen/Scripts/WQxViCS.baf~
+        
+    ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COMPILE ~WhiteQueen/EENoMos/WQ0001.baf~
+    END
+        
+EXTEND_TOP ~AR1000.bcs~ ~WhiteQueen/Scripts/Ar1000.baf~
+EXTEND_TOP ~Baldur.bcs~ ~WhiteQueen/Scripts/Baldur.baf~
+        
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+ADD_JOURNAL @22331 @22332 @22333 @22334 @22335 @22336 @22337 @22338 @22339 @22340 @22341 @22342 @22343 @22344 USING ~WhiteQueen/Translations/%LANGUAGE%/setup.tra~
+END
+        
+//////////DIALOGUES
+
+COMPILE ~WhiteQueen/Dialogues/WQxDEM.d~
+        ~WhiteQueen/Dialogues/WQxWin.d~
+        ~WhiteQueen/Dialogues/WQxENT.d~
+        ~WhiteQueen/Dialogues/WQxIENT.d~
+        ~WhiteQueen/Dialogues/WQxKEE.d~
+        ~WhiteQueen/Dialogues/WQxN.d~
+        ~WhiteQueen/Dialogues/WQxST.d~
+        ~WhiteQueen/Dialogues/WQxTRE.d~
+        ~WhiteQueen/Dialogues/WQxTRE0.d~
+        ~WhiteQueen/Dialogues/WQxT1.d~
+        ~WhiteQueen/Dialogues/WQxT2.d~
+        ~WhiteQueen/Dialogues/WQxPRI.d~
+        ~WhiteQueen/Dialogues/WQxWQ.d~
+        ~WhiteQueen/Dialogues/WQxHag.d~
+        ~WhiteQueen/Dialogues/WQxViconia.d~
+        ~WhiteQueen/Dialogues/Append.d~
+        ~WhiteQueen/Dialogues/Interjections.d~
+
+
+
+//////////ITEMS
+
+COPY ~WhiteQueen/Items/WQxCLB1.itm~ ~Override/WQxCLB1.itm~
+SAY NAME1 @21 /* Club +2 'Fireveins' */
+SAY NAME2 @21 /* Club +2 'Fireveins' */
+SAY DESC @22 /* This club made of brown wood looks ordinary, but when you look closely at it, you can see some fine long red and orange lines running through the whole weapon. What is more, when you hold this club in your hand, you can sense some warmth comming from it. Interesting is the fact that even though the 'veins' seem to be made of real fire, the club itself doesn't burn. 
+Moreover, this club is really well made, so the one who fights using this weapon, will be able to make fast and deadly swings.
+
+STATISTICS:
+
+Damage: 1d6 +2, +1 fire damage
+Thac0: +4
+Special:
++1 attack per round
++50% fire resistance
+Damage type: crushing
+Weight: 3 lbs.
+Speed factor: 1
+Proficiency: Club
+Type: one-handed
+Required strength: 5
+Not useable by:
+ Mages */
+
+COPY ~WhiteQueen/Items/WQxwine.itm~ ~Override/WQxwine.itm~
+SAY NAME1 @23 /* Bottle of wine */
+SAY NAME2 @23 /* Bottle of wine */
+SAY DESC @24 /* This wine has been found in the ruins on Silent Swamps, the domain of White Queen. It smells of blueberries and has strong, red color. It seems to have been prepared by one of the villagers. Supposedly, he or she is dead now. */
+
+COPY ~WhiteQueen/Items/WQxNec1.itm~ ~Override/WQxNec1.itm~
+SAY NAME1 @25 /* Archer's Doom */
+SAY NAME2 @25 /* Archer's Doom */
+SAY DESC @26 /* Archer's Doom is a powerful, enchanted necklace which gives the wearer some control over all kinds of bullets, arrow and bolts. One can never control them enough to use them against an opponent, but the control is sufficient to slightly change the line of travel.
+The Necklace itself looks really valuable, with a violet gem in the center of a chain.
+
+STATISTICS:
+
++2 armor class vs. missiles
+50% resistance to missile damage
+Protection from Silence */
+
+COPY ~WhiteQueen/Items/WQxSW1.itm~ ~Override/WQxSW1.itm~
+SAY NAME1 @27 /* 'The Ladykiller' */
+SAY NAME2 @27 /* 'The Ladykiller' */
+SAY DESC @28 /* There are both famous weapons and infamous weapons. This particular sword is of the second group. As gossips say, this sword was used by a murderer from Luskan, called The Whip, who is believed to killed over twenty innocent girls. He kidnapped them and kept them in his hideout until they begged for for death. Then he would use this blade to stab their hearts. Many people tried to find out what was the reason for his atrocities. Some of them pretend to have found out that few years before the series of murders, he lost his beloved Christabelle because of another girl who was envious of her heritage. The envious girl, again as gossips say, was his first victim. Finally he was imprisoned just before he was to kill his twenty-first victim. He was sentenced to death by hanging.
+
+STATISTICS:
+
+Damage: 2d4 +3, +2 vs. females
+Thac0: +3, +2 vs. females
+Special:
+5% chance to kill females instantly (save vs. death -3)
++2 armor class bonus vs. females
+-2 luck penalty
+Damage type: slashing
+Weight: 7 lbs.
+Speed factor: 6
+Proficiency: Bastard sword
+Type: one-handed
+Required strength: 11
+Not useable by:
+ Druid
+ Mage
+ Cleric
+ Thief */
+ 
+ COPY ~WhiteQueen/Items/WQxSh1.itm~ ~Override/WQxSh1.itm~
+SAY NAME1 @29 /* Golem's Heart */
+SAY NAME2 @29 /* Golem's Heart */
+SAY DESC @30 /* This medium shield was named by the mage Rotherius, who studied all types of golems. He is said to have tried creating a golem who would feel as all people do - who could both hate and love, believe and regret. He spent most of his life in his research room. Even when he was dying of an illness, he still didn't give up. Rumour say that his dead body was found on a golem - his right hand was lying on its cheek while his left hand was touching its chest. 
+
+STATISTICS:
+
+Armor Class Bonus: 3
+Special: Protection from Petrification
+Weight: 6
+Requires: 12 Strength
+Not Usable By:
+ Bard
+ Druid
+ Mage
+ Thief */
+ 
+ COPY ~WhiteQueen/Items/WQxIO1.itm~ ~Override/WQxIO1.itm~
+SAY NAME1 @31 /* Rainbow Ioun Stone */
+SAY NAME2 @31 /* Rainbow Ioun Stone */
+SAY DESC @32 /* This Ioun stone is perfectly round. Its color changes depending on how you hold it. It seems that many different colours and shades are imprisoned in this one, small stone. Among the colours you can see blue, green, violet, yellow, amaranth and some others. It is a bit cold in touch, slightly colder than usual stones. When you hold it, you feel somehow relaxed and relieved.
+
+STATISTICS:
+
+Protection from disease
++4 saving throw vs. death */
+
+ COPY ~WhiteQueen/Items/WQxGl1.itm~ ~Override/WQxGl1.itm~
+SAY NAME1 @33 /* Gloves 'Spellbinders' */
+SAY NAME2 @33 /* Gloves 'Spellbinders' */
+SAY DESC @34 /* This dyed leather pair of gloves once belonged with the battlemage Aliano Thortier. He was one of the elves from Myth Drannor who even after the fall of the elven capital tried to protect it from demons and other creatures. He tried to find some helpers, but he found it difficult to find trustworthy companions who wouldn't steal the artifacts of Myth Drannor. Seeking new helpers, he mastered summoning spells, but one a powerful naga which was able to dispel magical effects, un-summoned all his creatures and managed to kill Aliano. Legends say that once a year his ghost still appears in the abandoned hall which used to be the naga's nest.
+
+STATISTICS:
+
+One additional 1st level spell slot
++2 saving throw vs. spells bonus
+-1 spell casting time
+
+Useable by:
+ Mages (single, dual and multiclassed)
+ Bards */
+ 
+ 
+COPY ~WhiteQueen/Items/WQxHama.itm~ ~Override/WQxHama.itm~
+SAY NAME1 @35 /* Hamadryad's Dagger */
+SAY NAME2 @35 /* Hamadryad's Dagger */
+SAY DESC @36 /* This is dagger of the hamadryad you have fought at Silent Swamps. It looks really sharp and deadly. Part of the blade has green colour that reminds moss. With this magical dagger even most clumsy adventurer may make a deadly blow.
+
+STATISTICS:
+
+Damage: 1d4 +2
+Thac0: +6
+Special:
+10% chance to cast 'Maze' on a succesful hit
+Protection from poison
++1 charisma bonus
+Damage type: piercing
+Weight: 3 lbs.
+Speed factor: 0
+Proficiency: Daggers
+Type: one-handed
+Required strength: 3
+Not useable by:
+ Cleric */
+ 
+ 
+COPY ~WhiteQueen/Items/WQxAr1.itm~ ~Override/WQxAr1.itm~
+SAY NAME1 @37 /* Hellfire Arrow */
+SAY NAME2 @37 /* Hellfire Arrow */
+SAY DESC @38 /* Even though those kind of arrows are called "hellfire arrows" they do not make the enemy burst into flames, but they are able to join the enemy with the negative planes. When it happens, victim will suffer as if touched by creatures like vampires or other undead.
+
+STATISTICS:
+
+Damage:  1D6 + 1
+THACO:  +1 bonus
+40% chance to drain one level
+Damage Type:  missile (piercing)
+Weight: 0
+Launcher:  Bow
+Not Usable By:
+ Cleric
+ Druid
+ Mage */
+ 
+COPY ~WhiteQueen/Items/WQxMain.itm~ ~Override/WQxMain.itm~
+SAY NAME1 @39 /* Black Branch */
+SAY NAME2 @39 /* Black Branch */
+SAY DESC @40 /* This is part of a tree from ruins at Silent Swamps. You got it from a druid that lives in the cave under that tree. Acording to what he said, this weapon may be capable of dispelling the strange power tha White Queen has. To make this happen, she must be stabbed with this branch. It doesn't seem to have any other power.
+
+STATISTICS:
+
+Damage:  1D6
+Special:
+Can dispell the ritual that protects White Queen
+Damage type:  crushing
+Weight: 3
+Speed Factor: 4
+Proficiency Type:Club
+Type:  1-handed
+Requires: 5 Strength
+Not Usable By: */
+
+COPY ~WhiteQueen/Items/WQxST1.itm~ ~Override/WQxST1.itm~
+SAY NAME1 @41 /* Black Staff */
+SAY NAME2 @41 /* Black Staff */
+SAY DESC @42 /* This staff was made from the black tree from Silent Swamps. It is said that the one who hold it will be given all the lore the old tree has gathered for all the years. The staff itself has a dark color and has some moss on it. It doesn't look very strong so it may be surprising that it actually holds a powerful energy inside. This very energy gives you some shivers when you hold the weapon - that's proof of the energy sleeping within the staff. 
+The staff was also a witness of what have happened on the Silent Swamps. It used to be weapon of the one who started a rebellion which was supposed to destroy the White Queen.
+
+STATISTICS:
+
+Damage:  1D6 +3
+THAC0: +3 bonus
+Special:
++1 armor class bonus
+75% resistance to acid
++40 lore bonus
+Protection from Entangle
+-1 charisma penalty
+Damage type:  crushing
+Weight: 2
+Speed Factor: 1
+Type:  2-handed
+Requires: 5 Strength
+Not usable By */
+
+COPY ~WhiteQueen/Items/WQxhead.itm~ ~Override/WQxhead.itm~
+SAY NAME1 @43 /* Necromancer's Head */
+SAY NAME2 @43 /* Necromancer's Head */
+SAY DESC @44 /* This is head of the necromancer - brother of the White Queen. */
+
+COPY ~WhiteQueen/Items/WQxSl1.itm~ ~Override/WQxSl1.itm~
+SAY NAME1 @45 /* Sling 'Demoneye' */
+SAY NAME2 @45 /* Sling 'Demoneye' */
+SAY DESC @46 /* This sling is a devious weapon prepared by demons themselves. It was prepared from the skin of an aasimar. It has a strange smell and is able to create magical bulets.
+This sling was given to you by the demon on the Silent Swamps for getting him the head of the necromancer who had captured him and bound with special spells. After he gave you this item, he has disappeared.
+Even holding this powerful weapon can give you goosebumps.
+
+STATISTICS:
+
+Equipped Ability: This powerful sling requires no ammunition
+THACO:  +3 bonus
+Damage: 1d6 +3, +1 fire damage
+10% chance to slow target (save vs. spells to negate)
+10% chance to cause berserk on target (save vs. death to negate)
+User is immune to fear
+Weight: 1
+Speed Factor: 0
+Proficiency Type: sling
+Type:  1-handed
+Requires: 3 Strength
+Not Usable By:
+Good-aligned characters */
+
+COPY ~WhiteQueen/Items/WQxro1.itm~ ~Override/WQxro1.itm~
+SAY NAME1 @47 /* White Robe */
+SAY NAME2 @47 /* White Robe */
+SAY DESC @48 /* This is a robe the necromancer, brother of the White Queen, used to wear. It is of white color, with some violet and gold ornaments. It doesn't have great powers like some other robes, but still it can give the wearer some special protection.
+
+STATISTICS:
+
+Protection from backstab
++5 saving throw vs. death bonus
+
+Weight:  3
+Usable by:
+Mage (single, dual, & multi-class)
+Bard */
+
+COPY ~WhiteQueen/Items/WQxle1.itm~ ~Override/WQxle1.itm~
+SAY NAME1 @49 /* White Leather */
+SAY NAME2 @49 /* White Leather */
+SAY DESC @50 /* This leather armor seems to be quite ordinary, with a bit of magical enchantment. Thanks to that it seems to be more comfortable so it may become more useful for bards, who can wear it without hindrance to spellcasting. Also thanks to the elastic feature, one may move a bit faster than other people wearing armor.
+
+STATISTICS:
+
+Armor Class: 7
+User may use arcane spells
++2 movement rate
+Weight: 15
+Requires: 4 Strength
+Not Usable By:
+ Mage */
+ 
+COPY ~WhiteQueen/Items/WQxHe1.itm~ ~Override/WQxHe1.itm~
+SAY NAME1 @51 /* Halberd 'Happy-kills-lucky' */
+SAY NAME2 @51 /* Halberd 'Happy-kills-lucky' */
+SAY DESC @52 /* This helbard is believed to be weapon of man - Anthony Fletcher - who worked as a city guard in the city of Waterdeep. He was famous for ending any quarrel in less than two minutes. That was thanks to this weapon, which is faster than any other halberd. Anthony always threatened people with this weapon to stop the riot or 'heads will be off quite rapidly'. One night it wasn't enough and he got into a fight. The man was quite a warrior and managed to block most of the attacks. It appeared that the weapon is cursed and makes wielder "unfortunate". After half an hour of fighting, Anthony ran out of luck and lost the fight. He was killed by his opponent.
+
+STATISTICS:
+
+THACO:  +2 bonus
+Damage:  1D10 + 1
+Special:
+Weapon is much lighter and faster than other halberds
+Every succesful hit lowers weilder's luck by 1 for 
+Cursed item
+Damage type:  piercing
+Weight: 2
+Speed Factor: 2
+Proficiency Type: Halberd
+Type:  2-handed
+Requires: 8 Strength
+Not Usable By:
+ Druid
+ Cleric
+ Mage
+ Thief */
+ 
+COPY ~WhiteQueen/Items/WQxNec2.itm~ ~Override/WQxNec2.itm~
+SAY NAME1 @53 /* Stylish Amulet of Protection */
+SAY NAME2 @53 /* Stylish Amulet of Protection */
+SAY DESC @54 /* The royal guard of King Pyronan, ruler of Impiltur, were given 'The Protector' as an honorary show of status.  Unfortunately, members of the guard had trouble coming to a consensus amongst themselves as to whom the amulet should go to.  After years of internal hostility, the item was lost and the guards were replaced by less greedy individuals.
+This is just a more stylish version of "The Protector" invented by the sorceress who came across the original amulet later.
+
+STATISTICS:
+
+Armor Class Bonus:  1
+Saving Throw Bonus:  1
++1 charisma */
+
+
+COPY ~WhiteQueen/Items/WQxda1.itm~ ~Override/WQxda1.itm~
+SAY NAME1 @55 /* Dagger 'Rape of Magic' */
+SAY NAME2 @55 /* Dagger 'Rape of Magic' */
+SAY DESC @56 /* According to some books this daggers is called 'Rape of Magic' because of its special ability to lower the magic resistance of both the user and the opponent. Some sources say, that this ability was applied on the sword while it was kept in anti-magic hideout of a rogue famous of assassinating wizards. 
+This dagger has also a second ability to make attacks faster on random hit. That made the rogue even more dangerous.
+
+STATISTICS:
+
+Damage: 1d4 +1
+Thac0: +1
+Special:
+-25% magic resistance
+25% chance to gain an additional 1 attack per round for 15 seconds
+25% chance to lower both oponent's and user's magic resistance by 10%
+Item cursed
+Damage type: piercing
+Weight: 3 lbs.
+Speed factor: 1
+Proficiency: Daggers
+Type: one-handed
+Required strength: 3
+Not useable by:
+ Cleric */
+ 
+COPY ~WhiteQueen/Items/WQxBook.itm~ ~Override/WQxBook.itm~
+SAY NAME1 @57 /* History of White Queen */
+SAY NAME2 @57 /* History of White Queen */
+SAY DESC @58 /* This book tells the story of the White Queen - a countess who in her rage and madness wiped out whole village. She wasn't alone - the one who triggered the events was a necromancer wearing white robes. Tale says that the horror took place, because both the necromancer and Queen wanted to reach the most desired gift - immortality. Some people say that they managed to get what they wanted.
+The book doesn't include just the history, but also the location of the village. It is located in the Silent Swamps, which can be found on east from harbour city, Athkatla. Some parts warn readers that the region is really dangerous and one should consider that fact before setting off to this place. Another reason for that may be the fact that the White Queen and the Necromancer may still reside in this dark place.
+
+Weight: 2 lbs. */
+
+COPY ~WhiteQueen/Items/WQxLe2.itm~ ~Override/WQxLe2.itm~
+SAY NAME1 @59 /* Hood 'Tranquility' */
+SAY NAME2 @59 /* Hood 'Tranquility' */
+SAY DESC @60 /* This hood used to be White Queen's armour. Even though it's not nearly as effective as other armours, it still can provide some defence. 
+'Tranquility' is supposed to give wearer peace of mind and soul. It protects from all kinds of magic and natural fear and desorientation. It seems that White Queen believed this item could give her the rest she could not reach with any other way.
+
+STATISTICS:
+
+Armor Class: 8
+Protection from berserk
+Protection from fear
+Protection from feeblemindedness
++2 Thac0 bonus
+Weight: 3
+Requires: 4 Strength
+Not Usable By: */
+
+COPY ~WhiteQueen/Items/WQxMax.itm~ ~Override/WQxMax.itm~
+SAY NAME1 @61 /* White Queen's Protection */
+SAY NAME2 @61 /* White Queen's Protection */
+SAY DESC @62 /* White Queen's Protection - Max HP */
+
+COPY ~WhiteQueen/Items/WQxSWQ1.itm~ ~Override/WQxSWQ1.itm~
+SAY NAME1 @63 /* Scimitar 'Death in One' */
+SAY NAME2 @63 /* Scimitar 'Death in One' */
+SAY DESC @64 /* This powerful weapon is as deadly as death itself. Rumours say that 'Death in One' can show the victim a view of the negative plane, which can overwhelm those who have never seen it before.
+It looks as if made of dark, enigmatic metal. It's really cold in touch. It doesn't look like most other items that you have seen in White Queen's palace. It pulses with negative energy simillar to those that vampires and liches radiate with. What's more, it seems to feed on the user's life force.
+'Death in One' is the twin blade of 'One in Death'. Rumors say that both weapons were created by aasimar who forged it for a paladin to help him in his crusade. Even though this weapon doesn't look as it was made for a paladin, the aasimar blacksmith believed that "darkness should be fought with even deeper darkness". 
+
+STATISTICS:
+
+THACO:  +5 bonus
+Damage:  1D8 +3
+Special:
+3% chance to refresh wielder's mind and body as after a rest
+10% chance to cast fear on succesful hit
+20% chance to drain one level
+30% chance to destroy undead lesser than 5D6
+-5 hit points penalty
+Damage type:  slashing
+Weight: 3
+Speed Factor: 1
+Proficiency Type: Scimitar/Wakizashi/Ninja-To
+Type:  1-handed
+Requires: 10 Strength
+Not Usable By:
+ Cleric
+ Mage */
+ 
+COPY ~WhiteQueen/Items/WQxSWQ2.itm~ ~Override/WQxSWQ2.itm~
+SAY NAME1 @65 /* Scimitar 'One in Death' */
+SAY NAME2 @65 /* Scimitar 'One in Death' */
+SAY DESC @66 /* This powerful weapon grants weilder some magical protection. Rumours say that 'One in Death' can help user to avoid death itself.
+It looks as if made of dark, enigmatic metal. It's really cold in touch. It doesn't look like most other items that you have seen in White Queen's palace. It pulses with negative energy simillar to those that vampires and liches radiate with. What's more, it seems to feed on the user's life force.
+'One in Death' is the twin blade of 'Death in One'. Rumors say that both weapons were created by aasimar who forged it for a paladin to help him in his crusade. Even though this weapon doesn't look as it was made for a paladin, the aasimar blacksmith believed that "darkness should be fought with even deeper darkness". 
+
+STATISTICS:
+
+THACO:  +3 bonus
+Damage:  1D8 +2
+Special:
+50% acid resistance
++1 armor class bonus
++1 dexterity bonus
++1 movement rate
+-5 hit points penalty
+Damage type:  slashing
+Weight: 3
+Speed Factor: 1
+Proficiency Type: Scimitar/Wakizashi/Ninja-To
+Type:  1-handed
+Requires: 10 Strength
+Not Usable By:
+ Cleric
+ Mage */
+ 
+COPY ~WhiteQueen/Items/WQxHeq.itm~ ~Override/WQxHeq.itm~
+SAY NAME1 @67 /* White Tiara */
+SAY NAME2 @67 /* White Tiara */
+SAY DESC @68 /* This tiara was used as a crown of countess Shalloweye who pronounced herself the White Queen. It seems it was enchanted by her brother - necromancer Rodian - to make it worthy of the White Queen. 
+
+STATISTICS:
+
+Protects from backstab */
+
+
+
+
+
+//////////////////////////////////AUDIO INSTALLATION
+
+COPY   ~WhiteQueen/WQxIA.bat~          ~WQxIA.bat~
+COPY   ~WhiteQueen/WQxUA.bat~          ~WQxUA.bat~
+    
+AT_INTERACTIVE_EXIT ~WQxIA.bat~
+AT_UNINSTALL        ~WQxUA.bat~
+
+//////////////////////////////////ADD AREA TO MAP
+MKDIR save
+
+PRINT ~~
+PRINT @80
+
+
+OUTER_SPRINT ~WQMap~ ~placeholder_value~
+OUTER_WHILE (!(IS_AN_INT ~WQMap~) OR (~WQMap~ > 0x2) OR (~WQMap~ < 0x1)) BEGIN
+  PRINT ~Choose 1 or 2 and confirm by "enter"~
+  ACTION_READLN ~WQMap~
+END
+ACTION_IF ("WQMap" = 1) THEN BEGIN
+PRINT ~Installing original worldmap addition~
+
+
+
+INCLUDE ~WhiteQueen/wmp/worldmap.tph~
+
+
+//**************************************************
+// Worldmap patching - do this last so we can patch the new areas too
+//**************************************************
+// Append mastarea.2da with the new areas
+APPEND ~MASTAREA.2da~ ~WQ0001 value~ UNLESS "Silent Swamps" /* WQ0001 */ //Silent Swamps
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Silent Swamps abandoned
+  OUTER_SPRINT areName @69 /* WQ0001 */   // area reference, like "AR0700"
+  OUTER_SPRINT strName @70 /* Silent Swamps */ // area name, like "Waukeen's Promenade"
+  OUTER_SPRINT strDesc @70 /* Silent Swamps */ // area description which will show up when hovering the area on the worldmap
+
+  OUTER_SET mapIcon = 16              // map icon
+  OUTER_SET xCoord  = 1230 + wmp_xCoordAdd_SoA // x coordinate
+  OUTER_SET yCoord  = 40 + wmp_yCoordAdd_SoA // y coordinate
+  OUTER_SET tTime   = 3              // travel time, *4, so two means eight hours
+  OUTER_SET inclSv  = 1              // include save games bool, 1 means yes and 0 means no
+
+// set up link variables
+
+  // add links from these area(s) to the new area
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY toNewArea BEGIN
+    "AR0020" => "Main"       // City Gates
+    "AR0300" => "Main"       // Docks
+    "AR0400" => "Main"       // Slums
+    "AR0500" => "Main"       // Bridge District
+    "AR0800" => "Main"       // Graveyard
+    "AR0900" => "Main"       // Temple District
+    "AR1000" => "Main"       // Government
+    "AR1100" => "Main"       // Umar Hills
+    "AR1300" => "Main"       // d'Arnise Keep
+    "AR1304" => "Main"       // d'Arnise Keep
+    "AR2000" => "Main"        // Trademeet
+    "AR1200" => "Main"        // Windspear Hills
+  END
+
+  // add links from the new area to these area(s)
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY fromNewArea BEGIN
+    "AR0020" => "ExitNE"      // City Gates
+    "AR0300" => "ExitN"       // Docks
+    "AR0400" => "ExitN"       // Slums
+    "AR0500" => "ExitNE"      // Bridge District
+    "AR0700" => "ExitE"       // Waukeen's Promenade
+    "AR0800" => "ExitS"       // Graveyard
+    "AR0900" => "ExitNW"      // Temple District
+    "AR1000" => "ExitN"       // Government
+    "AR1100" => "ExitSE"      // Umar Hills
+    "AR1300" => "ExitSE"      // d'Arnise Keep
+    "AR1304" => "ExitSE"      // d'Arnise Keep
+    "AR2000" => "ExitSW"      // Trademeet
+    "AR1200" => "ExitW"       // Windspear Hills
+  END
+
+// call the sc#addWmpAre function
+  // returns the worldmap entry number for the new area
+  LAUNCH_ACTION_FUNCTION sc#addWmpAre RET areNum = areNum END
+
+  // remove if not desired
+  PRINT @71 /* Silent Swamps - new area number is: %areNum% */
+END
+
+ACTION_IF ("WQMap" = 2) THEN BEGIN
+PRINT ~Installing BGT-BP Worldmap addition~
+
+ACTION_IF FILE_EXISTS ~Worldmap/map_mods_areas.tbl~ THEN BEGIN
+  COPY ~Worldmap/map_mods_areas.tbl~  ~Worldmap~
+   APPEND_FILE ~WhiteQueen/Worldmap/areas.tbl~
+  COPY ~Worldmap/map_mods_links.tbl~  ~Worldmap~
+   APPEND_FILE ~WhiteQueen/Worldmap/links.tbl~
+  COPY - ~WhiteQueen/Worldmap/worldmap.tra~  ~tmp_worldmap.tra~
+  COPY ~Worldmap/map_mods_trans.tra~  ~Worldmap~
+   APPEND_FILE ~tmp_worldmap.tra~
+END
+ELSE BEGIN
+  MKDIR ~Worldmap~
+  COPY ~WhiteQueen/Worldmap/areas.tbl~ ~Worldmap/map_mods_areas.tbl~
+  COPY ~WhiteQueen/Worldmap/links.tbl~ ~Worldmap/map_mods_links.tbl~
+  COPY ~WhiteQueen/Worldmap/worldmap.tra~ ~Worldmap/map_mods_trans.tra~
+  END
+END
+
+
+
+
+
+
+
+

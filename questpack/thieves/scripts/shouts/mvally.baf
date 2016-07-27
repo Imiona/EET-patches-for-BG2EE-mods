@@ -1,0 +1,285 @@
+IF
+  Global("AttackedThieves","GLOBAL",1)
+  !Global("MaeVarExposed","GLOBAL",1)
+  Allegiance(Myself,NEUTRAL)
+  GlobalLT("D0MaeVar","GLOBAL",5)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  Global("MaeVarExposed","GLOBAL",1)
+  Allegiance(Myself,NEUTRAL)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  Name("THIEF5",Myself)
+  Allegiance(Myself,ENEMY)
+  See([PC])
+THEN
+  RESPONSE #100
+    EscapeArea()
+END
+
+IF
+  Allegiance(Myself,ENEMY)
+  See([PC])
+  Global("MaeVarAllies","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("MaeVarAllies","LOCALS",1)
+    CreateCreatureOffScreen("THIEF8",0) // Shadow Thief
+    CreateCreatureOffScreen("THIEF8",0) // Shadow Thief
+    CreateCreatureOffScreen("DASSIN",0) // Shadow Thief
+    CreateCreatureOffScreen("DASSIN",0) // Shadow Thief
+END
+
+//////////////////////////////////////////////////////////////////////
+// CHOOSING ALLEGIANCES
+// Specifics:
+// 240 = Aran's
+// 241 = Larell's
+// 242 = Mae'Var's
+
+IF
+  OR(2)
+    Specifics(Myself,241)
+    Specifics(Myself,242)
+  OR(2)
+    GlobalGT("D0Maevar","GLOBAL",0)
+    GlobalGT("RenalJob","GLOBAL",0)
+  !Name("maevar",Myself)
+  !Name("mvpries",Myself)
+  !Name("Renal Bloodscalp",Myself)
+  !Name("aran",Myself)
+  Global("D0Soundset","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Soundset","LOCALS",1)
+    SetPlayerSound(Myself,9,61886)
+    SetPlayerSound(Myself,10,-1)
+    Continue()
+END
+
+//////////////////////////////////////////////////////////////////////
+
+IF
+  OR(3)
+    AreaCheck("ar0301")
+    AreaCheck("ar0302")
+    AreaCheck("ar0303")
+  Global("D0Allegiance","LOCALS",0)
+  !Specifics(Myself,241)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Allegiance","LOCALS",1)
+    ChangeSpecifics(Myself,242)
+END
+
+IF
+  OR(2)
+    AreaCheck("ar0306")
+    RandomNum(3,1)
+  OR(2)
+    AreaCheck("ar0306")
+    AreaCheck("ar0305")
+  Global("D0Allegiance","LOCALS",0)
+  !Specifics(Myself,242)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Allegiance","LOCALS",1)
+    ChangeSpecifics(Myself,241)
+END
+
+IF
+  Global("D0Allegiance","LOCALS",0)
+  !Specifics(Myself,241)
+  !Specifics(Myself,242)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Allegiance","LOCALS",1)
+    ChangeSpecifics(Myself,240)
+END
+
+
+//////////////////////////////////////////////////////////////////////
+// CHAPTER 2 HOSTILITY STUFF
+
+IF
+  Global("AttackedThieves","GLOBAL",1)
+  Allegiance(Myself,NEUTRAL)
+  GlobalLT("D0MaeVar","GLOBAL",5)
+  OR(2)
+    !Specifics(Myself,242)
+    GlobalGT("D0Maevar","GLOBAL",2)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  OR(2)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+  Allegiance(Myself,NEUTRAL)
+  Global("AttackedThieves","GLOBAL",0)
+  GlobalLT("D0MaeVar","GLOBAL",5)
+  OR(2)
+    !Specifics(Myself,242)
+    GlobalGT("D0Maevar","GLOBAL",2)
+THEN
+  RESPONSE #100
+    SetGlobal("AttackedThieves","GLOBAL",1)
+    Enemy()
+END
+
+IF
+  OR(3)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+    Allegiance(Myself,ENEMY)
+  Global("AttackedThieves","GLOBAL",0)
+  GlobalLT("D0MaeVar","GLOBAL",5)
+  OR(2)
+    !Specifics(Myself,242)
+    GlobalGT("D0Maevar","GLOBAL",2)
+THEN
+  RESPONSE #100
+    SetGlobal("AttackedThieves","GLOBAL",1)
+    Continue()
+END
+
+IF
+  Allegiance(Myself,ENEMY)
+  !Global("WorkingForBodhi","GLOBAL",1)
+  Detect([PC])
+  Delay(1)
+  Global("ArkanisComes","GLOBAL",0)
+  Global("AttackedThieves","GLOBAL",1)
+  GlobalLT("D0MaeVar","GLOBAL",5)
+  GlobalLT("chapter","GLOBAL",%bg2_chapter_6%)
+  OR(2)
+    !Specifics(Myself,242)
+    GlobalGT("D0Maevar","GLOBAL",2)
+  Global("D0DisableArkanis","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("ArkanisComes","GLOBAL",1)
+    CreateCreatureObject("STDEATH",Player1,0,0,0) // Arkanis Gath
+END
+
+//////////////////////////////////////////////////////////////////////
+// COUP HOSTILITY STUFF
+
+IF
+  Global("D0MaeVarHostile","GLOBAL",1)
+  Allegiance(Myself,NEUTRAL)
+  Specifics(Myself,242)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  OR(2)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+  Allegiance(Myself,NEUTRAL)
+  Global("D0MaeVarHostile","GLOBAL",0)
+  Specifics(Myself,242)
+THEN
+  RESPONSE #100
+    SetGlobal("D0MaeVarHostile","GLOBAL",1)
+    Enemy()
+END
+
+IF
+  OR(3)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+    Allegiance(Myself,ENEMY)
+  Global("D0MaeVarHostile","GLOBAL",0)
+  Specifics(Myself,242)
+THEN
+  RESPONSE #100
+    SetGlobal("D0MaeVarHostile","GLOBAL",1)
+    Continue()
+END
+
+//////////////////////////////////////////////////////////////////////
+
+IF
+  Global("D0LarellHostile","GLOBAL",1)
+  Allegiance(Myself,NEUTRAL)
+  Specifics(Myself,241)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  OR(2)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+  Allegiance(Myself,NEUTRAL)
+  Global("D0LarellHostile","GLOBAL",0)
+  Specifics(Myself,241)
+THEN
+  RESPONSE #100
+    SetGlobal("D0LarellHostile","GLOBAL",1)
+    Enemy()
+END
+
+IF
+  OR(3)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+    Allegiance(Myself,ENEMY)
+  Global("D0LarellHostile","GLOBAL",0)
+  Specifics(Myself,241)
+THEN
+  RESPONSE #100
+    SetGlobal("D0LarellHostile","GLOBAL",1)
+    Continue()
+END
+
+//////////////////////////////////////////////////////////////////////
+
+IF
+  Global("D0AranHostile","GLOBAL",1)
+  Allegiance(Myself,NEUTRAL)
+  Specifics(Myself,240)
+THEN
+  RESPONSE #100
+    Enemy()
+END
+
+IF
+  OR(2)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+  Allegiance(Myself,NEUTRAL)
+  Global("D0AranHostile","GLOBAL",0)
+  Specifics(Myself,240)
+THEN
+  RESPONSE #100
+    SetGlobal("D0AranHostile","GLOBAL",1)
+    Enemy()
+END
+
+IF
+  OR(3)
+    AttackedBy([GOODCUTOFF],DEFAULT)
+    HitBy([GOODCUTOFF],CRUSHING)
+    Allegiance(Myself,ENEMY)
+  Global("D0AranHostile","GLOBAL",0)
+  Specifics(Myself,240)
+THEN
+  RESPONSE #100
+    SetGlobal("D0AranHostile","GLOBAL",1)
+    Continue()
+END

@@ -1,0 +1,923 @@
+BACKUP ~TotDG\backup~
+AUTHOR ~Lava Del'Vortel~
+README ~TotDG/totdg_readme.html~
+
+AUTO_TRA ~TotDG/Translations/%s~
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 2283
+  END ELSE BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 0
+  END
+
+  // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+  INCLUDE ~%MOD_FOLDER%/handle_charsets.tpa~
+
+  // No exception, everything needs to be converted
+  ACTION_DEFINE_ARRAY 0xnoconvert BEGIN END
+
+  // Only setup.tra needs to be reloaded
+  ACTION_DEFINE_ARRAY 0xreload BEGIN Setup END
+
+  // There is no "language" folder so the root of all languages in %MOD_FOLDER%
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~%MOD_FOLDER%/translations~
+      // charset_table = 0xcharsets // Included for illustrative purposes.
+      noconvert_array = 0xnoconvert
+      reload_array = 0xreload
+  END
+END
+
+LANGUAGE ~English~    
+         ~English~ 
+         ~TotDG/Translations/English/setup.tra~
+
+LANGUAGE ~German (Translated by Gerri)~
+         ~German~
+         ~TotDG/Translations/German/setup.tra~
+
+LANGUAGE ~French (Translated by Lothringen)~
+         ~French~
+         ~TotDG/Translations/French/setup.tra~
+
+LANGUAGE ~Polski (Translated by Iga and Cuttooth)~
+         ~Polish~
+         ~TotDG/Translations/Polish/setup.tra~
+
+LANGUAGE ~Italian (Translated by Ilot, Al 17 and Toshiro Umezawa)~
+         ~Italian~
+         ~TotDG/Translations/Italian/setup.tra~
+
+LANGUAGE ~Spanish (Translated by Alejabar and Ancalagon el negro)~
+         ~Spanish~
+         ~TotDG/Translations/Spanish/setup.tra~
+         
+LANGUAGE ~Russian (Translated by arcanecoast.ru)~
+         ~Russian~
+         ~TotDG/Translations/Russian/setup.tra~
+
+BEGIN @0
+
+
+
+
+
+////////////////////////////////Add CD_STATE_NOTVALID state
+
+APPEND ~STATE.IDS~ ~0x80101FEF CD_STATE_NOTVALID~
+UNLESS ~CD_STATE_NOTVALID~ 
+
+////////////////////////////////ADD SpellCastOnMeRES
+
+APPEND ~trigger.ids~ ~0x00a1 SpellCastOnMeRES(S:Spell*,O:Caster*)~ 
+UNLESS ~SpellCastOnMeRES~
+
+////////////////////////////////AREAS
+
+COPY ~TotDG/AREAS~ ~override/~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COPY ~TotDG/EEMos~ ~override~
+END
+
+
+////////////////////////////////BAMS
+
+COPY ~TotDG/BAMS~ ~override/~
+
+
+
+
+////////////////////////////////PORTRAITS
+
+COPY ~TotDG/PORTRAITS~ ~override/~
+
+
+
+////////////////////////////////CREATURES
+
+COPY ~TotDG/CREATURES/0xSTDG.cre~ ~override/0xSTDG.cre~
+SAY NAME1 @1
+SAY NAME2 @1
+SAY SELECT_COMMON1 @2 
+
+COPY ~TotDG/CREATURES/0xGWDG.cre~ ~override/0xGWDG.cre~
+SAY NAME1 @3
+SAY NAME2 @3
+SAY SELECT_COMMON1 @4 
+
+COPY ~TotDG/CREATURES/0xSWDG.cre~ ~override/0xSWDG.cre~
+SAY NAME1 @5
+SAY NAME2 @5
+SAY SELECT_COMMON1 @4 
+
+COPY ~TotDG/CREATURES/0xRWDG.cre~ ~override/0xRWDG.cre~
+SAY NAME1 @6
+SAY NAME2 @6
+SAY SELECT_COMMON1 @4 
+
+COPY ~TotDG/CREATURES/0xPriDG.cre~ ~override/0xPriDG.cre~
+SAY NAME1 @7
+SAY NAME2 @7
+
+COPY ~TotDG/CREATURES/0xAlcDG.cre~ ~override/0xAlcDG.cre~
+SAY NAME1 @8
+SAY NAME2 @8
+
+COPY ~TotDG/CREATURES/0xUDDG.cre~ ~override/0xUDDG.cre~
+SAY NAME1 @9
+SAY NAME2 @9
+
+COPY ~TotDG/CREATURES/0xWizDG.cre~ ~override/0xWizDG.cre~
+SAY NAME1 @10
+SAY NAME2 @10
+
+COPY ~TotDG/CREATURES/0xWi2DG.cre~ ~override/0xWi2DG.cre~
+SAY NAME1 @10
+SAY NAME2 @10
+
+COPY ~TotDG/CREATURES/0xBegDG.cre~ ~override/0xBegDG.cre~
+SAY NAME1 @11
+SAY NAME2 @11
+
+COPY ~TotDG/CREATURES/0xGUIDG.cre~ ~override/0xGUIDG.cre~
+SAY NAME1 @12
+SAY NAME2 @12
+SAY SELECT_COMMON1 @13 
+SAY SELECT_COMMON2 @13 
+
+COPY ~TotDG/CREATURES/0xM1DG.cre~ ~override/0xM1DG.cre~
+SAY NAME1 @14
+SAY NAME2 @14
+SAY SELECT_COMMON1 @15 
+
+COPY ~TotDG/CREATURES/0xM2DG.cre~ ~override/0xM2DG.cre~
+SAY NAME1 @16
+SAY NAME2 @16
+SAY SELECT_COMMON1 @17 
+
+COPY ~TotDG/CREATURES/0xLov1DG.cre~ ~override/0xLov1DG.cre~
+SAY NAME1 @18
+SAY NAME2 @18
+SAY SELECT_COMMON1 @19 
+
+COPY ~TotDG/CREATURES/0xLov2DG.cre~ ~override/0xLov2DG.cre~
+SAY NAME1 @20
+SAY NAME2 @20
+SAY SELECT_COMMON1 @21 
+
+COPY ~TotDG/CREATURES/0xGirlDG.cre~ ~override/0xGirlDG.cre~
+SAY NAME1 @22
+SAY NAME2 @22
+SAY SELECT_COMMON1 @23 
+
+COPY ~TotDG/CREATURES/0xEldDG.cre~ ~override/0xEldDG.cre~
+SAY NAME1 @24
+SAY NAME2 @24
+SAY INITIAL_MEETING @25 
+SAY SELECT_COMMON1 @26 
+SAY SELECT_COMMON2 @27 
+SAY SELECT_COMMON3 @26 
+
+
+COPY ~TotDG/CREATURES/0xAlchDG.cre~ ~override/0xAlchDG.cre~
+SAY NAME1 @28
+SAY NAME2 @28
+SAY SELECT_COMMON1 @29 
+
+
+COPY ~TotDG/CREATURES/0xAl2DG.cre~ ~override/0xAl2DG.cre~
+SAY NAME1 @14
+SAY NAME2 @14
+SAY SELECT_COMMON1 @15 
+
+
+COPY ~TotDG/CREATURES/0xYM1DG.cre~ ~override/0xYM1DG.cre~
+SAY NAME1 @30
+SAY NAME2 @30
+SAY INITIAL_MEETING @31 
+SAY SELECT_COMMON1 @15 
+
+
+COPY ~TotDG/CREATURES/0xYM2DG.cre~ ~override/0xYM2DG.cre~
+SAY NAME1 @30
+SAY NAME2 @30
+SAY INITIAL_MEETING @31 
+SAY SELECT_COMMON1 @15 
+
+COPY ~TotDG/CREATURES/0xManDG.cre~ ~override/0xManDG.cre~
+SAY NAME1 @32
+SAY NAME2 @32
+SAY SELECT_COMMON1 @13 
+
+
+COPY ~TotDG/CREATURES/0xTHI1DG.cre~ ~override/0xTHI1DG.cre~
+SAY NAME1 @33
+SAY NAME2 @33
+
+COPY ~TotDG/CREATURES/0xTHI2DG.cre~ ~override/0xTHI2DG.cre~
+SAY NAME1 @34
+SAY NAME2 @34
+SAY SELECT_COMMON1 @35
+
+COPY ~TotDG/CREATURES/0xGGuaDG.cre~ ~override/0xGGuaDG.cre~
+SAY NAME1 @36
+SAY NAME2 @36
+SAY SELECT_COMMON1 @15 
+
+COPY ~TotDG/CREATURES/0xSGuaDG.cre~ ~override/0xSGuaDG.cre~
+SAY NAME1 @36
+SAY NAME2 @36
+SAY SELECT_COMMON1 @31 
+
+COPY ~TotDG/CREATURES/0xRGuaDG.cre~ ~override/0xRGuaDG.cre~
+SAY NAME1 @36
+SAY NAME2 @36
+SAY SELECT_COMMON1 @17 
+
+COPY ~TotDG/CREATURES/0xOldDG.cre~ ~override/0xOldDG.cre~
+SAY NAME1 @37
+SAY NAME2 @37
+SAY SELECT_COMMON1 @38 
+
+COPY ~TotDG/CREATURES/0xInDG.cre~ ~override/0xInDG.cre~
+SAY NAME1 @39
+SAY NAME2 @39
+SAY SELECT_COMMON1 @31 
+
+COPY ~TotDG/CREATURES/0xCom1DG.cre~ ~override/0xCom1DG.cre~
+SAY NAME1 @39
+SAY NAME2 @39
+SAY SELECT_COMMON1 @13 
+
+COPY ~TotDG/CREATURES/0xCom2DG.cre~ ~override/0xCom2DG.cre~
+SAY NAME1 @39
+SAY NAME2 @39
+SAY SELECT_COMMON1 @15 
+
+COPY ~TotDG/CREATURES/0xCom3DG.cre~ ~override/0xCom3DG.cre~
+SAY NAME1 @39
+SAY NAME2 @39
+SAY SELECT_COMMON1 @17 
+
+COPY ~TotDG/CREATURES/0xCom4DG.cre~ ~override/0xCom4DG.cre~
+SAY NAME1 @39
+SAY NAME2 @39
+SAY SELECT_COMMON1 @15 
+
+COPY ~TotDG/CREATURES/0xCom5DG.cre~ ~override/0xCom5DG.cre~
+SAY NAME1 @39
+SAY NAME2 @39
+SAY SELECT_COMMON1 @13 
+
+COPY ~TotDG/CREATURES/0xLordDG.cre~ ~override/0xLordDG.cre~
+SAY NAME1 @40
+SAY NAME2 @40
+SAY SELECT_COMMON1 @41 
+
+COPY ~TotDG/CREATURES/0xGreDG.cre~ ~override/0xGreDG.cre~
+SAY NAME1 @42
+SAY NAME2 @42
+
+COPY ~TotDG/CREATURES/0xRedDG.cre~ ~override/0xRedDG.cre~
+SAY NAME1 @43
+SAY NAME2 @43
+
+COPY ~TotDG/CREATURES/0xGolDG.cre~ ~override/0xGolDG.cre~
+SAY NAME1 @44
+SAY NAME2 @44
+
+COPY ~TotDG/CREATURES/0xSilDG.cre~ ~override/0xSilDG.cre~
+SAY NAME1 @45
+SAY NAME2 @45
+
+COPY ~TotDG/CREATURES/0xYHDG.cre~ ~override/0xYHDG.cre~
+SAY NAME1 @46
+SAY NAME2 @46
+
+COPY ~TotDG/CREATURES/0xdreaDG.cre~ ~override/0xdreaDG.cre~
+SAY NAME1 @47
+SAY NAME2 @47
+
+
+/////////////////////////////////DIALOGUES
+
+COMPILE ~TotDG/DIALOGUES/0xAL2DG.d~
+		~TotDG/DIALOGUES/0xALcDG.d~
+		~TotDG/DIALOGUES/0xALchDG.d~
+		~TotDG/DIALOGUES/0xBEGDG.d~
+		~TotDG/DIALOGUES/0xComXDG.d~
+		~TotDG/DIALOGUES/0xDREaDG.d~
+		~TotDG/DIALOGUES/0xELDDG.d~
+		~TotDG/DIALOGUES/0xGGUADG.d~
+		~TotDG/DIALOGUES/0xGIRLDG.d~
+		~TotDG/DIALOGUES/0xGOLDG.d~
+		~TotDG/DIALOGUES/0xGreDG.d~
+		~TotDG/DIALOGUES/0xGUIDG.d~
+		~TotDG/DIALOGUES/0xINDG.d~
+		~TotDG/DIALOGUES/0xLordDG.d~
+		~TotDG/DIALOGUES/0xLov1DG.d~
+		~TotDG/DIALOGUES/0xLov2DG.d~
+		~TotDG/DIALOGUES/0xM1DG.d~
+		~TotDG/DIALOGUES/0xM2DG.d~
+		~TotDG/DIALOGUES/0xManDG.d~
+		~TotDG/DIALOGUES/0xOldDG.d~
+		~TotDG/DIALOGUES/0xPRIDG.d~
+		~TotDG/DIALOGUES/0xRedDG.d~
+		~TotDG/DIALOGUES/0xRGUADG.d~
+		~TotDG/DIALOGUES/0xSGUADG.d~
+		~TotDG/DIALOGUES/0xSilDG.d~
+		~TotDG/DIALOGUES/0xTHI2DG.d~
+		~TotDG/DIALOGUES/0xTHI1DG.d~
+		~TotDG/DIALOGUES/0xUDDG.d~
+		~TotDG/DIALOGUES/0xWIZDG.d~
+		~TotDG/DIALOGUES/0xYM1DG.d~
+		~TotDG/DIALOGUES/0xYM2DG.d~
+		~TotDG/DIALOGUES/0xSTDG.d~
+		~TotDG/DIALOGUES/0xGWDG.d~
+		~TotDG/DIALOGUES/0xSWDG.d~
+		~TotDG/DIALOGUES/0xRWDG.d~
+		~TotDG/DIALOGUES/0xWI2DG.d~
+		
+
+		
+//////////////////////////////////SCRIPTS
+
+COMPILE ~TotDG/SCRIPTS/0x1DG.baf~
+		~TotDG/SCRIPTS/0xALCDG.baf~
+		~TotDG/SCRIPTS/0xUDDG.baf~
+		~TotDG/SCRIPTS/0xGUIDG.baf~
+		~TotDG/SCRIPTS/0xLORDDG.baf~
+		~TotDG/SCRIPTS/0xPRIDG.baf~
+		~TotDG/SCRIPTS/0xSilDG.baf~
+		~TotDG/SCRIPTS/0xTHI1DG.baf~
+		~TotDG/SCRIPTS/0xTHI2DG.baf~
+		~TotDG/SCRIPTS/0xWIZDG.baf~
+		~TotDG/SCRIPTS/0xYHDG.baf~
+		~TotDG/SCRIPTS/0xYM2DG.baf~
+		~TotDG/SCRIPTS/0xSTDG.baf~
+		~TotDG/SCRIPTS/ARLDV1.baf~
+		~TotDG/SCRIPTS/ARLDV2.baf~
+		~TotDG/SCRIPTS/ARLDV3.baf~
+		~TotDG/SCRIPTS/ARLDV4.baf~
+		~TotDG/SCRIPTS/ARLDV5.baf~
+		~TotDG/SCRIPTS/ARLDV6.baf~
+		~TotDG/SCRIPTS/ARLDV7.baf~
+		~TotDG/SCRIPTS/ARLDV8.baf~
+		
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COMPILE ~TotDG/EENoMos/ARLDV1.baf~
+END
+
+EXTEND_TOP   ~AR0400.bcs~ ~TotDG/SCRIPTS/AR0400.baf~
+EXTEND_TOP   ~AR0500.bcs~ ~TotDG/SCRIPTS/AR0500.baf~
+EXTEND_TOP   ~AR0522.bcs~ ~TotDG/SCRIPTS/AR0522.baf~
+EXTEND_TOP   ~AR0509.bcs~ ~TotDG/SCRIPTS/AR0509.baf~
+EXTEND_TOP   ~AR0802.bcs~ ~TotDG/SCRIPTS/AR0802.baf~
+EXTEND_TOP   ~AR0809.bcs~ ~TotDG/SCRIPTS/AR0809.baf~
+EXTEND_TOP   ~AR0900.bcs~ ~TotDG/SCRIPTS/AR0900.baf~
+EXTEND_TOP   ~AR1000.bcs~ ~TotDG/SCRIPTS/AR1000.baf~
+EXTEND_TOP   ~AR5500.bcs~ ~TotDG/SCRIPTS/AR5500.baf~
+		
+///////////////////////////////////JOURNAL EE
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+ADD_JOURNAL @200 @201 @203 @204 @205 @206 @207 @208 @209 @210 @211 @213 @214 @215 @216 @217 @218 @219 @220 @221 @222 @223 @224 USING ~TotDG/Translations/%LANGUAGE%/setup.tra~
+END
+
+///////////////////////////////////STORES
+
+COPY ~TotDG/STORES/DG01.sto~  ~override/DG01.sto~
+  SAY 0xc @48
+
+COPY ~TotDG/STORES/DG02.sto~  ~override/DG02.sto~
+  SAY 0xc @48
+  
+
+
+//////////////////////////////////MOS
+
+COPY ~TotDG/MOS/DGTXT.mos~ ~override/DGTXT.mos~
+COPY ~TotDG/MOS/DGTXT.2da~ ~override/DGTXT.2da~
+
+    REPLACE ~1001~ @49
+    
+    
+    
+    
+/////////////////////////////////SOUNDS
+
+COPY ~TotDG/SOUNDS~ ~override/~
+
+ACTION_IF ("%LANGUAGE%" STRING_COMPARE_CASE "Polish" =0) BEGIN
+ 
+COPY ~TotDG\DeepAudio\Polish~ ~override\~
+
+END
+
+/////////////////////////////////SPELLS
+
+COPY ~TotDG/SPELLS/DGGray.spl~ ~override/DGGray.spl~
+SAY NAME1 @50
+SAY NAME2 @50
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGGold.spl~ ~override/DGGold.spl~
+SAY NAME1 @52
+SAY NAME2 @52
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGGree.spl~ ~override/DGGree.spl~
+SAY NAME1 @53
+SAY NAME2 @53
+
+COPY ~TotDG/SPELLS/DGSilv.spl~ ~override/DGSilv.spl~
+SAY NAME1 @54
+SAY NAME2 @54
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGBlue.spl~ ~override/DGBlue.spl~
+SAY NAME1 @55
+SAY NAME2 @55
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGViol.spl~ ~override/DGViol.spl~
+SAY NAME1 @56
+SAY NAME2 @56
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGYell.spl~ ~override/DGYell.spl~
+SAY NAME1 @57
+SAY NAME2 @57
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGAmbe.spl~ ~override/DGAmbe.spl~
+SAY NAME1 @58
+SAY NAME2 @58
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGBlac.spl~ ~override/DGBlac.spl~
+SAY NAME1 @59
+SAY NAME2 @59
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGRed.spl~ ~override/DGRed.spl~
+SAY NAME1 @60
+SAY NAME2 @60
+SAY DESC @51
+
+COPY ~TotDG/SPELLS/DGINN1.spl~ ~override/DGINN1.spl~
+SAY NAME1 @61
+SAY NAME2 @61
+SAY DESC @62
+
+COPY ~TotDG/SPELLS/DGINN2.spl~ ~override/DGINN2.spl~
+SAY NAME1 @63
+SAY NAME2 @63
+SAY DESC @64
+
+COPY ~TotDG/SPELLS/DGS01.spl~ ~override/DGS01.spl~
+SAY NAME1 @65
+SAY NAME2 @65
+SAY DESC @66
+SAY UNIDENTIFIED_DESC @66
+
+COPY ~TotDG/SPELLS/DGS02.spl~ ~override/DGS02.spl~
+SAY NAME1 @67
+SAY NAME2 @67
+SAY DESC @68
+SAY UNIDENTIFIED_DESC @68
+
+COPY ~TotDG/SPELLS/DGS03.spl~ ~override/DGS03.spl~
+SAY NAME1 @69
+SAY NAME2 @69
+SAY DESC @70
+SAY UNIDENTIFIED_DESC @70
+
+COPY ~TotDG/SPELLS/DGS04.spl~ ~override/DGS04.spl~
+SAY NAME1 @71
+SAY NAME2 @71
+SAY DESC @72
+SAY UNIDENTIFIED_DESC @72
+
+COPY ~TotDG/SPELLS/DGS05.spl~ ~override/DGS05.spl~
+SAY NAME1 @73
+SAY NAME2 @73
+SAY DESC @74
+SAY UNIDENTIFIED_DESC @74
+
+COPY ~TotDG/SPELLS/DGS06.spl~ ~override/DGS06.spl~
+SAY NAME1 @75
+SAY NAME2 @75
+SAY DESC @76
+SAY UNIDENTIFIED_DESC @76
+
+COPY ~TotDG/SPELLS/DGS07.spl~ ~override/DGS07.spl~
+SAY NAME1 @77
+SAY NAME2 @77
+SAY DESC @78
+SAY UNIDENTIFIED_DESC @78
+
+COPY ~TotDG/SPELLS/DGS08.spl~ ~override/DGS08.spl~
+SAY NAME1 @79
+SAY NAME2 @79
+SAY DESC @80
+SAY UNIDENTIFIED_DESC @80
+
+COPY ~TotDG/SPELLS/DGS09.spl~ ~override/DGS09.spl~
+SAY NAME1 @81
+SAY NAME2 @81
+SAY DESC @82
+SAY UNIDENTIFIED_DESC @82
+
+COPY ~TotDG/SPELLS/DGSB1.spl~ ~override/DGSB1.spl~
+SAY NAME1 @83
+SAY NAME2 @83
+SAY DESC @84
+SAY UNIDENTIFIED_DESC @84
+
+
+
+/////////////////////////////////ITEMS
+
+COPY ~TotDG/ITEMS/DGFl.itm~ ~override/DGFl.itm~
+SAY NAME1 @85
+SAY NAME2 @85
+SAY DESC @86
+
+COPY ~TotDG/ITEMS/DGBark.itm~ ~override/DGBark.itm~
+SAY NAME1 @87
+SAY NAME2 @87
+SAY DESC @88
+
+COPY ~TotDG/ITEMS/DGI001.itm~ ~override/DGI001.itm~
+SAY NAME1 @89
+SAY NAME2 @89
+SAY DESC @90
+ 
+COPY ~TotDG/ITEMS/DGI002.itm~ ~override/DGI002.itm~
+SAY NAME1 @91
+SAY NAME2 @91
+SAY DESC @92
+ 
+COPY ~TotDG/ITEMS/DGI003.itm~ ~override/DGI003.itm~
+SAY NAME1 @93
+SAY NAME2 @93
+SAY DESC @94
+ 
+COPY ~TotDG/ITEMS/DGI004.itm~ ~override/DGI004.itm~
+SAY NAME1 @95
+SAY NAME2 @95
+SAY DESC @96
+ 
+COPY ~TotDG/ITEMS/DGI005.itm~ ~override/DGI005.itm~
+SAY NAME1 @97
+SAY NAME2 @97
+SAY DESC @98
+
+COPY ~TotDG/ITEMS/DGI006.itm~ ~override/DGI006.itm~
+SAY NAME1 @99
+SAY NAME2 @99
+SAY DESC @100
+ 
+COPY ~TotDG/ITEMS/DGI007.itm~ ~override/DGI007.itm~
+SAY NAME1 @101
+SAY NAME2 @101
+SAY DESC @102
+ 
+COPY ~TotDG/ITEMS/DGI008.itm~ ~override/DGI008.itm~
+SAY NAME1 @103
+SAY NAME2 @103
+SAY DESC @104
+ 
+COPY ~TotDG/ITEMS/DGI009.itm~ ~override/DGI009.itm~
+SAY NAME1 @105
+SAY NAME2 @105
+SAY DESC @106
+ 
+COPY ~TotDG/ITEMS/DGI010.itm~ ~override/DGI010.itm~
+SAY NAME1 @107
+SAY NAME2 @107
+SAY DESC @108
+ 
+COPY ~TotDG/ITEMS/DGI011.itm~ ~override/DGI011.itm~
+SAY NAME1 @109
+SAY NAME2 @109
+SAY DESC @110
+ 
+COPY ~TotDG/ITEMS/DGI012.itm~ ~override/DGI012.itm~
+SAY NAME1 @111
+SAY NAME2 @111
+SAY DESC @112
+
+ 
+COPY ~TotDG/ITEMS/DGI013.itm~ ~override/DGI013.itm~
+SAY NAME1 @113
+SAY NAME2 @113
+SAY DESC @114
+ 
+COPY ~TotDG/ITEMS/DGI014.itm~ ~override/DGI014.itm~
+SAY NAME1 @115
+SAY NAME2 @115
+SAY DESC @116
+SAY UNIDENTIFIED_DESC @117
+
+COPY ~TotDG/ITEMS/DGI015.itm~ ~override/DGI015.itm~
+SAY NAME1 @118
+SAY NAME2 @118
+SAY DESC @119
+SAY UNIDENTIFIED_DESC @120
+
+COPY ~TotDG/ITEMS/DGI016.itm~ ~override/DGI016.itm~
+SAY NAME1 @121
+SAY NAME2 @121
+SAY DESC @122
+SAY UNIDENTIFIED_DESC @123
+
+COPY ~TotDG/ITEMS/DGI017.itm~ ~override/DGI017.itm~
+SAY NAME1 @124
+SAY NAME2 @124
+SAY DESC @125
+SAY UNIDENTIFIED_DESC @126
+
+COPY ~TotDG/ITEMS/DGI018.itm~ ~override/DGI018.itm~
+SAY NAME1 @127
+SAY NAME2 @127
+SAY DESC @128
+SAY UNIDENTIFIED_DESC @129
+
+COPY ~TotDG/ITEMS/DGI019.itm~ ~override/DGI019.itm~
+SAY NAME1 @130
+SAY NAME2 @130
+SAY DESC @131
+
+COPY ~TotDG/ITEMS/DGI020.itm~ ~override/DGI020.itm~
+SAY NAME1 @132
+SAY NAME2 @132
+SAY DESC @133
+
+COPY ~TotDG/ITEMS/DGxQ1.itm~ ~override/DGxQ1.itm~
+SAY NAME1 @134
+SAY NAME2 @134
+SAY DESC @135
+SAY UNIDENTIFIED_DESC @135
+
+COPY ~TotDG/ITEMS/DGxQ2.itm~ ~override/DGxQ2.itm~
+SAY NAME1 @136
+SAY NAME2 @136
+SAY DESC @137
+SAY UNIDENTIFIED_DESC @137
+
+COPY ~TotDG/ITEMS/DGxQ3.itm~ ~override/DGxQ3.itm~
+SAY NAME1 @138
+SAY NAME2 @138
+SAY DESC @139
+SAY UNIDENTIFIED_DESC @139
+
+COPY ~TotDG/ITEMS/DGxQ4.itm~ ~override/DGxQ4.itm~
+SAY NAME1 @140
+SAY NAME2 @140
+SAY DESC @141
+SAY UNIDENTIFIED_DESC @141
+
+COPY ~TotDG/ITEMS/DGIAmbe.itm~ ~override/DGIAmbe.itm~
+SAY NAME1 @142
+SAY NAME2 @142
+SAY DESC @143
+SAY UNIDENTIFIED_DESC @143
+
+COPY ~TotDG/ITEMS/DGIBlue.itm~ ~override/DGIBlue.itm~
+SAY NAME1 @144
+SAY NAME2 @144
+SAY DESC @145
+SAY UNIDENTIFIED_DESC @145
+
+COPY ~TotDG/ITEMS/DGIGree.itm~ ~override/DGIGree.itm~
+SAY NAME1 @146
+SAY NAME2 @146
+SAY DESC @147
+SAY UNIDENTIFIED_DESC @147
+
+COPY ~TotDG/ITEMS/DGIGray.itm~ ~override/DGIGray.itm~
+SAY NAME1 @148
+SAY NAME2 @148
+SAY DESC @149
+SAY UNIDENTIFIED_DESC @149
+
+COPY ~TotDG/ITEMS/DGIBlac.itm~ ~override/DGIBlac.itm~
+SAY NAME1 @150
+SAY NAME2 @150
+SAY DESC @151
+SAY UNIDENTIFIED_DESC @151
+
+COPY ~TotDG/ITEMS/DGIViol.itm~ ~override/DGIViol.itm~
+SAY NAME1 @152
+SAY NAME2 @152
+SAY DESC @153
+SAY UNIDENTIFIED_DESC @153
+
+COPY ~TotDG/ITEMS/DGIRed.itm~ ~override/DGIRed.itm~
+SAY NAME1 @154
+SAY NAME2 @154
+SAY DESC @155
+SAY UNIDENTIFIED_DESC @155
+
+COPY ~TotDG/ITEMS/DGISilv.itm~ ~override/DGISilv.itm~
+SAY NAME1 @156
+SAY NAME2 @156
+SAY DESC @157
+SAY UNIDENTIFIED_DESC @157
+
+COPY ~TotDG/ITEMS/DGIGold.itm~ ~override/DGIGold.itm~
+SAY NAME1 @158
+SAY NAME2 @158
+SAY DESC @159
+SAY UNIDENTIFIED_DESC @159
+
+COPY ~TotDG/ITEMS/DGIYell.itm~ ~override/DGIYell.itm~
+SAY NAME1 @160
+SAY NAME2 @160
+SAY DESC @161
+SAY UNIDENTIFIED_DESC @161
+
+COPY ~TotDG/ITEMS/DGIAmbe2.itm~ ~override/DGIAmbe2.itm~
+SAY NAME1 @142
+SAY NAME2 @142
+SAY DESC @162
+SAY UNIDENTIFIED_DESC @162
+
+COPY ~TotDG/ITEMS/DGxSCR.itm~ ~override/DGxSCR.itm~
+SAY NAME1 @163
+SAY NAME2 @163
+SAY DESC @164
+SAY UNIDENTIFIED_DESC @164
+
+
+//SCROLLS
+
+COPY ~TotDG/ITEMS/DGSCR01.itm~ ~override/DGSCR01.itm~
+SAY NAME1 @65
+SAY NAME2 @65
+SAY DESC @66
+
+COPY ~TotDG/ITEMS/DGSCR02.itm~ ~override/DGSCR02.itm~
+SAY NAME1 @67
+SAY NAME2 @67
+SAY DESC @68
+
+COPY ~TotDG/ITEMS/DGSCR03.itm~ ~override/DGSCR03.itm~
+SAY NAME1 @69
+SAY NAME2 @69
+SAY DESC @70
+
+COPY ~TotDG/ITEMS/DGSCR04.itm~ ~override/DGSCR04.itm~
+SAY NAME1 @71
+SAY NAME2 @71
+SAY DESC @72
+
+COPY ~TotDG/ITEMS/DGSCR05.itm~ ~override/DGSCR05.itm~
+SAY NAME1 @73
+SAY NAME2 @73
+SAY DESC @74
+
+COPY ~TotDG/ITEMS/DGSCR06.itm~ ~override/DGSCR06.itm~
+SAY NAME1 @75
+SAY NAME2 @75
+SAY DESC @76
+
+COPY ~TotDG/ITEMS/DGSCR07.itm~ ~override/DGSCR07.itm~
+SAY NAME1 @77
+SAY NAME2 @77
+SAY DESC @78
+
+COPY ~TotDG/ITEMS/DGSCR08.itm~ ~override/DGSCR08.itm~
+SAY NAME1 @79
+SAY NAME2 @79
+SAY DESC @80
+
+COPY ~TotDG/ITEMS/DGSCR09.itm~ ~override/DGSCR09.itm~
+SAY NAME1 @81
+SAY NAME2 @81
+SAY DESC @82
+
+COPY ~TotDG/ITEMS/DGSCRB1.itm~ ~override/DGSCRB1.itm~
+SAY NAME1 @83
+SAY NAME2 @83
+SAY DESC @84
+
+//////////////////////////////////WINE OPTION
+
+COPY_EXISTING ~merchant.sto~ ~override/merchant.sto~
+ADD_STORE_ITEM ~DGxQ1~ #10 #0 #0 ~IDENTIFIED~ #5
+
+
+//////////////////////////////////AUDIO INSTALLATION
+
+COPY   ~TotDG/TotDGIA.bat~          ~TotDGIA.bat~
+COPY   ~TotDG/TotDGUA.bat~         ~TotDGUA.bat~
+    
+AT_INTERACTIVE_EXIT ~TotDGIA.bat~
+AT_UNINSTALL        ~TotDGUA.bat~
+
+//////////////////////////////////Possible Content
+
+BEGIN @180
+REQUIRE_COMPONENT ~TotDG/Setup-TotDG.tp2~ ~0~ @181
+
+COMPILE ~TotDG/DIALOGUES/DialApp.d~
+EXTEND_BOTTOM   ~ARLDV1.bcs~ ~TotDG/SCRIPTS/ARLDV1AddOn.baf~
+EXTEND_BOTTOM   ~AR1000.bcs~ ~TotDG/SCRIPTS/AR1000AddOn.baf~
+EXTEND_BOTTOM   ~AR0900.bcs~ ~TotDG/SCRIPTS/AR0900AddOn.baf~
+
+BEGIN @182
+REQUIRE_COMPONENT ~TotDG/Setup-TotDG.tp2~ ~0~ @181
+
+//////////////////////////////////ADD AREA TO MAP
+
+MKDIR save
+
+INCLUDE ~TotDG/wmp/worldmap.tph~
+
+
+//**************************************************
+// Worldmap patching - do this last so we can patch the new areas too
+//**************************************************
+// Append mastarea.2da with the new areas
+APPEND ~MASTAREA.2da~ ~ARLDV1 value~ UNLESS ~ARLDV1~ //DG
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Deep Gardens abandoned
+  OUTER_SPRINT areName "ARLDV1"   // area reference, like "AR0700"
+  OUTER_SPRINT strName "Deep Gardens" // area name, like "Waukeen's Promenade"
+  OUTER_SPRINT strDesc "Deep Gardens" // area description which will show up when hovering the area on the worldmap
+
+  OUTER_SET mapIcon = 9              // map icon
+  OUTER_SET xCoord  = 505 + wmp_xCoordAdd_SoA // x coordinate
+  OUTER_SET yCoord  = 40 + wmp_yCoordAdd_SoA // y coordinate
+  OUTER_SET tTime   = 2              // travel time, *4, so two means eight hours
+  OUTER_SET inclSv  = 1              // include save games bool, 1 means yes and 0 means no
+
+// set up link variables
+
+  // add links from these area(s) to the new area
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY toNewArea BEGIN
+    "AR0020" => "Exitne"       // City Gates
+    "AR0300" => "Exitne"       // Docks
+    "AR0400" => "Exitne"       // Slums
+    "AR0500" => "Exitne"       // Bridge District
+    "AR0700" => "Exitne"       // Waukeen's Promenade
+    "AR0800" => "Exitne"       // Graveyard
+    "AR0900" => "Exitne"       // Temple District
+    "AR1000" => "Exitne"       // Government
+    "AR1100" => "Exitne"       // Umar Hills
+    "AR1300" => "Exitne"       // d'Arnise Keep
+    "AR1304" => "Exitne"       // d'Arnise Keep
+    "AR2000" => "Exite"        // Trademeet
+    "AR1200" => "Exite"        // Windspear Hills
+  END
+
+  // add links from the new area to these area(s)
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY fromNewArea BEGIN
+    "AR0020" => "ExitNE"      // City Gates
+    "AR0300" => "ExitN"       // Docks
+    "AR0400" => "ExitN"       // Slums
+    "AR0500" => "ExitNE"      // Bridge District
+    "AR0700" => "ExitE"       // Waukeen's Promenade
+    "AR0800" => "ExitS"       // Graveyard
+    "AR0900" => "ExitNW"      // Temple District
+    "AR1000" => "ExitN"       // Government
+    "AR1100" => "ExitSE"      // Umar Hills
+    "AR1300" => "ExitSE"      // d'Arnise Keep
+    "AR1304" => "ExitSE"      // d'Arnise Keep
+    "AR2000" => "ExitSW"      // Trademeet
+    "AR1200" => "ExitW"       // Windspear Hills
+  END
+
+// call the sc#addWmpAre function
+  // returns the worldmap entry number for the new area
+  LAUNCH_ACTION_FUNCTION sc#addWmpAre RET areNum = areNum END
+
+  // remove if not desired
+  PRINT "ARLDV1 patched. New area number is: %areNum%"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,372 @@
+// Chapter Talks
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",8)
+	Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	GlobalLT("M#AmberMadForPhaere","Locals",1)
+	AreaCheck("AR2100")
+	!See("udsvir04")
+	Global("HadSlayerDream","GLOBAL",1)
+	OR(2)
+	 Global("M#AmberMatch","GLOBAL",1)
+	 Global("M#AmberMatch","GLOBAL",4)
+	CombatCounter(0)
+	See(Player1)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberChapterTalk","Locals",8)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player1) //Chapter talk 5.2 aka Underdark
+END
+
+IF
+	GlobalLT("M#AmberChapterTalk","Locals",8)
+	Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	AreaCheck("AR2100")
+	!See("udsvir04")
+	Global("HadSlayerDream","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	CombatCounter(0)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	InParty("M#Amber")	
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberChapterTalk","Locals",8)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player2) //Chapter talk 5.2 aka Underdark
+END
+
+//Love Talks
+IF
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	Global("M#AmberTalk","Locals",52)
+	Global("M#AmberMatch","GLOBAL",1)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	AreaType(OUTDOOR)
+	AreaType(WEATHER)
+	TimeOfDay(NIGHT)
+	CombatCounter(0)
+	See(Player1)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+	SetDialog("M#Ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player1) // Lovetalk 2 aka. Stars
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	Global("M#AmberTalk","Locals",58)
+	GlobalGT("M#AmberLike","Locals",110)
+	Global("M#AmberMatch","GLOBAL",1)
+	OR(8)
+	  AreaCheck("AR0313") //Sea's Bounty
+	  AreaCheck("AR0406") //Copper Coronet
+	  AreaCheck("AR0509") //Five Flagons 
+	  AreaCheck("AR0522") //Five Flagons (Stronghold)
+	  AreaCheck("AR0704") //Mithrest Inn 
+	  AreaCheck("AR1105") //Umar Inn
+	  AreaCheck("AR1602") //The Vulgar Monkey
+	  AreaCheck("AR2010") //Vyatri's Pub in Trademeet
+	CombatCounter(0)
+	See(Player1)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player1) // Lovetalk 5 aka. Third Date
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	Global("M#AmberTalk","Locals",52)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	AreaType(OUTDOOR)
+	AreaType(WEATHER)
+	TimeOfDay(NIGHT)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	CombatCounter(0)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player2) // Lovetalk 2 aka. Stars
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberRomanceTime","GLOBAL")
+	Global("M#AmberTalk","Locals",58)
+	GlobalGT("M#AmberLike","Locals",110)
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	OR(8)
+	  AreaCheck("AR0313") //Sea's Bounty
+	  AreaCheck("AR0406") //Copper Coronet
+	  AreaCheck("AR0509") //Five Flagons 
+	  AreaCheck("AR0522") //Five Flagons (Stronghold)
+	  AreaCheck("AR0704") //Mithrest Inn 
+	  AreaCheck("AR1105") //Umar Inn
+	  AreaCheck("AR1602") //The Vulgar Monkey
+	  AreaCheck("AR2010") //Vyatri's Pub in Trademeet
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	CombatCounter(0)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberTalk","Locals",1)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player2) // Lovetalk 5 aka. Third Date
+END
+
+// Floating Lovetalks
+IF
+	Global("M#AmberDrowTalk","Locals",0)
+	AreaCheck("AR2202") //Ust Natha Tavern
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2) 
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	GlobalLT("M#AmberMadForPhaere","Locals",1)
+	CombatCounter(0)
+	See(Player1)
+	InParty("m#amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberDrowTalk","Locals",1)
+	SetDialog("m#ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player1) // Floating Lovetalk 3 aka. Resting in Ust Natha
+END	
+
+IF
+	Global("M#AmberDrowTalk","Locals",0)
+	AreaCheck("AR2202") //Ust Natha Tavern
+	GlobalLT("M#AmberMad","GLOBAL",1) 
+	Global("M#AmberMatch","GLOBAL",3)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	CombatCounter(0)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberDrowTalk","Locals",1)
+	SetDialog("M#Ambern")
+	PlaySong(999997)
+	StartDialogueNoSet(Player2) // Floating Lovetalk 3 aka. Resting in Ust Natha
+END
+
+IF
+	Global("M#BathTalk","GLOBAL",0)
+	OR(5)
+	  AreaCheck("AR1100") // Umar Hills
+	  AreaCheck("AR1200") // Windspear Hills
+	  AreaCheck("AR1700") // Small Teeth Pass
+	  AreaCheck("AR1800") // North Forest
+	  AreaCheck("AR1900") // Druid's Grove
+	GlobalLT("M#AmberMad","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	CombatCounter(0)
+	See(Player1)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#BathTalk","GLOBAL",1)
+	SetDialog("M#Ambern")
+	ActionOverride(Player1,StartDialogue("Player1",Player1)) // Floating lovetalk 2 aka Bath
+END
+
+IF
+	Global("M#BathTalk","GLOBAL",0)
+	OR(5)
+	  AreaCheck("AR1100") // Umar Hills
+	  AreaCheck("AR1200") // Windspear Hills
+	  AreaCheck("AR1700") // Small Teeth Pass
+	  AreaCheck("AR1800") // North Forest
+	  AreaCheck("AR1900") // Druid's Grove
+	GlobalLT("M#AmberMad","GLOBAL",1)  
+	Global("M#AmberMatch","GLOBAL",3)
+	!Global("M#AmberRomanceActive","GLOBAL",3)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	Gender(Player2,MALE)
+	CheckStat(Player2,0,MORALEBREAK)	// Bio-NPC, Hubelpot, Kelsey, Solaufein, Kivan of Shilmista, Kova, Willie Bruce, Goo, Kulyok's Xan, Iylos, Tiax
+	!HasItemEquiped("belt05",Player2)	// Girdle of sex change
+	!Name("BIDDE",Player2)			// Biddekelorak Modlist	
+        !Name("SUBRU",Player2)			// Bons' Bruce PPG
+        !Name("JCBruce",Player2)		// Compton's Bruce PPG
+        !Name("G#CASS",Player2) 		// Cassius CoM
+        !Name("FWGHARETH",Player2)		// Ghareth PPG
+        !Name("CLFHSFNX",Player2)		// Fonick Modlist
+        !Name("lrirenic",Player2)		// Irenicus (Longer Road) FW
+        !Name("DKido",Player2)			// Kido Modlist
+        !Name("KWOLF",Player2)			// Killing Wolf SHS
+        !Name("Kindrek",Player2)		// Kindrek CoM
+        !Name("NATH",Player2)			// Nathaniel CoM
+        !Name("SK#NEHT",Player2)		// Neh'Taniel Blacksheep
+        !Name("Therrin",Player2)		// Therrin Modlist
+        !Name("TSUJATH",Player2)		// Tsujatha CoM
+        !Name("VANIM",Player2)			// Vanim Modlist
+        !Name("Wikaede",Player2) 		// Wikaede CoM
+        !Name("TLXAN",Player2) 			// Xan Modlist
+        !Name("SDNPC",Player2)			// Yikari FW
+        !Name("Robilard",Player2)		// Robillard (TDD) Modlist		
+	!Name("Avaunis",Player2)		// Auvanis (TDD) Modlist		
+	!Name("Adario",Player2)			// Adario Kalvaras (TDD) Modlist			
+	!Name("KAGAINdd",Player2)		// Kagain (TDD) Modlist				
+	!Name("KIVANDD",Player2)		// Kivan (TDD) Modlist				
+	!Name("montaron",Player2)		// Montaron (TDD) Modlist	  		
+	!Name("xzardd",Player2)			// Xzar (TDD) Modlist				
+	!Name("yeslicdd",Player2) 		// Yeslick (TDD) Modlist
+	!Name("BOLIVAR",Player2) 		// Bolivar (SoS) FW		
+	!Name("TOMASTM",Player2) 		// Tomas (SoS) FW
+	CombatCounter(0)
+	See(Player2)
+	!StateCheck(Player2,STATE_DEAD)
+	InParty("M#Amber")
+THEN
+	RESPONSE #100
+	SetGlobal("M#BathTalk","GLOBAL",1)
+	SetDialog("M#Ambern")
+	ActionOverride(Player2,StartDialogue("MULTIG",Player2)) // Floating Lovetalk 2 aka. Bath
+END

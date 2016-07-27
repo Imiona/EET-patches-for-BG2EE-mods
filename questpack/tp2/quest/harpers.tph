@@ -1,0 +1,213 @@
+COMPILE EVALUATE_BUFFER ~questpack/harpers/dialog.d~ USING
+        ~%tra_path%/english/harpers.tra~
+        ~%tra_path%/%LANGUAGE%/harpers.tra~
+
+ADD_JOURNAL @165 @166 @171 USING
+            ~%tra_path%/english/harpers.tra~
+            ~%tra_path%/%LANGUAGE%/harpers.tra~
+
+ADD_JOURNAL EXISTING TITLE (#74447) @145 @158 @167 @168 @169 @170 USING
+            ~%tra_path%/english/harpers.tra~
+            ~%tra_path%/%LANGUAGE%/harpers.tra~
+
+// Add new files
+
+COPY_EXISTING ~misc5d.itm~ ~override/d0bird.itm~
+  SAY IDENTIFIED_DESC @110
+  SAY UNIDENTIFIED_DESC @110
+
+COPY_EXISTING ~misc5u.itm~ ~override/d0misc5u.itm~
+  SAY UNIDENTIFIED_DESC @204
+
+COPY ~questpack/harpers/d0jahrev.cre~ ~override~
+     ~questpack/harpers/d0jahre2.cre~ ~override~
+
+COPY_EXISTING ~lyros.cre~ ~override~
+  WRITE_BYTE 0x2c 50
+  WRITE_BYTE 0x2d 66
+  WRITE_BYTE 0x2e 54
+  WRITE_BYTE 0x2f 84
+  WRITE_BYTE 0x30 99
+  WRITE_BYTE 0x31 27
+  WRITE_BYTE 0x32 91
+BUT_ONLY
+
+COPY_EXISTING ~lyros.cre~ ~override/d0xzar.cre~
+  WRITE_ASCII 0x248 "D0XZAR" #8
+  WRITE_ASCII 0x280 "D0XZAR" #32
+  WRITE_ASCII 0x2cc "D0XZAR" #8
+
+COPY_EXISTING ~sleepdw.cre~ ~override/d0monty.cre~
+  WRITE_BYTE 0x28 0x00
+  WRITE_BYTE 0x29 0x48
+  WRITE_ASCII 0x248 "D0MONTY" #8
+  WRITE_ASCII 0x280 "D0MONTY" #32
+  WRITE_ASCII 0x2cc "D0MONTY" #8
+  SAY NAME1 #2422
+  SAY NAME2 #2422
+
+COPY_EXISTING ~zombie01.cre~ ~override/d0monty2.cre~
+  WRITE_BYTE 0x270 128
+  WRITE_ASCII 0x248 "D0MONTY2" #8
+  WRITE_ASCII 0x280 "D0MONTY2" #32
+  WRITE_ASCII 0x2cc "D0MONTY2" #8
+
+COPY ~questpack/harpers/d0qphar1.cre~ ~override~
+
+
+
+EXTEND_TOP ~ar0309.bcs~ ~questpack/harpers/ar0309.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~aviary.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~SetGlobal("StoleBird","AR0309",2)~
+                      ~SetGlobal("StoleBird","AR0309",2)
+                       SetGlobal("D0GotMontaron","GLOBAL",1)~
+  END
+BUT_ONLY
+
+EXTEND_TOP ~baldur.bcs~ ~questpack/harpers/et_baldur.baf~ EVALUATE_BUFFER
+
+COMPILE EVALUATE_BUFFER ~questpack/harpers/d0jahrev.baf~
+        ~questpack/harpers/d0jahre2.baf~
+
+COMPILE EVALUATE_BUFFER ~questpack/harpers/harpass1.baf~
+        ~questpack/harpers/montbody.baf~
+        ~questpack/harpers/lyros.baf~
+
+EXTEND_TOP ~jaheira.bcs~ ~questpack/harpers/jaheira.baf~ EVALUATE_BUFFER
+
+EXTEND_TOP ~spectreh.bcs~ ~questpack/harpers/spectreh.baf~ EVALUATE_BUFFER
+
+EXTEND_TOP ~ar0308.bcs~ ~questpack/harpers/ar0308.baf~ EVALUATE_BUFFER
+
+EXTEND_TOP ~ar0407.bcs~ ~questpack/harpers/ar0407.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~harpass1.cre~ ~override~
+  WRITE_BYTE 0x274 133
+BUT_ONLY
+
+COPY_EXISTING ~jaheira.bcs~ ~override~
+  DECOMPILE_AND_PATCH BEGIN
+    REPLACE_TEXTUALLY ~Global("JaheiraHarperPlot","GLOBAL",0)~
+                      ~Global("JaheiraHarperPlot","GLOBAL",0)
+                       GlobalTimerExpired("D0MerTimer","GLOBAL")~
+    REPLACE_TEXTUALLY ~SetGlobal("JaheiraBanditPlot","GLOBAL",9)~
+                      ~SetGlobal("JaheiraBanditPlot","GLOBAL",9)
+                       SetGlobalTimer("D0MerTimer","GLOBAL",TWO_DAYS)~
+  END
+BUT_ONLY
+
+// Mark Harpers with specifics
+COPY_EXISTING ~JAHEI1.CRE~ ~override~
+              ~JAHEI2.CRE~ ~override~
+              ~JAHEI3.CRE~ ~override~
+              ~JAHEI4.CRE~ ~override~
+              ~JAHEI12B.CRE~ ~override~
+              ~JAHEI14.CRE~ ~override~
+              ~JAREV1.CRE~ ~override~
+              ~JAREV2.CRE~ ~override~
+              ~JAREV3.CRE~ ~override~
+              ~JAREV4.CRE~ ~override~
+              ~JAREVIA.CRE~ ~override~
+//              ~HARPASS1.CRE~ ~override~
+              ~JATERMIN.CRE~ ~override~
+              ~RYLOCK.CRE~ ~override~
+              ~RENFELD.CRE~ ~override~
+              ~MERINIA.CRE~ ~override~
+              ~MERONIA.CRE~ ~override~
+              ~JAMERONI.CRE~ ~override~
+              ~JADE1.CRE~ ~override~
+              ~JADE2.CRE~ ~override~
+              ~JADE3.CRE~ ~override~
+              ~JADE4.CRE~ ~override~
+              ~JADERMIN.CRE~ ~override~
+              ~JAGA1.CRE~ ~override~
+              ~JAGA2.CRE~ ~override~
+              ~JAGA3.CRE~ ~override~
+              ~JAGA4.CRE~ ~override~
+              ~JAGALVAR.CRE~ ~override~
+              ~PACE.CRE~ ~override~
+              ~BERINVAR.CRE~ ~override~
+              ~HSPECTR1.CRE~ ~override~
+              ~HSPECTR2.CRE~ ~override~
+              ~HSPECTR3.CRE~ ~override~
+              ~TTJAHIER.CRE~ ~override~
+              ~VAMPJAH.CRE~ ~override~
+  PATCH_IF (SOURCE_SIZE > 0x2d3) BEGIN // protects against invalid files
+    WRITE_BYTE 0x274 243
+  END
+BUT_ONLY
+
+COPY_EXISTING ~BERNARD.CRE~ ~override~
+  WRITE_ASCII 0x280 "BERNARD" #32
+  WRITE_BYTE 0x274 243
+BUT_ONLY
+
+COPY_EXISTING_REGEXP GLOB ~^jaheir[0-9]*\.cre~ ~override~
+  WRITE_BYTE 0x274 243
+  LPF ADD_CRE_EFFECT
+    INT_VAR
+      opcode = 180
+      target = 1
+      parameter1 = RESOLVE_STR_REF (@213)
+      timing = 9
+    STR_VAR
+      resource = "SW1H50"
+  END
+BUT_ONLY
+
+COPY ~questpack/harpers/sw1h50.itm~ ~override~
+  SAY IDENTIFIED_DESC @212
+
+COPY_EXISTING ~AR0407.ARE~ ~override~       /* Prebek's Home */
+  WRITE_ASCII 0x94 "AR0407" #8
+
+EXTEND_TOP ~AR0407.bcs~ ~questpack/harpers/u!0407.baf~       /* Prebek's Home, Shazzellim, Container 3, Item 1 */ EVALUATE_BUFFER
+
+COPY_EXISTING ~C6ELHAN.CRE~ ~override~   /* Remove Elhan's evil-aligned Shazzellim scimitars */
+              ~SUELHAN.CRE~ ~override~
+  REPLACE_TEXTUALLY "SW1H50" "SW1H22" (8)
+BUT_ONLY
+
+COPY_EXISTING ~ar0407.are~ ~override~
+  GET_OFFSET_ARRAY harpers#actors 0x54 4 0x58 2 0 0 0x110
+  PHP_EACH harpers#actors AS i => off BEGIN
+    READ_ASCII off + 0x80 actorname
+    PATCH_MATCH "%actorname%" WITH
+      "ICGOB01"
+      BEGIN
+        WRITE_ASCII off + 0x80 "XGHAST1" #8
+      END
+      "ICGOB02"
+      BEGIN
+        WRITE_ASCII off + 0x80 "XGOLEM" #8
+      END
+      "ICGOB03"
+      BEGIN
+        WRITE_ASCII off + 0x80 "XGHAST2" #8
+      END
+      DEFAULT
+    END
+  END
+BUT_ONLY
+
+COPY_EXISTING ~XGOLEM.CRE~ ~override~
+  WRITE_ASCII 0x248 "D0XGOLEM" #8
+  WRITE_ASCII 0x268 "WTASIGHT" #8
+BUT_ONLY
+
+COMPILE EVALUATE_BUFFER ~questpack/harpers/d0xgolem.baf~
+
+COPY_EXISTING ~JAMERONI.CRE~ ~override~
+  WRITE_BYTE 0x275 2 // Meronia should be female
+BUT_ONLY
+
+// Revenge attack
+COPY_EXISTING ~JAHEI3.CRE~ ~override~
+  WRITE_SHORT 0x14 3000
+BUT_ONLY
+
+EXTEND_TOP ~ar0041.bcs~ ~questpack/harpers/et_random.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~ar0045.bcs~ ~questpack/harpers/et_random.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~ar0046.bcs~ ~questpack/harpers/et_random.baf~ EVALUATE_BUFFER

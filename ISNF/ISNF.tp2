@@ -1,0 +1,745 @@
+BACKUP ~ISNF/backup~
+AUTHOR ~Lava~
+README ~ISNF/ReadMe.txt~
+
+
+AUTO_TRA ~ISNF/Translations/%s~
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+
+  // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+  INCLUDE ~%MOD_FOLDER%/handle_charsets.tpa~
+
+  // No exception, everything needs to be converted
+  ACTION_DEFINE_ARRAY ISNFnoconvert BEGIN END
+
+  // Only setup-Innershade.tra needs to be reloaded
+  ACTION_DEFINE_ARRAY ISNFreload BEGIN Setup END
+
+  // There is no "language" folder so the root of all languages in %MOD_FOLDER%
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~%MOD_FOLDER%/translations~
+      // charset_table = ISNFcharsets // Included for illustrative purposes.
+      noconvert_array = ISNFnoconvert
+      reload_array = ISNFreload
+  END
+END
+
+LANGUAGE ~English~
+         ~English~
+         ~ISNF/Translations/English/Setup.TRA~
+         
+LANGUAGE ~Polish~
+         ~Polish~
+         ~ISNF/Translations/Polish/Setup.TRA~
+
+LANGUAGE ~French~
+         ~French~
+         ~ISNF/Translations/French/Setup.TRA~
+
+///////////////////////////////////////////
+///////////////////MAIN////////////////////
+///////////////////////////////////////////
+
+BEGIN @0 /* Colours of Infinity: I Shall Never Forget */
+
+/////////CD
+
+APPEND ~STATE.IDS~ ~0x80101FEF CD_STATE_NOTVALID~
+UNLESS ~CD_STATE_NOTVALID~ 
+
+/////////AUDIO
+
+COPY ~ISNF/AUDIO~ ~override/~
+
+
+/////////AREAS
+
+COPY ~ISNF/AREAS~ ~override/~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COPY ~ISNF/EEMos~ ~override~
+END
+
+/////////Existing Area Change
+
+COPY_EXISTING ar1000.are override
+  LPF fj_are_structure
+    INT_VAR
+    fj_type         = 2    //travel
+    fj_box_left     = 1085
+    fj_box_top      = 1480
+    fj_box_right    = 1195
+    fj_box_bottom   = 1570
+    fj_cursor_idx   = 30   // door
+ //   fj_flags        = 4    // party required
+ //   fj_flags        = 512  // NPCs can't pass
+ //   fj_flags        = 516  // party required, NPCs can't pass
+    fj_vertex_0     = 1085 + (1530 << 16)
+    fj_vertex_1     = 1111 + (1570 << 16)
+    fj_vertex_2     = 1195 + (1505 << 16)
+    fj_vertex_3     = 1175 + (1480 << 16)
+    STR_VAR
+    fj_structure_type   = region
+    fj_name             = Tran_ISNF01 // region name
+    fj_destination_area = ISNF01      // *.ARE
+    fj_destination_name = En          // entrance name
+  END
+  LPF fj_are_structure
+    INT_VAR
+    fj_loc_x       = 1095
+    fj_loc_y       = 1500
+    fj_orientation = 6   // NW
+    STR_VAR
+    fj_structure_type = entrance
+    fj_name           = ISNF
+  END
+  
+  
+COPY_EXISTING ar0701.are override
+  LPF fj_are_structure
+    INT_VAR
+    fj_type         = 2    //travel
+    fj_box_left     = 1530
+    fj_box_top      = 2630
+    fj_box_right    = 1680
+    fj_box_bottom   = 2675
+    fj_cursor_idx   = 30   // door
+ //   fj_flags        = 4    // party required
+ //   fj_flags        = 512  // NPCs can't pass
+ //   fj_flags        = 516  // party required, NPCs can't pass
+    fj_vertex_0     = 1530 + (2630 << 16)
+    fj_vertex_1     = 1530 + (2675 << 16)
+    fj_vertex_2     = 1680 + (2670 << 16)
+    fj_vertex_3     = 1680 + (2630 << 16)
+    STR_VAR
+    fj_structure_type   = region
+    fj_name             = Tran_ISNF02 // region name
+    fj_destination_area = ISNF02      // *.ARE
+    fj_destination_name = En1          // entrance name
+  END
+  LPF fj_are_structure
+    INT_VAR
+    fj_loc_x       = 1618
+    fj_loc_y       = 2590
+    fj_orientation = 6   // NW
+    STR_VAR
+    fj_structure_type = entrance
+    fj_name           = ISNF
+  END
+  
+  
+COPY_EXISTING ar0700.are override
+ LPF fj_are_structure 
+  INT_VAR
+  fj_type = 2 // travel
+  fj_box_left = 4870
+  fj_box_top = 195
+  fj_box_right = 4914
+  fj_box_bottom = 222
+  fj_cursor_idx = 30
+ //   fj_flags        = 4    // party required
+ //   fj_flags        = 512  // NPCs can't pass
+ //   fj_flags        = 516  // party required, NPCs can't pass
+ // fj_alt_x = 4835
+ // fj_alt_y = 255
+  fj_vertex_0 = 4893 + (195 << 16)
+  fj_vertex_1 = 4914 + (206 << 16)
+  fj_vertex_2 = 4898 + (222 << 16)
+  fj_vertex_3 = 4870 + (212 << 16)
+ STR_VAR
+  fj_structure_type = region
+  fj_name = ISNFSun
+  fj_destination_area = ISNF00
+  fj_destination_name = En
+ END
+ LPF fj_are_structure INT_VAR
+  fj_loc_x = 4835
+  fj_loc_y = 255
+  fj_orientation = 0 // facing direction (0-15 where 0=south, 4=west, 8=north, 12=east)*;
+ STR_VAR
+  fj_structure_type = entrance
+  fj_name = ISNFSun
+ END
+
+
+COPY_EXISTING ~AR0700.ARE~ ~override~
+  LPF fj_are_structure
+    INT_VAR
+    fj_loc_x       = 4795
+    fj_loc_y       = 92
+    fj_flags       = 0b00000000000000000001000110000001
+    STR_VAR
+    fj_structure_type = animation
+    fj_name           = ISNFSym
+    fj_bam_resref     = ~ISNFSu~
+  END
+
+
+/////////BAMS
+
+COPY ~ISNF/BAMS~ ~override/~
+
+/////////DIALOGUES
+
+COMPILE EVALUATE_BUFFER ~ISNF/Dialogues/ISNFxA.d~
+        ~ISNF/Dialogues/ISNFxEn.d~
+        ~ISNF/Dialogues/ISNFxOr.d~
+        ~ISNF/Dialogues/ISNFxSe.d~
+        ~ISNF/Dialogues/Priest.d~
+        ~ISNF/Dialogues/ISNFxN.d~
+        ~ISNF/Dialogues/ISNFxIn.d~
+        ~ISNF/Dialogues/Voices.d~
+        ~ISNF/Dialogues/ISNFxHG.d~
+        ~ISNF/Dialogues/ISNFxSU.d~
+        ~ISNF/Dialogues/ISNFxx5.d~
+        ~ISNF/Dialogues/ISNFxRE.d~
+        ~ISNF/Dialogues/ISNFxO2.d~
+        ~ISNF/Dialogues/ISNFxGO.d~
+        ~ISNF/Dialogues/ISNFxPS.d~
+        ~ISNF/Dialogues/newselene.d~
+        ~ISNF/Dialogues/Player1.d~
+        
+/////////PORTRAITS
+
+COPY ~ISNF/PORTRAITS~ ~override/~
+
+/////////CREATURES
+
+COPY ~ISNF/CREATURES/ISNFxA.cre~ ~Override/ISNFxA.cre~
+SAY NAME1 @1 /* Amontias the artist */
+SAY NAME2 @1 /* Amontias the artist */
+
+COPY ~ISNF/CREATURES/ISNFxRe.cre~ ~Override/ISNFxRE.cre~
+SAY NAME1 @2 /* Stranger */
+SAY NAME2 @2 /* Stranger */
+
+COPY ~ISNF/CREATURES/ISNFxEn.cre~ ~Override/ISNFxEn.cre~
+SAY NAME1 @3 /* The Incomplete */
+SAY NAME2 @3 /* The Incomplete */
+
+COPY ~ISNF/CREATURES/ISNFxOr.cre~ ~Override/ISNFxOr.cre~
+SAY NAME1 @4 /* Orion */
+SAY NAME2 @4 /* Orion */
+
+COPY ~ISNF/CREATURES/ISNFxGO.cre~ ~Override/ISNFxGO.cre~
+SAY NAME1 @5 /* <CHARNAME>'s Memory */
+SAY NAME2 @5 /* <CHARNAME>'s Memory */
+
+COPY ~ISNF/CREATURES/ISNFxO2.cre~ ~Override/ISNFxO2.cre~
+SAY NAME1 @4 /* Orion */
+SAY NAME2 @4 /* Orion */
+
+COPY ~ISNF/CREATURES/ISNFxHG.cre~ ~Override/ISNFxHG.cre~
+SAY NAME1 @6 /* Halfling girl */
+SAY NAME2 @6 /* Halfling girl */
+
+COPY ~ISNF/CREATURES/ISNFxSU.cre~ ~Override/ISNFxSU.cre~
+SAY NAME1 @7 /* Heartwarden Icaos */
+SAY NAME2 @7 /* Heartwarden Icaos */
+
+COPY ~ISNF/CREATURES/ISNFxSC.cre~ ~Override/ISNFxSC.cre~
+SAY NAME1 @8 /* Sculpture */
+SAY NAME2 @8 /* Sculpture */
+
+COPY ~ISNF/CREATURES/ISNFxSe.cre~ ~Override/ISNFxSe.cre~
+SAY NAME1 @9 /* Selene */
+SAY NAME2 @9 /* Selene */
+
+COPY ~ISNF/CREATURES/ISNFxS1.cre~ ~Override/ISNFxS1.cre~
+SAY NAME1 @10 /* Memory */
+SAY NAME2 @10 /* Memory */
+
+COPY ~ISNF/CREATURES/ISNFxS2.cre~ ~Override/ISNFxS2.cre~
+SAY NAME1 @10 /* Memory */
+SAY NAME2 @10 /* Memory */
+
+COPY ~ISNF/CREATURES/ISNFxS3.cre~ ~Override/ISNFxS3.cre~
+SAY NAME1 @10 /* Memory */
+SAY NAME2 @10 /* Memory */
+
+COPY ~ISNF/CREATURES/ISNFxS4.cre~ ~Override/ISNFxS4.cre~
+SAY NAME1 @10 /* Memory */
+SAY NAME2 @10 /* Memory */
+
+COPY ~ISNF/CREATURES/ISNFxS5.cre~ ~Override/ISNFxS5.cre~
+SAY NAME1 @10 /* Memory */
+SAY NAME2 @10 /* Memory */
+
+COPY ~ISNF/CREATURES/ISNFxS6.cre~ ~Override/ISNFxS6.cre~
+SAY NAME1 @10 /* Memory */
+SAY NAME2 @10 /* Memory */
+
+COPY ~ISNF/CREATURES/ISNFxS7.cre~ ~Override/ISNFxS7.cre~
+SAY NAME1 @10 /* Memory */
+SAY NAME2 @10 /* Memory */
+
+COPY ~ISNF/CREATURES/ISNFxSP.cre~ ~Override/ISNFxSP.cre~
+SAY NAME1 @11 /* Blind Spirit */
+SAY NAME2 @11 /* Blind Spirit */
+
+COPY ~ISNF/CREATURES/ISNFxN.cre~ ~Override/ISNFxN.cre~
+SAY NAME1 @12 /* Ganymedes */
+SAY NAME2 @12 /* Ganymedes */
+
+COPY ~ISNF/CREATURES/ISNFxIn.cre~ ~Override/ISNFxIn.cre~
+SAY NAME1 @13 /* Fading Shape */
+SAY NAME2 @13 /* Fading Shape */
+
+COPY ~ISNF/CREATURES/ISNFv1.cre~ ~Override/ISNFv1.cre~
+SAY NAME1 @14 /* Orion's Voice */
+SAY NAME2 @14 /* Orion's Voice */
+
+COPY ~ISNF/CREATURES/ISNFv2.cre~ ~Override/ISNFv2.cre~
+SAY NAME1 @15 /* Selene's Voice */
+SAY NAME2 @15 /* Selene's Voice */
+
+COPY ~ISNF/CREATURES/ISNFxPS.cre~ ~Override/ISNFxPS.cre~
+SAY NAME1 @16 /* Heartwarden of Sune */
+SAY NAME2 @16 /* Heartwarden of Sune */
+
+COPY ~ISNF/CREATURES/ISNFPAR.cre~ ~Override/ISNFPAR.cre~
+SAY NAME1 @17 /* Parasite of Grief */
+SAY NAME2 @17 /* Parasite of Grief */
+
+/////////ITEMS
+
+COPY ~ISNF/ITEMS/ISNFxJ.itm~ ~override/ISNFxJ.itm~
+SAY NAME1 @18 /* The Incomplete's Journal */
+SAY NAME2 @18 /* The Incomplete's Journal */
+SAY DESC @19 /* These rough, sloppily assembled texts are The Incomplete's journals. Orion sent you to retrieve them in the hopes of using this creature's research. */
+
+COPY ~ISNF/ITEMS/ISNFRi.itm~ ~override/ISNFRi.itm~
+SAY NAME1 @20 /* Ring 'Crimson Cry' */
+SAY NAME2 @20 /* Ring 'Crimson Cry' */
+SAY DESC @21 /* This ring is of a deep, intensely crimson hue. It is warm to the touch and feels slightly soft and sticky, as if it were made of resin. Holding it makes you feel a bit uncomfortable.
+
+STATISTICS:
+
+Wearer is under the effect of Wild Magic
+15 HP bonus
++1 THAC0 bonus
+
+Useable by:
+ Mage
+ Bard */
+ 
+COPY ~ISNF/ITEMS/ISNFMa.itm~ ~override/ISNFMa.itm~
+SAY NAME1 @22 /* Mace 'Warm Hand' */
+SAY NAME2 @22 /* Mace 'Warm Hand' */
+SAY DESC @23 /* This magic mace is extremely warm to the touch. The head of the weapon is molded into the shape of a hand and when you use your own to grasp it, it clasps you in a firm grip until you let go. It provides some protection, but because of the nature of the enchantment, it is somewhat difficult to maneuver in battle. At the worst of times, it could be seen as a hinderance just as readily as a help.
+
+STATISTICS:
+
+THACO:  +4
+Damage:  1D6 + 2
+Special:
++2 charisma bonus
+Immunity to disease
++4 AC bonus vs. missiles
+-3 death saving throw penalty
+Damage type:  crushing
+Weight: 8
+Speed Factor: 6
+Proficiency Type: Mace
+Type:  1-handed
+Requires: 10 Strength
+Not Usable By:
+ Druid
+ Mage
+ Thief */
+ 
+COPY ~ISNF/ITEMS/ISNFXX1.itm~ ~override/ISNFXX1.itm~
+SAY NAME1 @24 /* Longsword 'Rakshasa's Breath' */
+SAY NAME2 @24 /* Longsword 'Rakshasa's Breath' */
+SAY DESC @25 /* This magic sword is a blessed weapon that has been used by many warriors and paladins to protect their people from the cruel monsters: rakshasas. Many say that the sword was named by the first warrior who used it, just after the first rakshasa took his shallow and very last breath when stabbed with the blade and died.
+The grip of the sword seems to have delicate markings.
+
+STATISTICS:
+
+Special: +5% magic resistance
+
+Damage: 1D8 +3
+THACO: +3, additional +2 vs. rakshasas
+Damage type: slashing
+Weight: 12
+Speed Factor: 5
+Proficiency Type: Longsword
+Type: 1-handed
+Not Usable By:
+ Druid
+ Cleric
+ Mage
+ Thief */
+ 
+COPY ~ISNF/ITEMS/ISNFXX2.itm~ ~override/ISNFXX2.itm~
+SAY NAME1 @26 /* Composite Long Bow of Softness */
+SAY NAME2 @26 /* Composite Long Bow of Softness */
+SAY DESC @27 /* Composite bows are long bows or short bows whose staves are made from more than one type of material.  This gives greater flexibility, and thus better range.  These were developed after the normal long bow.  This magical bow requires a strength of 18 to wield.
+This bow isn't only a fair weapon, but also a splendid defence against creatures that change flesh to stone.
+
+STATISTICS:
+
+Special: Protection from petrification
+
+THAC0:  +2 bonus
+Damage:  +1 bonus
+Weight: 9
+Speed Factor: 6
+Proficiency Type: Long Bow
+Type:  2-handed
+Requires: 18 Strength
+Not Usable By:
+ Druid
+ Cleric
+ Mage 
+ Thief
+ Bard
+ Monk
+ Kensai
+ Cavalier */
+ 
+COPY ~ISNF/ITEMS/ISNFXX3.itm~ ~override/ISNFXX3.itm~
+SAY NAME1 @28 /* Harp 'Miracle' */
+SAY NAME2 @28 /* Harp 'Miracle' */
+SAY DESC @29 /* This magical harp does not seem to be very solid, but it makes the bard look more decent and empower his or her magical spells.
+It is said that this particular harp was used by a bard named Fonic Aldabario, a skilled Harper, who died in battle against Zhentarim.
+
+STATISTICS:
+
++2 caster's levels (only arcane spells)
++1 Charisma 
+
+Weight: 1
+Usable By:
+ Bard
+ 
+Note: is used as shield */
+
+COPY ~ISNF/ITEMS/ISNFXHR.itm~ ~override/ISNFXHR.itm~
+SAY NAME1 @30 /* Ioun stone 'Heart of the Sanctuary' */
+SAY NAME2 @30 /* Ioun stone 'Heart of the Sanctuary' */
+SAY DESC @31 /* This magical Ioun stone was kept in in the Sanctuary of The Incomplete, a creature you were to find. It seems that this particular item gave warmth to the chambers. When you hold it, it seems to pulse with energy.
+
+STATISTICS:
+
++25% lore
+Spell-like ability: when used, there is 25% chance that the user will benefit from magical rest that may restore used spells and abilities. It will also make the user feel well rested. */
+ 
+
+COPY ~ISNF/ITEMS/ISNFXx5.itm~ ~override/ISNFXx5.itm~
+SAY NAME1 @32 /* Bird in a cage */
+SAY NAME2 @32 /* Bird in a cage */
+SAY DESC @33 /* This bird seems to observe everything around it. It looks smart, but also a bit confused and chaotic. It has decent and vivid colours.
+
+Weight: 2 lbs */
+APPEND ~ItemDial.2da~ ~ISNFxx5    5689    ISNFxx5~
+
+COPY ~ISNF/ITEMS/ISNFXX4.itm~ ~override/ISNFXX4.itm~
+SAY NAME1 @34 /* Perfume 'Insomnia' */
+SAY NAME2 @34 /* Perfume 'Insomnia' */
+SAY DESC @35 /* It is said that 'Insomnia' has been created by two Sunites--Aliya Jabberfox and Sybilla Gariah--who whished to find a way to escape Waterdeep without getting into trouble...and troubles would always find them.
+This mixture of scents and oils lets the user gain control over the target for a certain ammount of time. Usually the moment is long enough to allow the user find a way out of trouble.
+
+STATISTICS:
+
+May cast charm (10 charges)
+
+Not useable by:
+ None */
+ 
+COPY ~ISNF/ITEMS/ISNFXRE.itm~ ~override/ISNFXRE.itm~
+SAY NAME1 @36 /* Scroll of Voiceless Sparrow */
+SAY NAME2 @36 /* Scroll of Voiceless Sparrow */
+SAY DESC @37 /* This strange scroll has been given to you by a strange man whom you have seen some time ago. He mentioned that he looked different that time.
+
+STATISTICS:
+
++5 permament lore bonus
+
+Weight: 1 lb. */
+
+COPY_EXISTING ~cohrvale.cre~ ~override/cohrvale.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~ISNFxSS~ #0 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+COPY ~ISNF/ITEMS/ISNFXSS.itm~ ~override/ISNFXSS.itm~
+SAY NAME1 @38 /* Figurine of Sune */
+SAY NAME2 @38 /* Figurine of Sune */
+SAY DESC @39 /* This is a small figurine of Sune you have found in the Slums of Athkatla. It doesn't seem to be magic, but it may appear to be of value to those who serve Lady Firehair.
+
+Weight: 1 lb. */
+
+COPY ~ISNF/ITEMS/ISNFXEF.itm~ ~override/ISNFXEF.itm~
+SAY NAME1 @40 /* Elephant Figurine */
+SAY NAME2 @40 /* Elephant Figurine */
+SAY DESC @41 /* Although this figurine seems to be a normal object, it contains some magic that can provide the user some protection, by granting him or her a hard skin that can protect from different kinds of weapons.
+
+STATISTICS:
+
+May cast Elephant Skin, that slows the user down, but also provides 65% resistance to all physical attacks. The effect lasts 30 seconds.
+
+Weight: 1 lb. */
+
+COPY ~ISNF/ITEMS/ISNFXY1.itm~ ~override/ISNFXY1.itm~
+SAY NAME1 @42 /* Earrings of the Noon */
+SAY NAME2 @42 /* Earrings of the Noon */
+SAY DESC @43 /* This is a set of shiny magic earrings, usually used by those who fight with all types of undead. They are said to provide the user abilities that may greatly aid in battles with skeletons, zombies, ghouls, ghasts, or even powerful creatures like vampires and liches.
+They seem to be made of gold, with very small markings. One of the markings looks like the symbol of Amaunator.
+
+STATISTICS:
+
++4 THAC0 against undead
+Protection from Maze spell (does not protect from inprisonment)
+User may cast "Cure Poison" (2 charges; item does not vanish after charges are used)
+Penalty: -1 THAC0 penalty when ranged weapon is used
+
+Weight: 0 lbs. */
+
+COPY ~ISNF/ITEMS/ISNFXY2.itm~ ~override/ISNFXY2.itm~
+SAY NAME1 @44 /* Feather of Five Seconds */
+SAY NAME2 @44 /* Feather of Five Seconds */
+SAY DESC @45 /* Strange as it is, someone once decided to enchant this black feather. When eaten, it makes the user move between the strings of time.
+The feather is pitch black and reflects light.
+
+STATISTICS:
+
+When used, time stops for 5 seconds. User is immune to the effect.
+
+Weight: 0 lbs. */
+
+COPY ~ISNF/ITEMS/ISNFXY3.itm~ ~override/ISNFXY3.itm~
+SAY NAME1 @46 /* Mace 'Coral Rose' */
+SAY NAME2 @46 /* Mace 'Coral Rose' */
+SAY DESC @47 /* Coral Rose is a powerful weapon created by Sunites of Icewind Dale. As a minority among barbarians and worshippers of Tempus and other fierce deities, they've decided to "create a symbol of softness under the harsh frosty skies and peaks." Legends say that to enchant this weapon, they spent a dozen nights and days.
+It is made of cold steal of light shade, with some warmer, coral parts. Even though some would think that the coral parts should be more fragile, these are the strongest parts of the mace.   
+
+STATISTICS:
+
++2 Charisma bonus
+Protection from backstab
+5% to drain 5% of the victim's magic resistance for 30 seconds
+
+Damage: 1D6+4
+THAC0: +4
+Damage type: bludgeoning
+Weight: 8 lbs.
+Proficiency: mace
+Speed Factor: 6
+Type: one-handed
+Strenght needed: 10
+Not Useable by:
+ Druid
+ Mage
+ Thief */
+
+COPY ~ISNF/ITEMS/ISNFXY4.itm~ ~override/ISNFXY4.itm~
+SAY NAME1 @48 /* Rod 'Greenworm' */
+SAY NAME2 @48 /* Rod 'Greenworm' */
+SAY DESC @49 /* Ahough this rod may be used by almost everyone, it will be most effective in hands of a mage.
+It is seemed to be made of warm, black material, marked with greenish paint. It's hard to say anything else about it; even merchants seem to be a bit confused with this weapon.
+
+STATISTICS:
+
+User is Vocalized
+20% that hit will make the target fall away from the user
++25% protection from Wild Magic
+
+Damage: 1D6+2
+THAC0: +2
+Damage type: bludgeoning
+Weight: 4 lbs.
+Proficiency: quarterstaff
+Speed Factor: 2
+Type: one-handed
+Strength needed: 4
+Not Useable by:
+ Monk */
+ 
+COPY ~ISNF/ITEMS/ISNFXY5.itm~ ~override/ISNFXY5.itm~
+SAY NAME1 @50 /* Hammer of the Fallen Sun */
+SAY NAME2 @50 /* Hammer of the Fallen Sun */
+SAY DESC @51 /* This light hammer is made of solid metal, with a well shaped and warm grip. It isn't of impressive size, but even so, it may provide fine damage. It is said that this weapon has been made by a small group of dwarves who hailed Amaunator and Lathander.
+On the weapon's head, you can see a marking of a sun. Some say that the mark itself isn't magic, but is to make warriors remember the power of the sun, and deities who are bound to the sphere.
+
+
+STATISTICS:
+
+35% chance to blind the target
+10% chance to restore a cleric spell of level 6 or lower
+
+Damage: 1D4+4
+THAC0: +4, +1 THAC0 bonus toward those who intend to hurt the user
+Damage type: bludgeoning
+Weight: 5 lbs.
+Proficiency: hammer
+Speed Factor: 2
+Type: one-handed
+Strenght needed: 9
+Not Useable by:
+ Druid
+ Mage 
+ Thief */
+ 
+COPY ~ISNF/ITEMS/ISNFXY6.itm~ ~override/ISNFXY6.itm~
+SAY NAME1 @52 /* Katana 'Chaosweb' */
+SAY NAME2 @52 /* Katana 'Chaosweb' */
+SAY DESC @53 /* This katata was made thanks to wild and strange magic of the distant East. With every hit, there is a chance that this katana will cut reality and let chaos bathe every creature in unpredictable magic.
+Because of the bizarre nature of this item, only daredevils dare to use this blade. Some of them died a painful death.
+
+
+STATISTICS:
+
+5% chance to cast Chaos Field and provide 50% magic resistance to the user
+Regenerates 1 HP every 8 seconds
+
+Damage: 1D10+3
+THAC0: +3
+Damage type: slashing
+Weight: 4 lbs.
+Proficiency: Katanas
+Speed Factor: 2
+Type: one-handed
+Strenght needed: 6
+Not Useable by:
+ Druid
+ Mage 
+ Cleric */
+ 
+COPY ~ISNF/ITEMS/ISNFXY7.itm~ ~override/ISNFXY7.itm~
+SAY NAME1 @54 /* Plate 'Ilthasthia' */
+SAY NAME2 @54 /* Plate 'Ilthasthia' */
+SAY DESC @55 /* This plate is different from many other plates used in Amn. It is much lighter, and even though it's metal, it doesn't seem to block any moves. It's much more comfortable as well.
+Because of its unique features, this plate armour may be used by anoyone, even mages and thieves, but they will still suffer a penalty for using it. There is just one difference: thanks to glyphs, thieves may become better in spotting illusion spells.
+
+
+STATISTICS:
+
+Armour Class: 2
+Weight: 10 lbs
+Strength required: 12
+Special: 
++35% detect illusion
+Protection from level drain
+Penalties:
+Spellcasting's speed reduced by 2
+Stealth/Hide in Shadows abilities reduced by 25%
+Useable by:
+ Anyone
+ */
+
+COPY ~ISNF/ITEMS/ISNFXBO.itm~ ~override/ISNFXBO.itm~
+SAY NAME1 @56 /* Ritual Book */
+SAY NAME2 @56 /* Ritual Book */
+SAY DESC @57 /* This book was used by Orion to lock you in the Realm of the Ritual. You may use it to get back to his house in the Material Plane.
+ */
+
+COPY ~ISNF/ITEMS/ISNFXGS.itm~ ~override/ISNFXGS.itm~
+SAY NAME1 @58 /* Black Seed of Grief */
+SAY NAME2 @58 /* Black Seed of Grief */
+SAY DESC @59 /* When Orion realised that there's no way back, that Selene can't be brought back, his heart created the Black Seed of Grief. It may be used to gain power, but it may affect the user in more than one way. It may be a better idea to sell it and forget about everything that happened.
+
+STATISTICS:
+
+When eaten, Black Seed of Grief provides a special ability, for a cost of how people see you, and your ability to convince them to your way of thinking.
+
+Weight: 0 lbs. */
+
+COPY ~ISNF/ITEMS/ISNFPar.itm~ ~override/ISNFPar.itm~
+SAY NAME1 @60 /* Parasite */
+SAY NAME2 @60 /* Parasite */
+
+
+
+
+/////////SCRIPTS
+
+COMPILE ~ISNF/SCRIPTS/ISNF00.baf~
+COMPILE ~ISNF/SCRIPTS/ISNF01.baf~
+COMPILE ~ISNF/SCRIPTS/ISNF03.baf~
+COMPILE ~ISNF/SCRIPTS/ISNF05.baf~
+COMPILE ~ISNF/SCRIPTS/ISNF04.baf~
+COMPILE ~ISNF/SCRIPTS/ISNF06.baf~
+COMPILE ~ISNF/SCRIPTS/ISNF07.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxSe.baf~
+COMPILE ~ISNF/SCRIPTS/AR0416.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxO1.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxO2.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxO3.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxOr.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxN.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxEN.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxC1.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxC2.baf~
+COMPILE ~ISNF/SCRIPTS/ISNFxsx.baf~
+
+EXTEND_TOP ~AR0700.bcs~ ~ISNF/SCRIPTS/AR0700.baf~
+EXTEND_TOP ~AR0701.bcs~ ~ISNF/SCRIPTS/AR0701.baf~
+EXTEND_TOP ~AR1000.bcs~ ~ISNF/SCRIPTS/AR1010.baf~
+EXTEND_TOP ~AR1000.bcs~ ~ISNF/SCRIPTS/AR1000.baf~
+EXTEND_TOP ~baldur.bcs~ ~ISNF/SCRIPTS/baldur.baf~
+
+ ACTION_IF FILE_EXISTS_IN_GAME ~AR0513.bcs~ THEN BEGIN
+  EXTEND_TOP ~AR0513.bcs~ ~ISNF/scripts/AR0513.baf~
+  EVALUATE_BUFFER
+ END
+ 
+ ACTION_IF NOT FILE_EXISTS_IN_GAME ~AR0513.bcs~ THEN BEGIN
+  COMPILE ~ISNF/scripts/AR0513.baf~
+  EVALUATE_BUFFER
+ END
+
+////////////STORE
+
+COPY ~ISNF/STORE/ISNFSu.sto~  ~override/ISNFSu.sto~
+  SAY 0xc @61 /* Temple of Sune */
+  
+COPY ~ISNF/STORE/ISNFSu2.sto~  ~override/ISNFSu2.sto~
+  SAY 0xc @61 /* Temple of Sune */
+  
+////////////SPELLS
+
+COPY ~ISNF/SPELLS/ISNFSP1.spl~  ~override/ISNFSP1.spl~
+SAY NAME1 @62 /* Safe Memory */
+SAY NAME2 @62 /* Safe Memory */
+
+COPY ~ISNF/SPELLS/ISNFSP2.spl~  ~override/ISNFSP2.spl~
+SAY NAME1 @63 /* Reshaped Memory */
+SAY NAME2 @63 /* Reshaped Memory */
+
+COPY ~ISNF/SPELLS/ISNFxGS.spl~  ~override/ISNFxGS.spl~
+SAY NAME1 @64 /* Parasite Shape */
+SAY NAME2 @64 /* Parasite Shape */
+
+///////////////////////////////////JOURNAL EE
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+ADD_JOURNAL @101 @102 @130 @131 @140 @141 @150 @151 @152 @153 @154 @155 @156 @157 @158 @160 @161 USING ~ISNF/Translations/%LANGUAGE%/setup.tra~
+END
+
+//////////////////////////////////AUDIO INSTALLATION
+
+
+COPY   ~ISNF/ISNFIA.bat~          ~ISNFIA.bat~
+COPY   ~ISNF/ISNFUA.bat~          ~ISNFUA.bat~
+    
+AT_INTERACTIVE_EXIT ~ISNFIA.bat~
+AT_UNINSTALL        ~ISNFUA.bat~
+
+
+

@@ -1,0 +1,760 @@
+
+////////////////////////////////
+////////////CURSE///////////////
+////////////////////////////////
+
+IF
+InParty(Myself)
+GlobalLT("L#FouPlot","GLOBAL",30)
+Global("L#CURSEHPPENALTY","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobalTimer("L#MinusHP","GLOBAL",ONE_DAY)
+SetGlobal("L#CURSEHPPENALTY","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+GlobalLT("L#FouPlot","GLOBAL",30)
+Global("L#CURSEHPPENALTY","GLOBAL",1)
+GlobalTimerExpired("L#MinusHP","GLOBAL")
+THEN
+RESPONSE #100
+ApplySpellRES("l#cr1hp",Myself)
+DisplayStringHead("L#Fou",@600 /* (Curse: permament -1 HP) */)
+SetGlobal("L#CURSEHPPENALTY","GLOBAL",0)
+END
+
+////////////////////////////////
+//////////CREATE BLADE//////////
+////////////////////////////////
+
+IF
+Global("L#SMITH","LOCALS",1)
+THEN
+RESPONSE #100
+StartDialogue("L#FouJ",Player1)
+END
+
+IF
+Global("L#SMITH","LOCALS",2)
+THEN
+RESPONSE #100
+ApplySpellRES("L#DE",Myself)
+SetGlobal("L#SMITH","LOCALS",3)
+END
+
+IF
+Global("L#SMITH","LOCALS",3)
+LevelLT(Myself,4)
+THEN
+RESPONSE #100
+GiveItemCreate("L#SBSW1",Myself,1,0,0)
+SetGlobal("L#SMITH","LOCALS",4)
+END
+
+IF
+Global("L#SMITH","LOCALS",3)
+LevelGT(Myself,3)
+LevelLT(Myself,8)
+THEN
+RESPONSE #100
+GiveItemCreate("L#SBSW2",Myself,1,0,0)
+SetGlobal("L#SMITH","LOCALS",4)
+END
+
+IF
+Global("L#SMITH","LOCALS",3)
+LevelGT(Myself,7)
+LevelLT(Myself,13)
+THEN
+RESPONSE #100
+GiveItemCreate("L#SBSW3",Myself,1,0,0)
+SetGlobal("L#SMITH","LOCALS",4)
+END
+
+IF
+Global("L#SMITH","LOCALS",3)
+LevelGT(Myself,12)
+LevelLT(Myself,17)
+THEN
+RESPONSE #100
+GiveItemCreate("L#SBSW4",Myself,1,0,0)
+SetGlobal("L#SMITH","LOCALS",4)
+END
+
+IF
+Global("L#SMITH","LOCALS",3)
+LevelGT(Myself,16)
+LevelLT(Myself,23)
+THEN
+RESPONSE #100
+GiveItemCreate("L#SBSW5",Myself,1,0,0)
+SetGlobal("L#SMITH","LOCALS",4)
+END
+
+IF
+Global("L#SMITH","LOCALS",3)
+LevelGT(Myself,22)
+THEN
+RESPONSE #100
+GiveItemCreate("L#SBSW6",Myself,1,0,0)
+SetGlobal("L#SMITH","LOCALS",4)
+END
+
+IF
+Global("L#SMITH","LOCALS",4)
+PartyRested()
+THEN
+RESPONSE #100
+ApplySpellRES("L#DE",Myself)
+SetGlobal("L#SMITH","LOCALS",5)
+END
+
+
+////////////////////////////////
+//////////JOINED PARTY//////////
+////////////////////////////////
+
+IF
+InParty(Myself)
+Global("L#FouJoined","LOCALS",0)
+THEN
+RESPONSE #100
+SetGlobal("L#FouJoined","LOCALS",1)
+END
+
+
+
+////////////////////////////////
+//////////CLOACK TALKS//////////
+////////////////////////////////
+
+IF
+  TimeOfDay(DAY)
+  AreaType(DAYNIGHT)
+  AreaType(OUTDOOR)
+  !AreaType(DUNGEON)
+  Global("L#fouDAY","LOCALS",0)
+  LevelLT(Myself,14)
+THEN
+  RESPONSE #100
+    SetGlobal("L#fouDAY","LOCALS",1)
+    ApplySpellRES("L#DAY",Myself)
+END
+
+IF
+  Global("L#fouDAY","LOCALS",1)
+  OR(3)
+    !AreaType(OUTDOOR)
+    AreaType(DUNGEON)
+    TimeOfDay(NIGHT)
+  LevelLT(Myself,14)
+THEN
+  RESPONSE #100
+    SetGlobal("L#fouDAY","LOCALS",0)
+    ApplySpellRES("L#NIG",Myself)
+END
+
+IF
+  TimeOfDay(DAY)
+  AreaType(DAYNIGHT)
+  AreaType(OUTDOOR)
+  !AreaType(DUNGEON)
+  Global("L#fouDAY2","LOCALS",0)
+  LevelGT(Myself,13)
+  LevelLT(Myself,21)
+THEN
+  RESPONSE #100
+    SetGlobal("L#fouDAY2","LOCALS",1)
+    ApplySpellRES("L#DAY2",Myself)
+END
+
+IF
+  TimeOfDay(DAY)
+  AreaType(DAYNIGHT)
+  AreaType(OUTDOOR)
+  !AreaType(DUNGEON)
+  Global("L#fouDAY3","LOCALS",0)
+  LevelGT(Myself,20)
+THEN
+  RESPONSE #100
+    SetGlobal("L#fouDAY3","LOCALS",1)
+    ApplySpellRES("L#DAY3",Myself)
+END
+
+////////////////////////////////
+///////////MAIN TALKS///////////
+////////////////////////////////
+
+
+//Pre-ShadowDragon
+
+IF
+See([PC])
+Global("L#FouPlot","GLOBAL",0)
+THEN
+RESPONSE #100
+StartDialogueNoSet(Player1)
+END
+
+//figurine
+
+IF
+InParty(Myself)
+CombatCounter(0)
+PartyHasItem("l#sha1i")
+Global("L#FouPlot","GLOBAL",4)
+THEN
+RESPONSE #100
+StartDialogue("L#FouJ",Player1)
+END
+
+//optional pre-Gloria
+
+IF
+InParty(Myself)
+CombatCounter(0)
+!AreaCheck("AR0702")
+Global("L#FouPlot","GLOBAL",6)
+Global("L#fouGloriatalk","GLOBAL",0)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("L#FouGloriaExtraTalk","LOCALS",30)
+SetGlobal("L#fouGloriatalk","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+!AreaCheck("AR0702")
+Global("L#FouPlot","GLOBAL",6)
+Global("L#fouGloriatalk","GLOBAL",1)
+RealGlobalTimerExpired("L#FouGloriaExtraTalk","LOCALS")
+THEN
+RESPONSE #100
+SetGlobal("L#fouGloriatalk","GLOBAL",2)
+END
+
+IF
+Global("L#fouGloriatalk","GLOBAL",2)
+THEN
+RESPONSE #100
+StartDialogue("L#FouJ",Player1)
+END
+
+//new area 1 talk
+
+IF
+InParty(Myself)
+CombatCounter(0)
+AreaCheck("L#FOU0")
+Global("L#FouPlot","GLOBAL",11)
+THEN
+RESPONSE #100
+StartDialogue("L#FouJ",Player1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+AreaCheck("L#FOU1")
+Global("L#FouPlotNEW","LOCALS",0)
+THEN
+RESPONSE #100
+StartDialogue("L#FouJ",Player1)
+END
+
+//HasTheSword
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+AreaCheck("L#FOU1")
+PartyHasItem("L#FSW")
+Global("L#FouPlot","GLOBAL",16)
+THEN
+RESPONSE #100
+SetGlobal("L#FouPlot","GLOBAL",17)
+END
+
+IF
+Global("L#FouPlot","GLOBAL",17)
+THEN
+RESPONSE #100
+StartDialogue("L#FouJ",Player1)
+END
+
+//ritual begins
+
+IF
+See(Player1)
+InParty(Myself)
+CombatCounter(0)
+Global("L#FouPlot","GLOBAL",18)
+AreaCheck("AR1402")
+THEN
+RESPONSE #100
+SetGlobal("L#FouPlot","GLOBAL",19)
+END
+
+IF
+Global("L#FouPlot","GLOBAL",19)
+THEN
+RESPONSE #100
+StartDialogue("L#FouJ",Player1)
+END
+
+//CUT-SCENE - RITUAL
+
+IF
+Global("L#FouPlot","GLOBAL",21)
+THEN
+RESPONSE #100
+SetGlobal("L#FouPlot","GLOBAL",22)
+StartCutScene("L#FCUT1")
+END
+
+
+//WAKE UP
+
+IF
+Global("L#FouPlot","GLOBAL",27)
+THEN
+RESPONSE #100
+SetGlobal("L#FouPlot","GLOBAL",28)
+ActionOverride("L#FOU",Polymorph(FIGHTER_MALE_HUMAN))
+END
+
+IF
+Global("L#FouPlot","GLOBAL",28)
+THEN
+RESPONSE #100
+StartDialogue("L#FouP",Player1)
+END
+
+////////////////////////////////
+//////////OTHER TALKS///////////
+////////////////////////////////
+
+//adalon
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaCheck("AR2102")
+Global("PlayerLooksLikeDrow","GLOBAL",1)
+Global("L#FouAda","GLOBAL",0)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//colours
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+Global("L#FouColours","GLOBAL",0)
+OR(16)
+AreaCheck("AR0522")
+AreaCheck("AR0509")
+AreaCheck("AR0704")
+AreaCheck("AR0709")
+AreaCheck("AR0901")
+AreaCheck("AR0902")
+AreaCheck("AR0903")
+AreaCheck("AR1604")
+AreaCheck("AR2008")
+AreaCheck("AR2801")
+AreaCheck("AR2802")
+AreaCheck("AR2803")
+AreaCheck("AR2808")
+AreaCheck("AR2810")
+AreaCheck("AR2812")
+AreaCheck("AR1008")
+THEN
+RESPONSE #100
+SetGlobal("L#FouColours","GLOBAL",1)
+END
+
+IF
+Global("L#FouColours","GLOBAL",1)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//TOTDG: BLACK
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+PartyHasItem("DGIBLAC")
+Global("L#FouTOTDGB","GLOBAL",0)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+
+
+//sun
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaType(OUTDOOR)
+!AreaCheck("AR1404")
+OR(2)
+ TimeOfDay(DAY)
+ TimeOfDay(MORNING)
+Global("L#FouSunTalk","GLOBAL",0)
+GlobalLT("L#FouPlot","GLOBAL",28)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("L#FouSunTalkTime","GLOBAL",8)
+SetGlobal("L#FouSunTalk","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaType(OUTDOOR)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+!StateCheck("L#FOU",CD_STATE_NOTVALID)
+GlobalLT("L#FouPlot","GLOBAL",28)
+OR(2)
+ TimeOfDay(DAY)
+ TimeOfDay(MORNING)
+Global("L#FouSunTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#FouSunTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#FouSunTalk","GLOBAL",2)
+END
+
+IF
+InParty(Myself)
+GlobalGT("L#FouPlot","GLOBAL",27)
+OR(2)
+Global("L#FouSunTalk","GLOBAL",1)
+Global("L#FouSunTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("L#FouSunTalk","GLOBAL",3)
+END
+
+
+IF
+Global("L#FouSunTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//Irenicus
+
+IF
+Global("L#FouMagicTalk","GLOBAL",3)
+Global("L#FouPlot","GLOBAL",30)
+Global("L#FouIrenicusTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("L#FouIrenicusTalkTime","GLOBAL",2500)
+SetGlobal("L#FouIrenicusTalk","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaType(OUTDOOR)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+!StateCheck("L#FOU",CD_STATE_NOTVALID)
+Global("L#FouIrenicusTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#FouIrenicusTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#FouIrenicusTalk","GLOBAL",2)
+END
+
+IF
+Global("L#FouIrenicusTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//Magic
+
+IF
+Global("L#FouSunTalk","GLOBAL",3)
+Global("L#FouMagicTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("L#FouMagicTalkTime","GLOBAL",600)
+SetGlobal("L#FouMagicTalk","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaType(OUTDOOR)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+!StateCheck("L#FOU",CD_STATE_NOTVALID)
+Global("L#FouMagicTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#FouMagicTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#FouMagicTalk","GLOBAL",2)
+END
+
+IF
+Global("L#FouMagicTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//parents
+
+IF
+Global("L#FouIrenicusTalk","GLOBAL",3)
+Global("L#FouPlot","GLOBAL",30)
+Global("L#FouParentsTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("L#FouParentsTalkTime","GLOBAL",2500)
+SetGlobal("L#FouParentsTalk","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaType(OUTDOOR)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+!StateCheck("L#FOU",CD_STATE_NOTVALID)
+Global("L#FouParentsTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#FouParentsTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#FouParentsTalk","GLOBAL",2)
+END
+
+IF
+Global("L#FouParentsTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//excitement
+
+IF
+Global("L#FouParentsTalk","GLOBAL",3)
+Global("L#FouPlot","GLOBAL",30)
+Global("L#FouExcTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("L#FouExcTalkTime","GLOBAL",2500)
+SetGlobal("L#FouExcTalk","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaType(OUTDOOR)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+!StateCheck("L#FOU",CD_STATE_NOTVALID)
+Global("L#FouExcTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#FouExcTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#FouExcTalk","GLOBAL",2)
+END
+
+IF
+Global("L#FouExcTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//life
+
+IF
+Global("L#FouExcTalk","GLOBAL",3)
+Global("L#FouPlot","GLOBAL",30)
+Global("L#FouLifeTalk","GLOBAL",0)
+GlobalLT("CHAPTER","GLOBAL",%bg2_chapter_4%)
+THEN
+RESPONSE #100
+RealSetGlobalTimer("L#FouLifeTalkTime","GLOBAL",2500)
+SetGlobal("L#FouLifeTalk","GLOBAL",1)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaType(OUTDOOR)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+!StateCheck("L#FOU",CD_STATE_NOTVALID)
+Global("L#FouLifeTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#FouLifeTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#FouLifeTalk","GLOBAL",2)
+END
+
+IF
+Global("L#FouLifeTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//Underdark
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaCheck("AR2100")
+Global("L#UnderdarkTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("L#UnderdarkTalk","GLOBAL",1)
+RealSetGlobalTimer("L#UnderdarkTalkTime","GLOBAL",15)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaCheck("AR2100")
+Global("L#UnderdarkTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#UnderdarkTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#UnderdarkTalk","GLOBAL",2)
+END
+
+IF
+Global("L#UnderdarkTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+//elves
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaCheck("AR2800")
+Global("L#ElvenTalk","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("L#ElvenTalk","GLOBAL",1)
+RealSetGlobalTimer("L#ElvenTalkTime","GLOBAL",15)
+END
+
+IF
+InParty(Myself)
+CombatCounter(0)
+See(Player1)
+AreaCheck("AR2800")
+Global("L#ElvenTalk","GLOBAL",1)
+RealGlobalTimerExpired("L#ElvenTalkTime","GLOBAL")
+THEN
+RESPONSE #100
+SetGlobal("L#ElvenTalk","GLOBAL",2)
+END
+
+IF
+Global("L#ElvenTalk","GLOBAL",2)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END
+
+////////Drunk Talk
+
+IF
+Global("L#FouDrunkTalk","GLOBAL",0)
+InParty(Myself)
+CheckStatGT("L#FOU",30,INTOXICATION)
+OR(11)
+AreaCheck("AR0509")
+AreaCheck("AR0021")
+AreaCheck("AR0406")
+AreaCheck("AR0313")
+AreaCheck("AR0704")
+AreaCheck("AR0709")
+AreaCheck("AR0513")
+AreaCheck("AR1602")
+AreaCheck("AR1105")
+AreaCheck("AR2010")
+AreaCheck("AR2202")
+See(Player1)
+CombatCounter(0)
+!See([ENEMY])
+THEN
+RESPONSE #100
+SetGlobal("L#FouDrunkTalk","GLOBAL",1)
+END
+
+IF
+Global("L#FouDrunkTalk","GLOBAL",1)
+THEN
+RESPONSE #100
+MoveToObject(Player1)
+PlaySong(0)
+PlaySound("L#FOU")
+StartDialogue("L#FouJ",Player1)
+END

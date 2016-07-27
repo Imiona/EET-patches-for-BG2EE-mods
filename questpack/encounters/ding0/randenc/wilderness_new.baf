@@ -1,0 +1,693 @@
+/* IF
+OnCreation()
+OR(2)
+  Difficulty(EASIEST)
+  Difficulty(EASY)
+GlobalGT("chapter","GLOBAL",%bg2_chapter_2%)
+OR(2)
+  RandomNum(5,1)
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+Global("D0Syth","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Syth","GLOBAL",1)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player2,0,0,0)
+    Wait(6)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player6,0,0,0)
+    Wait(6)
+    CreateCreatureObjectOffScreen("D0QPSY07",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY09",Player5,0,0,0)
+END
+
+IF
+  OnCreation()
+  Difficulty(NORMAL)
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_2%)
+  OR(2)
+    RandomNum(5,1)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  Global("D0Syth","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Syth","GLOBAL",1)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    Wait(6)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY07",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY09",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY10",Player1,0,0,0)
+END
+
+IF
+  OnCreation()
+  Difficulty(HARD)
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_2%)
+  OR(2)
+    RandomNum(5,1)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  Global("D0Syth","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Syth","GLOBAL",1)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    Wait(3)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY07",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY09",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY10",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY10",Player6,0,0,0)
+END
+
+IF
+  OnCreation()
+  Difficulty(HARDEST)
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_2%)
+  OR(2)
+    RandomNum(5,1)
+    GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  Global("D0Syth","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Syth","GLOBAL",1)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY02",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY03",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY05",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY06",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY07",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY08",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY09",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY10",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY10",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("D0QPSY10",Player5,0,0,0)
+END */
+
+
+IF
+  OnCreation()
+  OR(4)
+    PartyHasItem("blun14")
+    PartyHasItem("blun30")
+    PartyHasItem("blun30c")
+    PartyHasItem("blun30d")
+  Global("D0RandEncFlailHunt","GLOBAL",0)
+  LevelGT(Player1,13)
+  RandomNum(2,1)
+THEN
+  RESPONSE #100
+    SetGlobal("D0RandEncFlailHunt","GLOBAL",1)
+    CreateCreatureDoor("RAKSHA01",[488.558],10)
+    CreateCreatureDoor("RAKSHA01",[552.476],10)
+    CreateCreatureDoor("RAKSHA01",[525.591],10)
+END
+
+IF
+  OnCreation()
+  ReputationLT(Player1,3)
+  LevelGT(Player1,15)
+  RandomNumGT(12,9)
+THEN
+  RESPONSE #100
+    CreateCreature("D0BOHUN2",[488.558],10)
+    CreateCreature("D0BOHUN2",[500.454],10)
+    CreateCreature("D0BOHUN1",[427.548],10)
+    CreateCreature("D0BOHUN2",[552.476],10)
+    CreateCreature("D0BOHUN1",[427.548],10)
+    CreateCreature("D0BOHUN2",[525.591],10)
+  RESPONSE #100
+    CreateCreature("D0BOHUN2",[488.558],10)
+    CreateCreature("D0BOHUN2",[500.454],10)
+    CreateCreature("D0BOHUN2",[552.476],10)
+    CreateCreature("D0BOHUN2",[427.548],10)
+END
+
+IF
+  OnCreation()
+  ReputationLT(Player1,3)
+  LevelGT(Player1,10)
+  !LevelGT(Player1,15)
+  RandomNumGT(12,9)
+THEN
+  RESPONSE #100
+    CreateCreature("D0BOHUN2",[488.558],10)
+    CreateCreature("D0BOHUN1",[500.454],10)
+    CreateCreature("D0BOHUN2",[552.476],10)
+    CreateCreature("D0BOHUN1",[427.548],10)
+    CreateCreature("D0BOHUN2",[525.591],10)
+END
+
+IF
+  OnCreation()
+  ReputationLT(Player1,3)
+  !LevelGT(Player1,10)
+  RandomNumGT(12,9)
+THEN
+  RESPONSE #100
+    CreateCreature("D0BOHUN1",[488.558],10)
+    CreateCreature("D0BOHUN2",[500.454],10)
+    CreateCreature("D0BOHUN2",[552.476],10)
+    CreateCreature("D0BOHUN2",[427.548],10)
+END
+
+IF
+  OnCreation()
+  RandomNum(3,1)
+THEN
+  RESPONSE #100
+    CreateCreature("OGRE01",[488.558],10)
+    CreateCreature("OGRE01",[500.454],10)
+    CreateCreature("OGRE01",[500.474],10)
+    CreateCreature("OGRE01",[552.476],10)
+    CreateCreature("OGRE01",[427.548],10)
+    CreateCreature("OGRE01",[427.508],10)
+  RESPONSE #100
+    CreateCreature("d0ogrema",[488.558],10)
+    CreateCreature("d0ogrema",[500.454],10)
+    CreateCreature("OGRE01",[552.476],10)
+    CreateCreature("OGRE01",[427.548],10)
+    CreateCreature("OGRE01",[427.508],10)
+  RESPONSE #100
+    CreateCreature("d0ogrema",[488.558],10)
+    CreateCreature("d0ogrema",[500.454],10)
+    CreateCreature("d0ogrema",[552.476],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(5,3)
+THEN
+  RESPONSE #100
+    CreateCreature("WOLF01",[488.558],10)
+    CreateCreature("WOLF01",[500.454],10)
+    CreateCreature("WOLF01",[500.454],10)
+    CreateCreature("WOLF01",[500.474],10)
+    CreateCreature("WOLFDI01",[552.476],10)
+    CreateCreature("WOLF01",[552.476],10)
+    CreateCreature("WOLF01",[427.548],10)
+    CreateCreature("WOLFDI01",[427.508],10)
+    CreateCreature("WOLF01",[525.591],10)
+    CreateCreature("WOLF01",[525.591],10)
+    CreateCreature("WOLF01",[525.591],10)
+  RESPONSE #200
+    CreateCreature("WOLF01",[488.558],10)
+    CreateCreature("WOLF01",[500.454],10)
+    CreateCreature("WOLFWE01",[500.454],10)
+    CreateCreature("WOLFWE01",[500.474],10)
+    CreateCreature("WOLFDI01",[552.476],10)
+    CreateCreature("WOLFDI01",[427.508],10)
+    CreateCreature("WOLFWE01",[525.591],10)
+    CreateCreature("WOLF01",[525.591],10)
+    CreateCreature("WOLF01",[525.591],10)
+  RESPONSE #200
+    CreateCreature("WOLFGR01",[488.558],10)
+    CreateCreature("WOLFWE01",[500.454],10)
+    CreateCreature("WOLFWE01",[500.474],10)
+    CreateCreature("WOLFDI01",[552.476],10)
+    CreateCreature("WOLFDI01",[427.508],10)
+    CreateCreature("WOLFWE01",[525.591],10)
+    CreateCreature("WOLFGR01",[525.591],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(8,6)
+  OR(2)
+    LevelGT(Player1,13)
+    DifficultyGT(HARD)
+  DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    CreateCreature("ANKHEG01",[488.558],10)
+    CreateCreature("ANKHEG01",[500.454],10)
+    CreateCreature("ANKHEG01",[552.476],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(8,6)
+  LevelGT(Player1,11)
+  OR(2)
+    !DifficultyGT(NORMAL)
+    LevelGT(Player1,13)
+THEN
+  RESPONSE #100
+    CreateCreature("ANKHEG01",[488.558],10)
+    CreateCreature("ANKHEG01",[500.454],10)
+  RESPONSE #100
+    CreateCreature("ANKHEG01",[488.558],10)
+    CreateCreature("ANKHEG01",[500.454],10)
+    CreateCreature("ANKHEG01",[552.476],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(6,4)
+  !DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    CreateCreature("TROLL01",[488.558],10)
+    CreateCreature("TROLL01",[500.474],10)
+    CreateCreature("TROLGI01",[552.476],10)
+    CreateCreature("TROLL01",[427.548],10)
+    CreateCreature("TROLGI01",[525.591],10)
+  RESPONSE #250
+    CreateCreature("ICYUAN01",[488.558],10)
+    CreateCreature("ICYUAN02",[500.454],10)
+    CreateCreature("ICYUAN03",[552.476],10)
+    CreateCreature("ICYUAN02",[427.548],10)
+    CreateCreature("ICYUAN01",[525.591],10)
+  RESPONSE #500
+    CreateCreature("TROLGI01",[488.558],10)
+    CreateCreature("TROLGI01",[500.454],10)
+    CreateCreature("TROLGI01",[552.476],10)
+    CreateCreature("TROLGI01",[427.548],10)
+    CreateCreature("TROLSI01",[427.508],10)
+    CreateCreature("TROLGI01",[525.591],10)
+END
+
+IF
+  OnCreation()
+  RandomNumGT(6,4)
+  DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    CreateCreature("TROLL01",[488.558],10)
+    CreateCreature("TROLGI01",[500.454],10)
+    CreateCreature("TROLL01",[500.474],10)
+    CreateCreature("TROLGI01",[552.476],10)
+    CreateCreature("TROLL01",[427.548],10)
+    CreateCreature("TROLGI01",[427.508],10)
+    CreateCreature("TROLGI01",[525.591],10)
+  RESPONSE #250
+    CreateCreature("ICYUAN01",[488.558],10)
+    CreateCreature("ICYUAN02",[500.454],10)
+    CreateCreature("ICYUAN03",[552.476],10)
+    CreateCreature("ICYUAN02",[427.548],10)
+    CreateCreature("ICYUAN01",[525.591],10)
+  RESPONSE #500
+    CreateCreature("TROLGI01",[488.558],10)
+    CreateCreature("TROLGI01",[500.454],10)
+    CreateCreature("TROLGI01",[500.474],10)
+    CreateCreature("TROLGI01",[552.476],10)
+    CreateCreature("TROLGI01",[427.548],10)
+    CreateCreature("TROLSI01",[427.508],10)
+    CreateCreature("TROLGI01",[525.591],10)
+END
+
+IF
+  OnCreation()
+  RandomNum(7,1)
+THEN
+  RESPONSE #200
+    CreateCreature("ORC01",[488.558],10) // Bandit
+    CreateCreature("ORC01",[488.558],10) // Bandit
+    CreateCreature("ORC01",[500.454],10) // Bandit
+    CreateCreature("ORC03",[552.476],10) // Bandit
+    CreateCreature("ORC01",[552.476],10) // Bandit
+    CreateCreature("ORC04",[427.548],10) // Bandit
+    CreateCreature("ORC01",[525.591],10) // Bandit
+  RESPONSE #300
+    CreateCreature("ORC01",[488.558],10) // Bandit
+    CreateCreature("ORC01",[500.454],10) // Bandit
+    CreateCreature("ORC01",[500.454],10) // Bandit
+    CreateCreature("ORC01",[552.476],10) // Bandit
+    CreateCreature("ORC02",[552.476],10) // Bandit
+    CreateCreature("ORC02",[427.548],10) // Bandit
+    CreateCreature("ORC02",[427.548],10) // Bandit
+    CreateCreature("ORC02",[525.591],10) // Bandit
+  RESPONSE #500
+    CreateCreature("ORC01",[488.558],10) // Bandit
+    CreateCreature("ORC01",[500.454],10) // Bandit
+    CreateCreature("ORC04",[500.454],10) // Bandit
+    CreateCreature("ORC03",[500.454],10) // Bandit
+    CreateCreature("ORC04",[552.476],10) // Bandit
+    CreateCreature("ORC01",[427.548],10) // Bandit
+    CreateCreature("ORC02",[427.548],10) // Bandit
+    CreateCreature("ORC01",[525.591],10) // Bandit
+    CreateCreature("ORC02",[525.591],10) // Bandit
+END
+
+IF
+  OnCreation()
+  RandomNum(7,2)
+THEN
+  RESPONSE #200
+    CreateCreature("HOBCAP01",[488.558],10) // Bandit
+    CreateCreature("HOBELI01",[488.558],10) // Bandit
+    CreateCreature("HOBELI01",[500.454],10) // Bandit
+    CreateCreature("HOBELI01",[552.476],10) // Bandit
+    CreateCreature("HOBELI01",[552.476],10) // Bandit
+    CreateCreature("HOBELI01",[427.548],10) // Bandit
+    CreateCreature("HOBELI01",[525.591],10) // Bandit
+  RESPONSE #300
+    CreateCreature("HOBARC01",[488.558],10) // Bandit
+    CreateCreature("HOBARC01",[500.454],10) // Bandit
+    CreateCreature("HOBARC01",[500.454],10) // Bandit
+    CreateCreature("HOBCAP01",[552.476],10) // Bandit
+    CreateCreature("HOBARC02",[552.476],10) // Bandit
+    CreateCreature("HOBARC02",[427.548],10) // Bandit
+    CreateCreature("HOBELI01",[427.548],10) // Bandit
+    CreateCreature("HOBELI01",[525.591],10) // Bandit
+  RESPONSE #500
+    CreateCreature("HOBWAR01",[488.558],10) // Bandit
+    CreateCreature("HOBWAR01",[500.454],10) // Bandit
+    CreateCreature("HOBWAR01",[500.454],10) // Bandit
+    CreateCreature("HOBCAP01",[500.454],10) // Bandit
+    CreateCreature("HOBSHA01",[552.476],10) // Bandit
+    CreateCreature("HOBWIZ01",[427.548],10) // Bandit
+    CreateCreature("HOBWAR01",[427.548],10) // Bandit
+    CreateCreature("HOBWAR01",[525.591],10) // Bandit
+    CreateCreature("HOBWAR01",[525.591],10) // Bandit
+END
+
+IF
+  OnCreation()
+  RandomNum(7,3)
+THEN
+  RESPONSE #300
+    CreateCreature("ICGOB01",[488.558],10) // Bandit
+    CreateCreature("ICGOB02",[500.454],10) // Bandit
+    CreateCreature("ICGOB03",[500.454],10) // Bandit
+    CreateCreature("ICGOB01",[552.476],10) // Bandit
+    CreateCreature("ICGOB02",[552.476],10) // Bandit
+    CreateCreature("ICGOB03",[427.548],10) // Bandit
+    CreateCreature("ICGOB01",[427.548],10) // Bandit
+    CreateCreature("ICGOB04",[525.591],10) // Bandit
+  RESPONSE #500
+    CreateCreature("ELEHOB01",[488.558],10) // Bandit
+    CreateCreature("ELEHOB01",[500.454],10) // Bandit
+    CreateCreature("ELEHOB01",[500.454],10) // Bandit
+    CreateCreature("ELEHOB01",[500.454],10) // Bandit
+    CreateCreature("ELEHOB01",[552.476],10) // Bandit
+    CreateCreature("ELEHOB01",[427.548],10) // Bandit
+    CreateCreature("ELEHOB01",[427.548],10) // Bandit
+    CreateCreature("ELEHOB01",[525.591],10) // Bandit
+    CreateCreature("ELEHOB01",[525.591],10) // Bandit
+END
+
+IF
+  OnCreation()
+  RandomNum(7,4)
+THEN
+  RESPONSE #300
+    CreateCreature("KOBCAP01",[488.558],10) // Bandit
+    CreateCreature("KOBCOM01",[500.454],10) // Bandit
+    CreateCreature("KOBCOM01",[500.454],10) // Bandit
+    CreateCreature("KOBCOM01",[552.476],10) // Bandit
+    CreateCreature("KOBCOM01",[552.476],10) // Bandit
+    CreateCreature("KOBCOM01",[427.548],10) // Bandit
+    CreateCreature("KOBCOM01",[427.548],10) // Bandit
+    CreateCreature("KOBCOM01",[525.591],10) // Bandit
+  RESPONSE #500
+    CreateCreature("KOBWIT01",[488.558],10) // Bandit
+    CreateCreature("KOBCOM01",[500.454],10) // Bandit
+    CreateCreature("KOBWAR01",[500.454],10) // Bandit
+    CreateCreature("KOBCOM01",[500.454],10) // Bandit
+    CreateCreature("KOBCOM01",[552.476],10) // Bandit
+    CreateCreature("KOBWAR01",[427.548],10) // Bandit
+    CreateCreature("KOBCOM01",[427.548],10) // Bandit
+    CreateCreature("KOBWAR01",[525.591],10) // Bandit
+    CreateCreature("KOBCOM01",[525.591],10) // Bandit
+END
+
+IF
+  OnCreation()
+  RandomNum(7,5)
+THEN
+  RESPONSE #300
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    SetGlobal("Waves","MYAREA",0)
+    CreateCreature("GIBBER01",[488.558],10) // Bandit
+    CreateCreature("GIBBER01",[500.454],10) // Bandit
+    CreateCreature("GIBBER01",[500.454],10) // Bandit
+    CreateCreature("GIBBER01",[552.476],10) // Bandit
+    CreateCreature("GIBBER01",[552.476],10) // Bandit
+    CreateCreature("GIBBER01",[427.548],10) // Bandit
+    CreateCreature("GIBBER01",[427.548],10) // Bandit
+    CreateCreature("GIBBER01",[525.591],10) // Bandit
+  RESPONSE #500
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    SetGlobal("Waves","MYAREA",0)
+    CreateCreature("GIBBER01",[488.558],10) // Bandit
+    CreateCreature("GIBBER01",[500.454],10) // Bandit
+    CreateCreature("GIBBER01",[500.454],10) // Bandit
+    CreateCreature("GIBBER01",[500.454],10) // Bandit
+    CreateCreature("GIBBER01",[552.476],10) // Bandit
+    CreateCreature("GIBBER01",[427.548],10) // Bandit
+    CreateCreature("GIBBER01",[427.548],10) // Bandit
+    CreateCreature("GIBBER01",[525.591],10) // Bandit
+    CreateCreature("GIBBER01",[525.591],10) // Bandit
+END
+
+IF
+  OnCreation()
+  RandomNum(7,6)
+THEN
+  RESPONSE #200
+    CreateCreature("GNLVET01",[488.558],10) // Bandit
+    CreateCreature("GNLVET01",[488.558],10) // Bandit
+    CreateCreature("GNOLL01",[500.454],10) // Bandit
+    CreateCreature("GNOLL01",[552.476],10) // Bandit
+    CreateCreature("GNOLL01",[552.476],10) // Bandit
+    CreateCreature("GNLVET01",[427.548],10) // Bandit
+    CreateCreature("GNOLL01",[525.591],10) // Bandit
+  RESPONSE #300
+    CreateCreature("GNLSLA01",[488.558],10) // Bandit
+    CreateCreature("GNLSLA01",[500.454],10) // Bandit
+    CreateCreature("GNLSLA01",[500.454],10) // Bandit
+    CreateCreature("GNLCAP01",[552.476],10) // Bandit
+    CreateCreature("GNLSLA01",[552.476],10) // Bandit
+    CreateCreature("GNLSLA01",[427.548],10) // Bandit
+    CreateCreature("GNLSLA01",[427.548],10) // Bandit
+    CreateCreature("GNLSLA01",[525.591],10) // Bandit
+  RESPONSE #300
+    CreateCreature("GNLFLI01",[488.558],10) // Bandit
+    CreateCreature("GNLFLI01",[500.454],10) // Bandit
+    CreateCreature("GNLFLI01",[500.454],10) // Bandit
+    CreateCreature("GNLFLI01",[552.476],10) // Bandit
+    CreateCreature("GNLFLI01",[552.476],10) // Bandit
+    CreateCreature("GNLFLI01",[427.548],10) // Bandit
+    CreateCreature("GNLFLI01",[427.548],10) // Bandit
+    CreateCreature("GNLFLI01",[525.591],10) // Bandit
+  RESPONSE #500
+    CreateCreature("GNOLL01",[488.558],10) // Bandit
+    CreateCreature("GNOLL01",[500.454],10) // Bandit
+    CreateCreature("GNOLL01",[500.454],10) // Bandit
+    CreateCreature("GNOLL01",[500.454],10) // Bandit
+    CreateCreature("GNOLL01",[552.476],10) // Bandit
+    CreateCreature("GNOLL01",[427.548],10) // Bandit
+    CreateCreature("GNOLL01",[427.548],10) // Bandit
+    CreateCreature("GNOLL01",[525.591],10) // Bandit
+    CreateCreature("GNOLL01",[525.591],10) // Bandit
+END
+
+IF
+  OnCreation()
+THEN
+  RESPONSE #100
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+  RESPONSE #200
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND03",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND05",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+  RESPONSE #300
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND05",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND05",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND01",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+  RESPONSE #500
+    CreateCreature("REBAND01",[488.558],10) // Bandit
+    CreateCreature("REBAND02",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[500.454],10) // Bandit
+    CreateCreature("REBAND01",[500.454],10) // Bandit
+    CreateCreature("REBAND03",[552.476],10) // Bandit
+    CreateCreature("REBAND04",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[427.548],10) // Bandit
+    CreateCreature("REBAND05",[525.591],10) // Bandit
+    CreateCreature("REBAND04",[525.591],10) // Bandit
+END
+
+IF
+  GlobalTimerExpired("GibberlingReinforce","MYAREA")
+  GlobalLT("Waves","MYAREA",3)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    IncrementGlobal("Waves","MYAREA",1)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+  RESPONSE #250
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    IncrementGlobal("Waves","MYAREA",1)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+  RESPONSE #500
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    IncrementGlobal("Waves","MYAREA",2)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+  RESPONSE #100
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    IncrementGlobal("Waves","MYAREA",2)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+  RESPONSE #250
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    IncrementGlobal("Waves","MYAREA",2)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+  RESPONSE #500
+    SetGlobalTimer("GibberlingReinforce","MYAREA",6)
+    IncrementGlobal("Waves","MYAREA",3)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player1,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player2,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player3,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player4,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player5,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+    CreateCreatureObjectOffScreen("GIBBER01",Player6,0,0,0)
+END

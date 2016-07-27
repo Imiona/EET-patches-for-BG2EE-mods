@@ -1,0 +1,54 @@
+/////////Yvette Romance Match
+
+IF
+  Global("YvetteMatch","GLOBAL",0)
+  OR(4)
+    Race(Player1,ELF)
+    Race(Player1,HUMAN)
+    Race(Player1,HALF_ELF)
+    Race(Player1,TIEFLING)
+  Gender(Player1,MALE)
+  !Alignment(Player1,MASK_EVIL)
+THEN
+  RESPONSE #100
+  SetGlobal("YvetteMatch","GLOBAL",1)
+  Continue()
+END
+
+//////////Yvette Appears
+
+IF
+Global("YvetteMatch","GLOBAL",1)
+Global("YvetteChange","GLOBAL",1)
+Global("YvetteRomanceActive","GLOBAL",1)
+GlobalLT("CHAPTER","GLOBAL",%bg2_chapter_4%)
+PartyRested()
+THEN
+RESPONSE #100
+DestroyItem("YxDraw")
+SetGlobal("YvetteChange","GLOBAL",2)
+CreateCreatureObjectOffset("YxYve1",Player1,[30.30])
+ActionOverride("YxYve",StartDialogueNoSet(Player1))
+Continue()
+END
+
+////////////Viconia and Yvette
+
+IF
+Global("YvetteViconia","GLOBAL",2)
+THEN
+RESPONSE #100
+SetGlobal("YvetteViconia","GLOBAL",3)
+SetGlobal("YvetteRomanceActive","GLOBAL",3)
+END
+
+/////////////Yvette spellhold
+
+IF
+!InParty("YxYve")
+Global("YvetteSpellhold","GLOBAL",5)
+AreaCheck("AR1512")
+THEN
+RESPONSE #100
+SetGlobal("YvetteSpellhold","GLOBAL",6)
+END

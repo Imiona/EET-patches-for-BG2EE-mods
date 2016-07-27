@@ -1,0 +1,646 @@
+BACKUP ~laviconia/backup~
+AUTHOR ~www.shsforums.net/topic/44027-laviconia-tweak/~
+VERSION ~v4~
+README ~laviconia/laviconia-readme.txt~
+
+AUTO_TRA ~laviconia/translations/%s~
+
+ALWAYS
+  // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+  INCLUDE ~%MOD_FOLDER%/handle_charsets.tpa~
+
+  // No exception, everything needs to be converted
+  ACTION_DEFINE_ARRAY VaVinoconvert BEGIN END
+
+  // Only setup-Innershade.tra needs to be reloaded
+  ACTION_DEFINE_ARRAY VaVireload BEGIN Setup END
+
+  // There is no "language" folder so the root of all languages in %MOD_FOLDER%
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~%MOD_FOLDER%/translations~
+      // charset_table = VaVicharsets // Included for illustrative purposes.
+      noconvert_array = VaVinoconvert
+      reload_array = VaVireload
+  END
+END
+
+
+LANGUAGE ~English~    
+         ~english~ 
+         ~laviconia/translations/english/setup.tra~
+
+LANGUAGE ~Polski~
+         ~polski~
+         ~laviconia/translations/polski/setup.tra~
+		 
+LANGUAGE ~Russian~    
+         ~russian~ 
+         ~laviconia/translations/russian/setup.tra~
+
+/* Base thief skills for an elf with 19 dexterity
+   Assassins get +40 at 1st and +15 points per level thereafter
+   WRITE_BYTEs are additions to these
+   Hide in shadows 30
+   Detect illusion  0
+   Set traps       10
+   Open locks      25
+   Move silently   35
+   Find traps      15
+   Pick pockets    35
+*/
+
+//! Dual-class ////////////////////////////////////////////////////////
+BEGIN @10 //Dual-class (Lava's original option)
+SUBCOMPONENT @1 //LaViconia Tweak
+DESIGNATED 0
+
+OUTER_SET ladual = 1
+INCLUDE ~laviconia/lib/lav-init.tpa~
+
+ACTION_IF GAME_IS ~tutu tutu_totsc bgt eet~ BEGIN
+  COPY_EXISTING ~%tutu_var%viconi.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_BYTE 0x54 13 //Save vs death (was 10)
+    WRITE_BYTE 0x56 12 //Save vs polymorph (was 13)
+    WRITE_BYTE 0x66 6 //Lore (was 2)
+    WRITE_BYTE 0x67 20 //Open locks (actual 45)
+    WRITE_BYTE 0x69 30 //Find traps (actual 45)
+    PATCH_IF (BYTE_AT 0x23b < 17) BEGIN
+      WRITE_BYTE 0x23b 17 //Wisdom (needed to dual to cleric)
+    END
+    REPLACE_CRE_ITEM ~%tutu_var%leat01~ #0 #0 #0 IDENTIFIED ARMOR //Leather
+    REPLACE_CRE_ITEM ~%tutu_var%shld09~ #0 #0 #0 IDENTIFIED SHIELD //Buckler
+    REPLACE_CRE_ITEM ~%tutu_var%blun01~ #0 #0 #0 IDENTIFIED WEAPON1 EQUIP //Club
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ //Poison Weapon
+  BUT_ONLY
+
+  COPY_EXISTING ~%tutu_var%viconi4.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 24 //Current HP (was 18)
+    WRITE_SHORT 0x26 24 //Maximum HP (was 18)
+    WRITE_BYTE 0x45 10 //Hide in shadows (actual 40)
+    WRITE_BYTE 0x52 19 //THAC0 (was 18)
+    WRITE_BYTE 0x54 13 //Save vs death (was 9)
+    WRITE_BYTE 0x55 14 //Save vs wands (was 13)
+    WRITE_BYTE 0x57 16 //Save vs breath (was 15)
+    WRITE_BYTE 0x58 15 //Save vs spells (was 14)
+    WRITE_BYTE 0x66 12 //Lore (was 4)
+    WRITE_BYTE 0x67 30 //Open locks (actual 55)
+    WRITE_BYTE 0x68 5 //Move silently (actual 40)
+    WRITE_BYTE 0x69 40 //Find traps (actual 55)
+    PATCH_IF (BYTE_AT 0x23b < 17) BEGIN
+      WRITE_BYTE 0x23b 17 //Wisdom (needed to dual to cleric)
+    END
+    REPLACE_CRE_ITEM ~%tutu_var%leat04~ #0 #0 #0 IDENTIFIED ARMOR //Studded Leather
+    REPLACE_CRE_ITEM ~%tutu_var%shld09~ #0 #0 #0 IDENTIFIED SHIELD //Buckler
+    REPLACE_CRE_ITEM ~%tutu_var%blun01~ #0 #0 #0 IDENTIFIED WEAPON1 EQUIP //Club
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+  BUT_ONLY
+
+  COPY_EXISTING ~%tutu_var%viconi6%bgt_1%.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 36 //Current HP (was 27)
+    WRITE_SHORT 0x26 36 //Maximum HP (was 27)
+    WRITE_BYTE 0x45 20 //Hide in shadows (actual 50)
+    WRITE_BYTE 0x54 12 //Save vs death (was 9)
+    WRITE_BYTE 0x55 12 //Save vs wands (was 13)
+    WRITE_BYTE 0x56 11 //Save vs polymorph (was 12)
+    WRITE_BYTE 0x58 13 //Save vs spells (was 14)
+    WRITE_BYTE 0x66 18 //Lore (was 6)
+    WRITE_BYTE 0x67 35 //Open locks (actual 60)
+    WRITE_BYTE 0x68 15 //Move silently (actual 50)
+    WRITE_BYTE 0x69 45 //Find traps (actual 60)
+    PATCH_IF (BYTE_AT 0x23b < 17) BEGIN
+      WRITE_BYTE 0x23b 17 //Wisdom (needed to dual to cleric)
+    END
+    REPLACE_CRE_ITEM ~%tutu_var%leat04~ #0 #0 #0 IDENTIFIED ARMOR //Studded Leather
+    REPLACE_CRE_ITEM ~%tutu_var%shld09~ #0 #0 #0 IDENTIFIED SHIELD //Buckler
+    REPLACE_CRE_ITEM ~%tutu_var%blun01~ #0 #0 #0 IDENTIFIED WEAPON1 EQUIP //Club
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (2) //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (2) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+  BUT_ONLY
+END
+
+ACTION_IF GAME_IS ~bg2 tob bg2ee eet~ BEGIN
+  EXTEND_BOTTOM ~ar1000.bcs~ ~laviconia/scripts/ar1000.baf~
+  EXTEND_TOP ~viconia.bcs~ ~laviconia/scripts/viconia.baf~
+
+  COPY_EXISTING ~viconi6.cre~ ~override~
+                ~viconi8.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaDual~
+    WRITE_SHORT 0x24 50 //Current HP (was 42)
+    WRITE_SHORT 0x26 50 //Maximum HP (was 42)
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (3) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ (2) //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+  BUT_ONLY
+
+  COPY_EXISTING ~viconi9.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaDual~
+    WRITE_SHORT 0x24 58 //Current HP (was 48)
+    WRITE_SHORT 0x26 58 //Maximum HP (was 48)
+    PATCH_INCLUDE ~laviconia/lib/spladd5.tpp~ //Add known level 5 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr113~ #0 ~priest~ //Doom
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (4) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr401~ #3 ~priest~ //Cure Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~sppr503~ #4 ~priest~ //Flame Strike
+  BUT_ONLY
+
+  COPY_EXISTING ~viconi11.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaDual~
+    WRITE_SHORT 0x24 62 //Current HP (was 60)
+    WRITE_SHORT 0x26 62 //Maximum HP (was 60)
+    PATCH_INCLUDE ~laviconia/lib/spladd5.tpp~ //Add known level 5 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd6.tpp~ //Add known level 6 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr113~ #0 ~priest~ (2) //Doom
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (4) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    ADD_MEMORIZED_SPELL ~sppr314~ #2 ~priest~ //Unholy Blight
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr401~ #3 ~priest~ //Cure Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ (2) //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~sppr503~ #4 ~priest~ //Flame Strike
+    ADD_MEMORIZED_SPELL ~sppr514~ #4 ~priest~ //Mass Cure
+    ADD_MEMORIZED_SPELL ~sppr608~ #5 ~priest~ //Harm
+  BUT_ONLY
+
+  COPY_EXISTING ~viconi13.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaDual~
+    WRITE_SHORT 0x24 66 //Current HP (was 72)
+    WRITE_SHORT 0x26 66 //Maximum HP (was 72)
+    PATCH_INCLUDE ~laviconia/lib/spladd5.tpp~ //Add known level 5 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd6.tpp~ //Add known level 6 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ (2) //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr113~ #0 ~priest~ (2) //Doom
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (5) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    ADD_MEMORIZED_SPELL ~sppr210~ #1 ~priest~ //Resist Fire and Cold
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    ADD_MEMORIZED_SPELL ~sppr309~ #2 ~priest~ //Invisibility Purge
+    ADD_MEMORIZED_SPELL ~sppr314~ #2 ~priest~ (2) //Unholy Blight
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr401~ #3 ~priest~ (2) //Cure Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ (2) //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~sppr503~ #4 ~priest~ //Flame Strike
+    ADD_MEMORIZED_SPELL ~sppr514~ #4 ~priest~ //Mass Cure
+    ADD_MEMORIZED_SPELL ~sppr607~ #5 ~priest~ //Heal
+    ADD_MEMORIZED_SPELL ~sppr608~ #5 ~priest~ //Harm
+    SET_BG2_PROFICIENCY ~PROFICIENCYDART~ 1
+  BUT_ONLY
+END
+
+ACTION_IF GAME_IS ~tob bg2ee eet~ BEGIN
+  EXTEND_TOP ~vico25.bcs~ ~laviconia\scripts\viconia.baf~
+
+  COPY_EXISTING ~viconi16.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaDual~
+    WRITE_SHORT 0x24 76 //Current HP (was 72)
+    WRITE_SHORT 0x26 76 //Maximum HP (was 72)
+    WRITE_BYTE 0x52 10 //THAC0 (was 12)
+    WRITE_BYTE 0x54 4 //Save vs death (was 5)
+    WRITE_BYTE 0x55 8 //Save vs wands (was 9)
+    WRITE_BYTE 0x56 7 //Save vs polymorph (was 8)
+    WRITE_BYTE 0x57 10 //Save vs breath (was 11)
+    WRITE_BYTE 0x58 9 //Save vs spells (was 10)
+    WRITE_BYTE 0x234 18 //Level 1 (was 13)
+    PATCH_INCLUDE ~laviconia/lib/spladd5.tpp~ //Add known level 5 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd6.tpp~ //Add known level 6 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd7.tpp~ //Add known level 7 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (3) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ (2) //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr113~ #0 ~priest~ (3) //Doom
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (6) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    ADD_MEMORIZED_SPELL ~sppr210~ #1 ~priest~ (2) //Resist Fire and Cold
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (4) //Animate Dead
+    ADD_MEMORIZED_SPELL ~sppr309~ #2 ~priest~ (2) //Invisibility Purge
+    ADD_MEMORIZED_SPELL ~sppr314~ #2 ~priest~ (2) //Unholy Blight
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr401~ #3 ~priest~ (2) //Cure Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr405~ #3 ~priest~ (2) //Mental Domination
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ (2) //Cause Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr417~ #3 ~priest~ (2) //Lesser Restoration
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~sppr503~ #4 ~priest~ (2) //Flame Strike
+    ADD_MEMORIZED_SPELL ~sppr504~ #4 ~priest~ //Raise Dead
+    ADD_MEMORIZED_SPELL ~sppr505~ #4 ~priest~ //True Seeing
+    ADD_MEMORIZED_SPELL ~sppr514~ #4 ~priest~ (2) //Mass Cure
+    ADD_MEMORIZED_SPELL ~sppr603~ #5 ~priest~ //Blade Barrier
+    ADD_MEMORIZED_SPELL ~sppr607~ #5 ~priest~ //Heal
+    ADD_MEMORIZED_SPELL ~sppr608~ #5 ~priest~ //Harm
+    ADD_MEMORIZED_SPELL ~sppr611~ #5 ~priest~ //Wondrous Recall
+    ADD_MEMORIZED_SPELL ~sppr703~ #6 ~priest~ //Gate
+    ADD_MEMORIZED_SPELL ~sppr715~ #6 ~priest~ //Unholy Word
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (2) //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (2) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYDART~ 1
+    SET_BG2_PROFICIENCY ~PROFICIENCYQUARTERSTAFF~ 1
+  BUT_ONLY
+END
+
+//! Multi-class ///////////////////////////////////////////////////////
+BEGIN @11 //Multi-class (Miloch's option)
+SUBCOMPONENT @1 //LaViconia Tweak
+DESIGNATED 10
+
+OUTER_SET ladual = 0
+INCLUDE ~laviconia/lib/lav-init.tpa~
+
+ACTION_IF GAME_IS ~tutu tutu_totsc bgt eet~ BEGIN
+  COPY_EXISTING ~%tutu_var%viconi.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 7 //Current HP (was 12)
+    WRITE_SHORT 0x26 7 //Maximum HP (was 12)
+    WRITE_BYTE 0x56 12 //Save vs polymorph (was 13)
+    WRITE_BYTE 0x66 3 //Lore (was 2)
+    WRITE_BYTE 0x67 15 //Open locks (was 0)
+    WRITE_BYTE 0x69 25 //Find traps (was 0)
+    WRITE_BYTE 0x234 1 //Level 1 (was 2)
+    WRITE_BYTE 0x235 1 //Level 2 (was 0)
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ //Poison Weapon
+  BUT_ONLY
+
+  COPY_EXISTING ~%tutu_var%viconi4.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 21 //Current HP (was 18)
+    WRITE_SHORT 0x26 21 //Maximum HP (was 18)
+    WRITE_BYTE 0x52 19 //THAC0 (was 18)
+    WRITE_BYTE 0x54 10 //Save vs death (was 9)
+    WRITE_BYTE 0x55 14 //Save vs wands (was 13)
+    WRITE_BYTE 0x57 16 //Save vs breath (was 15)
+    WRITE_BYTE 0x58 15 //Save vs spells (was 14)
+    WRITE_BYTE 0x66 9 //Lore (was 4)
+    WRITE_BYTE 0x67 30 //Open locks (was 0)
+    WRITE_BYTE 0x69 40 //Find traps (was 0)
+    WRITE_BYTE 0x234 3 //Level 1 (was 4)
+    WRITE_BYTE 0x235 3 //Level 2 (was 0)
+    PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (2) //Hold Person
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ //Poison Weapon
+  BUT_ONLY
+
+  COPY_EXISTING ~%tutu_var%viconi6%bgt_1%.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 35 //Current HP (was 27)
+    WRITE_SHORT 0x26 35 //Maximum HP (was 27)
+    WRITE_BYTE 0x45 10 //Hide in shadows (was 0)
+    WRITE_BYTE 0x55 12 //Save vs wands (was 13)
+    WRITE_BYTE 0x56 11 //Save vs polymorph (was 12)
+    WRITE_BYTE 0x58 13 //Save vs spells (was 14)
+    WRITE_BYTE 0x64 5 //Detect illusion (was 0)
+    WRITE_BYTE 0x66 15 //Lore (was 6)
+    WRITE_BYTE 0x67 35 //Open locks (was 0)
+    WRITE_BYTE 0x68 5 //Move silently (was 0)
+    WRITE_BYTE 0x69 45 //Find traps (was 0)
+    WRITE_BYTE 0x234 5 //Level 1 (was 6)
+    WRITE_BYTE 0x235 5 //Level 2 (was 0)
+    PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd3.tpp~ //Add known level 3 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (3) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ //Animate Dead
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (2) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+  BUT_ONLY
+END
+
+ACTION_IF GAME_IS ~bg2 tob bg2ee eet~ BEGIN
+  EXTEND_BOTTOM ~ar1000.bcs~ ~laviconia/scripts/ar1000.baf~
+  EXTEND_TOP ~viconia.bcs~ ~laviconia/scripts/viconia.baf~
+
+  COPY_EXISTING ~viconi6.cre~ ~override~
+                ~viconi8.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 52 //Current HP (was 42)
+    WRITE_SHORT 0x26 52 //Maximum HP (was 42)
+    WRITE_BYTE 0x45 30 //Hide in shadows (was 0)
+    WRITE_BYTE 0x64 10 //Detect illusion (was 0)
+    WRITE_BYTE 0x66 24 //Lore (was 6)
+    WRITE_BYTE 0x67 40 //Open locks (was 0)
+    WRITE_BYTE 0x68 15 //Move silently (was 0)
+    WRITE_BYTE 0x69 50 //Find traps (was 0)
+    WRITE_BYTE 0x234 7 //Level 1 (was 8)
+    WRITE_BYTE 0x235 8 //Level 2 (was 0)
+    PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd3.tpp~ //Add known level 3 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd4.tpp~ //Add known level 4 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (3) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (2) //Animate Dead
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (2) //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (2) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+  BUT_ONLY
+
+  COPY_EXISTING ~viconi9.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 62 //Current HP (was 48)
+    WRITE_SHORT 0x26 62 //Maximum HP (was 48)
+    WRITE_BYTE 0x45 35 //Hide in shadows (was 0)
+    WRITE_BYTE 0x55 10 //Save vs. wands
+    WRITE_BYTE 0x58 11 //Save vs. spells
+    WRITE_BYTE 0x64 10 //Detect illusion (was 0)
+    WRITE_BYTE 0x66 30 //Lore (was 6)
+    WRITE_BYTE 0x67 45 //Open locks (was 0)
+    WRITE_BYTE 0x68 30 //Move silently (was 0)
+    WRITE_BYTE 0x69 55 //Find traps (was 0)
+    WRITE_BYTE 0x234 8 //Level 1 (was 9)
+    WRITE_BYTE 0x235 10 //Level 2 (was 0)
+    PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd3.tpp~ //Add known level 3 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd4.tpp~ //Add known level 4 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (3) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ (2) //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (2) //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (3) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+    SET_BG2_PROFICIENCY ~PROFICIENCYFLAILMORNINGSTAR~ 1
+  BUT_ONLY
+
+  COPY_EXISTING ~viconi11.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 67 //Current HP (was 60)
+    WRITE_SHORT 0x26 67 //Maximum HP (was 60)
+    WRITE_BYTE 0x45 35 //Hide in shadows (was 0)
+    WRITE_BYTE 0x52 15 //THAC0 (was 14)
+    WRITE_BYTE 0x54 7 //Save vs. death (was 6)
+    WRITE_BYTE 0x56 10 //Save vs. polymorph (was 9)
+    WRITE_BYTE 0x57 13 //Save vs. breath (was 12)
+    WRITE_BYTE 0x64 10 //Detect illusion (was 0)
+    WRITE_BYTE 0x65 5 //Set traps (was 0)
+    WRITE_BYTE 0x66 33 //Lore (was 6)
+    WRITE_BYTE 0x67 50 //Open locks (was 0)
+    WRITE_BYTE 0x68 30 //Move silently (was 0)
+    WRITE_BYTE 0x69 60 //Find traps (was 0)
+    WRITE_BYTE 0x234 9 //Level 1 (was 11)
+    WRITE_BYTE 0x235 11 //Level 2 (was 0)
+    PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd3.tpp~ //Add known level 3 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd4.tpp~ //Add known level 4 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd5.tpp~ //Add known level 5 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr113~ #0 ~priest~ //Doom
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (4) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr401~ #3 ~priest~ //Cure Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~sppr503~ #4 ~priest~ //Flame Strike
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (3) //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (3) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+    SET_BG2_PROFICIENCY ~PROFICIENCYFLAILMORNINGSTAR~ 1
+  BUT_ONLY
+
+  COPY_EXISTING ~viconi13.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 69 //Current HP (was 72)
+    WRITE_SHORT 0x26 69 //Maximum HP (was 72)
+    WRITE_BYTE 0x45 40 //Hide in shadows (was 0)
+    WRITE_BYTE 0x52 14 //THAC0 (was 12)
+    WRITE_BYTE 0x54 6 //Save vs. death (was 5)
+    WRITE_BYTE 0x55 10 //Save vs. wands (was 9)
+    WRITE_BYTE 0x56 9 //Save vs. polymorph (was 8)
+    WRITE_BYTE 0x57 12 //Save vs. breath (was 11)
+    WRITE_BYTE 0x58 11 //Save vs. spells (was 10)
+    WRITE_BYTE 0x64 10 //Detect illusion (was 0)
+    WRITE_BYTE 0x65 10 //Set traps (was 0)
+    WRITE_BYTE 0x66 36 //Lore (was 6)
+    WRITE_BYTE 0x67 50 //Open locks (was 0)
+    WRITE_BYTE 0x68 35 //Move silently (was 0)
+    WRITE_BYTE 0x69 60 //Find traps (was 0)
+    WRITE_BYTE 0x234 10 //Level 1 (was 13)
+    WRITE_BYTE 0x235 12 //Level 2 (was 0)
+    PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd3.tpp~ //Add known level 3 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd4.tpp~ //Add known level 4 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd5.tpp~ //Add known level 5 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr113~ #0 ~priest~ //Doom
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (4) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr401~ #3 ~priest~ //Cure Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ (2) //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~sppr503~ #4 ~priest~ //Flame Strike
+    ADD_MEMORIZED_SPELL ~sppr514~ #4 ~priest~ //Mass Cure
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (3) //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (3) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+    SET_BG2_PROFICIENCY ~PROFICIENCYFLAILMORNINGSTAR~ 1
+  BUT_ONLY
+END
+
+ACTION_IF GAME_IS ~tob bg2ee eet~ BEGIN
+  EXTEND_TOP ~vico25.bcs~ ~laviconia\scripts\viconia.baf~
+
+  COPY_EXISTING ~viconi16.cre~ ~override~
+    LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+    WRITE_SHORT 0x24 75 //Current HP (was 72)
+    WRITE_SHORT 0x26 75 //Maximum HP (was 72)
+    WRITE_BYTE 0x45 50 //Hide in shadows (was 0)
+    WRITE_BYTE 0x55 8 //Save vs. wands (was 9)
+    WRITE_BYTE 0x58 9 //Save vs. spells (was 10)
+    WRITE_BYTE 0x64 10 //Detect illusion (was 0)
+    WRITE_BYTE 0x65 15 //Set traps (was 0)
+    WRITE_BYTE 0x66 45 //Lore (was 6)
+    WRITE_BYTE 0x67 60 //Open locks (was 0)
+    WRITE_BYTE 0x68 45 //Move silently (was 0)
+    WRITE_BYTE 0x69 70 //Find traps (was 0)
+    WRITE_BYTE 0x234 13 //Level 1 (was 13)
+    WRITE_BYTE 0x235 15 //Level 2 (was 0)
+    PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd3.tpp~ //Add known level 3 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd4.tpp~ //Add known level 4 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd5.tpp~ //Add known level 5 spells
+    PATCH_INCLUDE ~laviconia/lib/spladd6.tpp~ //Add known level 6 spells
+    ADD_MEMORIZED_SPELL ~sppr102~ #0 ~priest~ (2) //Command
+    ADD_MEMORIZED_SPELL ~sppr103~ #0 ~priest~ (2) //CLW
+    ADD_MEMORIZED_SPELL ~sppr108~ #0 ~priest~ (2) //Remove Fear
+    ADD_MEMORIZED_SPELL ~sppr113~ #0 ~priest~ (2) //Doom
+    ADD_MEMORIZED_SPELL ~sppr208~ #1 ~priest~ (5) //Hold Person
+    ADD_MEMORIZED_SPELL ~sppr205~ #1 ~priest~ //Find Traps
+    ADD_MEMORIZED_SPELL ~sppr210~ #1 ~priest~ //Resist Fire and Cold
+    PATCH_IF (BYTE_AT 0x23b > 15) BEGIN
+      ADD_KNOWN_SPELL ~sppr212~ #1 ~priest~ //Slow Poison
+    END
+    ADD_MEMORIZED_SPELL ~sppr301~ #2 ~priest~ (3) //Animate Dead
+    ADD_MEMORIZED_SPELL ~sppr309~ #2 ~priest~ //Invisibility Purge
+    ADD_MEMORIZED_SPELL ~sppr314~ #2 ~priest~ (2) //Unholy Blight
+    PATCH_IF (BYTE_AT 0x23b > 16) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr304~ #2 ~priest~ //Glyph of Warding
+    END
+    ADD_MEMORIZED_SPELL ~sppr401~ #3 ~priest~ (2) //Cure Serious Wounds
+    ADD_MEMORIZED_SPELL ~sppr414~ #3 ~priest~ (2) //Cause Serious Wounds
+    PATCH_IF (BYTE_AT 0x23b > 17) BEGIN
+      ADD_MEMORIZED_SPELL ~sppr403~ #3 ~priest~ //Free Action
+    END
+    ADD_MEMORIZED_SPELL ~sppr503~ #4 ~priest~ //Flame Strike
+    ADD_MEMORIZED_SPELL ~sppr514~ #4 ~priest~ //Mass Cure
+    ADD_MEMORIZED_SPELL ~sppr607~ #5 ~priest~ //Heal
+    ADD_MEMORIZED_SPELL ~sppr608~ #5 ~priest~ //Harm
+    ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (3) //Set Snare
+    ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (4) //Poison Weapon
+    SET_BG2_PROFICIENCY ~PROFICIENCY2WEAPON~ 1
+    SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+    SET_BG2_PROFICIENCY ~PROFICIENCYFLAILMORNINGSTAR~ 1
+  BUT_ONLY
+END
+
+//! Portrait //////////////////////////////////////////////////////////
+BEGIN @7 //Portrait that matches Viconia's thief animation
+REQUIRE_PREDICATE NOT FILE_EXISTS_IN_GAME ~NEERA10.cre~ ~~
+REQUIRE_PREDICATE ((MOD_IS_INSTALLED ~laviconia/Setup-laviconia.tp2~ ~0~) OR (MOD_IS_INSTALLED ~laviconia/Setup-laviconia.tp2~ ~10~)) @8
+DESIGNATED 50
+
+COPY ~laviconia/portrait~ ~override~
+
+ACTION_IF GAME_IS ~tutu tutu_totsc bgt eet~ BEGIN
+  COPY ~laviconia/portrait/nviconl.bmp~ ~override/viconial.bmp~
+  COPY ~laviconia/portrait/nviconm.bmp~ ~override/viconiam.bmp~
+  COPY ~laviconia/portrait/nvicons.bmp~ ~override/viconias.bmp~
+  ACTION_FOR_EACH vico IN ~_viconi~ ~_viconi4~ ~_viconi6~ ~viconi~ ~viconi4~ ~viconi61~ BEGIN
+    ACTION_IF FILE_EXISTS_IN_GAME ~%vico%.cre~ BEGIN
+      COPY_EXISTING ~%vico%.cre~ ~override~ //Fix off-green colouring
+        WRITE_BYTE 0x2d 2 //Minor colour (dark gold, was 60 dark purple)
+        WRITE_BYTE 0x2e 58 //Major colour (dark blue, was 54 dark green)
+      BUT_ONLY
+    END
+  END
+END
+
+ACTION_IF GAME_IS ~tutu tutu_totsc~ BEGIN
+  COPY ~laviconia/portrait/nviconm.bmp~ ~override/_iconial.bmp~
+  COPY ~laviconia/portrait/nvicons.bmp~ ~override/_iconias.bmp~
+END

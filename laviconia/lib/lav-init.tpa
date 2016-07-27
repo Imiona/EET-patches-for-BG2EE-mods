@@ -1,0 +1,231 @@
+//Game-specific variables and scripts
+OUTER_TEXT_SPRINT tutu_var ~~
+OUTER_TEXT_SPRINT bgt_1 ~~
+OUTER_TEXT_SPRINT bgt_i ~i~
+ACTION_IF GAME_IS ~tutu tutu_totsc~ BEGIN
+  OUTER_TEXT_SPRINT tutu_var ~_~
+  OUTER_TEXT_SPRINT bgt_i ~~
+  EXTEND_TOP ~_viconia.bcs~ ~laviconia/scripts/viconia.baf~
+END
+ACTION_IF GAME_IS ~bgt~ BEGIN
+  OUTER_TEXT_SPRINT bgt_1 ~1~
+  EXTEND_TOP ~bgvicnia.bcs~ ~laviconia/scripts/viconia.baf~
+END
+ACTION_IF GAME_IS ~eet~ BEGIN
+  OUTER_TEXT_SPRINT bgt_1 ~_~
+  EXTEND_TOP ~viconia_.bcs~ ~laviconia/scripts/viconia.baf~
+END
+
+APPEND ~state.ids~ ~0x80101FEF CD_STATE_NOTVALID~ UNLESS ~CD_STATE_NOTVALID~
+COPY_EXISTING ~kit.ids~ ~override~ //Kit scripting fixes
+  REPLACE_TEXTUALLY ~.*\bTRUECLASS\b~              ~0x4000 TRUECLASS~
+  REPLACE_TEXTUALLY ~.*\bBERSERKER\b~              ~0x4001 BERSERKER~
+  REPLACE_TEXTUALLY ~.*\bWIZARDSLAYER\b~           ~0x4002 WIZARDSLAYER~
+  REPLACE_TEXTUALLY ~.*\bKENSAI\b~                 ~0x4003 KENSAI~
+  REPLACE_TEXTUALLY ~.*\bCAVALIER\b~               ~0x4004 CAVALIER~
+  REPLACE_TEXTUALLY ~.*\bINQUISITOR\b~             ~0x4005 INQUISITOR~
+  REPLACE_TEXTUALLY ~.*\bUNDEADHUNTER\b~           ~0x4006 UNDEADHUNTER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_ABJURER\b~     ~0x0040 MAGESCHOOL_ABJURER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_CONJURER\b~    ~0x0080 MAGESCHOOL_CONJURER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_DIVINER\b~     ~0x0100 MAGESCHOOL_DIVINER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_ENCHANTER\b~   ~0x0200 MAGESCHOOL_ENCHANTER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_ILLUSIONIST\b~ ~0x0400 MAGESCHOOL_ILLUSIONIST~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_INVOKER\b~     ~0x0800 MAGESCHOOL_INVOKER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_NECROMANCER\b~ ~0x1000 MAGESCHOOL_NECROMANCER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_TRANSMUTER\b~  ~0x2000 MAGESCHOOL_TRANSMUTER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_GENERALIST\b~  ~0x4000 MAGESCHOOL_GENERALIST~
+  REPLACE_TEXTUALLY ~.*\bFERALAN\b~                ~0x4007 FERALAN~
+  REPLACE_TEXTUALLY ~.*\bSTALKER\b~                ~0x4008 STALKER~
+  REPLACE_TEXTUALLY ~.*\bBEASTMASTER\b~            ~0x4009 BEASTMASTER~
+  REPLACE_TEXTUALLY ~.*\bASSASIN\b~                ~0x400A ASSASIN~
+  REPLACE_TEXTUALLY ~.*\bBOUNTYHUNTER\b~           ~0x400B BOUNTYHUNTER~
+  REPLACE_TEXTUALLY ~.*\bSWASHBUCKLER\b~           ~0x400C SWASHBUCKLER~
+  REPLACE_TEXTUALLY ~.*\bBLADE\b~                  ~0x400D BLADE~
+  REPLACE_TEXTUALLY ~.*\bJESTER\b~                 ~0x400E JESTER~
+  REPLACE_TEXTUALLY ~.*\bSKALD\b~                  ~0x400F SKALD~
+  REPLACE_TEXTUALLY ~.*\bGODTALOS\b~               ~0x4013 GODTALOS~
+  REPLACE_TEXTUALLY ~.*\bGODHELM\b~                ~0x4014 GODHELM~
+  REPLACE_TEXTUALLY ~.*\bGODLATHANDER\b~           ~0x4015 GODLATHANDER~
+  REPLACE_TEXTUALLY ~.*\bTOTEMIC\b~                ~0x4010 TOTEMIC~
+  REPLACE_TEXTUALLY ~.*\bSHAPESHIFTER\b~           ~0x4011 SHAPESHIFTER~
+  REPLACE_TEXTUALLY ~.*\bBEASTFRIEND\b~            ~0x4012 BEASTFRIEND~
+  REPLACE_TEXTUALLY ~.*\bBARBARIAN\b~              ~0x0000 BARBARIAN~
+  REPLACE_TEXTUALLY ~.*\bWILDMAGE\b~               ~0x0000 WILDMAGE~
+BUT_ONLY
+APPEND ~kit.ids~ ~0x4000 TRUECLASS~ UNLESS ~\bTRUECLASS\b~
+APPEND ~kit.ids~ ~0x0000 BARBARIAN~ UNLESS ~\bBARBARIAN\b~
+APPEND ~kit.ids~ ~0x0000 WILDMAGE~ UNLESS ~\bWILDMAGE\b~
+VERBOSE
+
+//Generic changes (such as assassin effects) for all CREs
+DEFINE_PATCH_MACRO ~LaViconiaPatch~ BEGIN
+  PATCH_INCLUDE ~laviconia/lib/fj_cre_reindex.tpp~
+  WRITE_SHORT 0x28 0x6311 //Animation (thief, was 0x6011 cleric)
+  WRITE_LONG 0x244 0x400a0000 //Kit (assassin)
+  LAUNCH_PATCH_FUNCTION DELETE_CRE_EFFECT
+    INT_VAR opcode_to_delete = 177 //Use EFF File
+  END
+  LAUNCH_PATCH_FUNCTION DELETE_CRE_EFFECT
+    INT_VAR opcode_to_delete = 73 //Extra Damage Modifier
+  END
+  LAUNCH_PATCH_FUNCTION DELETE_CRE_EFFECT
+    INT_VAR opcode_to_delete = 233 //Proficiency Modifier
+  END
+  REMOVE_MEMORIZED_SPELLS
+  REMOVE_KNOWN_SPELLS
+  PATCH_IF (BYTE_AT 0x234 > 6) OR (ladual = 0) BEGIN
+    WRITE_BYTE 0x273 15 //Class (cleric_thief, was 3 cleric)
+    SET_BG2_PROFICIENCY ~PROFICIENCYMACE~ 1
+    PATCH_INCLUDE ~laviconia/lib/spladd1.tpp~ //Add known level 1 spells
+  END ELSE BEGIN
+    PATCH_IF (ladual = 1) BEGIN
+      WRITE_BYTE 0x273 4 //Class (thief)
+      SET_BG2_PROFICIENCY ~EXTRAPROFICIENCY1~ 1 //Club
+    END
+  END
+  SET_BG2_PROFICIENCY ~PROFICIENCYSLING~ 1
+  LAUNCH_PATCH_FUNCTION ADD_CRE_EFFECT
+    INT_VAR opcode = 177 //Use EFF File
+    timing = 9 //Permanent after death
+    target = 2 //Pre-target
+    parameter1 = 1 //Modifier
+    savebonus = (0 - 2)
+    resist_dispel = 2 //Not dispellable/bypass resistance
+    casterx = (0 - 1)
+    castery = (0 - 1)
+    targetx = (0 - 1)
+    targety = (0 - 1)
+    casterlvl = 8
+    restype = 1
+    effslot = (0 - 1)
+    STR_VAR resource = HITPLUS1
+    effsource = spcl421
+  END
+  LAUNCH_PATCH_FUNCTION ADD_CRE_EFFECT
+    INT_VAR opcode = 73 //Extra Damage Modifier
+    timing = 9 //Permanent after death
+    target = 2 //Pre-target
+    parameter1 = 1 //Modifier
+    savebonus = (0 - 2)
+    resist_dispel = 2 //Not dispellable/bypass resistance
+    casterx = (0 - 1)
+    castery = (0 - 1)
+    targetx = (0 - 1)
+    targety = (0 - 1)
+    casterlvl = 8
+    restype = 1
+    effslot = (0 - 1)
+    STR_VAR effsource = spcl421
+  END
+END
+
+//Generic changes for high-level dual-class CREs
+DEFINE_PATCH_MACRO ~LaViconiaDual~ BEGIN
+  LAUNCH_PATCH_MACRO ~LaViconiaPatch~
+  WRITE_LONG 0x10 0x40 //Flags (dualed from thief)
+  WRITE_LONG 0x18 (LONG_AT 0x18 - 40000) //XP
+  WRITE_BYTE 0x45 25 //Hide in shadows (actual 55)
+  WRITE_BYTE 0x64 10 //Detect illusion (actual 10)
+  WRITE_BYTE 0x65 0 //Set traps (actual 10)
+  WRITE_BYTE 0x66 21 //Lore (was 6)
+  WRITE_BYTE 0x67 35 //Open locks (actual 60)
+  WRITE_BYTE 0x68 15 //Move silently (actual 50)
+  WRITE_BYTE 0x69 45 //Find traps (actual 60)
+  WRITE_BYTE 0x70 0 //Pick pockets (actual 35)
+  WRITE_BYTE 0x235 7 //Level 2 (was 0)
+  PATCH_INCLUDE ~laviconia/lib/spladd2.tpp~ //Add known level 2 spells
+  PATCH_INCLUDE ~laviconia/lib/spladd3.tpp~ //Add known level 3 spells
+  PATCH_INCLUDE ~laviconia/lib/spladd4.tpp~ //Add known level 4 spells
+  ADD_MEMORIZED_SPELL ~spcl412~ #0 ~innate~ (2) //Set Snare
+  ADD_MEMORIZED_SPELL ~spcl423~ #0 ~innate~ (2) //Poison Weapon
+  SET_BG2_PROFICIENCY ~EXTRAPROFICIENCY1~ 1 //Club
+  SET_BG2_PROFICIENCY ~PROFICIENCY2WEAPON~ 1
+  SET_BG2_PROFICIENCY ~PROFICIENCYSWORDANDSHIELD~ 1
+  SET_BG2_PROFICIENCY ~PROFICIENCYFLAILMORNINGSTAR~ 1
+  SET_BG2_PROFICIENCY ~PROFICIENCYWARHAMMER~ 1
+END
+
+COPY ~laviconia/bam~ ~override~
+
+COPY ~laviconia/item/lavics.itm~ ~override~
+  SAY NAME1 @2
+  SAY NAME2 @2
+  SAY DESC @3
+
+COPY ~laviconia/spell/lavic.spl~ ~override~
+  SAY NAME1 @4
+
+COPY ~laviconia/spell/lavsun.spl~ ~override~
+  SAY NAME1 @5
+
+COPY ~laviconia/spell/lavnig.spl~ ~override~
+  SAY NAME1 @6
+
+ACTION_IF (ladual = 1) BEGIN
+  COPY ~laviconia/spell/lavdual.spl~ ~override~
+    SAY NAME1 @12
+
+  COPY ~laviconia/spell/lavpdua.spl~ ~override~
+    SAY NAME1 @13
+
+  COMPILE ~laviconia/scripts/lavashar.baf~
+  COMPILE ~laviconia/dialog/lavashar.d~ EVALUATE_BUFFER
+
+  COPY ~laviconia/creature/lavashar.cre~ ~override~
+    SAY NAME1 @14
+    SAY NAME2 @14
+END
+
+PRINT @9 //Generating cleric spell lists ...
+<<<<<<<< laviconia-inlined/spllist.txt
+>>>>>>>>
+SILENT
+COPY_EXISTING_REGEXP GLOB ~^sppr[1-6][0-8][0-9]\.spl$~ override
+  PATCH_IF SOURCE_SIZE > 0x71 BEGIN
+    PATCH_IF (SHORT_AT 0x1c = 2) BEGIN //Priest spells
+      TEXT_SPRINT sres ~%SOURCE_RES%~
+      TO_LOWER sres
+      READ_STRREF 0x8 sname
+      READ_BYTE 0x1e excl
+      READ_BYTE 0x21 prie
+      READ_LONG 0x34 lvl
+      slv = (lvl - 1)
+      PATCH_IF (((excl BAND 0b00100010) = 0b00000000) AND ((prie BAND 0b01000000) = 0b00000000)) BEGIN
+        //Only non-good cleric spells
+        INNER_ACTION BEGIN
+          ACTION_IF NOT (FILE_EXISTS ~laviconia/lib/spladd%lvl%.tpp~) BEGIN
+            COPY ~laviconia-inlined/spllist.txt~ ~laviconia/lib/spladd%lvl%.tpp~
+          END
+          APPEND_OUTER "laviconia/lib/spladd%lvl%.tpp" "ADD_KNOWN_SPELL ~%sres%~ #%slv% ~priest~ //%sname%"
+        END
+      END
+    END
+  END
+BUT_ONLY
+
+ACTION_FOR_EACH pspl IN ~sppr701~ ~sppr702~ ~sppr703~ ~sppr704~ ~sppr705~ ~sppr706~ ~sppr707~ ~sppr708~ ~sppr709~ ~sppr710~ ~sppr711~ ~sppr712~ ~sppr713~ ~sppr714~ ~sppr715~ ~sppr716~ ~sppr717~ ~sppr718~ ~sppr719~ ~sppr720~ ~sppr721~ BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME ~%pspl%.spl~ BEGIN
+    COPY_EXISTING ~%pspl%.spl~ override
+      PATCH_IF SOURCE_SIZE > 0x71 BEGIN
+        PATCH_IF (SHORT_AT 0x1c = 2) BEGIN //Priest spells
+          TEXT_SPRINT sres ~%SOURCE_RES%~
+          TO_LOWER sres
+          READ_STRREF 0x8 sname
+          READ_BYTE 0x1e excl
+          READ_BYTE 0x21 prie
+          READ_LONG 0x34 lvl
+          slv = (lvl - 1)
+          PATCH_IF (((excl BAND 0b00100010) = 0b00000000) AND ((prie BAND 0b01000000) = 0b00000000)) BEGIN
+            //Only non-good cleric spells
+            INNER_ACTION BEGIN
+              ACTION_IF NOT (FILE_EXISTS ~laviconia/lib/spladd%lvl%.tpp~) BEGIN
+                COPY ~laviconia-inlined/spllist.txt~ ~laviconia/lib/spladd%lvl%.tpp~
+              END
+              APPEND_OUTER "laviconia/lib/spladd%lvl%.tpp" "ADD_KNOWN_SPELL ~%sres%~ #%slv% ~priest~ //%sname%"
+            END
+          END
+        END
+      END
+    BUT_ONLY
+  END
+END

@@ -1,0 +1,9 @@
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 
+Patching setup-npcflirt.tp2: GAME_IS ~bg2ee~ BEGIN => GAME_IS ~bg2ee eet~ BEGIN
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 
+Patching setup-npcflirt.tp2: GAME_IS ~tob bg2ee bgt~  => GAME_IS ~tob bg2ee eet bgt~ 

@@ -1,0 +1,44 @@
+COMPILE EVALUATE_BUFFER ~questpack/sanik/dialog.d~ USING
+        ~%tra_path%/english/sanik.tra~
+        ~%tra_path%/%LANGUAGE%/sanik.tra~
+
+ADD_JOURNAL EXISTING TITLE (#74336) @41 @42 @43 USING
+            ~%tra_path%/english/sanik.tra~
+            ~%tra_path%/%LANGUAGE%/sanik.tra~
+
+ADD_JOURNAL @44 USING
+            ~%tra_path%/english/sanik.tra~
+            ~%tra_path%/%LANGUAGE%/sanik.tra~
+
+COPY_EXISTING ~ppsanik.cre~ ~override~
+  WRITE_BYTE 0x63 0
+  WRITE_SHORT 0x24 18
+  WRITE_SHORT 0x26 36
+  WRITE_ASCII 0x248 "D0SANIK" #8
+BUT_ONLY
+
+COPY_EXISTING ~pirmur02.cre~ ~override~
+  WRITE_SHORT 0x24 36
+  WRITE_SHORT 0x26 36
+  WRITE_BYTE 0x52 10
+  WRITE_BYTE 0x53 4
+  WRITE_ASCII 0x248 "D0PIRMUR" #8
+BUT_ONLY
+
+COMPILE EVALUATE_BUFFER ~questpack/sanik/d0sanik.baf~
+        ~questpack/sanik/d0pirmur.baf~
+
+EXTEND_TOP ~ar1602.bcs~ ~questpack/sanik/et_1602.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~pirmur10.bcs~ ~questpack/sanik/et_pirmur.baf~ EVALUATE_BUFFER
+
+STRING_SET 53882 @307
+STRING_SET 53893 @308
+STRING_SET 54134 @308
+STRING_SET 23530 @99902
+
+COPY_EXISTING ~pirmur05.cre~ ~override~
+              ~pirmur06.cre~ ~override~
+              ~pirmur13.cre~ ~override~
+  SAY NAME1 @309
+  SAY NAME2 @309
+BUT_ONLY

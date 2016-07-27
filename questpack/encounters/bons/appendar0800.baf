@@ -1,0 +1,9 @@
+IF
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  Global("SUKISSExist","AR0800",0)
+THEN
+  RESPONSE #100
+    SetGlobal("SUKISSExist","AR0800",1)
+    CreateCreature("SUKISS1",[1771.1518],3)
+    Continue()
+END

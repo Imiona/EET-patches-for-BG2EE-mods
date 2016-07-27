@@ -1,0 +1,1 @@
+Patching RecoloredButtons_bgee&bg2ee-v4.0/recoloredbuttons/setup-recoloredbuttons.tp2: GAME_IS ~bg2ee~  => GAME_IS ~bg2ee eet~ 

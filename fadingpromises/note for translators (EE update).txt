@@ -1,0 +1,1 @@
+The only thing changed is a copy of setup-fadingpromises.tra named setup-ee.tra (only string with item description). This file should be adopted to use EE engine item description formatting that differs from the one in the vanilla engine. The only string that needs to be updated is based on existing "Sunblade: Daystar" weapon - BG2:EE @39453

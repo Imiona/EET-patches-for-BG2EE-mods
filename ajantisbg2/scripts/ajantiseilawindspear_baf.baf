@@ -1,0 +1,138 @@
+//C#Ajan.bcs
+
+/* first meeting: in Garren's hut */
+IF
+!Global("Kidnap","GLOBAL",3)
+AreaCheck("AR1204")
+InParty(Myself) 
+!Dead("GARREN")
+See("GARREN")
+!StateCheck("GARREN",CD_STATE_NOTVALID)
+Global("C#AjantisEilaFirstSpawn","GLOBAL",0)
+	CombatCounter(0) !See([ENEMY])
+THEN RESPONSE #100
+SetGlobal("C#AjantisEilaFirstSpawn","GLOBAL",1)
+CreateCreature("C#AJEILA",[366.349],0) 
+END
+
+/* first meeting: in Garren's hut: dialogue triggering */
+IF
+InParty(Myself) 
+Global("C#AjantisEilaFirstSpawn","GLOBAL",1)
+THEN RESPONSE #100
+RealSetGlobalTimer("C#AjantisEilaMeetingTimer","GLOBAL",3600)
+StartDialogNoSet("C#AJEILA")
+END
+
+/* meeting in the city: dialogue activation */
+IF
+InParty(Myself) 
+!Dead("C#AJEILA")
+RealGlobalTimerExpired("C#AjantisEilaMeetingTimer","GLOBAL")
+AreaType(CITY)
+!TimeOfDay(NIGHT)
+  !AreaType(DUNGEON)
+  !AreaCheck("AR1300")
+  !AreaCheck("AR2800")
+	!Global("Chapter","GLOBAL",%bg2_chapter_4%)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!Global("Chapter","GLOBAL",%bg2_chapter_7%)
+Global("C#AjantisEilaCityMeeting","GLOBAL",0)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+THEN RESPONSE #100
+SetGlobal("C#AjantisEilaCityMeeting","GLOBAL",1)
+CreateCreatureObject("C#AJEIL1","C#Ajantis",12,0,0) //other dress!
+END
+
+/* meeting in the city: dialogue triggering */
+IF
+InParty(Myself) 
+Global("C#AjantisEilaCityMeeting","GLOBAL",1)
+THEN RESPONSE #100
+RealSetGlobalTimer("C#AjantisEilaMeetingTimer","GLOBAL",3600)
+StartDialogNoSet("C#AJEILA")
+END
+
+/* Ajantis talks about Eila: dialogue activation */
+IF
+InParty(Myself) 
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+!Dead("C#AJEILA")
+RealGlobalTimerExpired("C#AjantisEilaMeetingTimer","GLOBAL")
+Global("C#AjantisEilaCityMeeting","GLOBAL",2)
+	!Global("C#AjantisIsThinking","GLOBAL",1)
+THEN RESPONSE #100
+SetGlobal("C#AjantisEilaCityMeeting","GLOBAL",3)
+END
+
+/* Ajantis talks about Eila: dialogue triggering */
+IF
+InParty(Myself) 
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjantisEilaCityMeeting","GLOBAL",3)
+!Range([NEUTRAL],10)
+THEN RESPONSE #100
+RealSetGlobalTimer("C#AjantisEilaMeetingTimer","GLOBAL",3600)
+StartDialogNoSet(Player1)
+END
+
+/* spawning of lord Enderold and guards: */
+IF
+InParty(Myself) 
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+!Dead("C#AJEILA")
+!Dead("GARREN")
+RealGlobalTimerExpired("C#AjantisEilaMeetingTimer","GLOBAL")
+Global("C#AjantisEilaCityMeeting","GLOBAL",4)
+AreaCheck("AR1000")
+Global("C#AjanEnderoldQuest","GLOBAL",0) 
+Global("C#AjanEnderQuestSpawn","GLOBAL",0)
+!Exists("C#AJENDE")
+!Exists("C#AJWAC1")
+!Exists("C#AJWAC2")
+THEN
+RESPONSE #100
+SetGlobal("C#AjanEnderQuestSpawn","GLOBAL",1)
+CreateCreature("C#AJENDE",[2558.871],0)
+CreateCreature("C#AJWAC1",[2446.935],0)
+CreateCreature("C#AJWAC2",[2534.960],0)
+ActionOverride("C#AJENDE",FaceObject("C#AJWAC1"))
+ActionOverride("C#AJWAC1",FaceObject("C#AJENDE"))
+ActionOverride("C#AJWAC2",FaceObject("C#AJENDE"))
+END
+
+
+/* Ajantis talks about Eila after Lord E.'s arrest: dialogue activation */
+IF
+InParty(Myself) 
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+!Dead("C#AJEILA")
+Global("C#AjanEngagementBrokenBG1","GLOBAL",0)
+Global("C#AjantisRomanceActive","GLOBAL",0)
+RealGlobalTimerExpired("C#AjantisEilaMeetingTimer","GLOBAL")
+Global("C#AjanEnderQuestSpawn","GLOBAL",3)
+THEN RESPONSE #100
+SetGlobal("C#AjanEnderQuestSpawn","GLOBAL",4)
+END
+
+/* Ajantis talks about Eila after Lord E.'s arrest: dialogue triggering */
+IF
+InParty(Myself) 
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+Global("C#AjanEnderQuestSpawn","GLOBAL",4)
+!Range([NEUTRAL],10)
+THEN RESPONSE #100
+StartDialogNoSet(Player1)
+END

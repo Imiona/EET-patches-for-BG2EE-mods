@@ -1,0 +1,709 @@
+BACKUP ~TyrisFlare/Backup~
+AUTHOR ~grim@gibberlings3.net~
+NO_IF_EVAL_BUG
+VERSION ~v7~
+ASK_EVERY_COMPONENT
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~TyrisFlare/Languages~
+  END
+END
+
+README ~TyrisFlare/readme-tyrisflare.html~
+
+AUTO_TRA ~TyrisFlare/Languages/%s~
+LANGUAGE ~English~ ~English~ ~TyrisFlare/Languages/English/Setup-TyrisFlare.tra~
+
+BEGIN @0
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    LOAD_TRA ~TyrisFlare/Languages/English/ee.tra~
+  END
+
+  // IDS Files
+
+  APPEND ~state.ids~ ~0x80101FEF CD_STATE_NOTVALID~
+    UNLESS ~CD_STATE_NOTVALID~
+
+  // BAMs
+
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/BAMs/CG#TFAMR.bmp~ ~override/CG#TFAMR.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/BAMs/CG#TFAMR.bam~ ~override/CG#TFAMR.bam~
+  END
+  COPY ~TyrisFlare/BAMs/IG#TFAMR.bam~ ~override/IG#TFAMR.bam~
+       ~TyrisFlare/BAMs/IG#TFBDY.bam~ ~override/IG#TFBDY.bam~
+       ~TyrisFlare/BAMs/IG#TFLCK.bam~ ~override/IG#TFLCK.bam~
+       ~TyrisFlare/BAMs/G#BASERD.bam~ ~override/G#BASERD.bam~
+       ~TyrisFlare/BAMs/G#BASERD.vvc~ ~override/G#BASERD.vvc~
+
+  // Creatures
+
+  COPY ~TyrisFlare/Creatures/G#TFSPWN.cre~ ~override/G#TFSPWN.cre~
+    WRITE_ASCII SCRIPT_OVERRIDE ~G#TFSPWN~
+
+  COPY ~TyrisFlare/Creatures/G#TYRS8.cre~ ~override/G#TYRS8.cre~
+       ~TyrisFlare/Creatures/G#TYRS10.cre~ ~override/G#TYRS10.cre~
+       ~TyrisFlare/Creatures/G#TYRS11.cre~ ~override/G#TYRS11.cre~
+       ~TyrisFlare/Creatures/G#TYRS13.cre~ ~override/G#TYRS13.cre~
+    SAY NAME1 @1
+    SAY NAME2 @1
+    SAY MORALE @2
+    SAY HAPPY @3
+    SAY UNHAPPY_ANNOYED @4
+    SAY UNHAPPY_SERIOUS @5
+    SAY UNHAPPY_BREAKING @6
+    SAY LEADER @7
+    SAY TIRED @8
+    SAY BORED @9
+    SAY BATTLE_CRY1 @10
+    SAY BATTLE_CRY2 @11
+    SAY BATTLE_CRY3 @12
+    SAY DAMAGE @13
+    SAY DYING @14
+    SAY HURT @15
+    SAY AREA_FOREST @16
+    SAY AREA_CITY @17
+    SAY AREA_DUNGEON @18
+    SAY AREA_DAY @19
+    SAY AREA_NIGHT @20
+    SAY SELECT_COMMON1 @21
+    SAY SELECT_COMMON2 @22
+    SAY SELECT_COMMON3 @23
+    SAY SELECT_COMMON4 @24
+    SAY SELECT_COMMON5 @25
+    SAY SELECT_ACTION1 @26
+    SAY SELECT_ACTION2 @27
+    SAY SELECT_ACTION3 @28
+    SAY SELECT_ACTION4 @29
+    SAY SELECT_ACTION5 @30
+    SAY SELECT_ACTION6 @31
+    SAY SELECT_RARE1 @32
+    SAY SELECT_RARE2 @33
+    SAY CRITICAL_HIT @34
+    SAY CRITICAL_MISS @35
+    SAY TARGET_IMMUNE @36
+    SAY INVENTORY_FULL @37
+    SAY SPELL_DISRUPTED @38
+    SAY BIO @39
+    WRITE_ASCII DEATHVAR ~G#Tyris~
+    WRITE_ASCII DIALOG ~G#TYRIS~
+    WRITE_ASCII SCRIPT_OVERRIDE ~G#TYRIS~
+    WRITE_ASCII SCRIPT_CLASS ~~
+    WRITE_ASCII SCRIPT_RACE ~~
+    WRITE_ASCII SCRIPT_GENERAL ~~
+    WRITE_ASCII SCRIPT_DEFAULT ~~
+    WRITE_ASCII PORTRAIT_SMALL ~G#TYRISS~
+    WRITE_ASCII PORTRAIT_LARGE ~G#TYRISM~
+    ADD_CRE_ITEM ~G#TFARMR~ #0 #0 #0 ~IDENTIFIED~ ~ARMOR~
+    ADD_CRE_ITEM ~sw1h05~ #0 #0 #0 ~IDENTIFIED~ ~WEAPON1~ EQUIP
+    ADD_CRE_ITEM ~potn52~ #2 #0 #0 ~IDENTIFIED~ ~QITEM1~
+    ADD_CRE_ITEM ~potn29~ #2 #0 #0 ~IDENTIFIED~ ~QITEM2~
+    PATCH_IF (~%DEST_RES%~ STRING_EQUAL_CASE ~G#TYRS8~) BEGIN
+      // Burning Hands
+      ADD_KNOWN_SPELL ~SPWI103~ #0 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI103~ #0 ~wizard~ (3)
+      // Identify
+      ADD_KNOWN_SPELL ~SPWI110~ #0 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI110~ #0 ~wizard~ (1)
+      // Aganazer's Scorcher
+      ADD_KNOWN_SPELL ~SPWI217~ #1 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI217~ #1 ~wizard~ (3)
+      // Fire Ball
+      ADD_KNOWN_SPELL ~SPWI304~ #2 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI304~ #2 ~wizard~ (1)
+      // Flame Arrow
+      ADD_KNOWN_SPELL ~SPWI303~ #2 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI303~ #2 ~wizard~ (1)
+      // Melf's Minute Meteors
+      ADD_KNOWN_SPELL ~SPWI325~ #2 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI325~ #2 ~wizard~ (1)
+      // Fire Shield (Red)
+      ADD_KNOWN_SPELL ~SPWI418~ #3 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI418~ #3 ~wizard~ (2)
+    END ELSE BEGIN
+      PATCH_IF (~%DEST_RES%~ STRING_EQUAL_CASE ~G#TYRS10~) BEGIN
+        // Burning Hands
+        ADD_KNOWN_SPELL ~SPWI103~ #0 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI103~ #0 ~wizard~ (3)
+        // Identify
+        ADD_KNOWN_SPELL ~SPWI110~ #0 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI110~ #0 ~wizard~ (1)
+        // Aganazer's Scorcher
+        ADD_KNOWN_SPELL ~SPWI217~ #1 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI217~ #1 ~wizard~ (4)
+        // Fire Ball
+        ADD_KNOWN_SPELL ~SPWI304~ #2 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI304~ #2 ~wizard~ (1)
+        // Flame Arrow
+        ADD_KNOWN_SPELL ~SPWI303~ #2 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI303~ #2 ~wizard~ (1)
+        // Melf's Minute Meteors
+        ADD_KNOWN_SPELL ~SPWI325~ #2 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI325~ #2 ~wizard~ (1)
+        // Fire Shield (Red)
+        ADD_KNOWN_SPELL ~SPWI418~ #3 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI418~ #3 ~wizard~ (2)
+        // Sunfire
+        ADD_KNOWN_SPELL ~SPWI523~ #4 ~wizard~
+        ADD_MEMORIZED_SPELL ~SPWI523~ #4 ~wizard~ (2)
+      END ELSE BEGIN
+        PATCH_IF (~%DEST_RES%~ STRING_EQUAL_CASE ~G#TYRS11~) BEGIN
+          // Burning Hands
+          ADD_KNOWN_SPELL ~SPWI103~ #0 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI103~ #0 ~wizard~ (3)
+          // Identify
+          ADD_KNOWN_SPELL ~SPWI110~ #0 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI110~ #0 ~wizard~ (1)
+          // Aganazer's Scorcher
+          ADD_KNOWN_SPELL ~SPWI217~ #1 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI217~ #1 ~wizard~ (4)
+          // Fire Ball
+          ADD_KNOWN_SPELL ~SPWI304~ #2 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI304~ #2 ~wizard~ (2)
+          // Flame Arrow
+          ADD_KNOWN_SPELL ~SPWI303~ #2 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI303~ #2 ~wizard~ (1)
+          // Melf's Minute Meteors
+          ADD_KNOWN_SPELL ~SPWI325~ #2 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI325~ #2 ~wizard~ (1)
+          // Fire Shield (Red)
+          ADD_KNOWN_SPELL ~SPWI418~ #3 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI418~ #3 ~wizard~ (3)
+          // Sunfire
+          ADD_KNOWN_SPELL ~SPWI523~ #4 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI523~ #4 ~wizard~ (3)
+        END ELSE BEGIN
+          // Burning Hands
+          ADD_KNOWN_SPELL ~SPWI103~ #0 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI103~ #0 ~wizard~ (3)
+          // Identify
+          ADD_KNOWN_SPELL ~SPWI110~ #0 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI110~ #0 ~wizard~ (2)
+          // Aganazer's Scorcher
+          ADD_KNOWN_SPELL ~SPWI217~ #1 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI217~ #1 ~wizard~ (5)
+          // Fire Ball
+          ADD_KNOWN_SPELL ~SPWI304~ #2 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI304~ #2 ~wizard~ (2)
+          // Flame Arrow
+          ADD_KNOWN_SPELL ~SPWI303~ #2 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI303~ #2 ~wizard~ (2)
+          // Melf's Minute Meteors
+          ADD_KNOWN_SPELL ~SPWI325~ #2 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI325~ #2 ~wizard~ (1)
+          // Fire Shield (Red)
+          ADD_KNOWN_SPELL ~SPWI418~ #3 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI418~ #3 ~wizard~ (4)
+          // Sunfire
+          ADD_KNOWN_SPELL ~SPWI523~ #4 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI523~ #4 ~wizard~ (4)
+          // Conjure Fire Elemental
+          ADD_KNOWN_SPELL ~SPWI620~ #5 ~wizard~
+          ADD_MEMORIZED_SPELL ~SPWI620~ #5 ~wizard~ (2)
+        END
+      END
+    END
+
+  COPY_EXISTING ~skele2.cre~ ~override/G#TFSKL1.cre~
+    WRITE_SHORT 0x24 1 // Change current HP to 1
+    WRITE_SHORT 0x26 1 // Change max HP to 1
+    WRITE_SHORT 0x46 20 // Change natural AC to 20
+    WRITE_SHORT 0x48 20 // Change effective AC to 20
+    WRITE_ASCII DEATHVAR ~G#TFSkeleton1~
+    WRITE_BYTE 0x270 0x80 // Change to be NEUTRAL
+    ADD_CRE_ITEM ~sw1h04~ #0 #0 #0 ~IDENTIFIED~ ~WEAPON1~ EQUIP
+
+  COPY_EXISTING ~skele2.cre~ ~override/G#TFSKL2.cre~
+    WRITE_SHORT 0x24 1 // Change current HP to 1
+    WRITE_SHORT 0x26 1 // Change max HP to 1
+    WRITE_SHORT 0x46 20 // Change natural AC to 20
+    WRITE_SHORT 0x48 20 // Change effective AC to 20
+    WRITE_ASCII DEATHVAR ~G#TFSkeleton2~
+    WRITE_BYTE 0x270 0x80 // Change to be NEUTRAL
+    ADD_CRE_ITEM ~ax1h01~ #0 #0 #0 ~IDENTIFIED~ ~WEAPON1~ EQUIP
+
+  COPY_EXISTING ~vampjah.cre~ ~override/G#TFVAMP.cre~
+    SAY NAME1 ~Tyris~
+    SAY NAME2 ~Tyris~
+    WRITE_ASCII DEATHVAR ~G#VampireTyris~
+    WRITE_ASCII DIALOG ~G#TFVAMP~
+    WRITE_ASCII SCRIPT_OVERRIDE ~G#TFVAMP~
+    WRITE_LONG 0x28 0x6110 // FIGHTER_FEMALE_HUMAN animation
+    WRITE_BYTE 0x2d 0x29
+    WRITE_BYTE 0x2e 0x2e
+    WRITE_BYTE 0x2f 0x54
+    WRITE_BYTE 0x30 0x17
+    WRITE_BYTE 0x31 0x1e
+    WRITE_BYTE 0x32 0x04
+    WRITE_ASCII 0x40c ~G#TFBODY~
+    WRITE_BYTE 0x237 0x02
+    WRITE_BYTE 0x275 0x02
+
+  // Dialogue
+
+  ACTION_IF GAME_IS ~bg2ee eet~ BEGIN
+    ADD_JOURNAL EXISTING @4 @11 @26 USING ~TyrisFlare/Languages/%LANGUAGE%/BodhiAbduction.tra~
+  END
+
+  COMPILE ~TyrisFlare/Dialogue/G#TYRIS.d~
+          ~TyrisFlare/Dialogue/G#TYRISP.d~
+          ~TyrisFlare/Dialogue/G#TYRISJ.d~
+          ~TyrisFlare/Dialogue/BG#TYRIS.d~
+          ~TyrisFlare/Dialogue/Interjections.d~
+          ~TyrisFlare/Dialogue/Lovetalks.d~
+          ~TyrisFlare/Dialogue/RomanceConflicts.d~
+          ~TyrisFlare/Dialogue/BodhiAbduction.d~
+          ~TyrisFlare/Dialogue/Flirts.d~
+
+  // Items
+
+  COPY ~TyrisFlare/Items/G#TFARMR.itm~ ~override/G#TFARMR.itm~
+    SAY NAME1 @40
+    SAY NAME2 @40
+    SAY UNIDENTIFIED_DESC @58
+    SAY DESC @58
+ 
+  COPY ~TyrisFlare/Items/G#TFAMR2.itm~ ~override/G#TFAMR2.itm~
+    SAY NAME1 @40
+    SAY NAME2 @40
+    SAY UNIDENTIFIED_DESC @41
+    SAY DESC @41
+
+  COPY_EXISTING ~miscbn.itm~ ~override/G#TFBODY.itm~
+    SAY NAME1 @42
+    SAY NAME2 @42
+    SAY UNIDENTIFIED_DESC @43
+    SAY IDENTIFIED_DESC @43
+    WRITE_ASCII 0x3a ~IG#TFBDY~ // Inventory icon
+
+  COPY_EXISTING ~misc2O.itm~ ~override/G#TFLOCK.itm~
+    SAY NAME1 @44
+    SAY NAME2 @44
+    SAY UNIDENTIFIED_DESC @45
+    SAY IDENTIFIED_DESC @45
+    WRITE_LONG 0x34 0x01 // Only sells for 1 gold
+    WRITE_ASCII 0x3a ~IG#TFLCK~ // Inventory icon
+    WRITE_SHORT 0x42 0x00 // No lore to identify
+
+  // Portraits
+
+  COPY ~TyrisFlare/Portraits/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/Portraits/G#TYRISM_ee.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/G#TYRISS_ee.bmp~ ~override/G#TYRISS.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/Portraits/G#TYRISM.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/G#TYRISS.bmp~ ~override/G#TYRISS.bmp~
+  END
+
+  // Scripts
+
+  COMPILE ~TyrisFlare/Scripts/G#TYRIS.baf~
+          ~TyrisFlare/Scripts/G#TYRISD.baf~
+          ~TyrisFlare/Scripts/G#TFSPWN.baf~
+
+  COMPILE ~TyrisFlare/Scripts/CutScenes/G#TFCUT1.baf~
+
+  EXTEND_TOP ~baldur.bcs~ ~TyrisFlare/Scripts/BALDUR.baf~
+
+  EXTEND_BOTTOM ~ar0334.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR0334.baf~
+  EXTEND_BOTTOM ~ar0413.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR0413.baf~
+  EXTEND_TOP ~ar0809.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR0809.baf~
+  EXTEND_TOP ~ar1100.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR1100.baf~
+  EXTEND_TOP ~ar1105.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR1105.baf~
+  
+  EXTEND_TOP ~aerie.bcs~ ~TyrisFlare/Scripts/BioWareNPCs/AERIE.baf~
+  EXTEND_TOP ~jaheira.bcs~ ~TyrisFlare/Scripts/BioWareNPCs/JAHEIRA.baf~
+  EXTEND_TOP ~viconia.bcs~ ~TyrisFlare/Scripts/BioWareNPCs/VICONIA.baf~
+  ACTION_IF GAME_IS ~bg2ee eet~ BEGIN
+    EXTEND_TOP ~neera.bcs~ ~TyrisFlare/Scripts/BioWareNPCs/NEERA.baf~
+    EXTEND_TOP ~dorn.bcs~ ~TyrisFlare/Scripts/BioWareNPCs/DORN.baf~
+  END
+  
+  COMPILE ~TyrisFlare/Scripts/VampireScripts/G#TFVAMP.baf~
+          ~TyrisFlare/Scripts/VampireScripts/G#TFCUTV.baf~
+  EXTEND_BOTTOM ~bodhiamb.bcs~ ~TyrisFlare/Scripts/VampireScripts/BODHIAMB.baf~
+  EXTEND_BOTTOM ~cleanse.bcs~ ~TyrisFlare/Scripts/VampireScripts/CLEANSE.baf~
+  EXTEND_BOTTOM ~vampamb.bcs~ ~TyrisFlare/Scripts/VampireScripts/VAMPAMB.baf~
+  EXTEND_BOTTOM ~vluvinfo.bcs~ ~TyrisFlare/Scripts/VampireScripts/VLUVINFO.baf~
+  
+  COPY_EXISTING ~cut100a.bcs~ ~override~
+                ~cut100b.bcs~ ~override~
+    DECOMPILE_BCS_TO_BAF
+    REPLACE_TEXTUALLY ~MultiPlayerSync()~ ~SetGlobal("G#G3.CompletedSoA","GLOBAL",1) MultiPlayerSync()~
+    COMPILE_BAF_TO_BCS
+    UNLESS ~SetGlobal("G#G3.CompletedSoA","GLOBAL",1)~
+
+  // string fixer script
+  COMPILE ~TyrisFlare/Scripts/G#FIX.baf~
+    REPLACE ~100000~ @1
+    REPLACE ~100001~ @2
+    REPLACE ~100002~ @3
+    REPLACE ~100003~ @4
+    REPLACE ~100004~ @5
+    REPLACE ~100005~ @6
+    REPLACE ~100006~ @7
+    REPLACE ~100007~ @8
+    REPLACE ~100008~ @9
+    REPLACE ~100009~ @10
+    REPLACE ~100010~ @11
+    REPLACE ~100011~ @12
+    REPLACE ~100012~ @13
+    REPLACE ~100013~ @14
+    REPLACE ~100014~ @15
+    REPLACE ~100015~ @16
+    REPLACE ~100016~ @17
+    REPLACE ~100017~ @18
+    REPLACE ~100018~ @19
+    REPLACE ~100019~ @20
+    REPLACE ~100020~ @21
+    REPLACE ~100021~ @22
+    REPLACE ~100022~ @23
+    REPLACE ~100023~ @24
+    REPLACE ~100024~ @25
+    REPLACE ~100025~ @26
+    REPLACE ~100026~ @27
+    REPLACE ~100027~ @28
+    REPLACE ~100028~ @29
+    REPLACE ~100029~ @30
+    REPLACE ~100030~ @31
+    REPLACE ~100031~ @32
+    REPLACE ~100032~ @33
+    REPLACE ~100033~ @34
+    REPLACE ~100034~ @35
+    REPLACE ~100035~ @36
+    REPLACE ~100036~ @37
+    REPLACE ~100037~ @38
+    REPLACE ~100038~ @39
+
+  // 2DA Files
+  
+  APPEND ~pdialog.2da~ ~G#Tyris     G#TYRISP     G#TYRISJ    G#TYRISD~
+    UNLESS ~G#Tyris~
+    UNLESS ~25POST~
+  
+  APPEND ~pdialog.2da~ ~G#Tyris     G#TYRISP     G#TYRISJ    G#TYRISD       G#TRS25P     G#TRS25J        G#TRS25D        G#TYRS25~
+    UNLESS ~G#Tyris~
+    IF ~25POST~
+  
+  APPEND ~interdia.2da~ ~G#Tyris    BG#TYRIS~
+    UNLESS ~G#Tyris~
+    UNLESS ~25FILE~
+  
+  APPEND ~interdia.2da~ ~G#Tyris    BG#TYRIS     BG#TRS25~
+    UNLESS ~G#Tyris~
+    IF ~25FILE~
+
+  ACTION_IF GAME_IS ~tob bg2ee eet~ THEN BEGIN
+    COPY_EXISTING ~interdia.2da~ ~override~
+      SET_2DA_ENTRY 17 1 2 ~BIMOEN2~
+      BUT_ONLY_IF_IT_CHANGES
+  END ELSE BEGIN
+    APPEND ~interdia.2da~ ~IMOEN       BIMOEN2~
+      UNLESS ~BIMOEN2~
+  END
+     
+  // Throne of Bhaal Only Content
+
+  ACTION_IF GAME_IS ~tob bg2ee eet~ THEN BEGIN
+
+    // Creatures
+  
+    COPY ~TyrisFlare/Creatures/G#TYRS16.cre~ ~override/G#TYRS16.cre~
+      SAY NAME1 @1
+      SAY NAME2 @1
+      SAY MORALE @2
+      SAY HAPPY @3
+      SAY UNHAPPY_ANNOYED @4
+      SAY UNHAPPY_SERIOUS @5
+      SAY UNHAPPY_BREAKING @6
+      SAY LEADER @7
+      SAY TIRED @8
+      SAY BORED @9
+      SAY BATTLE_CRY1 @10
+      SAY BATTLE_CRY2 @11
+      SAY BATTLE_CRY3 @12
+      SAY DAMAGE @13
+      SAY DYING @14
+      SAY HURT @15
+      SAY AREA_FOREST @16
+      SAY AREA_CITY @17
+      SAY AREA_DUNGEON @18
+      SAY AREA_DAY @19
+      SAY AREA_NIGHT @20
+      SAY SELECT_COMMON1 @21
+      SAY SELECT_COMMON2 @22
+      SAY SELECT_COMMON3 @23
+      SAY SELECT_COMMON4 @24
+      SAY SELECT_COMMON5 @25
+      SAY SELECT_ACTION1 @26
+      SAY SELECT_ACTION2 @27
+      SAY SELECT_ACTION3 @28
+      SAY SELECT_ACTION4 @29
+      SAY SELECT_ACTION5 @30
+      SAY SELECT_ACTION6 @31
+      SAY SELECT_RARE1 @32
+      SAY SELECT_RARE2 @33
+      SAY CRITICAL_HIT @34
+      SAY CRITICAL_MISS @35
+      SAY TARGET_IMMUNE @36
+      SAY INVENTORY_FULL @37
+      SAY SPELL_DISRUPTED @38
+      SAY BIO @39
+      WRITE_ASCII DEATHVAR ~G#Tyris~
+      WRITE_ASCII DIALOG ~G#TRS25A~
+      WRITE_ASCII SCRIPT_OVERRIDE ~G#TYRS25~
+      WRITE_ASCII SCRIPT_CLASS ~~
+      WRITE_ASCII SCRIPT_RACE ~~
+      WRITE_ASCII SCRIPT_GENERAL ~~
+      WRITE_ASCII SCRIPT_DEFAULT ~~
+      WRITE_ASCII PORTRAIT_SMALL ~G#TYRISS~
+      WRITE_ASCII PORTRAIT_LARGE ~G#TYRISM~
+      ADD_CRE_ITEM ~G#TFAMR2~ #0 #0 #0 ~IDENTIFIED~ ~ARMOR~
+      ADD_CRE_ITEM ~sw1h73~ #0 #0 #0 ~IDENTIFIED~ ~WEAPON1~ EQUIP
+      ADD_CRE_ITEM ~potn52~ #2 #0 #0 ~IDENTIFIED~ ~QITEM1~
+      ADD_CRE_ITEM ~potn29~ #2 #0 #0 ~IDENTIFIED~ ~QITEM2~
+      // Burning Hands
+      ADD_KNOWN_SPELL ~SPWI103~ #0 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI103~ #0 ~wizard~ (3)
+      // Identify
+      ADD_KNOWN_SPELL ~SPWI110~ #0 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI110~ #0 ~wizard~ (2)
+      // Aganazer's Scorcher
+      ADD_KNOWN_SPELL ~SPWI217~ #1 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI217~ #1 ~wizard~ (5)
+      // Fire Ball
+      ADD_KNOWN_SPELL ~SPWI304~ #2 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI304~ #2 ~wizard~ (2)
+      // Flame Arrow
+      ADD_KNOWN_SPELL ~SPWI303~ #2 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI303~ #2 ~wizard~ (2)
+      // Melf's Minute Meteors
+      ADD_KNOWN_SPELL ~SPWI325~ #2 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI325~ #2 ~wizard~ (1)
+      // Fire Shield (Red)
+      ADD_KNOWN_SPELL ~SPWI418~ #3 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI418~ #3 ~wizard~ (5)
+      // Sunfire
+      ADD_KNOWN_SPELL ~SPWI523~ #4 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI523~ #4 ~wizard~ (5)
+      // Conjure Fire Elemental
+      ADD_KNOWN_SPELL ~SPWI620~ #5 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI620~ #5 ~wizard~ (3)
+      // Delayed Blast Fireball
+      ADD_KNOWN_SPELL ~SPWI712~ #6 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI712~ #6 ~wizard~ (1)
+      // Summon Efreeti
+      ADD_KNOWN_SPELL ~SPWI717~ #6 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI717~ #6 ~wizard~ (1)
+      // Incendiary Cloud
+      ADD_KNOWN_SPELL ~SPWI810~ #7 ~wizard~
+      ADD_MEMORIZED_SPELL ~SPWI810~ #7 ~wizard~ (1)
+  
+    COPY ~TyrisFlare/Creatures/G#TFLOVE.cre~ ~override/G#TFLOVE.cre~
+      SAY NAME1 ~Tarik~
+      SAY NAME2 ~Tarik~
+      WRITE_ASCII DEATHVAR ~G#TFLOVE~
+      WRITE_ASCII DIALOG ~G#TFLOVE~
+      ADD_CRE_ITEM ~sw2h01~ #0 #0 #0 ~IDENTIFIED~ ~WEAPON1~ EQUIP
+      ADD_CRE_ITEM ~leat04~ #0 #0 #0 ~IDENTIFIED~ ~ARMOR~
+      ADD_CRE_ITEM ~minhp1~ #0 #0 #0 ~IDENTIFIED~ ~AMULET~
+  
+    // Dialogue
+  
+    COMPILE EVALUATE_BUFFER ~TyrisFlare/Dialogue/G#TRS25A.d~
+            ~TyrisFlare/Dialogue/G#TRS25P.d~
+            ~TyrisFlare/Dialogue/G#TRS25J.d~
+            ~TyrisFlare/Dialogue/BG#TRS25.d~
+            ~TyrisFlare/Dialogue/ExpInterjections.d~
+            ~TyrisFlare/Dialogue/ExpLovetalks.d~
+            ~TyrisFlare/Dialogue/G#TFLOVE.d~
+            ~TyrisFlare/Dialogue/FinalSolarChoice.d~
+            ~TyrisFlare/Dialogue/ExpFlirts.d~
+  
+    // Scripts
+  
+    COMPILE ~TyrisFlare/Scripts/G#TYRS25.baf~
+            ~TyrisFlare/Scripts/G#TRS25D.baf~
+
+    EXTEND_TOP ~baldur25.bcs~ ~TyrisFlare/Scripts/BALDUR25.baf~
+
+    EXTEND_TOP ~ar6200.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR6200.baf~
+
+    COMPILE ~TyrisFlare/Scripts/WraithScripts/G#TFCUTL.baf~
+    EXTEND_BOTTOM ~cut218g.bcs~ ~TyrisFlare/Scripts/WraithScripts/CUT218G.baf~
+  
+    EXTEND_TOP ~imoe25.bcs~ ~TyrisFlare/Scripts/BioWareNPCs/IMOE25.baf~
+
+    // 2DA Files
+
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND1.2da~ // Regular epilogue: Mortal
+      REPLACE 99999 @46
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND2.2da~ // Regular epilogue: Ascension (sent home)
+      REPLACE 99999 @47
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND3.2da~ // Regular epilogue: Ascension (not sent home)
+      REPLACE 99999 @48
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND4.2da~ // Romantic epilogue: Mortal and baby
+      REPLACE 99999 @49
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND5.2da~ // Romantic epilogue: Mortal but no baby
+      REPLACE 99999 @50
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND6.2da~ // Romantic epilogue: Mortal but promised to discuss baby
+      REPLACE 99999 @51
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND7.2da~ // Romantic epilogue: Ascension (sent home with no memory) and baby
+      REPLACE 99999 @52
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND8.2da~ // Romantic epilogue: Ascension (sent home with no memory) but no baby
+      REPLACE 99999 @53
+  
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND9.2da~ // Romantic epilogue: Ascension (sent home) and baby
+      REPLACE 99999 @54
+
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFEND0.2da~ // Romantic epilogue: Ascension (sent home) but no baby
+      REPLACE 99999 @55
+
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFENDA.2da~ // Romantic epilogue: Ascension (not sent home) and baby
+      REPLACE 99999 @56
+
+    COPY ~TyrisFlare/2DAs/G#TFEND.2da~ ~override/G#TFENDB.2da~ // Romantic epilogue: Ascension (not sent home) but no baby
+      REPLACE 99999 @57
+  
+  END
+
+  // Audio
+
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~g3blank.mus~ THEN BEGIN
+    COPY_EXISTING ~songlist.2da~ ~override/songlist.2da~
+      SET_2DA_ENTRY 2 1 2 ~G3Blank~
+      SET_2DA_ENTRY 2 2 2 ~G3Blank.mus~
+
+    COPY ~TyrisFlare/Audio/G3Blank.mus~ ~music/G3Blank.mus~
+  END
+
+  ACTION_IF NOT FILE_EXISTS_IN_GAME ~g3mute.wav~ THEN BEGIN
+    COPY ~TyrisFlare/Audio/wav/G3MUTE.wav~ ~override/G3MUTE.wav~
+  END
+
+  LAF ~HANDLE_AUDIO~ STR_VAR audio_path = "TyrisFlare/Audio/ogg" END
+
+ACTION_IF GAME_IS ~eet~ BEGIN
+  LOAD_TRA ~TyrisFlare/languages/%LANGUAGE%/g#trs25a.tra~
+  INCLUDE ~TyrisFlare/lib/EET_functions.tph~
+  LAF ~EET_NPC_TRANSITION~
+    INT_VAR
+      type = 2
+    STR_VAR
+      dv = "G#Tyris"
+      override_SoA = "G#TYRIS"
+      override_ToB = "G#TYRS25"
+      dialog_ToB = "G#TRS25A"
+      string = "@1" //Bring me Tyris, the amazon fighter/mage.
+      stringPosDV = "Viconia"
+      SummonedVar = "G#TF.TyrisSummoned"
+      SpawnPlaneVar = "G#TF.TyrisSpawnPlane"
+  END
+END ELSE BEGIN
+  COMPILE ~TyrisFlare/Dialogue/FATESP.d~ USING ~TyrisFlare/languages/%LANGUAGE%/g#trs25a.tra~
+  EXTEND_TOP ~ar4000.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR4000.baf~
+  EXTEND_TOP ~ar4500.bcs~ ~TyrisFlare/Scripts/AreaScripts/AR4500.baf~
+END
+
+BEGIN @101000
+  DESIGNATED 101
+  REQUIRE_COMPONENT ~Setup-TyrisFlare.tp2~ ~0~ @101001
+  SUBCOMPONENT @101002
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate1/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate1/G#TYRISM_ee.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate1/G#TYRISS_ee.bmp~ ~override/G#TYRISS.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate1/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate1/G#TYRISM.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate1/G#TYRISS.bmp~ ~override/G#TYRISS.bmp~
+    END
+
+BEGIN @102000
+  REQUIRE_COMPONENT ~Setup-TyrisFlare.tp2~ ~0~ @101001
+  SUBCOMPONENT @101002
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate2/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate2/G#TYRISM_ee.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate2/G#TYRISS_ee.bmp~ ~override/G#TYRISS.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate2/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate2/G#TYRISM.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate2/G#TYRISS.bmp~ ~override/G#TYRISS.bmp~
+  END
+
+BEGIN @103000
+  REQUIRE_COMPONENT ~Setup-TyrisFlare.tp2~ ~0~ @101001
+  SUBCOMPONENT @101002
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate3/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate3/G#TYRISM_ee.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate3/G#TYRISS_ee.bmp~ ~override/G#TYRISS.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate3/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate3/G#TYRISM.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate3/G#TYRISS.bmp~ ~override/G#TYRISS.bmp~
+  END
+
+BEGIN @104000
+  REQUIRE_COMPONENT ~Setup-TyrisFlare.tp2~ ~0~ @101001
+  SUBCOMPONENT @101002
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate4/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate4/G#TYRISM_ee.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate4/G#TYRISS_ee.bmp~ ~override/G#TYRISS.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate4/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate4/G#TYRISM.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate4/G#TYRISS.bmp~ ~override/G#TYRISS.bmp~
+  END
+
+BEGIN @105000
+  REQUIRE_COMPONENT ~Setup-TyrisFlare.tp2~ ~0~ @101001
+  SUBCOMPONENT @101002
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate5/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate5/G#TYRISM_ee.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate5/G#TYRISS_ee.bmp~ ~override/G#TYRISS.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate5/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate5/G#TYRISM.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate5/G#TYRISS.bmp~ ~override/G#TYRISS.bmp~
+  END
+
+BEGIN @106000
+  REQUIRE_COMPONENT ~Setup-TyrisFlare.tp2~ ~0~ @101001
+  SUBCOMPONENT @101002
+  ACTION_IF GAME_IS ~bg2ee eet~ THEN BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate6/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate6/G#TYRISM_ee.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate6/G#TYRISS_ee.bmp~ ~override/G#TYRISS.bmp~
+  END ELSE BEGIN
+    COPY ~TyrisFlare/Portraits/Alternate6/G#TYRISL.bmp~ ~override/G#TYRISL.bmp~
+         ~TyrisFlare/Portraits/Alternate6/G#TYRISM.bmp~ ~override/G#TYRISM.bmp~
+         ~TyrisFlare/Portraits/Alternate6/G#TYRISS.bmp~ ~override/G#TYRISS.bmp~
+  END

@@ -1,0 +1,8 @@
+IF
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  GlobalGT("MaeVarWork","GLOBAL",0)
+  !Dead("lin")
+THEN
+  RESPONSE #100
+    ActionOverride("lin",Kill(Myself))
+END

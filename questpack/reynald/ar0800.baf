@@ -1,0 +1,23 @@
+IF
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  InMyArea(Player1)
+  Global("D0Reynald","GLOBAL",2)
+  !CombatCounter(0)
+  !Dead("c6bodhi")
+  !Dead("kaypall")
+  !Dead("d0kaypal")
+THEN
+  RESPONSE #100
+    SetGlobal("D0Reynald","GLOBAL",7)
+    CreateCreatureObjectOffset("d0kaypal",Player1,[10.-5])
+    ActionOverride("d0kaypal",StartDialogNoSet(Player1))
+    Continue()
+END
+
+IF
+  GlobalGT("D0Reynald","GLOBAL",8)
+  InMyArea("d0kaypal")
+THEN
+  RESPONSE #100
+    ActionOverride("d0kaypal",DestroySelf())
+END

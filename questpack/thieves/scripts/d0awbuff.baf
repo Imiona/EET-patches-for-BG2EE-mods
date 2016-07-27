@@ -1,0 +1,354 @@
+// Ring of Lock Picks dupliucation fix
+IF
+  Name("arnwar07",Myself)
+  HasItem("ring35",Myself)
+  !Global("WorkingForBodhi","GLOBAL",1)
+THEN
+  RESPONSE #100
+    DestroyItem("ring35")
+    Continue()
+END
+
+//////////////////////////////////////////////////////////////////////
+// Powerups
+
+IF
+  Global("D0Potions","LOCALS",0)
+  DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",1)
+    GiveItemCreate("potn10",Myself,1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",1)
+    GiveItemCreate("potn10",Myself,1,0,0)
+    GiveItemCreate("potn14",Myself,1,0,0)
+    Continue()
+END
+
+IF
+  Global("D0Potions","LOCALS",0)
+  !DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",1)
+    GiveItemCreate("potn10",Myself,1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",1)
+    GiveItemCreate("potn14",Myself,1,0,0)
+    Continue()
+END
+
+IF
+  GlobalLT("D0Potions","LOCALS",2)
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",2)
+    GiveItemCreate("potn10",Myself,1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",2)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",2)
+    GiveItemCreate("potn14",Myself,1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",2)
+    GiveItemCreate("potn11",Myself,1,0,0)
+    Continue()
+END
+
+IF
+  GlobalLT("D0Potions","LOCALS",2)
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  !DifficultyGT(NORMAL)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",2)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",2)
+    GiveItemCreate("potn14",Myself,1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Potions","LOCALS",2)
+    GiveItemCreate("potn10",Myself,1,0,0)
+    Continue()
+END
+
+IF
+  !GlobalTimerNotExpired("Cast","LOCALS")
+  See(NearestEnemyOf(Myself))
+  OR(2)
+    StateCheck(Myself,STATE_INVISIBLE)
+    StateCheck(Myself,STATE_IMPROVEDINVISIBILITY)
+  !Name("gorch",Myself)
+  !Name("tassa",Myself)
+  !Name("arnman05",Myself)
+  !Name("arnboy01",Myself)
+  Allegiance(Myself,ENEMY)
+  Global("D0Poison","LOCALS",0)
+  Difficulty(HARDEST)
+  AreaCheck("ar0307")
+  !Name("lin",Myself)
+THEN
+  RESPONSE #100
+    SetGlobal("D0Poison","LOCALS",1)
+    Continue()
+  RESPONSE #100
+    SetGlobal("D0Poison","LOCALS",1)
+    SetGlobalTimer("Cast","LOCALS",6)
+    SpellNoDecRES("spcl423",Myself)
+    Continue()
+END
+
+IF
+  Global("D0InitiateMegaThiefSpawning","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0InitiateMegaThiefSpawning","GLOBAL",1)
+    SetGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",25)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  GlobalGT("SPRITE_IS_DEADd0arbkup","GLOBAL",10)
+  Allegiance(Myself,ENEMY)
+  !StateCheck(Myself,STATE_REALLY_DEAD)
+  AreaCheck("ar0329")
+  !Specifics(Myself,241)
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  Global("SpawnHelp","LOCALS",0)
+  !Name("arnman05",Myself)
+  GlobalGT("D0Maevar2","GLOBAL",0)
+  !GlobalTimerNotExpired("D0SpawnMoreTimer","MYAREA")
+  !Name("d0arbkup",Myself)
+  !Name("lin",Myself)
+  OR(4)
+    !Dead("Aran")
+    !GlobalGT("D0Maevar","GLOBAL",4)
+    Global("D0WarnedAran","GLOBAL",1)
+    Dead("d0nightk")
+THEN
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",25)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",30)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",25)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-3)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",30)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",25)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",30)
+    Continue()
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  GlobalGT("SPRITE_IS_DEADd0arbkup","GLOBAL",10)
+  Allegiance(Myself,ENEMY)
+  !StateCheck(Myself,STATE_REALLY_DEAD)
+  !Specifics(Myself,241)
+  AreaCheck("ar0307")
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  Global("SpawnHelp","LOCALS",0)
+  !Name("arnman05",Myself)
+  !Difficulty(HARDEST)
+  !Global("D0LarellAssault","GLOBAL",0)
+  !GlobalTimerNotExpired("D0SpawnMoreTimer","MYAREA")
+  !Name("d0arbkup",Myself)
+  !Name("lin",Myself)
+  OR(4)
+    !Dead("Aran")
+    !GlobalGT("D0Maevar","GLOBAL",4)
+    Global("D0WarnedAran","GLOBAL",1)
+    Dead("d0nightk")
+THEN
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",15)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",18)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",15)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-3)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",18)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",12)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",15)
+    Continue()
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  GlobalGT("SPRITE_IS_DEADd0arbkup","GLOBAL",10)
+  Allegiance(Myself,ENEMY)
+  !StateCheck(Myself,STATE_REALLY_DEAD)
+  !Specifics(Myself,241)
+  AreaCheck("ar0307")
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  Global("SpawnHelp","LOCALS",0)
+  !Name("arnman05",Myself)
+  OR(2)
+    Difficulty(HARDEST)
+    Global("D0LarellAssault","GLOBAL",0)
+  !GlobalTimerNotExpired("D0SpawnMoreTimer","MYAREA")
+  !Name("d0arbkup",Myself)
+  !Name("lin",Myself)
+  OR(4)
+    !Dead("Aran")
+    !GlobalGT("D0Maevar","GLOBAL",4)
+    Global("D0WarnedAran","GLOBAL",1)
+    Dead("d0nightk")
+THEN
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",15)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",18)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-3)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",15)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-3)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",18)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-3)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbku2",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",15)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-2)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",18)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-3)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",12)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",15)
+    Continue()
+  RESPONSE #100
+    SetGlobal("SpawnHelp","LOCALS",1)
+    SetGlobalTimer("D0SpawnMoreTimer","MYAREA",18)
+    IncrementGlobal("SPRITE_IS_DEADd0arbkup","GLOBAL",-4)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    CreateCreatureObjectOffScreen("d0arbkup",NearestEnemyOf(Myself),1,0,0)
+    Continue()
+END
+
+IF
+  !GlobalTimerNotExpired("Cast","LOCALS")
+  See(NearestEnemyOf(Myself))
+  !StateCheck(Myself,STATE_INVISIBLE)
+  !StateCheck(Myself,STATE_IMPROVEDINVISIBILITY)
+  !ModalState(STEALTH)
+  !GlobalTimerNotExpired("Hide","LOCALS")
+  HasItem("potn10",Myself)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("Cast","LOCALS",6)
+    DisplayStringHead(Myself,46150) // quaffs a potion
+    UseItem("potn10",Myself)
+END
+
+IF
+  !GlobalTimerNotExpired("Cast","LOCALS")
+  See(NearestEnemyOf(Myself))
+  !StateCheck(Myself,STATE_HASTED)
+  HasItem("potn14",Myself)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("Cast","LOCALS",6)
+    DisplayStringHead(Myself,46150) // quaffs a potion
+    UseItem("potn14",Myself)
+END
+
+IF
+  !GlobalTimerNotExpired("Cast","LOCALS")
+  See(NearestEnemyOf(Myself))
+  CheckStatGT(Myself,0,ARMORCLASS)
+  HasItem("potn11",Myself)
+THEN
+  RESPONSE #100
+    SetGlobalTimer("Cast","LOCALS",6)
+    DisplayStringHead(Myself,46150) // quaffs a potion
+    UseItem("potn11",Myself)
+END

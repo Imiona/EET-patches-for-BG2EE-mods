@@ -1,0 +1,38 @@
+IF
+  G("J#spawndoo",0)
+THEN
+  RESPONSE #100
+    SG("J#spawndoo",1)
+    CreateCreature("J#im8grd",[1580.2510],4)
+    Continue()
+END
+
+IF
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_4%)
+  G("J#spawndoo",1)
+THEN
+  RESPONSE #100
+    SG("J#spawndoo",2)
+    ActionOverride("J#im8grd",DestroySelf())
+END
+
+IF
+  G("J#im8booterrack",1)
+THEN
+  RESPONSE #100
+    SG("J#im8booterrack",2)
+    ActionOverride("arnman07",DestroySelf())
+    ActionOverride("booter",DestroySelf())
+    ActionOverride("arnboy01",DestroySelf())
+    CreateCreatureImpassable("J#im8boo",[2236.2384],2)
+    CreateCreature("J#im8tor",[2136.2423],6)
+END
+
+IF
+  G("J#im8guardcorpse",1)
+THEN
+  RESPONSE #100
+    SG("J#im8guardcorpse",2)
+    CreateCreature("deadb01",[993.2112],8)
+    CreateCreature("d0qpgude",[993.2112],8)
+END

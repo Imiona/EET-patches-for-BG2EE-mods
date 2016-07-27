@@ -1,0 +1,1531 @@
+BACKUP ~amber/backup~
+AUTHOR ~amber@welho.net~
+VERSION ~v4~
+README ~amber/readme-amber.html~
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+END
+
+LANGUAGE ~English~ ~english~ ~amber/tra/english/setup.tra~
+LANGUAGE ~Deutsch~ ~german~  ~amber/tra/german/setup.tra~
+LANGUAGE ~Spanish~ ~spanish~ ~amber/tra/spanish/setup.tra~
+
+BEGIN @150 /* @150 = ~Amber the NPC MOD for BGII:SoA~ */
+REQUIRE_PREDICATE FILE_EXISTS_IN_GAME ~mel01.cre~ @151 /* @151 = ~Please install the Throne of Bhaal expansion and the official patch before installing Amber.~ */
+
+// use new macro to handle all audio installation
+LAF HANDLE_AUDIO STR_VAR audio_path = ~amber/sounds/ambient~ oggdec_path = ~amber/sounds~ sox_path = ~amber/sounds~ END // ambient area sounds
+ACTION_IF FILE_EXISTS ~amber/sounds/%LANGUAGE%/m#amb001.ogg~ THEN BEGIN
+  LAF HANDLE_AUDIO STR_VAR audio_path = EVAL ~amber/sounds/%LANGUAGE%~ oggdec_path = ~amber/sounds~ sox_path = ~amber/sounds~ END // this replaces all the junk below
+END
+
+LAF HANDLE_TILESETS STR_VAR tiz_path = ~amber/tiz~ tizunpack_path = ~amber/tiz~ END // unpacks area tilesets
+
+MKDIR ~music/mxm#am~
+COPY ~amber/graphics~			~override~
+COPY ~amber/areas~			~override~
+COPY ~amber/2da/lum#a.2da~		~override~
+COPY ~amber/mus~ 		        ~music~
+COPY ~amber/song~ 		        ~music/mxm#am~
+COPY_EXISTING ~songlist.2da~ 		~override~
+SET_2DA_ENTRY 0 2 3 ~m#blank.mus~
+ADD_MUSIC  ~Amber~    ~music/mxm#am.mus~
+
+ACTION_IF GAME_IS ~BG2EE eet~ THEN BEGIN
+
+  COPY ~amber/ee~ ~override~ // ee-sized portraits, item description images
+  LOAD_TRA ~amber/tra/%LANGUAGE%/setup_ee.tra~
+
+  // these don't execute on non-EE, but since I've already got an EE-only block, let's drop them here
+  ADD_JOURNAL @1 @4 @5 @10                            USING ~amber/tra/%s/dialogs.tra~
+  ADD_JOURNAL @11 @12 @13 @14 @15 @16 @17 @18 @19 @20 USING ~amber/tra/%s/dialogs.tra~
+  ADD_JOURNAL @23 @24 @25 @26 @50 @51 @54             USING ~amber/tra/%s/dialogs.tra~
+  ADD_JOURNAL @52 @53                                 USING ~amber/tra/%s/dialogs.tra~
+  ADD_JOURNAL EXISTING TITLE (#74337) @55             USING ~amber/tra/%s/dialogs.tra~
+
+END ELSE BEGIN
+
+  // The following introduces the ToB scripting functions to a SoA game (Thanks for Idobek and CamDawg for showing the right way to do this.)
+  
+  APPEND ~ACTION.IDS~ ~31 SpellRES(S:RES*,O:Target*)~
+              UNLESS ~31 SpellRES(S:RES\*,O:Target\*)~
+  APPEND ~ACTION.IDS~ ~95 SpellPointRES(S:RES*,P:Target*)~
+              UNLESS ~95 SpellPointRES(S:RES\*,P:Target\*)~
+  APPEND ~ACTION.IDS~ ~113 ForceSpellRES(S:RES*,O:Target)~
+              UNLESS ~113 ForceSpellRES(S:RES\*,O:Target)~
+  APPEND ~ACTION.IDS~ ~114 ForceSpellPointRES(S:RES*,P:Target)~
+              UNLESS ~114 ForceSpellPointRES(S:RES\*,P:Target)~
+  APPEND ~ACTION.IDS~ ~147 RemoveSpellRES(S:Spell*)~
+              UNLESS ~147 RemoveSpellRES(S:Spell\*)~
+  APPEND ~ACTION.IDS~ ~160 ApplySpellRES(S:RES*,O:Target)~
+              UNLESS ~160 ApplySpellRES(S:RES\*,O:Target)~
+  APPEND ~ACTION.IDS~ ~181 ReallyForceSpellRES(S:RES*,O:Target)~
+              UNLESS ~181 ReallyForceSpellRES(S:RES\*,O:Target)~
+  APPEND ~ACTION.IDS~ ~191 SpellNoDecRES(S:RES*,O:Target*)~
+              UNLESS ~191 SpellNoDecRES(S:RES\*,O:Target\*)~
+  APPEND ~ACTION.IDS~ ~192 SpellPointNoDecRES(S:RES*,P:Target*)~
+              UNLESS ~192 SpellPointNoDecRES(S:RES\*,P:Target\*)~
+  APPEND ~ACTION.IDS~ ~240 ReallyForceSpellDeadRES(S:RES*,O:Target)~
+              UNLESS ~240 ReallyForceSpellDeadRES(S:RES\*,O:Target)~
+  APPEND ~ACTION.IDS~ ~318 ForceSpellRangeRES(S:RES*,O:Target)~
+              UNLESS ~318 ForceSpellRangeRES(S:RES\*,O:Target)~
+  APPEND ~ACTION.IDS~ ~319 ForceSpellPointRangeRES(S:RES*,P:Target)~
+              UNLESS ~319 ForceSpellPointRangeRES(S:RES\*,P:Target)~
+  APPEND ~ACTION.IDS~ ~337 ReallyForceSpellPointRES(S:RES*,P:Target*)~
+              UNLESS ~337 ReallyForceSpellPointRES(S:RES\*,P:Target\*)~
+  APPEND ~TRIGGER.IDS~ ~0x00A1 SpellCastOnMeRES(S:Spell*,O:Caster*)~
+               UNLESS ~0x00A1 SpellCastOnMeRES(S:Spell\*,O:Caster\*)~
+  APPEND ~TRIGGER.IDS~ ~0x0091 SpellCastRES(S:Spell*,O:Object*)~
+               UNLESS ~0x0091 SpellCastRES(S:Spell\*,O:Object\*)~
+  APPEND ~TRIGGER.IDS~ ~0x00A6 SpellCastPriestRES(S:Spell*,O:Object*)~
+               UNLESS ~0x00A6 SpellCastPriestRES(S:Spell\*,O:Object\*)~
+  APPEND ~TRIGGER.IDS~ ~0x00A7 SpellCastInnateRES(S:Spell*,O:Object*)~
+               UNLESS ~0x00A7 SpellCastInnateRES(S:Spell\*,O:Object\*)~
+  APPEND ~TRIGGER.IDS~ ~0x4031 HaveSpellRES(S:Spell*)~
+               UNLESS ~0x4031 HaveSpellRES(S:Spell\*)~
+  APPEND ~TRIGGER.IDS~ ~0x40D5 ActuallyInCombat()~
+               UNLESS ~0x40D5 ActuallyInCombat()~
+
+  // Making sure that the player has correct (ToB) version of Shout() action in the action.ids
+  
+  COPY_EXISTING ~action.ids~ ~override~
+   REPLACE_TEXTUALLY ~^106 Shout(.*$~ ~106 Shout(I:ID*SHOUTIDS)~
+   BUT_ONLY_IF_IT_CHANGES
+
+END
+
+// Appending state.ids for combat AI (Use numerical values for shout.ids)
+
+APPEND ~state.ids~
+~0x00102029 STATE_HARMLESS~
+UNLESS ~STATE_HARMLESS~
+APPEND ~state.ids~
+~0x00400010 STATE_NOT_VISIBLE~
+UNLESS ~STATE_NOT_VISIBLE~
+APPEND ~state.ids~
+~0x8014202D STATE_OUT_OF_ACTION~
+UNLESS ~STATE_OUT_OF_ACTION~
+
+// Adding Amber's custom kit
+
+ADD_KIT ~m#ambkit~
+ // appended to CLASWEAP.2da
+ ~m#ambkit                1           1           1           1           1           1           1           1~
+ // appended column-wise to WEAPPROF.2da
+ ~m#ambkit 5 5 5 5 5 5 5 5 5 5 5 5 0 5 5 5 5 5 5 0 5 5 5 5 5 5 5 5 2 2 2 3 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5~
+ // appended to ABCLASRQ.2da
+ ~m#ambkit                9       0       0       0       0       0~
+ // appended to ABCLSMOD.2da
+ ~m#ambkit                0       0       0       0       0       0~
+ // appended to ABDCDSRQ.2da
+ ~m#ambkit                0       0       0       0       0       0~
+ // appended to ABDCSCRQ.2da
+ ~m#ambkit                0       0       0       0       0       0~
+ // appended to ALIGNMNT.2da
+ ~m#ambkit                1       1       1       1       1       1       1       1       1~
+ // appended to DUALCLAS.2da
+ ~m#ambkit                0       1       1       1       1       0~
+ // path to your CLAB-style 2da file
+ ~Amber/2da/m#ambkit.2da~
+ // PC races and classes allowed to use this kit, from KITTABLE.2da
+ ~~
+ // usability flags, added to the end of the KITLIST.2da entry
+ ~0x00010000     2~
+ // HLA table to use; see LUABBR.2da
+ ~m#a~
+ // list of starting equipment for PCs starting in ToB. Appended column-wise to 25STWEAP.2da
+ ~* * * * * * * * * * * * * * * * * * * *~
+ // Lower, mixed, and help kit names and descriptions, added to KITLIST.2da
+ SAY @152 /* @152 = ~Fighter~ */
+ SAY @152 /* @152 = ~Fighter~ */
+ SAY @153 /* @153 = ~FIGHTER:  The fighter is a champion, swordsman, soldier, and brawler.  He lives or dies by his knowledge of weapons and tactics.  Fighters can be found at the front of any battle, contesting toe-to-toe with monsters and villains.  A good fighter needs to be strong and healthy if he hopes to survive.~ */
+
+ACTION_IF GAME_IS ~BG2EE eet~ THEN BEGIN
+
+  INCLUDE ~amber/lib/cd_ee_kit_appends.tph~
+  LAUNCH_ACTION_FUNCTION ee_kit_appends STR_VAR class = "FIGHTER" kitname = "m#ambkit" END
+
+END
+
+// Compiling scripts and dialogs
+
+COMPILE EVALUATE_BUFFER ~amber/dialogs~ USING ~amber/tra/%s/dialogs.tra~
+COMPILE EVALUATE_BUFFER ~amber/scripts~ USING ~amber/tra/%s/dialogs.tra~
+COPY_EXISTING ~m#amber.bcs~ ~override/m#amber.bcs~
+REPLACE_TEXTUALLY 999997 ~%Amber%~
+COPY_EXISTING ~m#amberd.bcs~ ~override/m#amberd.bcs~
+REPLACE_TEXTUALLY 999997 ~%Amber%~
+
+// Copying Amber's AI Script
+
+COPY ~override/M#AmbeAI.bcs~ ~scripts/M#AmbeAI.bs~
+
+APPEND ~scrpdesc.2DA~ ~M#AmbeAI 999999 	999998~
+COPY_EXISTING ~scrpdesc.2da~ ~override/scrpdesc.2da~
+REPLACE ~999999~ @154 /* @154 = ~M#AmbeAI : ~ */
+REPLACE ~999998~ @155 /* @155 = ~Amber's combat AI script.~ */
+
+// Extending existing scripts
+
+EXTEND_BOTTOM ~ar0300.bcs~ ~override/m#ar0300.bcs~
+EXTEND_TOP ~ar0400.bcs~ ~override/m#ar0400.bcs~
+EXTEND_BOTTOM ~ar0500.bcs~ ~override/m#ar0500.bcs~
+EXTEND_TOP ~ar1000.bcs~ ~override/m#ar1000.bcs~
+EXTEND_TOP ~ar1005.bcs~ ~override/m#ar1005.bcs~
+EXTEND_TOP ~ar0313.bcs~ ~override/m#ar0313.bcs~
+EXTEND_TOP ~ar0334.bcs~ ~override/m#ar0334.bcs~
+EXTEND_TOP ~ar0405.bcs~ ~override/m#ar0405.bcs~
+EXTEND_TOP ~ar0700.bcs~ ~override/m#ar0700.bcs~
+EXTEND_TOP ~baldur.bcs~ ~override/m#baldur.bcs~
+EXTEND_BOTTOM ~aerie.bcs~ ~override/m#aerie.bcs~
+EXTEND_BOTTOM ~anomen.bcs~ ~override/m#anomen.bcs~
+EXTEND_BOTTOM ~edwin.bcs~ ~override/m#edwin.bcs~
+EXTEND_BOTTOM ~haerdali.bcs~ ~override/m#haerda.bcs~
+EXTEND_BOTTOM ~imoen2.bcs~ ~override/m#imoen.bcs~
+EXTEND_BOTTOM ~jaheira.bcs~ ~override/m#jaheir.bcs~
+EXTEND_BOTTOM ~jan.bcs~ ~override/m#jan.bcs~
+EXTEND_BOTTOM ~keldorn.bcs~ ~override/m#keldor.bcs~
+EXTEND_BOTTOM ~korgan.bcs~ ~override/m#korgan.bcs~
+EXTEND_BOTTOM ~mazzy.bcs~ ~override/m#mazzy.bcs~
+EXTEND_BOTTOM ~minsc.bcs~ ~override/m#minsc.bcs~
+EXTEND_BOTTOM ~nalia.bcs~ ~override/m#nalia.bcs~
+EXTEND_BOTTOM ~valygar.bcs~ ~override/m#valyga.bcs~
+EXTEND_BOTTOM ~viconia.bcs~ ~override/m#viconi.bcs~
+EXTEND_BOTTOM ~yoshimo.bcs~ ~override/m#yoshim.bcs~
+EXTEND_BOTTOM ~dplayer3.bcs~ ~override/m#dp3app.bcs~
+
+// Bodhi abduction
+
+EXTEND_BOTTOM ~AR0809.bcs~ ~override/m#ar0809.bcs~
+EXTEND_BOTTOM ~bodhiamb.bcs~ ~override/m#bodhiamb.bcs~
+EXTEND_BOTTOM ~cleanse.bcs~ ~override/m#cleanse.bcs~
+EXTEND_BOTTOM ~vampamb.bcs~ ~override/m#vampamb.bcs~
+
+// Appending .2da files
+
+APPEND ~pdialog.2da~
+~M#AMBER      M#AMBERP           M#AMBERJ          M#AMBERD~
+UNLESS ~M#AMBER~
+UNLESS ~25POST~
+  
+APPEND ~pdialog.2da~
+~M#AMBER      M#AMBERP           M#AMBERJ          M#AMBERD       M#AMB25P           M#AMB25J              M#AMB25D              m#amb25~
+UNLESS ~M#AMBER~
+IF ~25POST~
+  
+APPEND ~interdia.2da~
+~M#AMBER     BM#AMBER~
+UNLESS ~M#AMBER~
+UNLESS ~25FILE~
+  
+APPEND ~interdia.2da~
+~M#AMBER     BM#AMBER	 BM#AMB25~
+UNLESS ~M#AMBER~
+IF ~25FILE~
+
+APPEND ~itemdial.2da~
+~M#RINGB    44002 M#RINGB~
+UNLESS ~M#RINGB~
+
+APPEND ~itemdial.2da~
+~M#YMMAP    4978  M#YMMAP~
+UNLESS ~M#YMMAP~
+
+APPEND ~itemdial.2da~
+~M#KRING    44002 M#KRING~
+UNLESS ~M#KRING~
+
+APPEND ~itemexcl.2da~
+~M#ASLEAT 1~
+UNLESS ~M#ASLEAT~
+
+// The following copies sounds used in the new areas to override so that they function
+
+COPY_EXISTING ~ams602j1.wav~ 	~override/ams602j1.wav~	// in AREA060A.BIF
+COPY_EXISTING ~ams602j2.wav~ 	~override/ams602j2.wav~	// in AREA060A.BIF 
+COPY_EXISTING ~am0304.wav~ 	~override/am0304.wav~	// in AREA030A.BIF
+COPY_EXISTING ~am0307.wav~ 	~override/am0307.wav~	// in AREA030A.BIF
+COPY_EXISTING ~am0315.wav~ 	~override/am0315.wav~	// in AREA030B.BIF
+COPY_EXISTING ~am0603.wav~ 	~override/am0603.wav~	// in AREA060A.BIF
+
+// This makes the cell door in the city jail locked and openable by the cell key (now also sets the door to use up the key)
+
+COPY_EXISTING ~ar1005.are~ ~override~
+  WRITE_ASCII 0x94 ~AR1005~
+  READ_LONG 0xa4 "door_num"
+  READ_LONG 0xa8 "door_off"
+  WHILE ("%door_num%" > 0) BEGIN
+    SET "door_num" = ("%door_num%" - 1)
+    READ_BYTE  ("%door_off%" + 0x28 + ("%door_num%" * 0xc8)) "locked"
+    READ_BYTE  ("%door_off%" + 0x29 + ("%door_num%" * 0xc8)) "usekey"
+    READ_ASCII ("%door_off%" + 0x20 + ("%door_num%" * 0xc8)) "doorname"
+    PATCH_IF ("%doorname%" STRING_COMPARE_CASE "DOOR06" = 0) BEGIN
+      WRITE_ASCII ("%door_off%" + 0x78 + ("%door_num%" * 0xc8)) ~M#CKEY1~ // sets the door to use this key
+      WRITE_BYTE  ("%door_off%" + 0x28 + ("%door_num%" * 0xc8)) ("%locked%" BOR 0b01000010) // sets locked and openable bits
+      WRITE_BYTE ("%door_off%" + 0x29 + ("%door_num%" * 0xc8)) ("%usekey%" BOR 0b00000100) // sets uses up key bit
+      WRITE_LONG ("%door_off%" + 0x8c + ("%door_num%" * 0xc8)) 100 // sets lock difficulty
+    END
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+// The following fixes the broken kit.ids so that it can be used to detect kits properly.I stole this improved version from the Ding0.
+COPY_EXISTING ~kit.ids~ ~override~
+  REPLACE_TEXTUALLY ~.*\bTRUECLASS\b~              ~0x4000 TRUECLASS~
+  REPLACE_TEXTUALLY ~.*\bBERSERKER\b~              ~0x4001 BERSERKER~
+  REPLACE_TEXTUALLY ~.*\bWIZARDSLAYER\b~           ~0x4002 WIZARDSLAYER~
+  REPLACE_TEXTUALLY ~.*\bKENSAI\b~                 ~0x4003 KENSAI~
+  REPLACE_TEXTUALLY ~.*\bCAVALIER\b~               ~0x4004 CAVALIER~
+  REPLACE_TEXTUALLY ~.*\bINQUISITOR\b~             ~0x4005 INQUISITOR~
+  REPLACE_TEXTUALLY ~.*\bUNDEADHUNTER\b~           ~0x4006 UNDEADHUNTER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_ABJURER\b~     ~0x0040 MAGESCHOOL_ABJURER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_CONJURER\b~    ~0x0080 MAGESCHOOL_CONJURER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_DIVINER\b~     ~0x0100 MAGESCHOOL_DIVINER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_ENCHANTER\b~   ~0x0200 MAGESCHOOL_ENCHANTER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_ILLUSIONIST\b~ ~0x0400 MAGESCHOOL_ILLUSIONIST~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_INVOKER\b~     ~0x0800 MAGESCHOOL_INVOKER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_NECROMANCER\b~ ~0x1000 MAGESCHOOL_NECROMANCER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_TRANSMUTER\b~  ~0x2000 MAGESCHOOL_TRANSMUTER~
+  REPLACE_TEXTUALLY ~.*\bMAGESCHOOL_GENERALIST\b~  ~0x4000 MAGESCHOOL_GENERALIST~
+  REPLACE_TEXTUALLY ~.*\bFERALAN\b~                ~0x4007 FERALAN~
+  REPLACE_TEXTUALLY ~.*\bSTALKER\b~                ~0x4008 STALKER~
+  REPLACE_TEXTUALLY ~.*\bBEASTMASTER\b~            ~0x4009 BEASTMASTER~
+  REPLACE_TEXTUALLY ~.*\bASSASIN\b~                ~0x400A ASSASIN~
+  REPLACE_TEXTUALLY ~.*\bBOUNTYHUNTER\b~           ~0x400B BOUNTYHUNTER~
+  REPLACE_TEXTUALLY ~.*\bSWASHBUCKLER\b~           ~0x400C SWASHBUCKLER~
+  REPLACE_TEXTUALLY ~.*\bBLADE\b~                  ~0x400D BLADE~
+  REPLACE_TEXTUALLY ~.*\bJESTER\b~                 ~0x400E JESTER~
+  REPLACE_TEXTUALLY ~.*\bSKALD\b~                  ~0x400F SKALD~
+  REPLACE_TEXTUALLY ~.*\bGODTALOS\b~               ~0x4013 GODTALOS~
+  REPLACE_TEXTUALLY ~.*\bGODHELM\b~                ~0x4014 GODHELM~
+  REPLACE_TEXTUALLY ~.*\bGODLATHANDER\b~           ~0x4015 GODLATHANDER~
+  REPLACE_TEXTUALLY ~.*\bTOTEMIC\b~                ~0x4010 TOTEMIC~
+  REPLACE_TEXTUALLY ~.*\bSHAPESHIFTER\b~           ~0x4011 SHAPESHIFTER~
+  REPLACE_TEXTUALLY ~.*\bBEASTFRIEND\b~            ~0x4012 BEASTFRIEND~
+  REPLACE_TEXTUALLY ~.*\bBARBARIAN\b~              ~0x40000000 BARBARIAN~
+  REPLACE_TEXTUALLY ~.*\bWILDMAGE\b~               ~0x80000000 WILDMAGE~
+  BUT_ONLY
+
+APPEND ~kit.ids~ ~0x4000 TRUECLASS~ UNLESS ~\bTRUECLASS\b~
+APPEND ~kit.ids~ ~0x40000000 BARBARIAN~ UNLESS ~\bBARBARIAN\b~
+APPEND ~kit.ids~ ~0x80000000 WILDMAGE~ UNLESS ~\bWILDMAGE\b~
+
+// The following fixes the spear animations (code from G3 Tweak Pack)
+
+COPY_EXISTING_REGEXP GLOB ~.+\.itm~ ~override~
+  PATCH_IF (SOURCE_SIZE > 0x71) THEN BEGIN // protects against invalid files
+    READ_SHORT   0x22 "anim"
+    READ_LONG    0x64 "offset_abil"
+    READ_SHORT   0x68 "num_abil"
+    PATCH_IF ("%anim%" = 0x5053) BEGIN
+      WHILE (0 < "%num_abil%") BEGIN
+        READ_BYTE ("%offset_abil%" + (("%num_abil%" - 1) * 0x38)) "meleecheck"
+        PATCH_IF ("%meleecheck%" = 1) BEGIN
+          WRITE_SHORT ("%offset_abil%" + 0x2C + (("%num_abil%" - 1) * 0x38)) 10 // Overhead
+          WRITE_SHORT ("%offset_abil%" + 0x2E + (("%num_abil%" - 1) * 0x38)) 10 // Backhand
+          WRITE_SHORT ("%offset_abil%" + 0x30 + (("%num_abil%" - 1) * 0x38)) 80 // Thrusting
+        END
+        SET "num_abil" = ("%num_abil%" - 1)
+      END
+    END
+  END
+BUT_ONLY_IF_IT_CHANGES
+
+// Areas
+
+COPY ~Amber/areas/m#ar01.are~             ~override/m#ar01.are~         
+  SAY 0x9b4 @156 /* @156 = ~This alleyway is blocked by tall piles of broken crates and assorted debris.~ */ 
+COPY ~Amber/areas/m#ar02.are~             ~override/m#ar02.are~         
+COPY ~Amber/areas/m#ar03.are~             ~override/m#ar03.are~         
+COPY ~Amber/areas/m#ar04.are~             ~override/m#ar04.are~         
+COPY ~Amber/areas/m#ar05.are~             ~override/m#ar05.are~         
+  SAY 0x308 @157 /* @157 = ~The lock of this chest has been broken - obviously in a hurry - with a heavy silver candelabra. Whatever it contained is now gone.~ */ 
+  SAY 0x3cc @158 /* @158 = ~This man's face and body are twisted and contorted. He must have been in enormous amounts of pain before death offered its merciful release. At first you wonder what has caused the death of this guard, but upon closer examination you spot a sharp shard of glass sticking out of the man's neck. The skin around the cut has turned a nasty purplish-green colour and developed some vile-looking boils.~ */ 
+COPY ~Amber/areas/m#ar06.are~             ~override/m#ar06.are~ 
+
+// Creatures
+
+COPY ~Amber/creatures/m#ambr10.cre~           ~override/m#ambr10.cre~ 
+  SAY NAME1 @100
+  SAY NAME2 @100
+  SAY INITIAL_MEETING @101
+  SAY MORALE @102
+  SAY HAPPY @103
+  SAY UNHAPPY_ANNOYED @104
+  SAY UNHAPPY_SERIOUS @105
+  SAY UNHAPPY_BREAKING @106
+  SAY LEADER @107
+  SAY TIRED @108
+  SAY BORED @109
+  SAY BATTLE_CRY1 @110
+  SAY BATTLE_CRY2 @111
+  SAY BATTLE_CRY3 @112
+  SAY BATTLE_CRY4 @113
+  SAY DAMAGE @114
+  SAY DYING @115
+  SAY HURT @116
+  SAY AREA_FOREST @117
+  SAY AREA_CITY @118
+  SAY AREA_DUNGEON @119
+  SAY AREA_DAY @120
+  SAY AREA_NIGHT @121
+  SAY SELECT_COMMON1 @122
+  SAY SELECT_COMMON2 @123 
+  SAY SELECT_COMMON3 @124 
+  SAY SELECT_COMMON4 @125
+  SAY SELECT_COMMON5 @126
+  SAY SELECT_COMMON6 @127
+  SAY SELECT_ACTION1 @128 
+  SAY SELECT_ACTION2 @129
+  SAY SELECT_ACTION3 @130 
+  SAY SELECT_ACTION4 @131
+  SAY SELECT_ACTION5 @132
+  SAY SELECT_ACTION6 @133
+  SAY SELECT_ACTION7 @134
+  SAY SELECT_RARE1 @135
+  SAY SELECT_RARE2 @136 
+  SAY CRITICAL_HIT @137 
+  SAY CRITICAL_MISS @138
+  SAY TARGET_IMMUNE @139
+  SAY INVENTORY_FULL @140
+  SAY PICKED_POCKET @141
+  SAY SPELL_DISRUPTED @142
+  SAY SET_A_TRAP @143
+  SAY HIDDEN_IN_SHADOWS @145
+  SAY 0x1cc @144
+  WRITE_SHORT 0x244 0 // doesn't change
+  WRITE_BYTE  0x246 ~%m#ambkit%~ // the internal name of your kit, surrounded by %
+  WRITE_BYTE  0x247 0x40 // doesn't change
+
+COPY ~Amber/creatures/m#ambr12.cre~           ~override/m#ambr12.cre~ 
+  SAY NAME1 @100
+  SAY NAME2 @100
+  SAY INITIAL_MEETING @101
+  SAY MORALE @102
+  SAY HAPPY @103
+  SAY UNHAPPY_ANNOYED @104
+  SAY UNHAPPY_SERIOUS @105
+  SAY UNHAPPY_BREAKING @106
+  SAY LEADER @107
+  SAY TIRED @108
+  SAY BORED @109
+  SAY BATTLE_CRY1 @110
+  SAY BATTLE_CRY2 @111
+  SAY BATTLE_CRY3 @112
+  SAY BATTLE_CRY4 @113
+  SAY DAMAGE @114
+  SAY DYING @115
+  SAY HURT @116
+  SAY AREA_FOREST @117
+  SAY AREA_CITY @118
+  SAY AREA_DUNGEON @119
+  SAY AREA_DAY @120
+  SAY AREA_NIGHT @121
+  SAY SELECT_COMMON1 @122
+  SAY SELECT_COMMON2 @123 
+  SAY SELECT_COMMON3 @124 
+  SAY SELECT_COMMON4 @125
+  SAY SELECT_COMMON5 @126
+  SAY SELECT_COMMON6 @127
+  SAY SELECT_ACTION1 @128 
+  SAY SELECT_ACTION2 @129
+  SAY SELECT_ACTION3 @130 
+  SAY SELECT_ACTION4 @131
+  SAY SELECT_ACTION5 @132
+  SAY SELECT_ACTION6 @133
+  SAY SELECT_ACTION7 @134
+  SAY SELECT_RARE1 @135
+  SAY SELECT_RARE2 @136 
+  SAY CRITICAL_HIT @137 
+  SAY CRITICAL_MISS @138
+  SAY TARGET_IMMUNE @139
+  SAY INVENTORY_FULL @140
+  SAY PICKED_POCKET @141
+  SAY SPELL_DISRUPTED @142
+  SAY SET_A_TRAP @143
+  SAY HIDDEN_IN_SHADOWS @145
+  SAY 0x1cc @144
+  WRITE_SHORT 0x244 0 // doesn't change
+  WRITE_BYTE  0x246 ~%m#ambkit%~ // the internal name of your kit, surrounded by %
+  WRITE_BYTE  0x247 0x40 // doesn't change
+
+COPY ~Amber/creatures/m#ambr14.cre~           ~override/m#ambr14.cre~
+  SAY NAME1 @100
+  SAY NAME2 @100
+  SAY INITIAL_MEETING @101
+  SAY MORALE @102
+  SAY HAPPY @103
+  SAY UNHAPPY_ANNOYED @104
+  SAY UNHAPPY_SERIOUS @105
+  SAY UNHAPPY_BREAKING @106
+  SAY LEADER @107
+  SAY TIRED @108
+  SAY BORED @109
+  SAY BATTLE_CRY1 @110
+  SAY BATTLE_CRY2 @111
+  SAY BATTLE_CRY3 @112
+  SAY BATTLE_CRY4 @113
+  SAY DAMAGE @114
+  SAY DYING @115
+  SAY HURT @116
+  SAY AREA_FOREST @117
+  SAY AREA_CITY @118
+  SAY AREA_DUNGEON @119
+  SAY AREA_DAY @120
+  SAY AREA_NIGHT @121
+  SAY SELECT_COMMON1 @122
+  SAY SELECT_COMMON2 @123 
+  SAY SELECT_COMMON3 @124 
+  SAY SELECT_COMMON4 @125
+  SAY SELECT_COMMON5 @126
+  SAY SELECT_COMMON6 @127
+  SAY SELECT_ACTION1 @128 
+  SAY SELECT_ACTION2 @129
+  SAY SELECT_ACTION3 @130 
+  SAY SELECT_ACTION4 @131
+  SAY SELECT_ACTION5 @132
+  SAY SELECT_ACTION6 @133
+  SAY SELECT_ACTION7 @134
+  SAY SELECT_RARE1 @135
+  SAY SELECT_RARE2 @136 
+  SAY CRITICAL_HIT @137 
+  SAY CRITICAL_MISS @138
+  SAY TARGET_IMMUNE @139
+  SAY INVENTORY_FULL @140
+  SAY PICKED_POCKET @141
+  SAY SPELL_DISRUPTED @142
+  SAY SET_A_TRAP @143
+  SAY HIDDEN_IN_SHADOWS @145
+  SAY 0x1cc @144
+  WRITE_SHORT 0x244 0 // doesn't change
+  WRITE_BYTE  0x246 ~%m#ambkit%~ // the internal name of your kit, surrounded by %
+  WRITE_BYTE  0x247 0x40 // doesn't change
+
+COPY ~Amber/creatures/m#ambr15.cre~           ~override/m#ambr15.cre~
+  SAY NAME1 @100
+  SAY NAME2 @100
+  SAY INITIAL_MEETING @101
+  SAY MORALE @102
+  SAY HAPPY @103
+  SAY UNHAPPY_ANNOYED @104
+  SAY UNHAPPY_SERIOUS @105
+  SAY UNHAPPY_BREAKING @106
+  SAY LEADER @107
+  SAY TIRED @108
+  SAY BORED @109
+  SAY BATTLE_CRY1 @110
+  SAY BATTLE_CRY2 @111
+  SAY BATTLE_CRY3 @112
+  SAY BATTLE_CRY4 @113
+  SAY DAMAGE @114
+  SAY DYING @115
+  SAY HURT @116
+  SAY AREA_FOREST @117
+  SAY AREA_CITY @118
+  SAY AREA_DUNGEON @119
+  SAY AREA_DAY @120
+  SAY AREA_NIGHT @121
+  SAY SELECT_COMMON1 @122
+  SAY SELECT_COMMON2 @123 
+  SAY SELECT_COMMON3 @124 
+  SAY SELECT_COMMON4 @125
+  SAY SELECT_COMMON5 @126
+  SAY SELECT_COMMON6 @127
+  SAY SELECT_ACTION1 @128 
+  SAY SELECT_ACTION2 @129
+  SAY SELECT_ACTION3 @130 
+  SAY SELECT_ACTION4 @131
+  SAY SELECT_ACTION5 @132
+  SAY SELECT_ACTION6 @133
+  SAY SELECT_ACTION7 @134
+  SAY SELECT_RARE1 @135
+  SAY SELECT_RARE2 @136 
+  SAY CRITICAL_HIT @137 
+  SAY CRITICAL_MISS @138
+  SAY TARGET_IMMUNE @139
+  SAY INVENTORY_FULL @140
+  SAY PICKED_POCKET @141
+  SAY SPELL_DISRUPTED @142
+  SAY SET_A_TRAP @143
+  SAY HIDDEN_IN_SHADOWS @145  
+  SAY 0x1cc @144
+  WRITE_SHORT 0x244 0 // doesn't change
+  WRITE_BYTE  0x246 ~%m#ambkit%~ // the internal name of your kit, surrounded by %
+  WRITE_BYTE  0x247 0x40 // doesn't change
+
+COPY ~amber/creatures/m#vamber.cre~           ~override/m#vamber.cre~       
+  SAY NAME1 @159 /* @159 = ~Amber~ */ 
+  SAY NAME2 @159 /* @159 = ~Amber~ */ 
+
+COPY ~Amber/creatures/m#boy1.cre~             ~override/m#boy1.cre~
+COPY ~Amber/creatures/m#girl1.cre~            ~override/m#girl1.cre~
+COPY ~Amber/creatures/m#edtg.cre~             ~override/m#edtg.cre~         
+  SAY NAME1 @160 /* @160 = ~Ed~ */ 
+  SAY NAME2 @160 /* @160 = ~Ed~ */ 
+COPY ~Amber/creatures/m#maxtg.cre~            ~override/m#maxtg.cre~        
+  SAY NAME1 @161 /* @161 = ~Max~ */ 
+  SAY NAME2 @161 /* @161 = ~Max~ */ 
+COPY ~Amber/creatures/m#nicktg.cre~           ~override/m#nicktg.cre~       
+  SAY NAME1 @162 /* @162 = ~Nick~ */ 
+  SAY NAME2 @162 /* @162 = ~Nick~ */ 
+COPY ~Amber/creatures/m#prisg1.cre~           ~override/m#prisg1.cre~       
+COPY ~Amber/creatures/m#prisg2.cre~           ~override/m#prisg2.cre~
+
+COPY ~Amber/creatures/m#corin.cre~            ~override/m#corin.cre~        
+  SAY NAME1 @163 /* @163 = ~Captain Corin~ */ 
+  SAY NAME2 @163 /* @163 = ~Captain Corin~ */ 
+
+COPY ~Amber/creatures/m#ymm12.cre~            ~override/m#ymm12.cre~        
+  SAY NAME1 @164 /* @164 = ~Ymmyrt~ */ 
+  SAY NAME2 @164 /* @164 = ~Ymmyrt~ */ 
+  SAY INITIAL_MEETING @165 /* @165 = ~What is that noise?~ */ 
+  SAY BATTLE_CRY1 @166 /* @166 = ~Maggots! Die, you scum!~ */ 
+  SAY BATTLE_CRY2 @167 /* @167 = ~You will not withstand my powers!~ */ 
+  SAY BATTLE_CRY3 @168 /* @168 = ~My pets will take care of you!~ */ 
+  SAY DAMAGE ~~ [m#ymm005]
+  SAY DYING @170 /* @170 = ~Noooooooooo! You will all fall with me!~ */ 
+  SAY HURT @171 /* @171 = ~You're a fool if you think Ymmyrt will be beaten this easily.~ */ 
+  SAY SELECT_COMMON1 @172 /* @172 = ~Do not disturb me.~ */ 
+  SAY SELECT_COMMON2 @173 /* @173 = ~I don't have time for this.~ */ 
+  SAY CRITICAL_HIT @174 /* @174 = ~Taste the pain of death!~ */ 
+  SAY CRITICAL_MISS @175 /* @175 = ~That was intentional.~ */ 
+  SAY TARGET_IMMUNE @176 /* @176 = ~Your petty magic will not be enough to protect you from my might!~ */ 
+  SAY SPELL_DISRUPTED @177 /* @177 = ~I cannot concentrate!~ */  
+COPY ~Amber/creatures/m#ymm16.cre~            ~override/m#ymm16.cre~        
+  SAY NAME1 @164 /* @164 = ~Ymmyrt~ */ 
+  SAY NAME2 @164 /* @164 = ~Ymmyrt~ */ 
+  SAY INITIAL_MEETING @165 /* @165 = ~What is that noise?~ */ 
+  SAY BATTLE_CRY1 @166 /* @166 = ~Maggots! Die, you scum!~ */ 
+  SAY BATTLE_CRY2 @167 /* @167 = ~You will not withstand my powers!~ */ 
+  SAY BATTLE_CRY3 @168 /* @168 = ~My pets will take care of you!~ */ 
+  SAY DAMAGE ~~ [m#ymm005]
+  SAY DYING @170 /* @170 = ~Noooooooooo! You will all fall with me!~ */ 
+  SAY HURT @171 /* @171 = ~You're a fool if you think Ymmyrt will be beaten this easily.~ */ 
+  SAY SELECT_COMMON1 @172 /* @172 = ~Do not disturb me.~ */ 
+  SAY SELECT_COMMON2 @173 /* @173 = ~I don't have time for this.~ */ 
+  SAY CRITICAL_HIT @174 /* @174 = ~Taste the pain of death!~ */ 
+  SAY CRITICAL_MISS @175 /* @175 = ~That was intentional.~ */ 
+  SAY TARGET_IMMUNE @176 /* @176 = ~Your petty magic will not be enough to protect you from my might!~ */ 
+  SAY SPELL_DISRUPTED @177 /* @177 = ~I cannot concentrate!~ */  
+COPY ~Amber/creatures/m#ymm19.cre~            ~override/m#ymm19.cre~        
+  SAY NAME1 @164 /* @164 = ~Ymmyrt~ */ 
+  SAY NAME2 @164 /* @164 = ~Ymmyrt~ */
+  SAY INITIAL_MEETING @165 /* @165 = ~What is that noise?~ */ 
+  SAY BATTLE_CRY1 @166 /* @166 = ~Maggots! Die, you scum!~ */ 
+  SAY BATTLE_CRY2 @167 /* @167 = ~You will not withstand my powers!~ */ 
+  SAY BATTLE_CRY3 @168 /* @168 = ~My pets will take care of you!~ */ 
+  SAY DAMAGE ~~ [m#ymm005]
+  SAY DYING @170 /* @170 = ~Noooooooooo! You will all fall with me!~ */ 
+  SAY HURT @171 /* @171 = ~You're a fool if you think Ymmyrt will be beaten this easily.~ */ 
+  SAY SELECT_COMMON1 @172 /* @172 = ~Do not disturb me.~ */ 
+  SAY SELECT_COMMON2 @173 /* @173 = ~I don't have time for this.~ */ 
+  SAY CRITICAL_HIT @174 /* @174 = ~Taste the pain of death!~ */ 
+  SAY CRITICAL_MISS @175 /* @175 = ~That was intentional.~ */ 
+  SAY TARGET_IMMUNE @176 /* @176 = ~Your petty magic will not be enough to protect you from my might!~ */ 
+  SAY SPELL_DISRUPTED @177 /* @177 = ~I cannot concentrate!~ */ 
+
+COPY ~Amber/creatures/m#lorr10.cre~           ~override/m#lorr10.cre~       
+  SAY NAME1 @178 /* @178 = ~Lorraine~ */ 
+  SAY NAME2 @178 /* @178 = ~Lorraine~ */
+  SAY INITIAL_MEETING @179 /* @179 = ~You have no business here, stranger.~ */ 
+  SAY BATTLE_CRY1 @180 /* @180 = ~This will be over sooner than you think!~ */ 
+  SAY BATTLE_CRY2 @181 /* @181 = ~I hope your soul is prepared!~ */ 
+  SAY BATTLE_CRY3 @182 /* @182 = ~You have not the strength to defeat me!~ */ 
+  SAY DAMAGE ~~ [m#lor005]
+  SAY DYING @184 /* @184 = ~No! I cannot die now! No, not yet...~ */ 
+  SAY HURT @185 /* @185 = ~Ynghh... You will not take me down!~ */ 
+  SAY SELECT_COMMON1 @186 /* @186 = ~You risk a lot by staying here.~ */ 
+  SAY SELECT_COMMON2 @187 /* @187 = ~What is your business?~ */ 
+  SAY SELECT_COMMON3 @188 /* @188 = ~This is a dangerous place. You must leave at once.~ */ 
+  SAY CRITICAL_HIT @189 /* @189 = ~Learn from that!~ */ 
+  SAY CRITICAL_MISS @190 /* @190 = ~What folly on my part!~ */ 
+  SAY TARGET_IMMUNE @191 /* @191 = ~Foul magic!~ */ 
+  SAY SPELL_DISRUPTED @192 /* @192 = ~No! Mielikki, please hear me!~ */ 
+COPY ~Amber/creatures/m#lorr13.cre~           ~override/m#lorr13.cre~       
+  SAY NAME1 @178 /* @178 = ~Lorraine~ */ 
+  SAY NAME2 @178 /* @178 = ~Lorraine~ */
+  SAY INITIAL_MEETING @179 /* @179 = ~You have no business here, stranger.~ */ 
+  SAY BATTLE_CRY1 @180 /* @180 = ~This will be over sooner than you think!~ */ 
+  SAY BATTLE_CRY2 @181 /* @181 = ~I hope your soul is prepared!~ */ 
+  SAY BATTLE_CRY3 @182 /* @182 = ~You have not the strength to defeat me!~ */ 
+  SAY DAMAGE ~~ [m#lor005]
+  SAY DYING @184 /* @184 = ~No! I cannot die now! No, not yet...~ */ 
+  SAY HURT @185 /* @185 = ~Ynghh... You will not take me down!~ */ 
+  SAY SELECT_COMMON1 @186 /* @186 = ~You risk a lot by staying here.~ */ 
+  SAY SELECT_COMMON2 @187 /* @187 = ~What is your business?~ */ 
+  SAY SELECT_COMMON3 @188 /* @188 = ~This is a dangerous place. You must leave at once.~ */ 
+  SAY CRITICAL_HIT @189 /* @189 = ~Learn from that!~ */ 
+  SAY CRITICAL_MISS @190 /* @190 = ~What folly on my part!~ */ 
+  SAY TARGET_IMMUNE @191 /* @191 = ~Foul magic!~ */ 
+  SAY SPELL_DISRUPTED @192 /* @192 = ~No! Mielikki, please hear me!~ */   
+COPY ~Amber/creatures/m#lorr17.cre~           ~override/m#lorr17.cre~       
+  SAY NAME1 @178 /* @178 = ~Lorraine~ */ 
+  SAY NAME2 @178 /* @178 = ~Lorraine~ */
+  SAY INITIAL_MEETING @179 /* @179 = ~You have no business here, stranger.~ */ 
+  SAY BATTLE_CRY1 @180 /* @180 = ~This will be over sooner than you think!~ */ 
+  SAY BATTLE_CRY2 @181 /* @181 = ~I hope your soul is prepared!~ */ 
+  SAY BATTLE_CRY3 @182 /* @182 = ~You have not the strength to defeat me!~ */ 
+  SAY DAMAGE ~~ [m#lor005]
+  SAY DYING @184 /* @184 = ~No! I cannot die now! No, not yet...~ */ 
+  SAY HURT @185 /* @185 = ~Ynghh... You will not take me down!~ */ 
+  SAY SELECT_COMMON1 @186 /* @186 = ~You risk a lot by staying here.~ */ 
+  SAY SELECT_COMMON2 @187 /* @187 = ~What is your business?~ */ 
+  SAY SELECT_COMMON3 @188 /* @188 = ~This is a dangerous place. You must leave at once.~ */ 
+  SAY CRITICAL_HIT @189 /* @189 = ~Learn from that!~ */ 
+  SAY CRITICAL_MISS @190 /* @190 = ~What folly on my part!~ */ 
+  SAY TARGET_IMMUNE @191 /* @191 = ~Foul magic!~ */ 
+  SAY SPELL_DISRUPTED @192 /* @192 = ~No! Mielikki, please hear me!~ */   
+
+COPY ~Amber/creatures/m#lorson.cre~           ~override/m#lorson.cre~       
+  SAY NAME1 @193 /* @193 = ~Ghost of Lorraine's Son~ */ 
+  SAY NAME2 @193 /* @193 = ~Ghost of Lorraine's Son~ */ 
+COPY ~Amber/creatures/m#wcsoul.cre~           ~override/m#wcsoul.cre~
+COPY ~Amber/creatures/m#ymmurd.cre~           ~override/m#ymmurd.cre~       
+  SAY NAME1 @194 /* @194 = ~Black Soul~ */ 
+  SAY NAME2 @194 /* @194 = ~Black Soul~ */ 
+COPY ~Amber/creatures/m#ympyro.cre~           ~override/m#ympyro.cre~       
+  SAY NAME1 @195 /* @195 = ~Fiery Soul~ */ 
+  SAY NAME2 @195 /* @195 = ~Fiery Soul~ */ 
+
+COPY ~Amber/creatures/m#yimp.cre~             ~override/m#yimp.cre~         
+  SAY NAME1 @196 /* @196 = ~Gabriel~ */ 
+  SAY NAME2 @196 /* @196 = ~Gabriel~ */ 
+  SAY INITIAL_MEETING @197 /* @197 = ~Atchooo!~ */ 
+
+COPY ~Amber/creatures/m#ynymp1.cre~           ~override/m#ynymp1.cre~       
+COPY ~Amber/creatures/m#ynymp2.cre~           ~override/m#ynymp2.cre~       
+COPY ~Amber/creatures/m#ynymp3.cre~           ~override/m#ynymp3.cre~ 
+COPY ~Amber/creatures/m#ydemon.cre~           ~override/m#ydemon.cre~       
+COPY ~Amber/creatures/m#ymacre.cre~           ~override/m#ymacre.cre~  
+COPY ~Amber/creatures/m#ygcook.cre~           ~override/m#ygcook.cre~       
+COPY ~Amber/creatures/m#ygswen.cre~           ~override/m#ygswen.cre~       
+  SAY NAME1 @198 /* @198 = ~Serving Girl~ */ 
+  SAY NAME2 @198 /* @198 = ~Serving Girl~ */
+COPY ~Amber/creatures/m#yclbm1.cre~           ~override/m#yclbm1.cre~       
+  SAY NAME1 @199 /* @199 = ~Ymmyrt's Lieutenant~ */ 
+  SAY NAME2 @199 /* @199 = ~Ymmyrt's Lieutenant~ */ 
+COPY ~Amber/creatures/m#ycmcm1.cre~           ~override/m#ycmcm1.cre~       
+  SAY NAME1 @200 /* @200 = ~Ymmyrt's Captain~ */ 
+  SAY NAME2 @200 /* @200 = ~Ymmyrt's Captain~ */ 
+COPY ~Amber/creatures/m#ygsbm1.cre~           ~override/m#ygsbm1.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygsbm2.cre~           ~override/m#ygsbm2.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygsbm3.cre~           ~override/m#ygsbm3.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygsbm4.cre~           ~override/m#ygsbm4.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygspm1.cre~           ~override/m#ygspm1.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygspm2.cre~           ~override/m#ygspm2.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygspm3.cre~           ~override/m#ygspm3.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygspm4.cre~           ~override/m#ygspm4.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygspm5.cre~           ~override/m#ygspm5.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#ygswm1.cre~           ~override/m#ygswm1.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+COPY ~Amber/creatures/m#yguna1.cre~           ~override/m#yguna1.cre~       
+  SAY NAME1 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+  SAY NAME2 @201 /* @201 = ~Ymmyrt's Guard~ */ 
+
+COPY ~Amber/creatures/m#rashry.cre~            ~override/m#rashry.cre~        
+  SAY NAME1 @202 /* @202 = ~Tailor~ */ 
+  SAY NAME2 @202 /* @202 = ~Tailor~ */     
+
+COPY ~Amber/creatures/m#reveal.cre~           ~override/m#reveal.cre~  
+
+// Items
+
+COPY ~Amber/items/m#abpipe.itm~           ~override/m#abpipe.itm~       
+  SAY NAME2 @203 /* @203 = ~Abyssal Pipe~ */ 
+  SAY UNIDENTIFIED_DESC @204 /* @204 = ~This is a small wooden pipe, carved to resemble the head of a demon.~ */ 
+  SAY DESC @205 /* @205 = ~This is a small wooden pipe, carved to resemble the head of a demon. When used, this pipe billows forth great gouts of deadly fumes from the planes of the Abyss.
+
+STATISTICS:
+
+Effect: Invokes "Cloud Kill" twice per day
+
+Not Usable By:
+Good Characters
+Elves~ */ 
+
+COPY ~Amber/items/m#asleat.itm~           ~override/m#asleat.itm~       
+  SAY NAME2 @206 /* @206 = ~Apprentice Shadow Armor~ */ 
+  SAY DESC @207 /* @207 = ~Apprentice shadow armor is a studded leather armor created for the use of the proteges and apprentices of the Shadowmasters of Amn, the highest order within the Shadow Thief hierarchy.  It is a +1 studded leather armour that helps its wearer meld into the shadows.
+
+STATISTICS:
+
+Armor Class: 6
+Special: +5% Hide in Shadows
+Weight: 12
+Requires: 6 Strength
+Only Usable By:
+Thief (single, multi and dual class)~ */ 
+
+COPY ~Amber/items/m#bchide.itm~           ~override/m#bchide.itm~       
+  SAY NAME2 @208 /* @208 = ~Snow Leopard Hide~ */ 
+  SAY UNIDENTIFIED_DESC @209 /* @209 = ~This hide that probably came off some large and exotic feline is simply the softest and most luxurious thing you remember having touched. The tanner must have been a master in his or her craft, as furs are much trickier to handle than plain leathers. This would make a wonderful cloak even for the most demanding nobleman.      ~ */ 
+  SAY DESC @210 /* @210 = ~This snow leopard hide is simply the softest and most luxurious thing you remember having touched. The tanner must have been a master in his or her craft, as furs are much trickier to handle than plain leathers. This would make a wonderful cloak even for the most demanding nobleman.~ */ 
+
+COPY ~Amber/items/m#bkey.itm~             ~override/m#bkey.itm~         
+  SAY NAME2 @211 /* @211 = ~Nymph Key~ */ 
+  SAY DESC @212 /* @212 = ~This strange key, shaped like a stylised nymph, opens the door to Ymmyrt's study and bedchambers.~ */ 
+
+COPY ~Amber/items/m#bkit.itm~             ~override/m#bkit.itm~         
+  SAY NAME1 @213 /* @213 = ~Beauty Kit~ */ 
+  SAY NAME2 @213 /* @213 = ~Beauty Kit~ */ 
+  SAY UNIDENTIFIED_DESC @214 /* @214 = ~This pouch contains little combs and laces along with some belladonna,  lead white, aloe, powdered henna and other assorted cosmetics. In short, everything you would need for beautification.
+
+STATISTICS:
+
+Charisma: +4 
+Duration: 12 hours
+Side Effect: 1-6 poison damage once the effects wear off~ */ 
+  SAY DESC @215 /* @215 = ~This pouch contains little combs and laces, along with some belladonna,  lead white, aloe, henna powder and other assorted cosmetics. In short, everything you would need for beautification.
+
+STATISTICS:
+
+Charisma: +4 
+Duration: 12 hours
+Side Effect: 1-6 poison damage once the effects wear off~ */ 
+
+COPY ~Amber/items/m#botele.itm~           ~override/m#botele.itm~       
+  SAY NAME1 @216 /* @216 = ~Pair of Bottles~ */ 
+  SAY NAME2 @217 /* @217 = ~Bottled Elements~ */ 
+  SAY UNIDENTIFIED_DESC @218 /* @218 = ~You found these strange bottles in the collections of the evil sorcerer Ymmyrt. The red bottle seems to possess a warm fiery glow, but the bluish bottle seems empty.~ */ 
+  SAY DESC @219 /* @219 = ~You found these strange bottles in the collecions of the evil sorcerer Ymmyrt. Apparently he had tried to create a collection of bottled elemental spirits, but only managed air and fire before his demise. Perhaps coaxing an earth elemental into a bottle had proved more difficult than he had anticipated.
+
+STATISTICS:
+
+Effect: Summons an elemental servant of air or fire.~ */ 
+
+COPY ~Amber/items/m#brose2.itm~           ~override/m#brose2.itm~       
+  SAY NAME2 @220 /* @220 = ~Blade of Roses +4~ */ 
+  SAY DESC @221 /* @221 = ~Blade of Roses, Long Sword +4
+This blade possesses an unearthly splendour, and it is likely that Sune, the goddess of beauty and passion, had a hand in its creation.  The effect it has on the wielder is immediate, and more than once in its history has this sword has been the secret behind a lacklustre soldier's sudden elevation at court.
+When you first came upon this blade, it was missing an enchanted ruby from its pommel. You might not ever have noticed this defect, but the dwarven smith Cromwell pointed it out and repaired the blade. In addition to the sword’s basic enchantment, the ruby - although not especially large - perfects the blade's balance, making it even more effective a weapon. How the pommel gem found its way to Amber’s bracelet, formerly owned by Jill the bard, remains a mystery. 
+
+STATISTICS:
+
+Equipped Abilities:
+ Charisma: +2 bonus
+ Protection from fear
+ Luck
+THAC0: +4 bonus
+Damage: 2D4 + 4
+Damage type: slashing
+Weight: 3
+Speed Factor: 2
+Proficiency Type: Long sword
+Type: 1-handed
+Requires: 6 Strength
+Not Usable By: Druid, Cleric, Mage~ */ 
+
+COPY ~Amber/items/m#bsgem.itm~            ~override/m#bsgem.itm~
+  SAY NAME1 @222 /* @222 = ~Black Gem~ */ 
+  SAY NAME2 @223 /* @223 = ~Black Soul Gem~ */ 
+  SAY UNIDENTIFIED_DESC @224 /* @224 = ~This strange, jet black gem, roughly the size and shape of a large egg, pulsates with a hollow semblance of light. Touching the gem sends shivers down your spine and fills you with a simultaneous sense of rage and dread.~ */ 
+  SAY DESC @225 /* @225 = ~This strange, jet black gem, roughly the size and shape of a large egg, contains a soul of purest evil. You have no idea what this vile creature could be, but the gem pulsates with a hollow semblance of light and touching it sends shivers down your spine and fills you with a simultaneous sense of rage and dread.~ */ 
+
+COPY ~Amber/items/m#buck2.itm~            ~override/m#buck2.itm~        
+  SAY NAME2 @226 /* @226 = ~Buckler +2~ */ 
+  SAY DESC @227 /* @227 = ~Buckler +2, Thorard's Saucer
+A buckler is usually a small shield of wood or metal that fastens to the forearm.  Because of its size, it is light and can be worn with very little restriction to movement. This buckler has been crafted by a skilful dwarven smith and is constructed of metal and hardened leather. An inscription wrought in dwarven runes inlaid in copper circles the metal hub, its bright lettering proudly  proclaiming: 'For the Glory of Moradin made by the hand of Thorard'. The buckler itself is of good, solid quality, but its real value lies in the protective enchantments that make it more resistant to blows.        
+
+STATISTICS:
+
+Armor Class Bonus: 3
+Special: No Missile/Piercing Attack Protection
+Weight: 2
+Requires: 4 Strength
+Unusable By:
+ Mage~ */ 
+
+COPY ~Amber/items/m#spear2.itm~            ~override/m#spear2.itm~        
+  SAY NAME1 @228 /* @228 = ~Spear~ */
+  SAY NAME2 @229 /* @229 = ~Spear +2~ */ 
+  SAY DESC @230 /* @230 = ~One of man's earliest weapons, dating back to the most primitive of times, the first spears were simply wooden poles or sticks sharpened at one end.  When man mastered metals, spearheads were made from iron and steel.  Having reached this end, weaponers began experimenting with different types of spear heads, thus leading to the development of certain polearm types.  Another line of tinkering led to the integration of magic with spears.  Tribal shaman would enchant the spears so that they would hit more often and do greater damage to their wielder's opponents.
+This particular spear is consists of an ashen shaft and a sharpened head that bears the look of dwarven craftsmanship. It is interesting to note that although the head, and likely the shaft as well, seem to be of dwarven manufacture, the enchanted runes on both the shaft and the head are carved in elvish letters. A work such as this, the product of the combined efforts of two peoples, is a very uncommon thing. This simple, yet effective weapon is a rare testament to the potential held by such an alliance.
+
+STATISTICS:
+  
+THAC0: +2 bonus
+Damage: 1D6 + 2
+Damage type: piercing
+Weight: 3
+Speed Factor: 4
+Proficiency Type: Spear 
+Type: 2-handed
+Requires: 5 Strength
+Unusable By:
+ Cleric
+ Mage
+ Thief
+ Monk
+Beast Master~ */
+  SAY UNIDENTIFIED_DESC @231 /* @231 = ~One of man's earliest weapons, dating back to the most primitive of times, the first spears were simply wooden poles or sticks sharpened at one end.  When man mastered metals, spearheads were made from iron and steel.  Having reached this end, weaponers began experimenting with different types of spear heads, thus leading to the development of certain polearm types.
+
+STATISTICS:
+
+Damage: 1D6
+Damage type: piercing
+Weight: 5
+Speed Factor: 6
+Proficiency Type: Spear 
+Type: 2-handed
+Requires: 5 Strength
+Not Usable By:
+ Cleric
+ Mage
+ Thief
+ Monk
+ Beast Master~ */ 
+
+COPY ~Amber/items/m#bundle.itm~           ~override/m#bundle.itm~       
+  SAY NAME1 @232 /* @232 = ~Bundle of Stuff~ */ 
+  SAY NAME2 @232 /* @232 = ~Bundle of Stuff~ */ 
+  SAY UNIDENTIFIED_DESC @233 /* @233 = ~This sack contains a bundle of miscellaneous stuff belonging to the creature that has been released into your custody.~ */ 
+  SAY DESC @233 /* @233 = ~This sack contains a bundle of miscellaneous stuff belonging to the creature that has been released into your custody.~ */ 
+
+COPY ~Amber/items/m#ckey1.itm~            ~override/m#ckey1.itm~        
+  SAY NAME1 @234 /* @234 = ~Cell Key~ */ 
+  SAY NAME2 @234 /* @234 = ~Cell Key~ */ 
+  SAY UNIDENTIFIED_DESC @235 /* @235 = ~This is a key to the Athkatlan prison cell that is supposed to hold a demon.~ */ 
+  SAY DESC @235 /* @235 = ~This is a key to the Athkatlan prison cell that is supposed to hold a demon.~ */ 
+
+COPY ~Amber/items/m#clearf.itm~           ~override/m#clearf.itm~       
+
+COPY ~Amber/items/m#club2.itm~            ~override/m#club2.itm~        
+  SAY NAME2 @236 /* @236 = ~Club +2~ */ 
+  SAY DESC @237 /* @237 = ~Most clubs are stout, hardwood sticks, narrow at the grip and wider at the end.  This simple weapon has been used since mankind first began using tools.  Anyone can find a good stout piece of wood and swing it; hence the club's widespread use. This particular club has been magically enhanced.
+
+STATISTICS:
+
+THAC0: +2 bonus
+Damage: 1D6 +2
+Damage type: crushing
+Weight: 1
+Speed Factor: 1
+Proficiency Type: Club
+Type: 1-handed
+Requires: 5 Strength
+Not Usable By:
+ Mage~ */ 
+
+COPY ~Amber/items/m#empoti.itm~           ~override/m#empoti.itm~       
+
+COPY ~Amber/items/m#form1.itm~            ~override/m#form1.itm~        
+  SAY NAME1 @238 /* @238 = ~Form #1567~ */ 
+  SAY NAME2 @238 /* @238 = ~Form #1567~ */ 
+  SAY UNIDENTIFIED_DESC @239 /* @239 = ~This is the official Athkatla Administrative Form #1567 you got from the clerk.~ */ 
+
+COPY ~Amber/items/m#form2.itm~            ~override/m#form2.itm~        
+  SAY NAME1 @240 /* @240 = ~Form #1567 missing Appendix B135~ */ 
+  SAY NAME2 @240 /* @240 = ~Form #1567 missing Appendix B135~ */ 
+  SAY UNIDENTIFIED_DESC @241 /* @241 = ~This the official Athkatla Administrative Form #1567, which is apparently missing Appendix B135. You have to see the clerk again to get the Appendix.~ */ 
+
+COPY ~Amber/items/m#form3.itm~            ~override/m#form3.itm~        
+  SAY NAME1 @242 /* @242 = ~Form #1567 with Appendix B135~ */ 
+  SAY NAME2 @242 /* @242 = ~Form #1567 with Appendix B135~ */ 
+  SAY UNIDENTIFIED_DESC @243 /* @243 = ~This the official Athkatla Administrative Form #1567 with the Appendix B135. Next they will probably ask you to fill out the pet licence for fiends.~ */ 
+
+COPY ~Amber/items/m#form4.itm~            ~override/m#form4.itm~        
+  SAY NAME1 @244 /* @244 = ~Filled Form 1567 with Appendix B135~ */ 
+  SAY NAME2 @244 /* @244 = ~Filled Form 1567 with Appendix B135~ */ 
+  SAY UNIDENTIFIED_DESC @245 /* @245 = ~This the official Athkatla Administrative Form #1567 complete with Appendix B135, filled out and signed by the Civil Servant.~ */ 
+
+COPY ~Amber/items/m#form5.itm~            ~override/m#form5.itm~        
+  SAY NAME1 @246 /* @246 = ~Filled form #1567 with Appendix B135 without stamp~ */ 
+  SAY NAME2 @246 /* @246 = ~Filled form #1567 with Appendix B135 without stamp~ */ 
+  SAY UNIDENTIFIED_DESC @247 /* @247 = ~This the official Athkatla Administrative Form #1567 with the Appendix B135, filled out and signed by the Civil Servant. It's still missing the stamp that indicates that the event has been duly recorded to the Council of Six records.~ */ 
+
+COPY ~Amber/items/m#form6.itm~            ~override/m#form6.itm~        
+  SAY NAME1 @248 /* @248 = ~Filled form #1567 with Appendix B135 with a stamp~ */ 
+  SAY NAME2 @248 /* @248 = ~Filled form #1567 with Appendix B135 with a stamp~ */ 
+  SAY UNIDENTIFIED_DESC @249 /* @249 = ~This the official Athkatla Administrative Form #1567 with the Appendix B135, filled out, signed and, yes, stamped by the Civil Servant.~ */ 
+
+COPY ~Amber/items/m#form7.itm~            ~override/m#form7.itm~        
+  SAY NAME1 @250 /* @250 = ~Complete Form #1567~ */ 
+  SAY NAME2 @250 /* @250 = ~Complete Form #1567~ */ 
+  SAY UNIDENTIFIED_DESC @251 /* @251 = ~This the official Athkatla Administrative Form #1567 with the Appendix B135, filled out, signed and stamped by the Civil Servant and complete with the final seal from Chief Investigator Brega.~ */ 
+
+COPY ~Amber/items/m#jbrace.itm~           ~override/m#jbrace.itm~       
+  SAY NAME1 @252 /* @252 = ~Bracelet~ */ 
+  SAY NAME2 @253 /* @253 = ~Gillian's Bracelet~ */ 
+  SAY UNIDENTIFIED_DESC @254 /* @254 = ~This wide silver bracelet is set with a large ruby that seems out of place in such a humble setting.~ */ 
+  SAY DESC @255 /* @255 = ~This rather plain and cheap-looking silver bracelet inset with a contrastingly large ruby used to belong to Amber's long-lost friend, a bard named Gillian "Jill" Featherstonehaugh. As of her past in general, Amber has never told you much of anything about her friend, but the bracelet seems to carry great importance to her and you suspect this is the last memento of a dear friend long since departed.
+
+When questioned about the bracelet she simply replies that she "wears it for luck", and after a while adds in a quiet voice "and for comfort".
+
+STATISTICS:
+
+Equipped Abilities:
+Luck
+Protection from Fear~ */ 
+
+COPY ~Amber/items/m#kring.itm~            ~override/m#kring.itm~        
+  SAY NAME1 @256 /* @256 = ~Key Ring~ */ 
+  SAY NAME2 @256 /* @256 = ~Key Ring~ */ 
+  SAY UNIDENTIFIED_DESC @257 /* @257 = ~This large metal ring can be opened to allow for the insertion of keys into it and closed into a solid hoop again. It is large enough to hold around three dozen normal-sized keys.~ */ 
+  SAY DESC @257 /* @257 = ~This large metal ring can be opened to allow for the insertion of keys into it and closed into a solid hoop again. It is large enough to hold around three dozen normal-sized keys.~ */ 
+
+COPY ~Amber/items/m#lkey.itm~             ~override/m#lkey.itm~         
+  SAY NAME1 @258 /* @258 = ~Laboratory Key~ */ 
+  SAY NAME2 @258 /* @258 = ~Laboratory Key~ */ 
+  SAY UNIDENTIFIED_DESC @259 /* @259 = ~This is the key to the door of Ymmyrt's laboratory, where you hope to find the sorcerer, along with Amber.~ */ 
+  SAY DESC @260 /* @260 = ~This is the key to the door of Ymmyrt's laboratory, where you hope to find the sorcerer, along with Amber. ~ */ 
+
+COPY ~Amber/items/m#lockp.itm~            ~override/m#lockp.itm~        
+  SAY NAME1 @261 /* @261 = ~Set of Lock Picks~ */ 
+  SAY NAME2 @261 /* @261 = ~Set of Lock Picks~ */ 
+  SAY UNIDENTIFIED_DESC @262 /* @262 = ~This set of exquisitely crafted lock picks and other tools complements the skills of the serious burglar or locksmith. With this set of tools, many of the simpler locks can be opened even by those with little experience, and in the hands of a skilled user they can help persuade even the most complicated of locks to open.
+
+STATISTICS:
+
+Equipped Ability: +20% Open Locks~ */ 
+  SAY DESC @262 /* @262 = ~This set of exquisitely crafted lock picks and other tools complements the skills of the serious burglar or locksmith. With this set of tools, many of the simpler locks can be opened even by those with little experience, and in the hands of a skilled user they can help persuade even the most complicated of locks to open.
+
+STATISTICS:
+
+Equipped Ability: +20% Open Locks~ */ 
+  SAY 0xde @263 /* @263 = ~You managed to break the set of lock picks by hitting someone with it. Nice work.~ */ 
+
+COPY ~Amber/items/m#lsgem.itm~            ~override/m#lsgem.itm~        
+  SAY NAME1 @264 /* @264 = ~Green Gem~ */ 
+  SAY NAME2 @265 /* @265 = ~Soul Gem of Lorraine's Son~ */ 
+  SAY UNIDENTIFIED_DESC @266 /* @266 = ~This strange bright green gem is the size and shape of a large egg and filled with flickering light. It feels warm to the touch, but touching it also fills you with an inexplicable feeling of sadness.~ */ 
+  SAY DESC @267 /* @267 = ~This bright green gem the size and shape of a large egg, filled with flickering light, holds the soul of Lorraine's son. It is warm to the touch, but it also fills your heart with an unexplained feeling of sadness that slowly vanishes as you take your hand off the stone.~ */ 
+
+COPY ~Amber/items/m#mgift.itm~            ~override/m#mgift.itm~        
+  SAY NAME2 @268 /* @268 = ~Mielikki's Gift~ */ 
+  SAY DESC @269 /* @269 = ~Mielikki's Gift, Scimitar +3
+
+Mielikki is the goddess of forests, all forest creatures, dryads and the autumn season. She is also called the Lady of the Forest, and like many other gods and goddesses, she sometimes bestows special gifts to her faithful followers. This elegantly curved blade that shimmers with soft pale green glow is one of those gifts. Masterfully balanced and blessed with both protective and offensive spells, this blade is truly a beauty to look at and wield.  
+
+This scimitar was originally given to the half-elven ranger and cleric Lorraine that you encountered while rescuing Amber from the clutches of the sorcerer Ymmyrt. When Lorraine fell in battle, you stripped this blade from her lifeless corpse.
+  
+STATISTICS:
+
+Equipped Ability: Armour of Faith twice per day
+Combat Ability: Entangle target on successful hit
+Damage: 1D8 +3
+THAC0: +3
+Damage type: slashing
+Weight: 3
+Speed Factor: 3
+Proficiency Type: Scimitar/Wakizashi/Ninja-To
+Type: 1-handed
+Requires: 6 Strength
+Not Usable By:
+ Cleric
+ Mage~ */ 
+
+COPY ~Amber/items/m#mgift2.itm~           ~override/m#mgift2.itm~       
+  SAY NAME2 @268 /* @268 = ~Mielikki's Gift~ */ 
+  SAY DESC @270 /* @270 = ~Mielikki's Gift, Scimitar +4
+
+Mielikki is the goddess of forests, all forest creatures, dryads and the autumn season. She is also called the Lady of the Forest, and like many other gods and goddesses, she sometimes bestows special gifts to her faithful followers. This elegantly curved blade that shimmers with soft pale green glow is one of those gifts. Masterfully balanced and blessed with both protective and offensive spells, this blade is truly a beauty to look at and wield.  
+
+This scimitar was originally given to the half-elven ranger and cleric Lorraine that you encountered while rescuing Amber from the clutches of the sorcerer Ymmyrt. When Lorraine fell in battle, you stripped this blade from her lifeless corpse. Since then, your butler and personal weaponsmith Cespenar has improved on the blade’s enchantments, making it even more formidable a weapon.
+  
+STATISTICS:
+
+Equipped Ability: Armour of Faith twice per day
+Combat Ability: Entangle target on successful hit
+Damage: 1D8 +4
+THAC0: +4
+Damage type: slashing
+Weight: 3
+Speed Factor: 3
+Proficiency Type: Scimitar/Wakizashi/Ninja-To
+Type: 1-handed
+Requires: 6 Strength
+Not Usable By:
+ Cleric
+ Mage~ */ 
+
+COPY ~Amber/items/m#mgiftl.itm~           ~override/m#mgiftl.itm~       
+  SAY NAME2 @268 /* @268 = ~Mielikki's Gift~ */ 
+  SAY DESC @269 /* @269 = ~Mielikki's Gift, Scimitar +3
+
+Mielikki is the goddess of forests, all forest creatures, dryads and the autumn season. She is also called the Lady of the Forest, and like many other gods and goddesses, she sometimes bestows special gifts to her faithful followers. This elegantly curved blade that shimmers with soft pale green glow is one of those gifts. Masterfully balanced and blessed with both protective and offensive spells, this blade is truly a beauty to look at and wield.  
+
+This scimitar was originally given to the half-elven ranger and cleric Lorraine that you encountered while rescuing Amber from the clutches of the sorcerer Ymmyrt. When Lorraine fell in battle, you stripped this blade from her lifeless corpse.
+  
+STATISTICS:
+
+Equipped Ability: Armour of Faith twice per day
+Combat Ability: Entangle target on successful hit
+Damage: 1D8 +3
+THAC0: +3
+Damage type: slashing
+Weight: 3
+Speed Factor: 3
+Proficiency Type: Scimitar/Wakizashi/Ninja-To
+Type: 1-handed
+Requires: 6 Strength
+Not Usable By:
+ Cleric
+ Mage~ */ 
+
+COPY ~Amber/items/m#oaneck.itm~           ~override/m#oaneck.itm~       
+  SAY NAME2 @271 /* @271 = ~Necklace of Opposite Alignment~ */ 
+  SAY DESC @272 /* @272 = ~This golden necklace changes the wearer's alignment as perceived in his or her magical aura into its opposite. While wearing the necklace, a lawful good character will seem chaotic evil and a chaotic evil being will seem lawful good. The necklace does not influence true neutral characters.
+
+STATISTICS
+
+Abilities: Inverts the wearer's alignment.~ */ 
+
+COPY ~Amber/items/m#offscr.itm~           ~override/m#offscr.itm~       
+
+COPY ~Amber/items/m#pdust.itm~            ~override/m#pdust.itm~        
+  SAY NAME1 @273 /* @273 = ~Box of Dust~ */ 
+  SAY NAME2 @274 /* @274 = ~Box of Pixie Dust~ */ 
+  SAY UNIDENTIFIED_DESC @275 /* @275 = ~This strangely shaped earthenware container seems to be full of fine, glittery dust.~ */ 
+  SAY DESC @276 /* @276 = ~This strangely shaped earthenware container is full of pixie dust. The fine, shimmering dust has been carefully harvested from live pixies and magically preserved in this box.
+
+It is common knowledge that the dust of pixies has the ability to turn one invisible when it is sprinkled upon them. There seems to be enough of the dust for several such sprinklings.
+
+STATISTICS:
+
+Special Ability (one use):  All creatures within 10' will become invisible for 12 hours.
+Usable by:
+ All~ */ 
+
+COPY ~Amber/items/m#ringb.itm~            ~override/m#ringb.itm~        
+  SAY NAME1 @277 /* @277 = ~Book of Rings~ */ 
+  SAY NAME2 @277 /* @277 = ~Book of Rings~ */ 
+  SAY UNIDENTIFIED_DESC @278 /* @278 = ~On the outside, this ingenious all-leather container for the demanding professional closely resembles a pocket-sized book. On the inside are 16 protruding folds of soft leather, between which 60 rings up to one inch in diameter could nestle securely. The cover of the book is fastened with a leather strap ensuring silent operation, while the inner structure keeps its precious contents both silent and secure.~ */ 
+  SAY DESC @278 /* @278 = ~On the outside, this ingenious all-leather container for the demanding professional closely resembles a pocket-sized book. On the inside are 16 protruding folds of soft leather, between which 60 rings up to one inch in diameter could nestle securely. The cover of the book is fastened with a leather strap ensuring silent operation, while the inner structure keeps its precious contents both silent and secure.~ */ 
+
+COPY ~Amber/items/m#rsgem.itm~            ~override/m#rsgem.itm~        
+  SAY NAME1 @279 /* @279 = ~Red Gem~ */ 
+  SAY NAME2 @280 /* @280 = ~Red Soul Gem~ */ 
+  SAY UNIDENTIFIED_DESC @281 /* @281 = ~This strange, fiery red gem, roughly the size and shape of a large egg, radiates with a hellish flickering red light and undulating heat. Touching the gem feels like touching a hot coal, although it seems to do no damage.~ */ 
+  SAY DESC @282 /* @282 = ~This strange, fiery red gem, roughly the size and shape of a large egg, seems to contain the soul of someone or something. You have no idea what the creature is, but as the gem radiates with a hellish flickering red light and undulating heat, you guess that the soul must be on fire. Touching the gem feels like touching a hot coal, although it seems to do no damage to anything touching it. ~ */ 
+
+COPY ~Amber/items/m#slepot.itm~           ~override/m#slepot.itm~       
+  SAY NAME2 @283 /* @283 = ~Soporific Potion~ */ 
+  SAY DESC @284 /* @284 = ~When thrown, this potion will break upon impact and release a cloud of soporific vapour that will induce deep sleep in anyone unfortunate enough to be caught in its area of effect. 
+
+STATISTICS:
+
+Effect: Sleep unless victim saves vs. breath weapons
+Range: 40 ft
+Area: 20 ft radius
+Duration: 2 turns
+Not usable by:~ */ 
+
+COPY ~Amber/items/m#wsgem.itm~            ~override/m#wsgem.itm~        
+  SAY NAME1 @285 /* @285 = ~White Gem~ */ 
+  SAY NAME2 @286 /* @286 = ~White Soul Gem~ */ 
+  SAY UNIDENTIFIED_DESC @287 /* @287 = ~This strange, milky white gem, roughly the size and shape of a large egg, feels smooth and cool, yet seems to pulse with warmth as though lit from within by a radiant force. For some reason, touching the gem causes subtle, caressing waves to spread within your being, something like immersing yourself in a cool, soothing liquid.~ */ 
+  SAY DESC @288 /* @288 = ~This strange, milky white gem, roughly the size and shape of a large egg, seems to contain the soul of something as pure and innocent as new fallen snow. The gem feels smooth and cool, yet seems to pulse with warmth as though lit from within by a radiant force. An opaque glow emanates from its core, along with a sense of newness and beginnings. Touching the gem causes subtle waves of light and innocence renewed to spread within your being, something like immersion in a cool, soothing liquid.~ */ 
+
+COPY ~Amber/items/m#wskin.itm~            ~override/m#wskin.itm~        
+  SAY NAME2 @289 /* @289 = ~Wyvern's Hide~ */ 
+  SAY UNIDENTIFIED_DESC @290 /* @290 = ~This thick and tough hide is of greenish brown hue and probably came off a large reptile, although you cannot quite figure out what. Properly treated, it could probably be made into an armour or clothing of some kind.~ */ 
+  SAY DESC @291 /* @291 = ~This thick and resilient hide is from a mature wyvern. If treated properly and with the right enchantments, it could retain some of the properties of the beast itself.~ */ 
+
+COPY ~Amber/items/m#yjourn.itm~           ~override/m#yjourn.itm~       
+  SAY NAME1 @292 /* @292 = ~Ymmyrt's Journal~ */ 
+  SAY NAME2 @292 /* @292 = ~Ymmyrt's Journal~ */ 
+  SAY UNIDENTIFIED_DESC @293 /* @293 = ~This handsome tome seems to be a journal of some kind. The entries within are not clearly dated and you are not certain whether they are ordered chronologically or otherwise. The following entries manage to attract your interest:
+
+"The device seems to be working flawlessly and there are no obvious glitches in the process. Now I will only have to find specimens worthy of the effort, since all of my test specimens have given out only dull browns and grays. I suspect that this is a result of a cross-contamination between their various mundane and uninteresting emotions and desires. It would seem that satisfactory results would demand specimens that are either sufficiently single-minded (preferably possessing extreme emotions or urges) or in some other manner unadulterated."
+
+"Ah ha, success at last. I have at last produced the first specimen worth keeping. The subject was a human male in his early thirties, characterised by an extraordinarily single-minded obsession with murder. Judging from the reports of my hunters, he had caused quite a bloodbath before my men caught him. With him, the result was a deep, bluish black hue with only the slightest of impurities. In the future I will give out orders to concentrate on similar obsessive anomalies in different varieties."
+
+"I seem to have hit upon another success. My hypothesis seems to have been correct; an obsession in fire in the specimen manifested itself in a deep, flickering red - very pleasing. Other colours may prove more difficult, but this is turning out to be a very amusing exercise of my imagination."
+
+"It seems that pure colours are harder to come by than I would have imagined; people seem to be less imaginative and passionate than I would like. I'm beginning to doubt that I will ever manage to collect the full spectrum, or that one even exists on this plane. Creatures of the elemental planes could prove of use here; I will need to look into it."
+
+"It seems that fortune is not entirely against me. Through a windfall quite unrelated to the present endeavour, I have managed to enlarge my collection with a rather handsome sample of a deep forest-green hue. The colour is most probably due to the arboreal habitat and upbringing of the sample, with the freshness of the sample contributing the flawless quality of the result. I will have to do some more experimentation on these fresh samples."
+
+"The pattern I surmised seems stronger by every new experiment. Today I managed to create a specimen of very pure white hue; there were practically no blemishes and the colour is a beautiful milky white. The subject was a newborn, only minutes old. I kept his mother on hand until she went into labour; the specimen was practically delivered directly into the device and I doubt it possible to obtain any cleaner results with the technology currently available." 
+
+"It seems that I have more or less exhausted this avenue of research; there are only so many pure colours. Besides, my mind has of late been fascinated by the thought of combining different colours and textures. On a theoretical level, the best way to go about this would probably be to acquire natural hybrids, in which two or more distinct and preferably powerful essences appear together in a single sample. Analysing these samples and the resultant products would probably give clues as to the best way of artificially combining essences."
+
+"My informants have finally reported of a suitable hybrid specimen. Their reports indicate that a demon hybrid, commonly referred to as a "tiefling", has recently been released from the city jail. They have managed to locate the creature and I have instructed them to acquire it at the first convenient opportunity. I will have to remember to clean and calibrate by equipment; it is imperative that the results of the first tentative sample be as reliable as possible."
+
+"The creature is finally in my possession. I have to say that I am slightly disappointed; the creature is a mere human with only slight visible signs of demonic taint. A true half-breed could have been more interesting, but I am confident that even the slight taint will manifest itself somehow in the result. In order to avoid any stress-induced alterations to her psyche, I have accommodated the creature as I would a guest instead of holding it as a prisoner. As soon as I get the equipment prepared, I will proceed to take the necessary samples and administer the tests."~ */ 
+  SAY DESC @294 /* @294 = ~This handsome tome seems to be a journal of some kind. The entries within are not clearly dated and you are not certain whether they are ordered chronologically or otherwise. The following entries manage to attract your interest:
+
+"The device seems to be working flawlessly and there are no obvious glitches in the process. Now I will only have to find specimens worthy of the effort, since all of my test specimens have given out only dull browns and grays. I suspect that this is a result of a cross-contamination between their various mundane and uninteresting emotions and desires. It would seem that satisfactory results would demand specimens that are either sufficiently single-minded (preferably possessing extreme emotions or urges) or in some other manner unadulterated."
+
+"Ah ha, success at last. I have at last produced the first specimen worth keeping. The subject was a human male in his early thirties, characterised by an extraordinarily single-minded obsession with murder. Judging from the reports of my hunters, he had caused quite a bloodbath before my men caught him. With him, the result was a deep, bluish black hue with only the slightest of impurities. In the future I will give out orders to concentrate on similar obsessive anomalies in different varieties."
+
+"I seem to have hit upon another success. My hypothesis seems to have been correct; the specimen's obsession with fire manifested itself in a deep, flickering red - very pleasing. Other colours may prove more difficult, but this is turning out to be a very amusing exercise of my imagination."
+
+"It seems that pure colours are harder to come by than I would have imagined; people seem to be less imaginative and passionate than I would like. I'm beginning to doubt that I will ever manage to collect the full spectrum, or that one even exists on this plane. Creatures of the elemental planes could prove of use here; I will need to look into it."
+
+"It seems that fortune is not entirely against me. Through a windfall quite unrelated to the present endeavour, I have managed to enlarge my collection with a rather handsome sample of a deep forest-green hue. The colour is most probably due to the arboreal habitat and upbringing of the sample, with the freshness of the sample contributing the flawless quality of the result. I will have to do some more experimentation on these fresh samples."
+
+"The pattern I surmised seems stronger with every new experiment. Today I managed to create a specimen of very pure white hue; there were practically no blemishes and the colour is a beautiful milky white. The subject was a newborn, only minutes old. I kept his mother on hand until she went into labour; the specimen was practically delivered directly into the device and I doubt it possible to obtain any cleaner results with the technology currently available." 
+
+"It seems that I have more or less exhausted this avenue of research; there are only so many pure colours. Besides, my mind has of late been fascinated by the thought of combining different colours and textures. On a theoretical level, the best way to go about this would probably be to acquire natural hybrids, in which two or more distinct and preferably powerful essences appear together in a single sample. Analysing these samples and the resultant products would probably give clues as to the best way of artificially combining essences."
+
+"My informants have finally reported of a suitable hybrid specimen. Their reports indicate that a demon hybrid, commonly referred to as a "tiefling", has recently been released from the city jail. They have managed to locate the creature and I have instructed them to acquire it at the first convenient opportunity. I will have to remember to clean and calibrate my equipment; it is imperative that the results of the first tentative sample be as reliable as possible."
+
+"The creature is finally in my possession. I have to say that I am slightly disappointed; the creature is a mere human with only slight visible signs of demonic taint. A true half-breed could have been more interesting, but I am confident that even the slight taint will manifest itself somehow in the result. In order to avoid any stress-induced alterations to her psyche, I have accommodated the creature as I would a guest instead of holding it as a prisoner. As soon as I get the equipment prepared, I will proceed to take the necessary samples and administer the tests."~ */ 
+
+COPY ~Amber/items/m#ymmap.itm~            ~override/m#ymmap.itm~        
+  SAY NAME1 @295 /* @295 = ~Strange Map~ */ 
+  SAY NAME2 @296 /* @296 = ~Map to Ymmyrt's House~ */ 
+  SAY UNIDENTIFIED_DESC @297 /* @297 = ~This roll of parchment looks like a map of some part of Athkatla, but you have no idea where the area depicted by the map might be located. If you figured out the location of some landmark on the map, you might be able to use it.~ */ 
+  SAY DESC @298 /* @298 = ~The map seems to indicate the location of a house belonging to someone named Ymmyrt deep within the maze-like streets of central Athkatla. You now recognise that the route starts from the Slums, but you are not quite sure that all of the streets shown on the map actually exist. If you wish, you may try to use the map in the Slums of Athkatla and follow the route shown.~ */ 
+
+COPY ~Amber/items/m#ymmle2.itm~           ~override/m#ymmle2.itm~       
+  SAY UNIDENTIFIED_DESC @299 /* @299 = ~Captain Corin,
+I have another extraction assignment that needs to be taken care of. The individual in question is a female demi-human who goes by the name of 'Amber'. She was recently released from the Athkatlan jail where she was held by the Cowled Wizards for being a deviant. According to my sources, she should be of slight build, have a rather tan complexion with tattooed markings on her body and a long, fiery-red hair. She may be accompanied by a party of ruffians with regards to whom you are free to act as you please. This assignment is of utter importance, so you should put your best men to the task. When you have located her, I will send my men to wait for her at your headquarters. Do not disappoint me like your predecessor did.
+
+Y.~ */ 
+  SAY DESC @299 /* @299 = ~Captain Corin,
+I have another extraction assignment that needs to be taken care of. The individual in question is a female demi-human who goes by the name of 'Amber'. She was recently released from the Athkatlan jail where she was held by the Cowled Wizards for being a deviant. According to my sources, she should be of slight build, have a rather tan complexion with tattooed markings on her body and a long, fiery-red hair. She may be accompanied by a party of ruffians with regards to whom you are free to act as you please. This assignment is of utter importance, so you should put your best men to the task. When you have located her, I will send my men to wait for her at your headquarters. Do not disappoint me like your predecessor did.
+
+Y.~ */ 
+
+COPY ~Amber/items/m#ymmlet.itm~           ~override/m#ymmlet.itm~       
+  SAY UNIDENTIFIED_DESC @300 /* @300 = ~Captain Haegan,
+I have another extraction assignment that needs to be taken care of. The individual in question is a female demi-human who goes by the name of 'Amber'. She was recently released from the Athkatlan jail where she was held by the Cowled Wizards for being a deviant. According to my sources, she should be of slight build, have a rather tan complexion with tattooed markings on her body and long, fiery-red hair. She may be accompanied by a party of ruffians with regards to whom you are free to act as you please. This assignment is of utter importance, so you should put your best men to the task. When you have located her, I will send my men to wait for her at your headquarters. Do not disappoint me.
+
+Y.~ */ 
+  SAY DESC @300 /* @300 = ~Captain Haegan,
+I have another extraction assignment that needs to be taken care of. The individual in question is a female demi-human who goes by the name of 'Amber'. She was recently released from the Athkatlan jail where she was held by the Cowled Wizards for being a deviant. According to my sources, she should be of slight build, have a rather tan complexion with tattooed markings on her body and long, fiery-red hair. She may be accompanied by a party of ruffians with regards to whom you are free to act as you please. This assignment is of utter importance, so you should put your best men to the task. When you have located her, I will send my men to wait for her at your headquarters. Do not disappoint me.
+
+Y.~ */ 
+
+COPY ~Amber/items/m#yring.itm~            ~override/m#yring.itm~        
+  SAY NAME2 @301 /* @301 = ~Ymmyrt's Ring~ */ 
+  SAY DESC @302 /* @302 = ~This magical ring has been created by Ymmyrt to facilitate the handling of the exotic and often rather reluctant creatures used as subjects of his experimentations.
+
+STATISTICS:
+
+Special Abilities: Charm Monster once per day
+Only usable by: Mages~ */ 
+
+COPY ~Amber/items/m#yrobe.itm~            ~override/m#yrobe.itm~        
+  SAY NAME2 @303 /* @303 = ~Ymmyrt's Robe~ */ 
+  SAY DESC @304 /* @304 = ~This robe of has been specially designed by Ymmyrt and provided with assorted minor enchantments needed in his craft of handling various exotic creatures. Aside from protecting the wearer from various forms of physical damage, it also provides some protection from hostile magic and contains various protective spells. Due to its unusual specialized nature, it can only be worn by wizards not themselves specialized in any particular school of magic.
+
+STATISTICS:
+
+Armor Class Bonus: +1
+Magic Resistance: +5%
+Weight: 4
+Special Abilities: Protection from Evil, Protection from Petrification and Shield once per day
+Only usable by:
+Unspecialized mages and sorcerers~ */ 
+
+COPY ~Amber/items/m#yward.itm~            ~override/m#yward.itm~        
+  SAY NAME2 @305 /* @305 = ~Wardstone to Ymmyrt's House~ */ 
+  SAY DESC @306 /* @306 = ~This wardstone dispels the wards preventing entrance to Ymmyrt the Sorcerer's private apartment in Athkatla.~ */ 
+
+COPY ~Amber/items/m#ywardl.itm~           ~override/m#ywardl.itm~       
+  SAY NAME2 @305 /* @305 = ~Wardstone to Ymmyrt's House~ */ 
+  SAY DESC @306 /* @306 = ~This wardstone dispels the wards preventing entrance to Ymmyrt the Sorcerer's private apartment in Athkatla.~ */ 
+
+COPY ~amber/items/m#ambody.itm~           ~override/m#ambody.itm~       
+  SAY NAME1 @307 /* @307 = ~Amber's Body~ */ 
+  SAY NAME2 @307 /* @307 = ~Amber's Body~ */ 
+  SAY UNIDENTIFIED_DESC @308 /* @308 = ~Amber was captured by Bodhi and infected with vampirism, forcing you to slay her. There may be some way to revive her, though you don't know what it would be.~ */ 
+
+COPY ~amber/items/m#avamp.itm~            ~override/m#avamp.itm~        
+
+COPY ~amber/items/m#pirban.itm~           ~override/m#pirban.itm~       
+  SAY NAME1 @309 /* @309 = ~Pirate's Bandanna~ */ 
+  SAY NAME2 @309 /* @309 = ~Pirate's Bandanna~ */ 
+  SAY UNIDENTIFIED_DESC @310 /* @310 = ~Stylish bandannas like this are favoured by pirates and rogues everywhere. It is an essential part of their unique charm and appeal. It also provides the necessary flair for escaping truly grievous injuries with aplomb.
+  
+STATISTICS:
+  
+Equipped Ability: +1 Charisma
+Special:  Protects Against Critical Hits
+Usable by:
+Thieves and Bards~ */ 
+  SAY DESC @311 /* @311 = ~Stylish bandannas like this are favoured by pirates and rogues everywhere. It is an essential part of their unique charm and appeal. It also provides the necessary flair for escaping truly grievous injuries with aplomb.
+  
+STATISTICS:
+  
+Equipped Ability: +1 Charisma
+Special: Protects Against Critical Hits
+Usable by:
+Thieves and Bards~ */
+  
+COPY ~amber/items/m#gfeat.itm~           ~override/m#gfeat.itm~       
+  SAY NAME1 @312 /* @312 = ~Gloves of Feather Touch~ */ 
+  SAY NAME2 @312 /* @312 = ~Gloves of Feather Touch~ */ 
+  SAY UNIDENTIFIED_DESC @313 /* @313 = ~These exquisite gloves are made of the thinnest kidskin suede and enchanted to make the feel of the wearer's touch light and soft as a feather. No one knows the original purpose of these gloves, but members of the underworld soon found that they are an excellent aid in facilitating difficult property transfers.
+
+STATISTICS:
+
+Equipped Ability: +15% Pick Pockets
+Usable by:
+Anyone~ */ 
+SAY DESC @313 /* @313 = ~These exquisite gloves are made of the thinnest kidskin suede and enchanted to make the feel of the wearer's touch light and soft as a feather. No one knows the original purpose of these gloves, but members of the underworld soon found that they are an excellent aid in facilitating difficult property transfers.
+
+STATISTICS:
+
+Equipped Ability: +15% Pick Pockets
+Usable by:
+Anyone~ */
+
+COPY ~Amber/items/m#wrobe1.itm~           ~override/m#wrobe1.itm~
+  SAY NAME2 @314 /* @314 = ~Wyvern Leather Robe +1~ */
+  SAY DESC @315 /* @315 = ~Wyvern hides are not easy to work with, but this time the poisonous beast's hide has yielded to Rashryn's superb skill and produced a stylish and highly functional leather robe. Even after its death, something of the wyvern's nature remains in this robe. It may not have the soft rustle of a fine woollen or silken robe, or be of a particularly attractive hue of green, but its wearer will be significantly better protected from both acid and poison. The leather, though worked into an amazing softness, has also been enchanted with protective spells that offer protection from the blows of the enemy.
+
+STATISTICS:
+
+Equipped Abilities:
+Armour Class: +1
+Acid Resistance: +20% bonus
+Poison Resistance: +20% bonus
+
+Only usable by:
+Mage (single, dual, & multi-class)~ */
+
+COPY ~Amber/items/m#wrobe2.itm~           ~override/m#wrobe2.itm~
+  SAY NAME2 @316 /* @316 = ~Wyvern Leather Robe +2~ */
+  SAY DESC @317 /* @317 = ~Wyvern hides are not easy to work with, but this time the poisonous beast's hide has yielded to Rashryn's superb skill and produced a stylish and highly functional leather robe. Even after its death, something of the wyvern's nature remains in this robe. It may not have the soft rustle of a fine woollen or silken robe, or be of a particularly attractive hue of green, but its wearer will be significantly better protected from both acid and poison. The leather, though worked into an amazing softness, has also been enchanted with protective spells that offer protection from the blows of the enemy.
+
+The emeralds sewn to the leather serve to amplify its protective magic, improving its effect considerably. 
+
+STATISTICS:
+
+Equipped Abilities:
+Armour Class: +2
+Acid Resistance: +20% bonus
+Poison Resistance: +20% bonus
+
+Only usable by:
+Mage (single, dual, & multi-class)~ */
+
+COPY ~Amber/items/m#bcclk.itm~            ~override/m#bcclk.itm~        
+  SAY NAME2 @318 /* @318 = ~Feline Fur Cloak~ */ 
+  SAY DESC @319 /* @319 = ~In the skilful hands of the tailor Rashryn, the soft fur you found in Ymmyrt's vault has been transformed into an even more luxurious cloak. The elaborate silk lining and fine silver clasp perfectly complement the thick and shiny fur. In addition to feeling extremely pleasant, the cloak also offers a solid protection against the freezing cold.
+
+STATISTICS:
+
+Protection from Cold: +50%
+Charisma: +1
+
+Not usable by:
+ Wizardslayer~ */ 
+
+COPY_EXISTING ~npsw05.itm~		~override/npsw05.itm~
+  SAY DESC @320 /* @320 = ~Entropy
+This +2 abyssal greensteel blade is one of Haer'Dalis' favorite weapons.  This shortsword is capable of inflicting an additional three points of poison damage if the target fails a saving throw. This blade may only be used by Haer'Dalis.
+
+STATISTICS:
+
+Special Abilities: 3 points of poison damage if target fails Save Vs. Death
+THAC0: +2 bonus
+Damage: 1D6 + 2
+Damage type: piercing
+Weight: 2
+Speed Factor: 0
+Proficiency Type: Short Sword
+Type: 1-handed
+Usable By:
+  Haer'Dalis~ */
+
+COPY_EXISTING ~npsw06.itm~		~override/npsw06.itm~
+  SAY DESC @321 /* @321 = ~Chaos Blade
+Chaos is a +2 short-sword usable only by Haer'Dalis. Every time it strikes an opponent, he or she loses 2 points of dexterity (for 30 seconds). Haer'Dalis prefers using Chaos with its partner -- Entropy. When dual-wielding these two blades, Haer'Dalis is a dangerous opponent.
+
+STATISTICS:
+
+Special Abilities: Target loses 2 points of dexterity each hit (duration: 30 seconds)
+THAC0: +2 bonus
+Damage: 1D6 + 2
+Damage type:  piercing
+Weight: 2
+Speed Factor: 0
+Proficiency Type: Short Sword
+Type: 1-handed
+Usable By:
+  Haer'Dalis~ */
+
+COPY ~Amber/items/m#ear.itm~           ~override/m#ear.itm~
+  SAY NAME2 @322 /* @322 = ~Amber's Earrings~ */
+  SAY DESC @323 /* @323 = ~Amber wears three large hoop earrings on her right ear and two on her left. They are made of plain gold with neither ornaments nor gemstones, and resemble those often worn by sailors for good luck. Amber seems reluctant to take them off, calling them her 'emergency gold reserve'. You cannot help wondering how dire things would have to get before she would be willing to give them up. 
+
+STATISTICS:
+
+Protection from critical hits
+
+Usable only by Amber~ */
+
+// Spells
+
+COPY ~Amber/spells/m#contag.spl~           ~override/m#contag.spl~       
+  SAY 8 @324 /* @324 = ~Contagious Eye~ */
+  SAY 12 @324 /* @324 = ~Contagious Eye~ */ 
+  SAY 80 @324 /* @324 = ~Contagious Eye~ */ 
+COPY ~Amber/spells/m#disint.spl~           ~override/m#disint.spl~       
+  SAY 8 @325 /* @325 = ~Undoing Eye~ */
+  SAY 12 @325 /* @325 = ~Undoing Eye~ */ 
+  SAY 80 @325 /* @325 = ~Undoing Eye~ */ 
+COPY ~Amber/spells/m#blind.spl~            ~override/m#blind.spl~
+  SAY 8 @326 /* @326 = ~Blinding Eye~ */
+  SAY 12 @326 /* @326 = ~Blinding Eye~ */ 
+  SAY 80 @326 /* @326 = ~Blinding Eye~ */ 
+COPY ~Amber/spells/m#chunk.spl~           ~override/m#chunk.spl~       
+  SAY 8 @327 /* @327 = ~Chunked Death~ */
+  SAY 12 @327 /* @327 = ~Chunked Death~ */ 
+  SAY 80 @327 /* @327 = ~Chunked Death~ */ 
+COPY ~Amber/spells/m#dropwp.spl~           ~override/m#dropwp.spl~  
+COPY ~Amber/spells/m#green.spl~            ~override/m#green.spl~        
+COPY ~Amber/spells/m#heaven.spl~           ~override/m#heaven.spl~       
+COPY ~Amber/spells/m#incfr.spl~            ~override/m#incfr.spl~
+COPY ~Amber/spells/m#jbrace.spl~           ~override/m#jbrace.spl~
+COPY ~Amber/spells/m#black.spl~            ~override/m#black.spl~
+COPY ~Amber/spells/m#makeup.spl~           ~override/m#makeup.spl~ 
+COPY ~Amber/spells/m#red.spl~              ~override/m#red.spl~ 
+COPY ~Amber/spells/m#lore10.spl~           ~override/m#lore10.spl~ 
+COPY ~Amber/spells/m#lore13.spl~           ~override/m#lore13.spl~ 
+COPY ~Amber/spells/m#lore17.spl~           ~override/m#lore17.spl~ 
+
+// Stores & Containers
+
+COPY ~Amber/items/m#bmthi2.sto~           ~override/m#bmthi2.sto~
+COPY ~Amber/items/m#kring.sto~            ~override/m#kring.sto~        
+  SAY NAME2 @256 /* @256 = ~Key Ring~ */
+COPY ~Amber/items/m#ringb.sto~            ~override/m#ringb.sto~        
+  SAY NAME2 @277 /* @277 = ~Book of Rings~ */ 
+
+// WeiDU magic for Amber's weapon and armour restrictions. Thanks Cam!  
+
+COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
+  READ_SHORT 0x1c "type" ELSE 0
+  READ_BYTE  0x18 "2hand" ELSE 0
+  READ_BYTE  0x20 "usability" ELSE 0
+  PATCH_IF (
+             ("%type%" = 30) OR // halberd
+             ("%type%" =  7) OR // helm
+             (
+               ("%type%" = 20) AND // type: long sword with...
+               (("%2hand%" BOR 0b11111101) = 0b11111111) // two-handed flag
+             ) OR (
+               (("%usability%" BOR 0b10111101) = 0b11111101) AND // usable bt f-t, unusable by t
+               (
+                 ("%type%" = 12) OR // type: shield
+                 (
+                   ("%type%" = 2) AND // armor, excluding the elven chains below
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "a!bchan1") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "bsingchn") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "c2chan01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "chan12") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "chan13") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "chan14") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "chan15") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "chan16") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "chan19") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "chands06") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "clolth") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "drowchn1") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "drowchn2") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "drowchn3") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "dsjearm") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "dwchan01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "dwchan02") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "echan01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "echan02") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "efml01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "fwchan02") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "fwchan03") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "gcmch01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "illas04") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "ntchan04") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "ntchan06") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "pchan") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "rr#chn01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "scal04") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "sgchan1") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "sgchan2") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "tzchan01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "u#chan01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "u#chan07") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "ucmgch01") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "ucmgch02") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "x#garch") AND
+                   ("%SOURCE_RES%" STRING_COMPARE_CASE "x#garch2")
+                 )
+               )
+             )
+           ) BEGIN
+    // hack to preserve source_res for inner patch
+    READ_ASCII            0x08 "temp" (8)
+    WRITE_EVALUATED_ASCII 0x08 "%SOURCE_RES%" #8
+    READ_ASCII            0x08 "exclude_file"
+    WRITE_EVALUATED_ASCII 0x08 "%temp%" #8
+
+    INNER_ACTION BEGIN
+
+      COPY_EXISTING ~m#ear.itm~ ~override~
+        READ_LONG   0x6a "fx_off"
+        READ_SHORT  0x70 "fx_num"
+        WRITE_SHORT 0x70 ("%fx_num%" + 1)
+        INSERT_BYTES            ("%fx_off%"       ) 0x30             // insert new global effect
+          WRITE_SHORT           ("%fx_off%"       ) 180              // disallow item
+          WRITE_BYTE            ("%fx_off%" + 0x02) 1                // target: self
+          WRITE_BYTE            ("%fx_off%" + 0x0c) 2                // instant/while equipped
+          WRITE_BYTE            ("%fx_off%" + 0x12) 100              // probability
+          WRITE_EVALUATED_ASCII ("%fx_off%" + 0x14) "%exclude_file%" // file
+          // this tree simply adds a display string based on the item type
+          PATCH_IF ("%type%" = 2) BEGIN // if armor
+            SAY ("%fx_off%" + 0x04) @328 /* @328 = ~Amber refuses to wear armor heavier than studded leather.~ */
+          END ELSE
+          PATCH_IF ("%type%" = 7) BEGIN // if helm
+            SAY ("%fx_off%" + 0x04) @329 /* @329 = ~Amber refuses to use helmets.~ */
+          END ELSE
+          PATCH_IF ("%type%" = 12) BEGIN // if shield > buckler
+            SAY ("%fx_off%" + 0x04) @330 /* @330 = ~Amber refuses to use shields larger than bucklers.~ */
+          END ELSE
+          PATCH_IF ("%type%" = 20) BEGIN // if 2h sword
+            SAY ("%fx_off%" + 0x04) @331 /* @331 = ~Amber refuses to use two-handed swords.~ */
+          END ELSE BEGIN // otherwise halberd
+            SAY ("%fx_off%" + 0x04) @332 /* @332 = ~Amber refuses to use halberds.~ */
+          END
+
+    END
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+// Audio install/uninstall stuff
+
+//AT_NOW ~Amber/AmberUnpack.bat~
+//PRINT @335 /* @335 = ~The audio and graphic files have just been unpacked to
+//your game. You shouldn't see any error messages above.
+//However, if you do, please report back to amber@welho.net~ */
+//AT_INTERACTIVE_EXIT ~Amber/readme-amber.html~
+//AT_UNINSTALL ~Amber/AmberUninstall.bat~
+
+// 2nd component: Multiplayer-friendly flirting
+
+BEGIN @333 /* @333 = ~multiplayer-friendly flirting for Amber~ */
+REQUIRE_FILE ~override/m#ambr10.cre~ @334 /* @334 = ~Please install Amber NPC before installing multiplayer-friendly flirting.~ */
+
+COPY_EXISTING ~override/m#amberj.dlg~ 	~override/m#amberj.dlg~
+WRITE_LONG   0x30 1

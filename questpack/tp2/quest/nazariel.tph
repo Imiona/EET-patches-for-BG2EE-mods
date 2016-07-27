@@ -1,0 +1,109 @@
+// Disable flirting in new area
+ACTION_FOR_EACH script IN
+                aerie
+                jaheira
+                viconia
+                anomen
+                j#klsy
+BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME "%script%.bcs" BEGIN
+    COPY_EXISTING "%script%.bcs" override
+      DECOMPILE_AND_PATCH BEGIN
+        REPLACE_TEXTUALLY ~!AreaCheck("AR2402")~
+                          ~!AreaCheck("AR2402")
+                           !AreaCheck("D0AR01")~
+      END
+    BUT_ONLY
+  END
+END
+
+ACTION_FOR_EACH dialogue IN
+                aeriej
+                jaheiraj
+                viconij
+                anomenj
+                j#klsyj
+BEGIN
+  ACTION_IF FILE_EXISTS_IN_GAME "%dialogue%.dlg" BEGIN
+    COPY_EXISTING "%dialogue%.dlg" override
+      DECOMPILE_AND_PATCH BEGIN
+        REPLACE_TEXTUALLY ~AreaType(OUTSIDE)~
+                          ~AreaType(OUTDOOR)~
+        REPLACE_TEXTUALLY ~!AreaCheck("AR2402")~
+                          ~!AreaCheck("AR2402")
+                           !AreaCheck("D0AR01")~
+      END
+    BUT_ONLY
+  END
+END
+
+COPY ~questpack/lich/d0qpliph.itm~ ~override~
+  SAY NAME1 @131
+  SAY NAME2 @131
+  SAY IDENTIFIED_DESC @137
+  SAY UNIDENTIFIED_DESC @137
+
+COPY ~questpack/lich/d0lich01.cre~ ~override~
+     ~questpack/lich/d0lich02.cre~ ~override~
+  SAY NAME1 @129
+  SAY NAME2 @129
+  SAY AREA_FOREST @130
+
+COMPILE EVALUATE_BUFFER ~questpack/lich/dialog.d~ USING
+        ~%tra_path%/english/lich.tra~
+        ~%tra_path%/%LANGUAGE%/lich.tra~
+
+ADD_JOURNAL @16 @17 USING
+            ~%tra_path%/english/lich.tra~
+            ~%tra_path%/%LANGUAGE%/lich.tra~
+
+EXTEND_TOP ~ar2500.bcs~ ~questpack/lich/et_2500.baf~ EVALUATE_BUFFER USING
+                        ~%tra_path%/english/lich.tra~
+                        ~%tra_path%/%LANGUAGE%/lich.tra~
+
+COMPILE EVALUATE_BUFFER ~questpack/lich/d0lich01.baf~
+        ~questpack/lich/d0lich02.baf~
+        ~questpack/lich/d0ar01.baf~
+        ~questpack/lich/d0wayin.baf~
+
+COPY_EXISTING ~ar2402.are~ ~override~
+  LPF fj_are_structure
+    INT_VAR
+      fj_type = 2
+      fj_box_left = 1450
+      fj_box_top = 1450
+      fj_box_right = 1525
+      fj_box_bottom = 1700
+      fj_cursor_idx = 30
+      fj_flags = BIT2
+      fj_loc_x = 1490
+      fj_loc_y = 1539
+      fj_vertex_0 = 1463 + (1578 << 16)
+      fj_vertex_1 = 1518 + (1580 << 16)
+      fj_vertex_2 = 1510 + (1541 << 16)
+      fj_vertex_3 = 1513 + (1502 << 16)
+      fj_vertex_4 = 1465 + (1498 << 16)
+      fj_vertex_5 = 1466 + (1546 << 16)
+      fj_vertex_6 = 1463 + (1578 << 16)
+    STR_VAR
+      fj_structure_type = region
+      fj_name = D0WayIn
+      fj_destination_area = d0ar01
+      fj_destination_name = d0entry1
+      fj_reg_script = d0wayin
+  END
+  LPF fj_are_structure
+    INT_VAR
+      fj_loc_x = 1490
+      fj_loc_y = 1601
+      fj_orientation = 0
+    STR_VAR
+      fj_structure_type = entrance
+      fj_name = D0AR01Entry
+  END
+BUT_ONLY
+
+ACTION_IF FILE_EXISTS_IN_GAME tracking.2da BEGIN
+  OUTER_SET tracking = RESOLVE_STR_REF (@203)
+  APPEND ~tracking.2da~ ~D0AR01     O_%tracking%~ UNLESS ~D0AR01~
+END

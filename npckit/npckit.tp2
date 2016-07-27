@@ -1,0 +1,2166 @@
+BACKUP ~NPCKit/backup~
+AUTHOR ~pcamagna@yahoo.com~
+
+ASK_EVERY_COMPONENT
+
+README ~NPCKit/readme-npckit.html~
+
+VERSION ~v4~
+
+ALWAYS
+
+  ACTION_IF NOT VARIABLE_IS_SET cd_always THEN BEGIN
+
+  INCLUDE ~NPCKit/lib/always.tpa~
+
+    OUTER_SET cd_always = 1 // just do this once per install
+
+    // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+    INCLUDE ~%MOD_FOLDER%/lib/handle_charsets.tpa~
+    ACTION_DEFINE_ARRAY cdnoconvert BEGIN END
+    ACTION_DEFINE_ARRAY cdreload BEGIN ~setup~ END
+    LAF HANDLE_CHARSETS
+      INT_VAR
+        infer_charset = 1
+      STR_VAR
+        tra_path = EVAL ~%MOD_FOLDER%/translations~
+        // charset_table = cdcharsets // Included for illustrative purposes.
+        noconvert_array = cdnoconvert
+        reload_array = cdreload
+    END
+  
+  END
+
+END
+
+LANGUAGE ~English~
+         ~english~
+         ~NPCKit/translations/english/setup.tra~
+LANGUAGE ~French (by Thot from the d'Oghmatiques)~
+         ~french~
+         ~NPCKit/translations/english/setup.tra~
+         ~NPCKit/translations/french/setup.tra~
+LANGUAGE ~Polish (by yarpen)~
+         ~polish~
+         ~NPCKit/translations/english/setup.tra~
+         ~NPCKit/translations/polish/setup.tra~
+LANGUAGE ~Spanish (by Clan DLAN)~
+         ~spanish~
+         ~NPCKit/translations/english/setup.tra~
+         ~NPCKit/translations/spanish/setup.tra~
+LANGUAGE ~Italian (by Giuseppe)~
+         ~italian~
+         ~NPCKit/translations/english/setup.tra~
+         ~NPCKit/translations/italian/setup.tra~
+LANGUAGE ~Russian (by Kania, Malekith & aerie.ru)~
+         ~russian~
+         ~NPCKit/translations/english/setup.tra~
+         ~NPCKit/translations/russian/setup.tra~
+         
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// clear out old components                         \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED  0 DEPRECATED @0
+BEGIN @0 DESIGNATED  1 DEPRECATED @0
+BEGIN @0 DESIGNATED  2 DEPRECATED @0
+BEGIN @0 DESIGNATED  3 DEPRECATED @0
+BEGIN @0 DESIGNATED  4 DEPRECATED @0
+BEGIN @0 DESIGNATED  5 DEPRECATED @0
+BEGIN @0 DESIGNATED  6 DEPRECATED @0
+BEGIN @0 DESIGNATED  7 DEPRECATED @0
+BEGIN @0 DESIGNATED  8 DEPRECATED @0
+BEGIN @0 DESIGNATED  9 DEPRECATED @0
+BEGIN @0 DESIGNATED 10 DEPRECATED @0
+BEGIN @0 DESIGNATED 11 DEPRECATED @0
+BEGIN @0 DESIGNATED 12 DEPRECATED @0
+BEGIN @0 DESIGNATED 13 DEPRECATED @0
+BEGIN @0 DESIGNATED 14 DEPRECATED @0
+BEGIN @0 DESIGNATED 15 DEPRECATED @0
+BEGIN @0 DESIGNATED 16 DEPRECATED @0
+BEGIN @0 DESIGNATED 17 DEPRECATED @0
+BEGIN @0 DESIGNATED 18 DEPRECATED @0
+BEGIN @0 DESIGNATED 19 DEPRECATED @0
+BEGIN @0 DESIGNATED 20 DEPRECATED @0
+BEGIN @0 DESIGNATED 21 DEPRECATED @0
+BEGIN @0 DESIGNATED 22 DEPRECATED @0
+BEGIN @0 DESIGNATED 23 DEPRECATED @0
+BEGIN @0 DESIGNATED 24 DEPRECATED @0
+BEGIN @0 DESIGNATED 25 DEPRECATED @0
+BEGIN @0 DESIGNATED 26 DEPRECATED @0
+BEGIN @0 DESIGNATED 27 DEPRECATED @0
+BEGIN @0 DESIGNATED 28 DEPRECATED @0
+BEGIN @0 DESIGNATED 29 DEPRECATED @0
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Improved Specialist Mage Descriptions            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @3000 DESIGNATED 30
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0030.g3~
+
+COPY_EXISTING ~kitlist.2da~ ~override~
+  SET_2DA_ENTRY 22 4 9 ~ikw1~
+  SET_2DA_ENTRY 23 4 9 ~ikw2~
+  SET_2DA_ENTRY 24 4 9 ~ikw3~
+  SET_2DA_ENTRY 25 4 9 ~ikw4~
+  SET_2DA_ENTRY 26 4 9 ~ikw5~
+  SET_2DA_ENTRY 27 4 9 ~ikw6~
+  SET_2DA_ENTRY 28 4 9 ~ikw7~
+  SET_2DA_ENTRY 29 4 9 ~ikw8~
+  REPLACE ~ikw1~ @3001
+  REPLACE ~ikw2~ @3002
+  REPLACE ~ikw3~ @3003
+  REPLACE ~ikw4~ @3004
+  REPLACE ~ikw5~ @3005
+  REPLACE ~ikw6~ @3006
+  REPLACE ~ikw7~ @3007
+  REPLACE ~ikw8~ @3008
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// replace berserker with battlerager for dwarves   \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @3100 DESIGNATED 31
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0031.g3~
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~clabikbr.2da~ THEN BEGIN // add battlerager kit
+
+  INCLUDE ~NPCKit/lib/battlerager.tpa~
+
+END ELSE BEGIN // if already installed, get kit #
+
+  // find br kit in kitlist
+  COPY_EXISTING ~kitlist.2da~ ~override~
+    COUNT_2DA_ROWS ~9~ "rows"
+    FOR ( index = 31 ; index < rows ; index = index + 1 ) BEGIN
+      READ_2DA_ENTRY "%index%" 5 9 "clab"
+      PATCH_IF ("%clab%" STRING_COMPARE_CASE "clabikbr" = 0) BEGIN
+        SET "IK_BATTLERAGER" = "%index%"
+        SET "rows" = 0
+      END
+    END
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+// check for berserker entry, replace with battlerager
+COPY_EXISTING ~k_f_d.2da~ ~override~
+  COUNT_2DA_ROWS ~2~ "rows"
+  FOR (index = 1 ; index < rows ; index = index + 1) BEGIN
+    READ_2DA_ENTRY index 1 2 "kit"
+    PATCH_IF ("%kit%" = 1) BEGIN
+      SET_2DA_ENTRY index 1 2 "%IK_BATTLERAGER%"
+      SET "index" = "%rows%"
+    END
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Aerie                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 100
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0100.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Ajantis                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 200
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0200.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Alora                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 300
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0300.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Anomen                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+/////                                                  \\\\\
+///// watcher of helm                                  \\\\\
+/////                                                  \\\\\
+
+BEGIN @40000 DESIGNATED 400
+REQUIRE_PREDICATE GAME_IS ~soa tob bgt bg2ee eet~ @3 // non-Tutu
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0400.g3~
+
+EXTEND_BOTTOM ~anomen.bcs~ ~NPCKit/baf/helm.baf~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~mel01.cre~ THEN BEGIN // tob
+
+  EXTEND_BOTTOM ~anom25.bcs~ ~NPCKit/baf/helm.baf~
+
+  // make helm hs usable by lawfuls so Anomen can use it
+  COPY_EXISTING ~belt13.itm~ ~override~
+    READ_BYTE  0x1e "use"
+    WRITE_BYTE 0x1e ("%use%" BAND 0b11101111) // adds lawful flag
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+ACTION_IF FILE_EXISTS_IN_GAME ~cdnegpp.spl~ THEN BEGIN // divine remix
+
+  COPY ~NPCKit/spl/title.spl~ ~override/ikitano1.spl~
+    SAY 0x9e @40001
+
+END ELSE BEGIN
+
+  COPY ~NPCKit/spl/title.spl~ ~override/ikitano1.spl~
+    SAY 0x9e @40002
+
+END
+
+// compat with npc tweak items
+ACTION_IF FILE_EXISTS_IN_GAME ~anoplat.itm~ THEN BEGIN
+
+  COPY_EXISTING ~anoplat.itm~ ~override~
+    READ_BYTE  0x29 "use"
+    WRITE_BYTE 0x29 ("%use%" BAND 0xfd)
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+/////                                                  \\\\\
+///// berserker                                        \\\\\
+/////                                                  \\\\\
+
+BEGIN @41000 DESIGNATED 410
+REQUIRE_PREDICATE GAME_IS ~soa tob bgt bg2ee eet~ @3 // non-Tutu
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0410.g3~
+
+EXTEND_BOTTOM ~anomen.bcs~ ~NPCKit/baf/berserker.baf~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~mel01.cre~ THEN BEGIN // tob 
+
+  EXTEND_BOTTOM ~anom25.bcs~ ~NPCKit/baf/berserker.baf~
+
+END
+
+COPY ~NPCKit/spl/title.spl~ ~override/ikitano2.spl~
+  SAY 0x9e @41001
+
+// compat with npc tweak items
+ACTION_IF FILE_EXISTS_IN_GAME ~anohelm.itm~ THEN BEGIN
+
+  COPY_EXISTING ~anohelm.itm~ ~override~
+    READ_BYTE  0x2f "use"
+    WRITE_BYTE 0x2f ("%use%" BAND 0xfe)
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+/////                                                  \\\\\
+///// no holy sumbol                                   \\\\\
+/////                                                  \\\\\
+
+BEGIN @42000 DESIGNATED 420
+REQUIRE_PREDICATE GAME_IS ~soa tob bgt bg2ee eet~ @3 // non-Tutu
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0420.g3~
+
+EXTEND_BOTTOM ~anomen.bcs~ ~NPCKit/baf/no_holy_symbol.baf~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~mel01.cre~ THEN BEGIN // tob 
+
+  EXTEND_BOTTOM ~anom25.bcs~ ~NPCKit/baf/no_holy_symbol.baf~
+
+END
+
+COPY ~NPCKit/spl/ikitano3.spl~ ~override~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Branwen                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 500
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0500.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Cernd                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 600
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0600.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Coran                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 700
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0700.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Dynaheir                                         \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 800
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0800.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Edwin                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @90000 DESIGNATED 900
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk0900.g3~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~clabma06.2da~ THEN BEGIN // if conjurer clab table exists, use it
+
+  COPY_EXISTING ~clabma06.2da~ ~override/clabikek.2da~
+
+END ELSE BEGIN // otherwise use generic one
+
+  COPY ~NPCKit/2da/clabikek.2da~ ~override/clabikek.2da~
+
+END
+
+ADD_KIT ~IK_EDWIN_KIT~
+  ~IK_EDWIN_KIT 0 0 0 0 0 0 0 0~
+  ~IK_EDWIN_KIT 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0~
+  ~IK_EDWIN_KIT 0 0 15 9 0 14~
+  ~IK_EDWIN_KIT 0 0 0 0 0 0~
+  ~IK_EDWIN_KIT 0 0 15 17 0 14~
+  ~IK_EDWIN_KIT 0 0 0 15 0 0~
+  ~IK_EDWIN_KIT 0 0 1 0 0 1 0 0 1~
+  ~IK_EDWIN_KIT 1 1 0 1 0 0~
+  ~override/clabikek.2da~
+  ~~
+  ~0x00000080 1~
+  ~ma0~
+  ~* * * * * * * * * * * * * * * * * * * *~
+  SAY @90001
+  SAY @90002
+  SAY @90003
+
+INCLUDE ~npckit/lib/fl#add_kit_ee.tpa~ // ee junk
+LAF fl#add_kit_ee STR_VAR kit_name = IK_EDWIN_KIT END
+
+// read conjurer allowed profs from weapprof and use those
+COPY_EXISTING ~weapprof.2da~ ~override~
+  FOR (row = 0 ; row < 32 ; row = row + 1) BEGIN
+    READ_2DA_ENTRY row 23                      (22 + "%IK_EDWIN_KIT%") "conj"
+    SET_2DA_ENTRY  row (21 + "%IK_EDWIN_KIT%") (22 + "%IK_EDWIN_KIT%") ~%conj%~
+  END
+  PRETTY_PRINT_2DA
+  BUT_ONLY_IF_IT_CHANGES
+
+ACTION_FOR_EACH script IN edwin ewi25 _edwin bgedwin BEGIN // soa, tob, tutu, bgt
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~"%script%".bcs~ THEN BEGIN
+    
+    EXTEND_BOTTOM ~"%script%".bcs~ ~NPCKit/baf/redwizard.baf~
+  
+  END
+
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Eldoth                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1000
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1000.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Faldorn                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1100
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1100.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Garrick                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1200
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1200.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Haer'Dalis                                       \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1300
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1300.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Imoen                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+/////                                                  \\\\\
+///// adventurer                                       \\\\\
+/////                                                  \\\\\
+
+BEGIN @140000 DESIGNATED 1400
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1400.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~clabikav.2da~ THEN BEGIN // if adventurer kit not installed yet
+
+  INCLUDE ~NPCKit/lib/adventurer.tpa~
+
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~ikitimo2.spl~ THEN BEGIN // if no mage kit
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~ ~NPCKit/baf/adventurer.baf~
+
+    END
+
+  END
+
+  ACTION_FOR_EACH script IN _imoen bgimoen2 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~ ~NPCKit/baf/adventurer.baf~
+      EXTEND_BOTTOM ~%script%.bcs~ ~NPCKit/baf/adventurer_imo2.baf~
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/title.spl~ ~override/ikitimo0.spl~
+    SAY 0x9e @140002
+  
+  COPY ~NPCKit/spl/title.spl~ ~override/ikitimo1.spl~
+    SAY 0x9e @140004
+
+END ELSE BEGIN // if mage kit
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~AddKit(MAGESCHOOL_\([A-Z]+\))~
+          ~AddKit(IK_ADVENTURER) AddSuperKit(MAGESCHOOL_\1)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  // next check for specific kits for titling
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1410.g3~ THEN BEGIN // abjurer
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140005
+  
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1411.g3~ THEN BEGIN // conjurer
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140006
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1412.g3~ THEN BEGIN // diviner
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140007
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1413.g3~ THEN BEGIN // enchanter
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140008
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1414.g3~ THEN BEGIN // illusionist
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140009
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1415.g3~ THEN BEGIN // invoker
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140010
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1416.g3~ THEN BEGIN // necromancer
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140011
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk1417.g3~ THEN BEGIN // transmuter
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+      SAY 0x9e @140012
+
+  END
+
+END
+
+/////                                                  \\\\\
+///// abjurer                                          \\\\\
+/////                                                  \\\\\
+
+BEGIN @141001 DESIGNATED 1410
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1410.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_alteration.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_ABJURER) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140005
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/abjurer.baf~
+      
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141002
+
+END
+
+/////                                                  \\\\\
+///// conjurer                                         \\\\\
+/////                                                  \\\\\
+
+BEGIN @141100 DESIGNATED 1411
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1411.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_divination.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_CONJURER) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140006
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/conjurer.baf~
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141101
+
+END
+
+/////                                                  \\\\\
+///// diviner                                          \\\\\
+/////                                                  \\\\\
+
+BEGIN @141200 DESIGNATED 1412
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1412.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~                 ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_conjuration_summoning.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_DIVINER) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140007
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/diviner.baf~
+      
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141201
+
+END
+
+/////                                                  \\\\\
+///// enchanter                                        \\\\\
+/////                                                  \\\\\
+
+BEGIN @141300 DESIGNATED 1413
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1413.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~                ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_invocation_evocation.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_ENCHANTER) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140008
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/enchanter.baf~
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141301
+
+END
+
+// magic missile not castable by enchanters, so
+// mag missile in promenade cutscene replaced with LMD
+COPY_EXISTING ~spwi119.spl~ ~override/spin685.spl~
+  READ_LONG  0x64 "abil_off" ELSE 0
+  READ_SHORT 0x68 "abil_num" ELSE 0
+  READ_LONG  0x6a "fx_off" ELSE 0
+  FOR ( index = 0 ; index < abil_num ; index = index + 1 ) BEGIN
+    READ_SHORT  ("%abil_off%" + 0x1e + (0x28 * "%index%")) "abil_fx_num" ELSE 0
+    READ_SHORT  ("%abil_off%" + 0x20 + (0x28 * "%index%")) "abil_fx_idx" ELSE 0
+    FOR ( index2 = 0 ; index2 < abil_fx_num ; index2 = index2 + 1 ) BEGIN
+      WRITE_BYTE ("%fx_off%" + 0x0d + (0x30 * ("%abil_fx_idx%" + "%index2%"))) 0 // no dispel, bypass mr
+    END
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+/////                                                  \\\\\
+///// illusionist                                      \\\\\
+/////                                                  \\\\\
+
+BEGIN @141400 DESIGNATED 1414
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1414.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_necromancy.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_ILLUSIONIST) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140009
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/illusionist.baf~
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141401
+
+END
+
+/////                                                  \\\\\
+///// invoker                                          \\\\\
+/////                                                  \\\\\
+
+BEGIN @141500 DESIGNATED 1415
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1415.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~             ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_enchantment_charm.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_INVOKER) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140010
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/invoker.baf~
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141501
+
+END
+
+/////                                                  \\\\\
+///// necromancer                                      \\\\\
+/////                                                  \\\\\
+
+BEGIN @141600 DESIGNATED 1416
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1416.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~    ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_illusion.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_NECROMANCER) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140011
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/necromancer.baf~
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141601
+
+END
+
+/////                                                  \\\\\
+///// transmuter                                       \\\\\
+/////                                                  \\\\\
+
+BEGIN @141700 DESIGNATED 1417
+SUBCOMPONENT @141000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1417.g3~
+
+// override script missing from imoen213
+ACTION_IF FILE_EXISTS_IN_GAME imoen213.cre THEN BEGIN
+
+  COPY_EXISTING ~imoen213.cre~ ~override~
+    WRITE_ASCII 0x248 ~imoen2~ #8
+    BUT_ONLY_IF_IT_CHANGES
+
+END
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitimo3.spl~
+COPY ~NPCKit/spl/remove_abjuration.spl~ ~override/ikitimo4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitimo1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~ ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("IKitImo1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_TRANSMUTER) ReallyForceSpellRES("IKitImo2",Myself) ReallyForceSpellRES("IKitImo3",Myself) ReallyForceSpellRES("IKitImo4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @140012
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN imoen imoen2 imoe25 BEGIN
+
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/transmuter.baf~
+
+    END
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitimo2.spl~
+    SAY 0x9e @141701
+
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Jaheira                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1500
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1500.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Jan                                              \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1600
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1600.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Kagain                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1700
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1700.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Keldorn                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1800
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1800.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Khalid                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 1900
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk1900.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Kivan                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 2000
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2000.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Korgan                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @210000 DESIGNATED 2100
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2100.g3~
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~clabikbr.2da~ THEN BEGIN // add battlerager kit
+
+  INCLUDE ~NPCKit/lib/battlerager.tpa~
+
+END
+
+ACTION_FOR_EACH script IN korgan korg25 BEGIN
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+    EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/battlerager.baf~
+
+  END
+
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Mazzy                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @220000 DESIGNATED 2200
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2200.g3~
+
+ADD_KIT ~IK_TRUESWORD~
+  ~IK_TRUESWORD 0 0 0 0 0 0 0 0~
+  ~IK_TRUESWORD 0 0 0 0 0 0 0 0 1 1 5 1 1 1 1 1 1 1 1 1 1 1 1 1 1 5 1 5 2 2 2 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0~
+  ~IK_TRUESWORD 9 0 0 0 0 0~
+  ~IK_TRUESWORD 0 0 0 0 0 0~
+  ~IK_TRUESWORD 17 0 0 0 0 0~
+  ~IK_TRUESWORD 15 0 0 0 0 0~
+  ~IK_TRUESWORD 1 1 0 1 0 0 0 0 0~
+  ~IK_TRUESWORD 0 1 1 1 1 0~
+  ~NPCKit/2da/clabikts.2da~
+  ~~
+  ~0x00004000 2~
+  ~fi0~
+  ~* * * * * * * * * * * * * * * * * * * *~
+  SAY @220001
+  SAY @220002
+  SAY @220003
+
+INCLUDE ~npckit/lib/fl#add_kit_ee.tpa~ // ee junk
+LAF fl#add_kit_ee STR_VAR kit_name = IK_TRUESWORD END
+
+// half-power lay on hands
+COPY_EXISTING ~spcl211.spl~ ~override/ikts1.spl~
+  READ_LONG  0x64 "abil_off" ELSE 0
+  READ_SHORT 0x68 "abil_num" ELSE 0
+  READ_LONG  0x6a "fx_off" ELSE 0
+  FOR ( index = 0 ; index < abil_num ; index = index + 1 ) BEGIN
+    READ_SHORT  ("%abil_off%" + 0x1e + (0x28 * "%index%")) "abil_fx_num" ELSE 0
+    READ_SHORT  ("%abil_off%" + 0x20 + (0x28 * "%index%")) "abil_fx_idx" ELSE 0
+    FOR ( index2 = 0 ; index2 < abil_fx_num ; index2 = index2 + 1 ) BEGIN
+      READ_SHORT   ("%fx_off%" +        (0x30 * ("%abil_fx_idx%" + "%index2%"))) "opcode"
+      PATCH_IF ("%opcode%" = 17) BEGIN
+        READ_LONG  ("%fx_off%" + 0x04 + (0x30 * ("%abil_fx_idx%" + "%index2%"))) "hp"
+        WRITE_LONG ("%fx_off%" + 0x04 + (0x30 * ("%abil_fx_idx%" + "%index2%"))) ("%hp%" / 2)
+      END
+    END
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+// just make innates
+COPY_EXISTING ~sppr104.spl~ ~override/ikts2.spl~ // Detect Evil
+              ~spwi214.spl~ ~override/ikts3.spl~ // Strength
+              ~sppr304.spl~ ~override/ikts5.spl~ // Glyph of Warding
+              ~sppr312.spl~ ~override/ikts6.spl~ // Strength of One
+              ~sppr507.spl~ ~override/ikts8.spl~ // Champion's Strength
+  READ_LONG  0x64 "abil_off" ELSE 0
+  READ_SHORT 0x68 "abil_num" ELSE 0
+  READ_ASCII ("%abil_off%" + 0x04) "bam" (8) // reads the bam filename from ability
+  WRITE_SHORT 0x1C 4                         // sets spell type to innate (4)
+  WRITE_LONG  0x34 1                         // sets spell level to 1 to avoid scripting issues
+  WRITE_EVALUATED_ASCII 0x3A "%bam%" #8      // writes the bam filename from abilities to spell icon
+  FOR ( index = 0 ; index < abil_num ; index = index + 1 ) BEGIN
+    WRITE_SHORT ("%abil_off%" + 0x02 + (0x28 * "%index%")) 4 // changes ability icon location to innate (4)
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+// change duration
+COPY_EXISTING ~spin676.spl~ ~override/ikts4.spl~ // Invoke Courage
+  READ_LONG  0x64 "abil_off" ELSE 0
+  READ_SHORT 0x68 "abil_num" ELSE 0
+  READ_LONG  0x6a "fx_off" ELSE 0
+  FOR ( index = 0 ; index < abil_num ; index = index + 1 ) BEGIN
+    READ_SHORT  ("%abil_off%" + 0x1e + (0x28 * "%index%")) "abil_fx_num" ELSE 0
+    READ_SHORT  ("%abil_off%" + 0x20 + (0x28 * "%index%")) "abil_fx_idx" ELSE 0
+    FOR ( index2 = 0 ; index2 < abil_fx_num ; index2 = index2 + 1 ) BEGIN
+      READ_LONG   ("%fx_off%" + 0x0e + (0x30 * ("%abil_fx_idx%" + "%index2%"))) "duration"
+      PATCH_IF ("%duration%" > 5) BEGIN // duration >= one round
+        WRITE_LONG ("%fx_off%" + 0x0e + (0x30 * ("%abil_fx_idx%" + "%index2%"))) 60 // change to 10 rounds
+      END
+    END
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+// make it innate, self-only
+COPY_EXISTING ~spwi305.spl~ ~override/ikts7.spl~ // Haste
+  READ_LONG  0x64 "abil_off" ELSE 0
+  READ_SHORT 0x68 "abil_num" ELSE 0
+  READ_ASCII ("%abil_off%" + 0x04) "bam" (8) // reads the bam filename from ability
+  WRITE_SHORT 0x1C 4                         // sets spell type to innate (4)
+  WRITE_LONG  0x34 1                         // sets spell level to 1 to avoid scripting issues
+  WRITE_EVALUATED_ASCII 0x3A "%bam%" #8      // writes the bam filename from abilities to spell icon
+  FOR ( index = 0 ; index < abil_num ; index = index + 1 ) BEGIN
+    WRITE_SHORT ("%abil_off%" + 0x02 + (0x28 * "%index%")) 4 // changes ability icon location to innate (4)
+    WRITE_SHORT ("%abil_off%" + 0x0c + (0x28 * "%index%")) 5 // target: caster
+    WRITE_SHORT ("%abil_off%" + 0x26 + (0x28 * "%index%")) 1 // no projectile
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+ACTION_FOR_EACH script IN mazzy mazz25 BEGIN
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+    EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/truesword.baf~
+
+  END
+
+END
+
+COPY ~NPCKit/spl/truesword.spl~ ~override/ikitmaz1.spl~
+
+COPY_EXISTING ~mazzyx.bcs~ ~override~
+  DECOMPILE_BCS_TO_BAF
+    REPLACE_TEXTUALLY ~HaveSpell(MAZZY_HASTE)~    ~HaveSpellRES("IKTS7")~
+    REPLACE_TEXTUALLY ~Spell(Myself,MAZZY_HASTE)~ ~SpellRES("IKTS7",Myself)~
+    REPLACE_TEXTUALLY ~HaveSpell(MAZZY_LAY)~    ~HaveSpellRES("IKTS1")~
+    REPLACE_TEXTUALLY ~Spell(Myself,MAZZY_LAY)~ ~SpellRES("IKTS1",Myself)~
+    REPLACE_TEXTUALLY ~HaveSpell(INVOKE_COURAGE)~    ~HaveSpellRES("IKTS4")~
+    REPLACE_TEXTUALLY ~Spell(Myself,INVOKE_COURAGE)~ ~SpellRES("IKTS4",Myself)~
+    // strength is trick, as we need a new block inserted outright
+    REPLACE_TEXTUALLY ~HaveSpell(MAZZY_STRENGTH)~    ~HaveSpellRES("IKTS3")~
+    REPLACE_TEXTUALLY ~Spell(Myself,MAZZY_STRENGTH)~ ~SpellRES("IKTS3",Myself)
+END
+
+IF
+  See(NearestEnemyOf(Myself))
+  CheckStatLT(Myself,18,STR)
+ HaveSpellRES("IKTS8") // Champion's Strength
+THEN
+  RESPONSE #100
+    SpellRES("IKTS8",Myself)~
+  COMPILE_BAF_TO_BCS
+  BUT_ONLY_IF_IT_CHANGES
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Minsc                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @230000 DESIGNATED 2300
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2300.g3~
+
+ACTION_FOR_EACH script IN minsc mins25 _minsc bgminsc BEGIN
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+    EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/rashemaar.baf~
+
+  END
+
+END
+
+COPY ~NPCKit/spl/title.spl~ ~override/ikitmin1.spl~
+  SAY 0x9e @230001
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Montaron                                         \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 2400
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2400.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Nalia                                            \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+/////                                                  \\\\\
+///// adventurer                                       \\\\\
+/////                                                  \\\\\
+
+BEGIN @250000 DESIGNATED 2500
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2500.g3~
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~clabikav.2da~ THEN BEGIN // if adventurer kit not installed yet
+
+  INCLUDE ~NPCKit/lib/adventurer.tpa~
+
+END
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~ikitnal2.spl~ THEN BEGIN // if no mage kit
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+  
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/adventurer_nal.baf~
+  
+    END
+  
+  END
+  
+  COPY ~NPCKit/spl/title.spl~ ~override/ikitnal1.spl~
+    SAY 0x9e @140004
+
+END ELSE BEGIN // if mage kit
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~AddKit(MAGESCHOOL_\([A-Z]+\))~
+          ~AddKit(IK_ADVENTURER) AddSuperKit(MAGESCHOOL_\1)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+  
+    END
+  
+  END
+
+  // next check for specific kits for titling
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2510.g3~ THEN BEGIN // abjurer
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140005
+  
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2511.g3~ THEN BEGIN // conjurer
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140006
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2512.g3~ THEN BEGIN // diviner
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140007
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2513.g3~ THEN BEGIN // enchanter
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140008
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2514.g3~ THEN BEGIN // illusionist
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140009
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2515.g3~ THEN BEGIN // invoker
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140010
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2516.g3~ THEN BEGIN // necromancer
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140011
+
+  END
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~iknk2517.g3~ THEN BEGIN // transmuter
+
+    COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+      SAY 0x9e @140012
+
+  END
+
+END
+
+/////                                                  \\\\\
+///// abjurer                                          \\\\\
+/////                                                  \\\\\
+
+BEGIN @141001 DESIGNATED 2510
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2510.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_alteration.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_ABJURER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140005
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/abjurer_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141002
+
+END
+
+/////                                                  \\\\\
+///// conjurer                                         \\\\\
+/////                                                  \\\\\
+
+BEGIN @141100 DESIGNATED 2511
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2511.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_divination.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_CONJURER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY_EXISTING ~nalia.bcs~  ~override~
+    DECOMPILE_BCS_TO_BAF
+      REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+      ~AddSuperKit(MAGESCHOOL_CONJURER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+    COMPILE_BAF_TO_BCS
+    BUT_ONLY_IF_IT_CHANGES
+
+  ACTION_IF FILE_EXISTS_IN_GAME ~mel01.cre~ THEN BEGIN // tob
+
+    COPY_EXISTING ~nali25.bcs~ ~override~
+      DECOMPILE_BCS_TO_BAF
+        REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+        ~AddSuperKit(MAGESCHOOL_CONJURER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+      COMPILE_BAF_TO_BCS
+      BUT_ONLY_IF_IT_CHANGES
+
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140006
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/conjurer_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141101
+
+END
+
+/////                                                  \\\\\
+///// diviner                                          \\\\\
+/////                                                  \\\\\
+
+BEGIN @141200 DESIGNATED 2512
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2512.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~                 ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_conjuration_summoning.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_DIVINER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140007
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/diviner_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141201
+
+END
+
+/////                                                  \\\\\
+///// enchanter                                        \\\\\
+/////                                                  \\\\\
+
+BEGIN @141300 DESIGNATED 2513
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2513.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~                ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_invocation_evocation.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_ENCHANTER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140008
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/enchanter_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141301
+
+END
+
+/////                                                  \\\\\
+///// illusionist                                      \\\\\
+/////                                                  \\\\\
+
+BEGIN @141400 DESIGNATED 2514
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2514.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_necromancy.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_ILLUSIONIST) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140009
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/illusionist_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141401
+
+END
+
+/////                                                  \\\\\
+///// invoker                                          \\\\\
+/////                                                  \\\\\
+
+BEGIN @141500 DESIGNATED 2515
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2515.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~             ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_enchantment_charm.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_INVOKER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140010
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/invoker_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141501
+
+END
+
+/////                                                  \\\\\
+///// necromancer                                      \\\\\
+/////                                                  \\\\\
+
+BEGIN @141600 DESIGNATED 2516
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2516.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~    ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_illusion.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_NECROMANCER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140011
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/necromancer_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141601
+
+END
+
+/////                                                  \\\\\
+///// transmuter                                       \\\\\
+/////                                                  \\\\\
+
+BEGIN @141700 DESIGNATED 2517
+SUBCOMPONENT @251000
+REQUIRE_PREDICATE GAME_IS ~bgt soa tob bg2ee eet~ @3 // non-Tutu, bgee
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2517.g3~
+
+COPY ~NPCKit/spl/extra_spells.spl~      ~override/ikitnal3.spl~
+COPY ~NPCKit/spl/remove_abjuration.spl~ ~override/ikitnal4.spl~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~ikitnal1.spl~ THEN BEGIN // if adventurer installed
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      COPY_EXISTING ~%script%.bcs~  ~override~
+        DECOMPILE_BCS_TO_BAF
+          REPLACE_TEXTUALLY ~ReallyForceSpellRES("ikitnal1",Myself)~
+          ~AddSuperKit(MAGESCHOOL_TRANSMUTER) ReallyForceSpellRES("ikitnal2",Myself) ReallyForceSpellRES("ikitnal3",Myself) ReallyForceSpellRES("ikitnal4",Myself)~
+        COMPILE_BAF_TO_BCS
+        BUT_ONLY_IF_IT_CHANGES
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @140012
+
+END ELSE BEGIN
+
+  ACTION_FOR_EACH script IN nalia nali25 BEGIN
+  
+    ACTION_IF FILE_EXISTS_IN_GAME ~%script%.bcs~ THEN BEGIN // tob
+
+      EXTEND_BOTTOM ~%script%.bcs~  ~NPCKit/baf/transmuter_nal.baf~
+    
+    END
+  
+  END
+
+  COPY ~NPCKit/spl/wizard.spl~ ~override/ikitnal2.spl~
+    SAY 0x9e @141701
+
+END
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Quayle                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 2600
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2600.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Safana                                           \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 2700
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2700.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Sarevok                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @280000 DESIGNATED 2800
+REQUIRE_PREDICATE GAME_IS ~bgt tob bg2ee eet~ @1 // tob required
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2800.g3~
+
+ADD_KIT ~IK_DEATHBRINGER~
+  ~IK_DEATHBRINGER 0 0 0 0 0 0 0 0~
+  ~IK_DEATHBRINGER 0 0 0 0 0 0 0 0 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 2 2 2 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0~
+  ~IK_DEATHBRINGER 9 0 0 0 0 0~
+  ~IK_DEATHBRINGER 0 0 0 0 0 0~
+  ~IK_DEATHBRINGER 17 0 0 0 0 0~
+  ~IK_DEATHBRINGER 15 0 0 0 0 0~
+  ~IK_DEATHBRINGER 1 1 1 1 1 1 1 1 1~
+  ~IK_DEATHBRINGER 0 1 1 1 1 0~
+  ~NPCKit/2da/clabikdb.2da~
+  ~~
+  ~0x00004000 2~
+  ~fi0~
+  ~* * * * * * * * * * * * * * * * * * * *~
+  SAY @280001
+  SAY @280002
+  SAY @280003
+
+INCLUDE ~npckit/lib/fl#add_kit_ee.tpa~ // ee junk
+LAF fl#add_kit_ee STR_VAR kit_name = IK_DEATHBRINGER END
+
+COPY ~NPCKit/spl/ikdb1.spl~    ~override~ // immunity to fear and morale failure
+     ~NPCKit/spl/ikdb3.spl~    ~override~ // add Deathbringer Assault
+     ~NPCKit/spl/ikitsar1.spl~ ~override~
+
+// make innate
+COPY_EXISTING ~spwi125.spl~ ~override/ikdb2.spl~ // Spook
+  READ_LONG  0x64 "abil_off" ELSE 0
+  READ_SHORT 0x68 "abil_num" ELSE 0
+  READ_ASCII ("%abil_off%" + 0x04) "bam" (8) // reads the bam filename from ability
+  WRITE_SHORT 0x1C 4                         // sets spell type to innate (4)
+  WRITE_LONG  0x34 1                         // sets spell level to 1 to avoid scripting issues
+  WRITE_EVALUATED_ASCII 0x3A "%bam%" #8      // writes the bam filename from abilities to spell icon
+  FOR ( index = 0 ; index < abil_num ; index = index + 1 ) BEGIN
+    WRITE_SHORT ("%abil_off%" + 0x02 + (0x28 * "%index%")) 4 // changes ability icon location to innate (4)
+  END
+  BUT_ONLY_IF_IT_CHANGES
+
+EXTEND_BOTTOM ~sarev25.bcs~ ~NPCKit/baf/deathbringer.baf~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Shar-Teel                                        \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 2900
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk2000.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Skie                                             \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3000
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3000.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Tiax                                             \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3100
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3100.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Valygar                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3200
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3200.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Viconia                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3300
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3300.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Xan                                              \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3400
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3400.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Xzar                                             \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3500
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3500.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Yeslick                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3600
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3600.g3~
+
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////                                                  \\\\\
+///// Yoshimo                                          \\\\\
+/////                                                  \\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\/////\\\\\
+
+BEGIN @0 DESIGNATED 3700
+DEPRECATED @0
+
+// dummy file to allow for detection
+COPY_EXISTING ~sw1h01.itm~ ~override/iknk3000.g3~

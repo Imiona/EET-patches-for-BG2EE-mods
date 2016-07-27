@@ -1,0 +1,44 @@
+IF
+	Global("M#AmberKidnap","GLOBAL",4)
+	CombatCounter(0)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	Global("M#HaerDalisKidnapResponse","GLOBAL",1)
+THEN
+	RESPONSE #100
+	Dialog(Player1)	
+END
+
+IF
+	InParty("M#Amber")
+	InParty(Myself)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	OR(3)
+	  Global("M#AmberHaerDalisTalk","GLOBAL",0)
+	  Global("M#AmberHaerDalisTalk","GLOBAL",2)
+	  Global("M#AmberHaerDalisTalk","GLOBAL",4)
+	RealGlobalTimerExpired("M#AmberHaerDalisTalkTime","GLOBAL")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberHaerDalisTalk","GLOBAL",1)
+END
+
+IF
+  	See("M#Amber")
+	OR(3)
+	  Global("M#AmberHaerDalisTalk","GLOBAL",1)
+	  Global("M#AmberHaerDalisTalk","GLOBAL",3)
+	  Global("M#AmberHaerDalisTalk","GLOBAL",5)
+	!StateCheck("M#Amber",STATE_PANIC)
+	!StateCheck("M#Amber",STATE_BERSERK)
+	!StateCheck("M#Amber",STATE_CHARMED)
+	!StateCheck("M#Amber",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Interact("M#Amber")
+END

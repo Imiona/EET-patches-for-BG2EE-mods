@@ -1,0 +1,162 @@
+INCLUDE ~w_PackMule/lib/w_macro.tpa~
+
+COPY ~w_PackMule/copy~ ~override~
+COPY ~w_PackMule/bam~ ~override~
+                            //1 2 3 4 5 6 7  8 9 10   11   12   1314 15  16 17 18  19
+APPEND ~EXTANIM.2da~ ~59134	0 1 1 0 0 1 47 0 0 NONE NONE NONE 8 3 uDI NONE 0 0 NONE~ UNLESS ~^59134~
+APPEND ~EXTSPEED.2da~ ~59134	10~ UNLESS ~^59134~
+APPEND ~animate.ids~ ~0xe6fe PACK_MULE_WOW~ UNLESS ~^0xe6fe~
+APPEND ~anisnd.ids~ ~0xe6fe uDI      CGAMEANIMATIONTYPE_PACK_MULE_WOW~ UNLESS ~^0xe6fe~
+
+APPEND ~MSCHOOL.2DA~
+~W_PMuleShadow QWERTY6
+W_PMuleReturn QWERTY5~
+COPY_EXISTING + ~MSCHOOL.2DA~ ~OVERRIDE~
+  REPLACE ~QWERTY6~  @1000
+  REPLACE ~QWERTY5~  @1001
+  COUNT_2DA_ROWS 1 mschool_rows
+  OUTER_SET %W_PMuleShadow% = %mschool_rows% - 5
+  OUTER_SET %W_PMuleReturn% = %mschool_rows% - 4
+
+
+COPY COPY ~w_PackMule/wal_09~ ~override~
+
+
+COPY ~w_PackMule/w_mule.cre~   ~override/w_mule.cre~
+  SAY NAME1 @1002
+  SAY NAME2 @1002
+
+COPY ~w_PackMule/w_pwrang.cre~   ~override~
+  SAY NAME1 @1003
+  SAY NAME2 @1003
+
+COPY ~w_PackMule/w_mflow.spl~ ~override~
+  SAY NAME1 @1004
+COPY ~w_PackMule/w_mwait.spl~ ~override~
+  SAY NAME1 @1005
+COPY ~w_PackMule/w_mstay.spl~ ~override~
+  SAY NAME1 @1006
+
+COPY ~w_PackMule/w_mshad.spl~ ~override~
+  WRITE_BYTE 0x25 %W_PMuleShadow%
+COPY ~w_PackMule/w_mfree.spl~ ~override~
+  WRITE_BYTE 0xa2 %W_PMuleReturn%
+COPY ~w_PackMule/w_mmaze.spl~ ~override~
+  WRITE_LONG 0x25 %W_PMuleReturn%
+  WRITE_BYTE 0xa2 %W_PMuleShadow%
+
+ADD_SPELL ~W_PackMule/SPIN199.spl~ ~4~ ~1~ ~Summon_Pack_Mule~
+  INNER_ACTION BEGIN
+    OUTER_SPRINT ~w_add_spell_old~ ~%SOURCE_RES%~
+    OUTER_SPRINT ~w_add_spell_new~ ~%DEST_RES%~
+  END
+  LAUNCH_PATCH_MACRO ~w_add_spell~
+  SAY NAME1 @1009
+
+COMPILE ~w_PackMule/w_mule.d~
+COMPILE EVALUATE_BUFFER ~w_PackMule/w_mule.baf~
+COMPILE ~w_PackMule/w_msum.baf~
+COMPILE ~w_PackMule/w_msuma.baf~
+//tob
+ACTION_IF FILE_EXISTS_IN_GAME  ~ar4000.are~
+THEN BEGIN
+EXTEND_BOTTOM ~ar4000.bcs~ ~w_packmule/ar4000_ext.baf~
+END
+
+
+<<<<<<<< .../script.baf
+IF
+  Global("W_PMULE_C","%file_name%",0)
+  !Global("W_PackMuleWrangler","GLOBAL",9)
+THEN
+  RESPONSE #100
+    SetGlobal("W_MWAIT","GLOBAL",3)
+    SetGlobal("W_PMULE_C","%file_name%",1)
+    CreateCreature("W_PWRANG",[%coords%],14)
+    CreateCreature("W_MULE",[%coords2%],0)
+    ChangeEnemyAlly("W_MULE",NEUTRAL)
+    ApplySpellRES("W_MSHAD","W_MULE")
+    ActionOverride("W_MULE",MoveToOffset([1.1]))
+    Continue()
+END
+>>>>>>>>
+//soa
+ACTION_IF FILE_EXISTS_IN_GAME  ~ar0700.are~
+THEN BEGIN
+EXTEND_TOP ~ar0700.bcs~ ~.../script.baf~
+  SPRINT ~file_name~ ~ar0700~
+  SPRINT ~coords~ ~170.1218~
+  SPRINT ~coords2~ ~90.1235~
+  EVALUATE_BUFFER
+END
+//bg1
+ACTION_IF GAME_IS ~eet~
+THEN BEGIN
+EXTEND_TOP ~bg2300.bcs~ ~.../script.baf~
+  SPRINT ~file_name~ ~bg2300~
+  SPRINT ~coords~ ~1740.1910~
+  SPRINT ~coords2~ ~1825.1910~
+  EVALUATE_BUFFER
+END ELSE ACTION_IF FILE_EXISTS_IN_GAME  ~ar2300.are~
+THEN BEGIN
+EXTEND_TOP ~ar2300.bcs~ ~.../script.baf~
+  SPRINT ~file_name~ ~ar2300~
+  SPRINT ~coords~ ~1740.1910~
+  SPRINT ~coords2~ ~1825.1910~
+  EVALUATE_BUFFER
+END
+
+COPY_EXISTING_REGEXP GLOB ~^\([^xX].*\|[xX][^rR].*\|[xX][rR][^2].*\|[xX][rR]2[^46].*\)\.are$~ ~override~
+  SPRINT ~file_name~ ~%SOURCE_RES%~
+  PATCH_IF SOURCE_SIZE > 0x11b BEGIN
+    READ_BYTE  0x48 "flag"
+    READ_ASCII 0x94 ~area_script~ //Area script
+    TO_LOWER area_script
+    PATCH_IF
+    (((%flag% BAND 0b00000001) = 0b00000001) OR //outdoor
+     ((%flag% BAND 0b00100000) = 0b00100000) OR //dungeon
+     (FILE_CONTAINS_EVALUATED (~w_packmule\are_incl.txt~  ~--%file_name%--~))
+    )
+    AND (NOT FILE_CONTAINS_EVALUATED (~w_packmule\are_excl.txt~  ~--%file_name%--~))
+    BEGIN
+      PATCH_IF (~%area_script%~ STRING_EQUAL ~~ = 1) AND (NOT VARIABLE_IS_SET $df(EVALUATE_BUFFER ~%area_script%~)) BEGIN //If a null script and hasn't been buffered already
+        SPRINT ~area_script~ ~%SOURCE_RES%~ //Area script
+        WRITE_EVALUATED_ASCII 0x94 ~%area_script%~ #8 //Write it to the area file
+        INNER_ACTION BEGIN
+          EXTEND_BOTTOM ~%area_script%.bcs~ ~w_PackMule/area_ext.baf~
+          EVALUATE_BUFFER
+        END
+        SPRINT $df(EVALUATE_BUFFER ~%area_script%~) ~%area_script%~ //Add to buffer
+      END ELSE
+      PATCH_IF (NOT VARIABLE_IS_SET $df(EVALUATE_BUFFER ~%area_script%~)) BEGIN
+        INNER_ACTION BEGIN
+          EXTEND_BOTTOM ~%area_script%.bcs~ ~w_PackMule/area_ext.baf~
+          EVALUATE_BUFFER
+        END
+        SPRINT $df(EVALUATE_BUFFER ~%area_script%~) ~%area_script%~ //Add to buffer
+       END
+    END ELSE
+    PATCH_IF
+    ((%flag% BAND 0b00000001) = 0b00000000) OR //indoor
+    (FILE_CONTAINS_EVALUATED (~w_packmule\are_excl.txt~  ~--%file_name%--~))
+    BEGIN
+      PATCH_IF (~%area_script%~ STRING_EQUAL ~~ = 1) AND (NOT VARIABLE_IS_SET $df(EVALUATE_BUFFER ~%area_script%~)) BEGIN //If a null script and hasn't been buffered already
+        SPRINT ~area_script~ ~%SOURCE_RES%~ //Area script
+        WRITE_EVALUATED_ASCII 0x94 ~%area_script%~ #8 //Write it to the area file
+        INNER_ACTION BEGIN
+          EXTEND_BOTTOM ~%area_script%.bcs~ ~w_PackMule/area_ex2.baf~
+          EVALUATE_BUFFER
+        END
+        SPRINT $df(EVALUATE_BUFFER ~%area_script%~) ~%area_script%~ //Add to buffer
+      END ELSE
+      PATCH_IF (NOT VARIABLE_IS_SET $df(EVALUATE_BUFFER ~%area_script%~)) BEGIN
+        INNER_ACTION BEGIN
+          EXTEND_BOTTOM ~%area_script%.bcs~ ~w_PackMule/area_ex2.baf~
+          EVALUATE_BUFFER
+        END
+        SPRINT $df(EVALUATE_BUFFER ~%area_script%~) ~%area_script%~ //Add to buffer
+       END
+    END
+
+  END
+BUT_ONLY_IF_IT_CHANGES

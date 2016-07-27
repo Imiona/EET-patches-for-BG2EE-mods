@@ -1,0 +1,73 @@
+IF
+	Global("M#AmberKidnap","GLOBAL",4)
+	CombatCounter(0)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	Global("M#ViconiaKidnapResponse","GLOBAL",1)
+THEN
+	RESPONSE #100
+	Dialog(Player1)	
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberViconiaRomanceConflictTime","GLOBAL")
+	Global("M#AmberViconiaRomanceConflict","GLOBAL",1)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	InParty("m#amber")
+	InParty("Viconia")
+	Global("M#AmberRomanceActive","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",1)
+	!Global("M#AmberMad","GLOBAL",1)
+	Global("ViconiaRomanceActive","GLOBAL",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberViconiaRomanceConflict","GLOBAL",2)
+END
+
+IF
+	Global("M#AmberViconiaRomanceConflict","GLOBAL",2)
+	!StateCheck("m#amber",STATE_PANIC)
+	!StateCheck("m#amber",STATE_BERSERK)
+	!StateCheck("m#amber",STATE_CHARMED)
+	!StateCheck("m#amber",STATE_CONFUSED)
+	CombatCounter(0)
+	See("m#amber")
+THEN
+	RESPONSE #100
+	Dialog("m#amber")
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberViconiaTalkTime","GLOBAL")
+	OR(2)
+	  Global("M#AmberViconiaTalk","GLOBAL",0)
+	  Global("M#AmberViconiaTalk","GLOBAL",4)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	InParty("M#Amber")
+	InParty(Myself)
+	See("M#Amber")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberViconiaTalk","GLOBAL",1)
+END
+
+IF
+	OR(2)
+	  Global("M#AmberViconiaTalk","GLOBAL",1)
+	  Global("M#AmberViconiaTalk","GLOBAL",5)
+	!StateCheck("M#Amber",STATE_PANIC)
+	!StateCheck("M#Amber",STATE_BERSERK)
+	!StateCheck("M#Amber",STATE_CHARMED)
+	!StateCheck("M#Amber",STATE_CONFUSED)
+	CombatCounter(0)
+	See("M#Amber")
+THEN
+	RESPONSE #100
+	ActionOverride("m#amber",SetDialog("m#ambern"))
+	Dialog("M#Amber")
+END

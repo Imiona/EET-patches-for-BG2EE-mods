@@ -1,0 +1,38 @@
+ADD_KIT ~IK_ADVENTURER~
+  ~IK_ADVENTURER 0 0 0 0 0 0 0 0~
+  ~IK_ADVENTURER 0 0 0 0 0 0 0 0 0 1 1 0 0 1 1 1 0 1 0 0 0 0 1 1 0 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0~
+  ~IK_ADVENTURER 0 9 0 0 0 0~
+  ~IK_ADVENTURER 0 0 0 0 0 0~
+  ~IK_ADVENTURER 0 17 0 0 0 0~
+  ~IK_ADVENTURER 0 15 0 0 0 0~
+  ~IK_ADVENTURER 0 1 1 1 1 1 1 1 1~
+  ~IK_ADVENTURER 1 1 1 0 0 0~
+  ~NPCKit/2da/clabikav.2da~
+  ~~
+  ~0x00100000 4~
+  ~th0~
+  ~* * * * * * * * * * * * * * * * * * * *~
+  SAY @140001
+  SAY @140002
+  SAY @140003
+
+INCLUDE ~npckit/lib/fl#add_kit_ee.tpa~ // ee junk
+LAF fl#add_kit_ee STR_VAR backstab = ~1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1~ kit_name = ~IK_ADVENTURER~ END // for ee games, give no backstab multiplier
+
+ACTION_IF NOT GAME_IS ~bgee bg2ee eet~ THEN BEGIN // if non-ee game, have to use swash usability flag to prevent backstabbing
+
+  COPY_EXISTING ~kitlist.2da~ ~override~
+    REPLACE_TEXTUALLY ~\([ %TAB%]clabikav[ %TAB%]+[0-9]+[ %TAB%]+\)0x0*4000~ ~\10x00100000~
+    BUT_ONLY
+
+END
+
+COPY ~NPCKit/spl/ikav1.spl~ ~override~ // +20% open locks & find/remove traps
+
+// read thief allowed profs from weapprof and use those
+COPY_EXISTING ~weapprof.2da~ ~override~
+  FOR (row = 0 ; row < 32 ; row = row + 1) BEGIN
+    READ_2DA_ENTRY row 7                        (22 + "%IK_ADVENTURER%") "conj"
+    SET_2DA_ENTRY  row (21 + "%IK_ADVENTURER%") (22 + "%IK_ADVENTURER%") ~%conj%~
+  END
+  BUT_ONLY_IF_IT_CHANGES

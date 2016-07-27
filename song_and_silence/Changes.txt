@@ -1,0 +1,41 @@
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~bgee bg2ee~ THEN BEGIN => GAME_IS ~bgee bg2ee eet~ THEN BEGIN
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~BGEE BG2EE~ => GAME_IS ~BGEE BG2EE eet~
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~bgt soa tob bg2ee~ THEN BEGIN => GAME_IS ~bgt soa tob bg2ee eet~ THEN BEGIN
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~bgee bg2ee~ THEN BEGIN  => GAME_IS ~bgee bg2ee eet~ THEN BEGIN 
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~bgee bg2ee~ THEN BEGIN  => GAME_IS ~bgee bg2ee eet~ THEN BEGIN 
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~bgee bg2ee~ THEN BEGIN  => GAME_IS ~bgee bg2ee eet~ THEN BEGIN 
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~bgee bg2ee~  => GAME_IS ~bgee bg2ee eet~ 
+Patching song_and_silence-v6/song_and_silence/setup-song_and_silence.tp2: GAME_IS ~bgt tutu tutu_totsc bgee~ => ~bgt tutu tutu_totsc bgee eet~
+Patching song_and_silence-v6/song_and_silence/lib/functions.tpa: GAME_IS ~bgee bg2ee~ BEGIN => GAME_IS ~bgee bg2ee eet~ BEGIN
+
+-------
+Manual changes:
+
+  ACTION_IF GAME_IS ~tutu tutu_totsc~ THEN BEGIN
+    OUTER_SPRINT nashkel_carnival fw4900
+    OUTER_SPRINT script_check _ar4900
+  END ELSE BEGIN
+    ACTION_IF GAME_IS ~bgt~ THEN BEGIN
+      OUTER_SPRINT nashkel_carnival ar3800
+      OUTER_SPRINT script_check ar3800
+    END ELSE BEGIN
+      OUTER_SPRINT nashkel_carnival ar4900
+      OUTER_SPRINT script_check ar4900
+    END
+  END
+
+=>
+
+  ACTION_IF GAME_IS ~tutu tutu_totsc~ THEN BEGIN
+    OUTER_SPRINT nashkel_carnival fw4900
+    OUTER_SPRINT script_check _ar4900
+  END ELSE ACTION_IF GAME_IS ~bgt~ THEN BEGIN
+    OUTER_SPRINT nashkel_carnival ar3800
+    OUTER_SPRINT script_check ar3800
+  END ELSE ACTION_IF GAME_IS ~eet~ THEN BEGIN
+    OUTER_SPRINT nashkel_carnival bg4900
+    OUTER_SPRINT script_check bg4900
+  END ELSE BEGIN
+    OUTER_SPRINT nashkel_carnival ar4900
+    OUTER_SPRINT script_check ar4900
+  END

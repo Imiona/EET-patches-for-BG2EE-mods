@@ -1,0 +1,2234 @@
+BACKUP ~Foundling\backup~
+AUTHOR ~Lava Del'Vortel~
+README ~Foundling\readme.txt~
+
+AUTO_TRA ~Foundling/TRANSLATIONS/%s~
+
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+
+  // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+  //INCLUDE ~%MOD_FOLDER%/handle_charsets.tpa~ 
+
+  // No exception, everything needs to be converted
+  ACTION_DEFINE_ARRAY FouXnoconvert BEGIN END
+
+  // Only setup-Innershade.tra needs to be reloaded
+  ACTION_DEFINE_ARRAY FouXreload BEGIN Foundling END
+
+  // There is no "language" folder so the root of all languages in %MOD_FOLDER%
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~%MOD_FOLDER%/translations~
+      // charset_table = FouXcharsets // Included for illustrative purposes.
+      noconvert_array = FouXnoconvert
+      reload_array = FouXreload
+  END
+END
+
+
+LANGUAGE ~English~
+         ~English~
+         ~Foundling/TRANSLATIONS/English/Foundling.TRA~
+         
+        
+BEGIN @249 /* Foundling: Between the Shades */ 
+         
+
+APPEND ~STATE.IDS~ ~0x80101FEF CD_STATE_NOTVALID~
+UNLESS ~CD_STATE_NOTVALID~
+
+INCLUDE ~Foundling/fl#add_kit_ee.tpa~
+
+COPY ~Foundling/2DA/LULSH.2da~ ~override~
+
+ADD_KIT ~LSHADO~ //this is the "internal" name of your kit, like BERSERKER or LATHANDER
+//CLASWEAP.2DA
+//         S L   M
+//         _ _   I
+//         S S B S     S
+//         W W L S     P
+//         O O U I B A E
+//         R R N L O X A
+//         D D T E W E R
+~LSHADO 1 0 1 1 0 0 0~
+//WEAPPROF.2DA
+//11                               T   S           F   Q             S S
+//10                               W   C           L   U             W I
+//9                        B L S   O   I   W       A   A             O N
+//8                        A O H   H   M   A       I   R C   S       R G
+//7        L S           M S N O   A   I   R     H L   T R L H     2 D L 2                 E E E E E E E E E E E
+//6        _ _       S   I T G R   N K T D H     A M   E O O O     H A E W E E E E E E E E X X X X X X X X X X X
+//5        S S   S B P   S A S T   D A A A A   S L O   R S N R   S A N W E X X X X X X X X T T T T T T T T T T T
+//4        W W   P L I   S R W S   E T R G M C P B R M S S G T D L N D E A T T T T T T T T R R R R R R R R R R R
+//3        O O B E U K A I D O W A D A W G M L E E N A T B B B A I D S A P R R R R R R R R A A A A A A A A A A A
+//2        R R O A N E X L S R O X S N A E E U A R I C A O O O R N E H P O A A A A A A A A 1 1 1 1 1 1 1 1 1 1 2
+//1        D D W R T D E E W D R E W A K R R B R D N E F W W W T G D I O N 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+~LSHADO 0 1 0 0 1 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0~
+//         S  D  C  I  W  C
+//         T  E  O  N  I  H
+//         R  X  N  T  S  R
+~LSHADO 0  0  0  10 10 0~ //ABCLASRQ.2DA
+~LSHADO 0  0  0  0  0  0~ //ABCLSMOD.2DA
+~LSHADO 3  3  3  14 12 3~ //ABDCDSRQ.2DA
+~LSHADO 3  3  3  14 12 3~ //ABDCSCRQ.2DA
+//ALIGNMNT.2DA
+//         L L L N N N C C C
+//         G N E G N E G N E
+~LSHADO 1 1 1 1 1 1 1 1 1~
+//DUALCLAS.2DA
+//         F C M T D R
+//         I L A H R A
+//         G E G I U N
+~LSHADO 0 0 0 0 0 0~
+//abilities 2DA file
+~Foundling/2DA/LClbST.2da~
+// These are the 2da files listed in KITTABLE.2DA that you want your kit to be a part of. List as many as you like.
+~~
+// This is the "unusable" value you want for you kit and also the class value. These would normally appear at the end of KITLIST.2DA //2-woj 1-mag 5-bard 12-druid?
+~0x00003FC0 1~//~0x08000000 2~ //0x80003FC0 -wszystkie kity maga //0x08003FC0 -kity + totemic(psion)
+// This is the High Level Ability Abbreviation (see LUABBR.2DA) Normal values are Fi0, Pa0, etc.
+~LSH~
+// This is the TOB starting equipment list. Put a * if you don't want something. See 25STWEAP.2DA.
+~* * * BAG29 RING06 RING40 * BOOT01 AMUL21 BRAC15 BELT10 AROW11,40 BOLT03,40 BOLT06,40 POTN52,5 POTN04,2 POTN14,5 SLNG05 DAGG05,40 STAF20~
+// These are the strings you want for the lower, mixed and help descriptions for your kit.
+SAY @1 /* SHADOW ADEPT */
+SAY @2 /* Shadow Adept */
+SAY @3 /* SHADOW ADEPT: These arcane casters are said to be bound to the Shadow Plane. Shadows are both their blessing and their curse. They are able to use a different source of magic--the Shadow Weave--due to a contract made with Shar. Most of them make a special sacrifice to gain access to the Shadow Weave; some are contracted against their will.  It is rumored that some powerful mages are able to use the Shadow Weave without contracting themselves to Shar.
+
+Advantages:
+
+-Gains a +2 thac0 bonus. At level 14 and 21 gets additional +2 thac0 and +0.5 attack per round
+-Gains +10% cold resistance and gains an additional 10% every 10 levels
+-At level 5 is given permanent Infravision as a result of dealing with shadow-oriented energy
+-Has access to a brand new selection of shadow magic spells. Most are similar to their Weave counterparts, but due to springing from a different source, their nature may differ from the spells of Mystra's Weave.
+-Once in their lifetime a Shadow Weave Mage may create a black blade that will be usable only by the creator. The power of the blade depends on the level of the Shadow Adept.
+
+Disadvantages:
+
+-Cannot be of any good alignment
+-Suffers from -20% fire resistance and -5% resistance to magic fire.
+-Cannot learn new spells or use any magic from Mystra's Weave--this includes magical scrolls.
+-Suffers -2 caster's level in daylight. At level 14 this penalty is cancelled.
+
+
+SHADOW WEAVE MAGIC: this new type of magic may be used only by Shadow Adepts, who are mostly servants of Shar. As coldness accompanies Shadow Weave Magic, every spell used by the mage makes cold more difficult for him to resist. Most Shadow Weave spells are more powerful and slightly faster, but Shadow Adepts know a smaller number of spells per level than their Mystra's Weave-using counterparts. */
+
+////
+
+LAF fl#add_kit_ee
+  INT_VAR
+
+  STR_VAR
+    kit_name = LSHADO
+
+END
+
+
+
+COPY ~Foundling/Spells/lsta01.spl~ ~override~
+SAY NAME1 @4 /* Fire Resistance Penalty */
+SAY NAME2 @4 /* Fire Resistance Penalty */
+
+COPY ~Foundling/Spells/lsta02.spl~ ~override~
+SAY NAME1 @5 /* Cold Resistance Bonus */
+SAY NAME2 @5 /* Cold Resistance Bonus */
+
+COPY ~Foundling/Spells/lsta03.spl~ ~override~
+SAY NAME1 @6 /* Gain Infravision */
+SAY NAME2 @6 /* Gain Infravision */
+
+COPY ~Foundling/Spells/L#DE.spl~ ~override~
+SAY NAME1 ~~
+SAY NAME2 ~~
+
+COPY ~Foundling/Spells/L#HURT.spl~ ~override~
+SAY NAME1 ~~
+SAY NAME2 ~~
+
+ADD_PROJECTILE ~Foundling/pro/l#fsp03e.pro~
+ADD_PROJECTILE ~Foundling/pro/l#fsp11e.pro~
+ADD_PROJECTILE ~Foundling/pro/l#fsp16e.pro~
+ADD_PROJECTILE ~Foundling/pro/l#fsp24e.pro~
+ADD_PROJECTILE ~Foundling/pro/rad40e.pro~
+ADD_PROJECTILE ~Foundling/pro/rad40p.pro~
+ADD_PROJECTILE ~Foundling/pro/radius10.pro~
+ADD_PROJECTILE ~Foundling/pro/radius30.pro~
+
+COPY ~Foundling/Spells/l#fsp01e.SPL~     ~override/l#fsp01e.SPL~
+COPY ~Foundling/effects/l#fsp1.eff~     ~override/l#fsp1.eff~
+COPY ~Foundling/Spells/l#fsp01.SPL~     ~override/l#fsp01.SPL~
+
+  SAY NAME1 @8 /* Darkvision */
+  SAY NAME2 @8 /* Darkvision */
+  SAY UNIDENTIFIED_DESC @9 /* Darkvision (Shadow Weave Magic)
+Level: 1
+Range: Visual range of caster
+Duration: 10 turns
+Casting Time: 1 
+Area of Effect: 1 Creature
+Saving Throw: None 
+
+After this spell is cast, the mage gains the ability to see through non-magical darkness.  The spell has a 10% chance to detect the presence of those who are hidden by magic spells like Invisibility.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers -5% penalty to cold resistance for 10 seconds.  */
+READ_LONG 0x64 "abil_off"
+READ_SHORT 0x68 "abil_num"
+SET "delta" = 0
+FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+WRITE_SHORT (%abil_off% + (0x28 * %index%) + 0x26) ~%radius10%~
+END
+
+
+
+
+/////////////////////////////////////////////////////
+
+
+
+COPY ~Foundling/Spells/l#fsp02.SPL~     ~override/l#fsp02.SPL~
+  SAY NAME1 @10 /* Hue of Shadows */
+  SAY NAME2 @10 /* Hue of Shadows */
+  SAY UNIDENTIFIED_DESC @11 /* Hue of Shadows (Shadow Weave Magic)
+Level: 1
+Range: touch
+Duration: 20 turns
+Casting Time: 2
+Area of Effect: 1 Creature
+Saving Throw: None 
+
+The creature who is under the effect of this spell is given a +25% bonus to the "Hide in Shadows" ability, which makes thieves and rangers better scouts.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp03.SPL~     ~override/l#fsp03.SPL~
+  SAY NAME1 @12 /* Dark Missile */
+  SAY NAME2 @12 /* Dark Missile */
+  SAY UNIDENTIFIED_DESC @13 /* Dark Missile (Shadow Weave Magic)
+Level: 1
+Range: Visual range of caster 
+Duration: Instantaneous 
+Casting Time: 1
+Area of Effect: 1 Creature
+Saving Throw: None 
+
+This spell is a distant and dark cousin of the well-known Magic Missile spell. However, this spell does not create more than one missile; the power is concentrated into one powerful strike that has an increased chance of hitting the target. This missile inflicts 1d4+1 damage (additional 1d4 for each two levels) and +1 cold damage.  
+
+NOTE: This spell uses Shadow Weave Magic that makes caster more vulnerable to cold.  If this spell is cast, the mage suffers -5% penalty to cold resistance for 10 seconds. */
+READ_LONG 0x64 "abil_off"
+READ_SHORT 0x68 "abil_num"
+SET "delta" = 0
+FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+WRITE_SHORT (%abil_off% + (0x28 * %index%) + 0x26) ~%l#fsp03e%~
+END
+
+
+
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp04.SPL~     ~override/l#fsp04.SPL~
+  SAY NAME1 @14 /* Black Blindness */
+  SAY NAME2 @14 /* Black Blindness */
+  SAY UNIDENTIFIED_DESC @15 /* Black Blindness (Shadow Weave Magic)
+Level: 1
+Range: Visual range of caster 
+Duration: 10 turns
+Casting Time: 2
+Area of Effect: 1 creature 
+Saving Throw: Neg.
+
+This first level spell temporarily blinds its target.  A saving throw is allowed, and if successful there are no harmful effects.  If a victim is blinded he receives -4 to hit on his attack rolls, and has a 4 point armor penalty.
+The Shadow Weave version of the spell differs slightly--it provides a 5% chance that the target will run in panic.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold. If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp05.SPL~     ~override/l#fsp05.SPL~
+  SAY NAME1 @16 /* Shadow Armor */
+  SAY NAME2 @16 /* Shadow Armor */
+  SAY UNIDENTIFIED_DESC @17 /* Shadow Armor (Shadow Weave Magic)
+Level: 1
+Range: 0
+Duration: 9 hours
+Casting Time: 1 round 
+Area of Effect: caster
+Saving Throw: None 
+
+By means of this spell, the wizard creates a magical field of force equivalent to scale mail armor (AC 6). It is cumulative with Dexterity and, in the case of fighter/mages, with the shield bonus. The armor spell does not hinder movement, adds no weight or encumbrance, and does not prevent spellcasting. It lasts until successfully dispelled or until the duration ends.
+The Shadow Weave version of this spell is said to be more successful against missiles and shadows. It provides extra +2 AC vs missiles and another +2 AC versus all types of shadows. 
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold. If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds */
+  
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp06.SPL~     ~override/l#fsp06.SPL~
+  SAY NAME1 @18 /* Faded Horror */
+  SAY NAME2 @18 /* Faded Horror */
+  SAY UNIDENTIFIED_DESC @19 /* Faded Horror (Shadow Weave Magic)
+Level: 2
+Range: 25 yards
+Duration: 1 turn
+Casting Time: 1 
+Area of Effect: 30 foot cube
+Saving Throw: Neg. 
+
+All enemies within the area of effect when this spell is cast must save vs. spells (with -1 penalty) or flee in terror.  Certain creatures are immune to the effects of Fear, including all undead. This spell has a 2% chance to kill enemies just as an arcane Death Spell.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+  
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp07.SPL~     ~override/l#fsp07.SPL~
+  SAY NAME1 @20 /* Explosive Darkness */
+  SAY NAME2 @20 /* Explosive Darkness */
+  SAY UNIDENTIFIED_DESC @21 /* Explosive Darkness (Shadow Weave Magic)
+Level: 2
+Range: Visual range of caster 
+Duration: 1 turn
+Casting Time: 1 
+Area of Effect: 1 Creature
+Saving Throw: halves the damage
+
+This Shadow Spell does 2d8+2 piercing damage with +1d4 fire damage per five levels of the caster (maximum +3d4).  The explosion itself has the power to hurt only one selected creature. The victim is allowed to make a save vs. magic--if it's successful, the damage is halved.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+  
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp08.SPL~     ~override/l#fsp08.SPL~
+  SAY NAME1 @22 /* Shadow Invisibility */
+  SAY NAME2 @22 /* Shadow Invisibility */
+  SAY UNIDENTIFIED_DESC @23 /* Shadow Invisibility (Shadow Weave Magic)
+Level: 2
+Range: Touch 
+Duration: Special 
+Casting Time: 1 
+Area of Effect: Creature touched 
+Saving Throw: None
+
+This spell causes the creature touched to vanish from sight and be undetectable by both normal vision and infravision. Of course, the invisible creature is not magically silenced, and certain other conditions can render the creature detectable. Even allies cannot see the invisible creature or his/her gear, unless these allies can normally see invisible things or employ magic to do so.  Items dropped or put down by the invisible creature become visible, items picked up disappear if tucked into the clothing or pouches worn by the creature. The spell remains in effect until it is magically broken or dispelled, the recipient attacks any creature, or until 24 hours have passed. The caster cannot perform any actions that manipulate the environment around him such as opening doors, disarming a trap, or opening a chest without becoming visible.  He can, however, cast defensive spells on himself and fellow party members.  If he attacks, he immediately becomes visible, though the invisibility enables him to attack first.
+Shadow Magic version of the Invisibility spell provides additional +2 movement rate bonus.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp09.SPL~     ~override/l#fsp09.SPL~
+  SAY NAME1 @24 /* Dark Luck */
+  SAY NAME2 @24 /* Dark Luck */
+  SAY UNIDENTIFIED_DESC @25 /* Dark Luck (Shadow Weave Magic)
+Level: 2
+Range: 10 yards
+Duration: 3 rounds
+Casting Time: 2 
+Area of Effect: 1 creature
+Saving Throw: None 
+
+The recipient of this spell is lucky in everything that he does for the next 3 rounds. He receives a 5% bonus to any of his actions.  This includes saving throws, to-hit chances, thieving skills, etc.
+This dark version of the Luck spell provides a 45% chance to get +1 AC bonus and 2% magic resistance.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+
+
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp10.SPL~     ~override/l#fsp10.SPL~
+  SAY NAME1 @26 /* Shadow Twin */
+  SAY NAME2 @26 /* Shadow Twin */
+  SAY UNIDENTIFIED_DESC @27 /* Shadow Twin (Shadow Weave Magic)
+Level: 2
+Range: 0 
+Duration: 3 rounds + 1 round/level 
+Casting Time: 1
+Area of Effect: Special
+Saving Throw: None 
+
+Upon casting this spell the wizard creates one image of himself that will travel along beside him.  The image will perform all of the actions that the wizard does so that if any enemies are trying to attack the wizard they will not know which one is real.  There is a 50% chance that an attacker will attack the image and a 50% chance that he will attack the caster.  The image will disappear with a successful casting of dispel magic, when attacked, or when the spell duration runs out.
+As well as the Reflected Image spell effect, Shadow Twin also provides +5% physical resistance (excluding bludgeoning, as it may "crack the mirror" nature of the spell) and +2 save vs. death.
+What is more, there is 30% chance that the spell will act as a Mirror Image spell instead.
+
+The Reflected Image (or Mirror Image) and the caster are both covered with dark gray hues.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp11.SPL~     ~override/l#fsp11.SPL~
+  SAY NAME1 @28 /* Shadow Bolt */
+  SAY NAME2 @28 /* Shadow Bolt */
+  SAY UNIDENTIFIED_DESC @29 /* Shadow Bolt (Shadow Weave Magic)
+Level: 3
+Range: Visual range of caster
+Duration: Instantaneous
+Casting Time: 2
+Area of Effect: 1 Creature
+Saving Throw: 1/2
+
+Upon casting this spell, the wizard releases a powerful bolt of dark energy that inflicts 1d6 points of electric damage per level of the spellcaster (maximum damage of 8d6) +1d12 piercing damage and +2 cold damage to the specific creature targeted. A successful saving throw vs. spell reduces this damage to half (round fractions down).
+There is a difference between the Shadow Bolt spell and the more well-known Lightning Bolt spell as the first one hits the target with the whole of its power, which means the bolt itself won't go through the enemy and won't bounce against any surfaces. However, there is a 15% chance that the victim and enemies close to him will be slowed for 10 seconds.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds.
+ */
+READ_LONG 0x64 "abil_off"
+READ_SHORT 0x68 "abil_num"
+SET "delta" = 0
+FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+WRITE_SHORT (%abil_off% + (0x28 * %index%) + 0x26) ~%l#fsp11e%~
+END
+
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp12.SPL~     ~override/l#fsp12.SPL~
+  SAY NAME1 @30 /* Black Meteors */
+  SAY NAME2 @30 /* Black Meteors */
+  SAY UNIDENTIFIED_DESC @31 /* Black Meteors (Shadow Weave)
+Level: 3
+Range: 70 yds
+Duration: Special
+Casting Time: 3
+Area of Effect: 1 target/meteor
+Saving Throw: None
+
+This spell enables the wizard to cast small globes of dark fire (one for each experience level she has attained), each of which bursts into a 1-foot-diameter sphere upon impact and inflicts 1d4 points of magic damage to the creature struck. It can also ignite combustible materials (even solid planks). The meteors are treated as missiles hurled by the wizard with a +5 bonus to the attack rolls and with no penalty for range. Each meteor inflicts +3 damage as well as an additional +1 fire damage (less than Minute Meteors, as the fire seems colder), and has a +6 enchantment. There is 10% chance that the meteors will scare the target. The wizard may discharge up to five missiles per round.
+
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers -8% penalty to cold resistance for 10 seconds. */
+
+COPY ~Foundling/Items/l#met.itm~     ~override~
+  SAY NAME1 @30 /* Black Meteors */
+  SAY NAME2 @30 /* Black Meteors */
+
+
+
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp13.SPL~     ~override/l#fsp13.SPL~
+  SAY NAME1 @32 /* Blackout */
+  SAY NAME2 @32 /* Blackout */
+  SAY UNIDENTIFIED_DESC @33 /* Blackout (Shadow Weave)
+Level: 3
+Range: 0
+Duration: Special
+Casting Time: 1 round
+Area of Effect: 10' radius
+Saving Throw: None
+
+This spell is similar to the Mystra's Weave spell "Invisibility 10' Radius". When cast, this spell causes all creatures within a 10 foot radius of the caster to vanish from sight and be rendered undetectable by normal vision or even infravision.  The spell remains in effect until it is magically broken or dispelled, until the recipients perform any action that cancels it, or until 24 hours have passed.  The newly-invisible creatures cannot talk or attack without immediately becoming visible, although the invisibility does enable them to attack first.
+However, Shadow Weave version provides also +3 movement speed rate too all creatures in the effect area.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp14e.SPL~     ~override/l#fsp14e.SPL~
+COPY ~Foundling/Spells/l#fsp14.SPL~     ~override/l#fsp14.SPL~
+  SAY NAME1 @34 /* Dim Haste */
+  SAY NAME2 @34 /* Dim Haste */
+  SAY UNIDENTIFIED_DESC @35 /* Dim Haste (Shadow Weave)
+Level: 3
+Range: Visual range of caster
+Duration: 3 rounds + 1 round/level
+Casting Time: 3
+Area of Effect: 40' cube, 1 creature/level
+Saving Throw: None
+
+When this spell is cast, all creatures affected function at double their normal movement rate, gain a -2 initiative bonus, and receive an extra attack each round. Thus, a creature moving at 6 and attacking once per round would move at 12 and attack twice per round. At the instant the spell is completed, it affects all ally creatures in a 40-foot cube centered on a point selected by the caster (thus, creatures leaving the area are still subject to the spell's effect; those entering the area after the casting is completed are not). Note that affected creatures expend as much energy during this spell as they would normally in a whole day, significantly raising their fatigue level. This spell is not cumulative with itself or with other similar magic. Spellcasting and spell effects are not affected. Note that this spell negates the effects of a slow spell.
+There is also a 5% chance that the enemies who are in the area will become confused.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+READ_LONG 0x64 "abil_off"
+READ_SHORT 0x68 "abil_num"
+SET "delta" = 0
+FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+WRITE_SHORT (%abil_off% + (0x28 * %index%) + 0x26) ~%rad40p%~
+END
+
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp15.SPL~     ~override/l#fsp15.SPL~
+  SAY NAME1 @36 /* Dark Blade */
+  SAY NAME2 @36 /* Dark Blade */
+  SAY UNIDENTIFIED_DESC @37 /* Dark Blade (Shadow Weave)
+Level: 3
+Range: 0
+Duration: 4 rounds + 1 round/2 levels
+Casting Time: 3
+Area of Effect: Special
+Saving Throw: None
+
+This is a dark version, allowed by Shar, of the divine Flame Blade spell. With this spell, the caster causes a blazing ray of black fire to spring forth from his hand. This blade-like darkness is wielded as if it were a sword that the caster already knows how to use, hence there are no bonuses or penalties. If the caster successfully hits with the blade in melee combat, the creature struck suffers 1d4 points of slashing damage, plus an additional 1d2 + 4 points of magic damage +2% chance to cause additional 3 cold damage. However, it is not a magical weapon in the normal sense of the term, so creatures struck only by magical weapons are not harmed by it.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+  
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp16.SPL~     ~override/l#fsp16.SPL~
+  SAY NAME1 @38 /* Shadow Ritual */
+  SAY NAME2 @38 /* Shadow Ritual */
+  SAY UNIDENTIFIED_DESC @39 /* Shadow Ritual (Shadow Weave)
+Level: 4
+Range: Visual range of caster
+Duration: instant
+Casting Time: 3
+Area of Effect: 10' radius
+Saving Throw: half damage
+
+This spell is a combination of Shadow Weave Magic and Shadow Magic, which makes it more powerful than other spells of 4th level. It allows the caster to trigger a shadow ritual that may become deadly for some enemies. It causes 3d10+5 magic damage (+1d10 every 3 levels up to 6d10+5). The victim may halve the damage with a successful saving throw vs. magic (-3 penalty). There is also a 20% chance that enemies with less than 60 will instantly die.
+Apart from damage, the spell has also 10% chance to summon a Shadow that can be controlled by the caster.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -10% penalty to cold resistance for 10 seconds. */
+
+READ_LONG 0x64 "abil_off"
+READ_SHORT 0x68 "abil_num"
+SET "delta" = 0
+FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+WRITE_SHORT (%abil_off% + (0x28 * %index%) + 0x26) ~%l#fsp16e%~
+END
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp17.SPL~     ~override/l#fsp17.SPL~
+  SAY NAME1 @40 /* Fireshield (Black) */
+  SAY NAME2 @40 /* Fireshield (Black) */
+  SAY UNIDENTIFIED_DESC @41 /* Fireshield (Black) (Shadow Weave)
+Level: 4
+Range: 0
+Duration: 3 rounds + 1 round/level
+Casting Time: 4
+Area of Effect: The Caster
+Saving Throw: None
+
+The Black Fireshield partially protects the user from magic damage by surrounding the caster with a shield of dark flame.  This shield not only grants the user 15% magic resistance, but also protects the caster from attacks made within a 5' radius around him.  An opponent that hits the caster with any weapons or spells within this radius is harmed by shadowy and solid energy formed from darkness, which deals 1d8 piercing damage and +2 magic damage.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -10% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp18.SPL~     ~override/l#fsp18.SPL~
+  SAY NAME1 @42 /* Dark Eye */
+  SAY NAME2 @42 /* Dark Eye */
+  SAY UNIDENTIFIED_DESC @43 /* Dark Eye (Shadow Weave)
+Level: 4
+Range: 0
+Duration: 1 round/level
+Casting Time: 1 round
+Area of Effect: Special
+Saving Throw: None
+
+When this spell is employed, the wizard creates an invisible sensory organ that sends him visual information. The wizard eye can see with normal vision up to 60 feet away in brightly lit areas. The wizard eye can travel in any direction as long as the spell lasts. It has substance and a form that can be detected (by a detect invisibility spell, for instance). Solid barriers prevent the passage of a wizard eye.  The powers of the eye cannot be enhanced by other spells or items. The caster is subject to any gaze attack met by the eye. A successful dispel cast on the wizard or eye ends the spell.
+
+NOTE: This spell uses Shadow Weave Magic that makes caster more vulnerable to cold.  If this spell is cast, the mage suffers a -10% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp19.SPL~     ~override/l#fsp19.SPL~
+  SAY NAME1 @44 /* Shadowskin */
+  SAY NAME2 @44 /* Shadowskin */
+  SAY UNIDENTIFIED_DESC @45 /* Shadowskin (Shadow Weave)
+Level: 4
+Range: 0
+Duration: 12 hours
+Casting Time: 1
+Area of Effect: Caster
+Saving Throw: None
+
+When a wizard casts this powerful spell upon himself, an outer skin of shadow will move up from the ground, completely covering him.  This skin is of course magical and will hinder the wizard in no way.  The effect of this is to protect the wizard from physical attacks such as melee weapons and projectiles.  For every 2 levels of the caster an additional skin is gained upon casting; for example a 10th level wizard would receive 5 skins while a 20th level wizard would receive 10.  For each skin the wizard possesses, the spell will stop one attack, so a 10th level wizard would be protected from the first 5 attacks made against him, but the sixth would affect him normally.  The skins will remain on the wizard until he is affected by dispel magic, all of the skins are removed due to physical attacks, or the spell duration expires.  It is important to note that this will not protect the wizard from any magical attacks such as Fireball; however, it will protect him from physical magical attacks such as Magic Missile.
+While Stoneskin provides gray skin, Shadowskin provides pitch black skin.
+
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -10% penalty to cold resistance for 10 seconds. */
+  
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp20.SPL~     ~override/l#fsp20.SPL~
+  SAY NAME1 @46 /* Shadow Walk */
+  SAY NAME2 @46 /* Shadow Walk */
+  SAY UNIDENTIFIED_DESC @47 /* Shadow Walk (Shadow Weave)
+Level: 4
+Range: 0
+Duration: Instant
+Casting Time: 0
+Area of Effect: The caster
+Saving Throw: None
+
+This spell transports the caster to any place within his or her visual range.  When the spell is cast, a dimensional portal opens up in front of the caster, which is immediately stepped into.  Upon passing through the portal, the caster finds himself at his chosen destination.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -10% penalty to cold resistance for 10 seconds. */
+  
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp21.SPL~     ~override/l#fsp21.SPL~
+  SAY NAME1 @48 /* Breaching Shadow */
+  SAY NAME2 @48 /* Breaching Shadow */
+  SAY UNIDENTIFIED_DESC @49 /* Breaching Shadow (Shadow Weave)
+Level: 5
+Range: Visual sight of caster
+Duration: Instant
+Casting Time: 5
+Area of Effect: Target Creature
+Saving Throw: None
+
+When this spell is cast at a creature, it breaches and dispels all of the specific and combat protections on the target creature.
+
+Here is a complete list of all the specific protection spells that are dispelled by Breaching Shadow:  Chaotic Commands, Resist Fear, Protection From Fire/Cold, Resist Fire/Cold, Death Ward, Fireshield, Free Action, Protection From Acid, Protection From Electricity, Protection From Evil, Protection From Evil 10' Radius, Protection From Lightning, Protection From Magic Energy, Protection From The Elements, and Protection From Energy.
+
+The combat protection spells dispelled by this spell are: Blade Barrier, Physical Mirror, Shield, Protection From Normal Missiles, Protection From Normal Weapons, Protection From Magic Weapons, Barkskin, Stoneskin, Defensive Harmony, Armor, Armor Of Faith, Ghost Armor, Spirit Armor, Absolute Immunity, Mantle, and Improved Mantle.  The target's magic resistance, if any, does not affect this spell. It will not dispel Iron Skins.
+
+The shadow version of the spell makes the target less resistant to cold - it causes -25% cold resistance.
+
+NOTE: This spell uses Shadow Weave Magic that makes the the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -12% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp22.SPL~     ~override/l#fsp22.SPL~
+  SAY NAME1 @50 /* Unbreachable Blackness */
+  SAY NAME2 @50 /* Unbreachable Blackness */
+  SAY UNIDENTIFIED_DESC @51 /* Unbreachable Blackness (Shadow weave)
+Level: 5
+Range: Self
+Duration: 1 round/level
+Casting Time: 2
+Area of Effect: Self
+Saving Throw: None
+
+When the spell is cast it confers complete invulnerability to all non-magical weapons.  This does not include weapons that are blessed or enchanted. This spell may not be cast on someone who is protected from magical weapons. This spell also provides a +2 AC bonus for its duration.  This effect lasts for the duration of the spell or until dispelled.
+
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -12% penalty to cold resistance for 10 seconds. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp23b.SPL~     ~override/l#fsp23b.SPL~
+COPY ~Foundling/Spells/l#fsp23c.SPL~     ~override/l#fsp23c.SPL~
+COPY ~Foundling/Spells/l#fsp23.SPL~     ~override/l#fsp23.SPL~
+  SAY NAME1 @52 /* Dark Fatum */
+  SAY NAME2 @52 /* Dark Fatum */
+  SAY UNIDENTIFIED_DESC @53 /* Dark Fatum (Shadow weave)
+Level: 5
+Range: Self
+Duration: 1 round/level
+Casting Time: 1
+Area of Effect: Self
+Saving Throw: None
+
+This spell's source is the energy of dark luck. It provides protection from poison and backstabs, which makes the incantation useful in fights with assassins. One of these three effects will also be applied: 20% magic resistance, protection from level drain, or a 30 HP bonus.
+There is a 20% chance that two of three effects will be applied.
+
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -12% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp23a.SPL~     ~override/l#fsp23a.SPL~
+  SAY NAME1 @54 /* +20% Magic Resistance */
+  SAY UNIDENTIFIED_DESC ~~
+
+READ_SHORT NAME1 my_var
+READ_SHORT NAME1 var
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+COPY ~Foundling/Spells/l#fsp23b.SPL~     ~override/l#fsp23b.SPL~
+  SAY NAME1 @55 /* +30 HP */
+  SAY UNIDENTIFIED_DESC ~~
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp23c.SPL~     ~override/l#fsp23c.SPL~
+  SAY NAME1 @56 /* Protection from Level Drain */
+  SAY UNIDENTIFIED_DESC ~~
+
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp24.SPL~     ~override/l#fsp24.SPL~
+  SAY NAME1 @57 /* Black Rain */
+  SAY NAME2 @57 /* Black Rain */
+  SAY UNIDENTIFIED_DESC @58 /* Black Rain (Shadow weave)
+Level: 5
+Range: Self
+Duration: 1 round/level
+Casting Time: 1
+Area of Effect: 15' radius
+Saving Throw: halves damage
+
+When cast, this spell summons a rain of black shards that pierce the creatures in range of the spell causing 5d8+6 piercing damage. When embedded in enemies, the dark shards melt and deal 1d4 acid damage per every 3 levels of the caster (up to 5d4). Those affected by the spell will also suffer from a -1 movement rate penalty.
+Movement rate penalty may be avoided with a successful saving throw.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -12% penalty to cold resistance for 10 seconds. */
+
+READ_LONG 0x64 "abil_off"
+READ_SHORT 0x68 "abil_num"
+SET "delta" = 0
+FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+WRITE_SHORT (%abil_off% + (0x28 * %index%) + 0x26) ~%l#fsp24e%~
+END
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp25.SPL~     ~override/l#fsp25.SPL~
+  SAY NAME1 @59 /* Pitch Black Death */
+  SAY NAME2 @59 /* Pitch Black Death */
+  SAY UNIDENTIFIED_DESC @60 /* Pitch Black Death (Shadow Weave)
+Level: 6
+Range: Visual sight of caster
+Duration: Instant
+Casting Time: 6
+Area of Effect: 30' radius
+Saving Throw: None
+
+When Pitch Black Death is cast, it grinds the life forces of creatures in the area of effect instantly and irrevocably. Such creatures cannot be raised or resurrected, but an individual slain in this manner might be brought back via a wish.  Creatures with more than 8 hit dice are immune to this spell, with the exception of summoned creatures, which are slain automatically.  All enemies who were in the area of the spell and didn't die, suffer 2d10 crushing damage.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -14% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp26.SPL~     ~override/l#fsp26.SPL~
+  SAY NAME1 @61 /* Unsmashable Blackness */
+  SAY NAME2 @61 /* Unsmashable Blackness */
+  SAY UNIDENTIFIED_DESC @62 /* Unsmashable Blackness (Shadow Weave)
+Level: 6
+Range: Self
+Duration: 4 rounds
+Casting Time: 1
+Area of Effect: Self
+Saving Throw: None
+
+This particular spell works like its well-known cousin Protection from Magic Weapons. When the spell is cast it confers complete invulnerability to all magical weapons.  This includes weapons that are blessed or enchanted. The attacks of powerful monsters are also considered magical weapons.  This spell cannot be cast on anyone who is Protected from Normal Weapons, or by Mantle, Improved Mantle, or Absolute Immunity.  Due to the nature of this spell with its short speed factor and duration, it is mainly used to buy the wizard a few rounds in the thick of combat.  This effect lasts for the duration of the spell or until dispelled.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -14% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp27.SPL~     ~override/l#fsp27.SPL~
+  SAY NAME1 @63 /* Feast on Shadows */
+  SAY NAME2 @63 /* Feast on Shadows */
+  SAY UNIDENTIFIED_DESC @64 /* Feast on Shadows (Shadow weave)
+Level: 6
+Range: 0
+Duration: instant / 5 rounds
+Casting Time: 2
+Area of Effect: visual range of sight / Self
+Saving Throw: None
+
+This very little-known spell is mostly used by those who serve Shar. It allows the caster to feast on all shadows cast by normal objects. If there are any shadow creatures in visual range of the character's sight, they will die without any saving throw. When the hunger is satiated, the caster will regenerate for 5 rounds - 1 HP per second.
+There is also a 20% (+5% every 6 levels to a maximum of 40%) chance that the character will be fully healed.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -14% penalty to cold resistance for 10 seconds. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp28.SPL~     ~override/l#fsp28.SPL~
+  SAY NAME1 @65 /* Mislead with Shadows */
+  SAY NAME2 @65 /* Mislead with Shadows */
+  SAY UNIDENTIFIED_DESC @66 /* Mislead with Shadows (Shadow Weave)
+Level: 6
+Range: 0
+Duration: 1 round/level
+Casting Time: 1
+Area of Effect: Special
+Saving Throw: None
+
+When this spell is cast, the wizard is affected with an Improved Invisibility spell and teleported a few feet away from his original position.  Meanwhile, an exact image of the caster is created where he used to be with exactly the same hit points as the caster.  The image cannot perform any actions at all such as attacking or casting spells.  It can, however, move around and act as a decoy for the invisible mage.  The image will remain under the control of the caster until it is reduced to 0 hit points, or until it is affected by Dispel Magic or a spell that destroys illusions such as True Sight.
+Even though the spell seems to work similarly to the usual Mislead spell, there is an additional effect. The created decoy looks more demonic and dangerous - there is a 20% chance it may cause fear in nearby creatures.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -14% penalty to cold resistance for 10 seconds. */
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp29.SPL~     ~override/l#fsp29.SPL~
+  SAY NAME1 @67 /* Sphere of Black Chaos */
+  SAY NAME2 @67 /* Sphere of Black Chaos */
+  SAY UNIDENTIFIED_DESC @68 /* Sphere of Black Chaos (Shadow Weave)
+Level: 7
+Range: Visual sight of caster
+Duration: 1 turn
+Casting Time: 3
+Area of Effect: 30' radius
+Saving Throw: Special
+
+All enemies within the area of effect must make a save vs. spells every round that they remain in the sphere, and if the save is failed one of the following random effects occurs:  polymorphed into a squirrel, confused, burst into flames, paralyzed, disintegrated, healed 20 hit points, randomly teleported, rendered unconscious, or hasted.
+The Shadow Weave version of "Sphere of Chaos" is much faster to cast than its more well-known counterpart and provides 10% magic resistance. The protection lasts for the duration of the sphere.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -15% penalty to cold resistance for 10 seconds. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+
+COPY ~Foundling/Spells/l#fsp30.SPL~     ~override/l#fsp30.SPL~
+  SAY NAME1 @69 /* Dark Cocoon */
+  SAY NAME2 @69 /* Dark Cocoon */
+  SAY UNIDENTIFIED_DESC @70 /* Dark Cocoon (Shadow Weave)
+Level: 7
+Range: Self
+Duration: 1 turn
+Casting Time: 2
+Area of Effect: Self
+Saving Throw: None
+
+This spell creates a protective sphere around the caster. Nothing that's outside the cocoon can affect the protected individual, but neither can the protected individual affect others outside the sphere. This is similar to the spell Oiluke's Resiliant Sphere.
+However, the creature inside the cocoon is given regeneration (3 HP per second).
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -15% penalty to cold resistance for 10 seconds. *//////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp31.SPL~     ~override/l#fsp31.SPL~
+  SAY NAME1 @71 /* Unavoidable Fangs */
+  SAY NAME2 @71 /* Unavoidable Fangs */
+  SAY UNIDENTIFIED_DESC @72 /* Unavoidable Fangs (Shadow Weave)
+Level: 7
+Range: Visual range of the caster
+Duration: Instant
+Casting Time: 2
+Area of Effect: 1 Creature
+Saving Throw: halves the damage
+
+This spell create magical fangs and spikes, most of them located on crushing tentacles. They try to grasp the enemy and apply different effects:
+First of all, spikes and fangs do 2d10+5 piercing damage.
+Tentacles grasp and try to crush enemies, applying 2d10+5 crushing damage.
+Sharper and longer fangs may cause 2d10+5 slashing damage.
+There is a 25% chance that the target will have bleeding damage, causing 2 points of damage each second (lasts 12 seconds).
+There is a 10% chance that the target will be stunned.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -15% penalty to cold resistance for 10 seconds. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp32.SPL~     ~override/l#fsp32.SPL~
+  SAY NAME1 @73 /* Shadowblood */
+  SAY NAME2 @73 /* Shadowblood */
+  SAY UNIDENTIFIED_DESC @74 /* Shadowblood (Shadow Weave)
+Level: 8
+Range: Self
+Duration: Instant
+Casting Time: 2
+Area of Effect: Party Members
+Saving Throw: None
+
+This spell lets the caster sacrifice 2 points of constitution for 6 rounds, in exchange for healing all the party members.
+There is a 30% chance that the spell will bring back drained levels.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -15% penalty to cold resistance for 10 seconds. As this spell is a more powerful one, there is a 10% chance that more chill will appear, dealing 1d6 cold damage. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp33.SPL~     ~override/l#fsp33.SPL~
+  SAY NAME1 @75 /* Infernal Shadows */
+  SAY NAME2 @75 /* Infernal Shadows */
+  SAY UNIDENTIFIED_DESC @76 /* Infernal Shadows (Shadow Weave)
+Level: 8
+Range: Self
+Duration: Instant
+Casting Time: 2
+Area of Effect: Party Members
+Saving Throw: None
+
+This spell creates black fire around the enemy and not only causes 6d10 magic damage, but +10 fire damage as well.  Further more, it includes the same dispel effect as Breach.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -15% penalty to cold resistance for 10 seconds. As this spell is a more powerful one, there is a 10% chance that more chill will appear, dealing 1d6 cold damage. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp34.SPL~     ~override/l#fsp34.SPL~
+  SAY NAME1 @77 /* Black Blade of Disaster */
+  SAY NAME2 @77 /* Black Blade of Disaster */
+  SAY UNIDENTIFIED_DESC @78 /* Black Blade of Disaster (Shadow Weave)
+Level: 8
+Range: 0
+Duration: 18 rounds
+Casting Time: 4
+Area of Effect: Special
+Saving Throw: None
+
+This spell enables the caster to create a black, blade-shaped planar rift, about three feet long.  It jumps into the caster's hand and is used as a normal sword, remaining there for the duration of the spell.  The caster is considered to be proficient to grandmastery skill with this weapon.  The sword acts as a +6 weapon and deals 2-24 damage to its victims.  Also, every time this hits a target, the victim must make a save vs. death at +4 or be disintegrated. There is also a 10% chance with every hit that the sword drains 4 levels from the target and heals the wielder 20 hit points.
+This spell is available sooner for Shadow Weave users (8 level spell instead of 9 level).
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -15% penalty to cold resistance for 10 seconds. As this spell is a more powerful one, there is a 10% chance that more chill will appear, dealing 1d6 cold damage. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp35.SPL~     ~override/l#fsp35.SPL~
+  SAY NAME1 @79 /* Timeless Shadow */
+  SAY NAME2 @79 /* Timeless Shadow */
+  SAY UNIDENTIFIED_DESC @80 /* Timeless Shadow (Shadow Weave)
+Level: 9
+Range: 0
+Duration: 2 rounds
+Casting Time: 3
+Area of Effect: Self
+Saving Throw: None
+
+This spell makes the caster resistant to time manipulation--the target can't be slowed down and is immune to Time Stop. There is a 15% chance that the caster will be granted 50% magic resistance.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -16% penalty to cold resistance for 10 seconds. As this spell is a more powerful one, there is a 10% chance that more chill will appear, dealing 1d6 cold damage. */
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/Spells/l#fsp36a.SPL~     ~override/l#fsp36a.SPL~
+COPY ~Foundling/Spells/l#fsp36b.SPL~     ~override/l#fsp36b.SPL~
+COPY ~Foundling/Spells/l#fsp36.SPL~     ~override/l#fsp36.SPL~
+  SAY NAME1 @81 /* Field of Perfect Shadow */
+  SAY NAME2 @81 /* Field of Perfect Shadow */
+  SAY UNIDENTIFIED_DESC @82 /* Field of Perfect Shadow (Shadow Weave)
+Level: 9
+Range: Self
+Duration: instant / 2 rounds
+Casting Time: 2
+Area of Effect: 10' radius
+Saving Throw: halves the damage
+
+The Field of Perfect Shadow partially protects the user from magic damage by surrounding the caster with a shield of dark particles.  This shield not only grants the user 15% magic resistance, but also protects the caster from attacks made within a 10' radius around the caster.  An opponent that hits the caster with any weapons or spells within this radius is pierced with shadowy and solid energy formed from darkness dealing 6d10 piercing damage and +1 magic damage with 10% chance to cause enemy to berserk for 10 seconds.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -16% penalty to cold resistance for 10 seconds. As this spell is a more powerful one, there is 10% chance that more chill will appear, dealing 1d6 cold damage. */
+
+READ_LONG 0x64 "abil_off"
+READ_SHORT 0x68 "abil_num"
+SET "delta" = 0
+FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+WRITE_SHORT (%abil_off% + (0x28 * %index%) + 0x26) ~%radius10%~
+END
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+COPY ~Foundling/effects/l#SSH.eff~     ~override/l#SSH.eff~
+COPY ~Foundling/Spells/l#fsp37.SPL~     ~override/l#fsp37.SPL~
+  SAY NAME1 @83 /* Summon Shadow Hatchling */
+  SAY NAME2 @83 /* Summon Shadow Hatchling */
+  SAY UNIDENTIFIED_DESC @84 /* Summon Shadow Hatchling (Shadow Weave) 
+Level: 9
+Range: Self 
+Duration: 7 rounds
+Casting Time: 2
+Area of Effect: special
+Saving Throw: none
+
+This spell lets the mage summon a special creature from the Plane of Shadows. It passes through the portal to support the caster. The creature is immune to backstabs, fear, stun, sleep, berserk, level drain, poison, disease, blindness and silence. It is also partially resistant to all elemental damage and magic.
+The Hatchling fights with two +5 magic daggers and is difficult to hit. However, the creature itself is fragile, so when hit, it may be easily killed. 
+Each Hatchling's successful hit has a 5% chance to kill the victim.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -16% penalty to cold resistance for 10 seconds. As this spell is a more powerful one, there is a 10% chance that more chill will appear, dealing 1d6 cold damage. */
+
+COPY ~Foundling/Items/L#SUMW.itm~ ~override~
+SAY NAME1 @85 /* Shadow Dagger */
+SAY NAME2 @85 /* Shadow Dagger */
+
+COPY ~Foundling/Items/L#SUMA.itm~ ~override~
+SAY NAME1 @16 /* Shadow Armor */
+SAY NAME2 @16 /* Shadow Armor */
+
+COPY ~Foundling/vvc~     ~override/~
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+//////HLA
+
+COPY ~Foundling/Spells/L#FOUHL1.SPL~     ~override/LFOUHL1.SPL~
+  SAY NAME1 @86 /* Shadow Dragon Disciple */
+  SAY NAME2 @86 /* Shadow Dragon Disciple */
+  SAY UNIDENTIFIED_DESC @87 /* After years of being the servant of the Shadow Dragon, some may become more than that--they may become a Shadow Dragon Disciple. After accepting the dark energy, one may be given +2 AC bonus and +1 Constitution bonus. What's more, the Disciple is given the Shadow Dragon Breath ability. */
+  
+COPY ~Foundling/Spells/L#FSP38.SPL~     ~override/LFSP38.SPL~
+  SAY NAME1 @88 /* Shadow Dragon Breath */
+  SAY NAME2 @88 /* Shadow Dragon Breath */  
+  
+COPY ~Foundling/Spells/L#FOUHL2.SPL~     ~override/LFOUHL2.SPL~
+  SAY NAME1 @89 /* Shadow Training */
+  SAY NAME2 @89 /* Shadow Training */
+  SAY UNIDENTIFIED_DESC @90 /* By picking this ability, the character is given additional fighting bonuses: +1 Thac0 and +1 Saving Throws. */
+  
+COPY ~Foundling/Spells/L#FOUHL3.SPL~     ~override/LFOUHL3.SPL~
+  SAY NAME1 @91 /* Greater Shadow Training */
+  SAY NAME2 @91 /* Greater Shadow Training */
+  SAY UNIDENTIFIED_DESC @92 /* By picking this ability, the character is given even greater fighting bonuses: +2 Thac0 and +2 to Saving Throws. */
+  
+COPY ~Foundling/Spells/L#FOUHL4.SPL~     ~override/LFOUHL4.SPL~
+  SAY NAME1 @93 /* Shadow Whirlwind Attack */
+  SAY NAME2 @93 /* Shadow Whirlwind Attack */
+  SAY UNIDENTIFIED_DESC @94 /* By picking this ability, the character is given a dark version of Whirlwind Attack. Thanks to it, the character may be hasted and gain a great number of attacks per round. */
+
+COPY ~Foundling/Spells/L#FOUHL5.SPL~     ~override/LFOUHL5.SPL~
+  SAY NAME1 @95 /* Shadowkin */
+  SAY NAME2 @95 /* Shadowkin */
+  SAY UNIDENTIFIED_DESC @96 /* After years of fighting on the side of the shadows and using Shadow Weave magic, a character may become a Shadowkin. Thanks to this title, character will be permanently considered kin by all types of shadows. */
+
+COPY ~Foundling/Spells/L#FOUHL6.SPL~     ~override/LFOUHL6.SPL~
+  SAY NAME1 @97 /* Shapeshift: Shadowbound */
+  SAY NAME2 @97 /* Shapeshift: Shadowbound */
+  SAY UNIDENTIFIED_DESC @98 /* Shapeshift: Shadowbound (Shadow Weave)
+Innate ability
+Range: 0
+Duration: 5 rounds
+Casting Time: 2
+Area of Effect: Self
+Saving Throw: None
+
+This spell lets the caster change shape and become a monstrous creature - The Shadowbound. While in this form, the caster becomes immune to: backstab, fear, level drain, confusion, stun, sleep, imprisoment, maze, and wing buffet. The creature is also resistant to most elemental damage: +90% fire and acid, but only +25% cold resistance. The form uses a special weapon that does 1d10+5 and +1d4 cold damage; +6 thac0. Attacks per round are set to 3.
+While in this shape, the mage can't cast spells.   
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  While in the long term the caster receives a +25% bonus to cold resistance, for the first 10 seconds after the spell is cast the mage suffers a -16% *penalty*. As this spell is a more powerful one, there is a 10% chance that more chill will appear, dealing 1d6 cold damage. */
+
+COPY ~Foundling/Spells/L#FOUHL7.SPL~     ~override/LFOUHL7.SPL~
+  SAY NAME1 @99 /* Human Heritage */
+  SAY NAME2 @99 /* Human Heritage */
+  SAY UNIDENTIFIED_DESC @100 /* After years of being the servant of the Shadow Dragon, one may become more human-like again. Remembering the real and true heritage may provide +1 Strength and +1 Constitution bonus as well as permanent +15 hP. */
+  
+COPY ~Foundling/Spells/L#FOUHL8.SPL~     ~override/LFOUHL8.SPL~
+  SAY NAME1 @101 /* Additional Shadow Spells */
+  SAY NAME2 @101 /* Additional Shadow Spells */
+  SAY UNIDENTIFIED_DESC @102 /* By picking this ability, the shadow adept is given 5 new spells: Banish with Shadows, Cold Blast, Dark Regeneration, Overwhelm, and Dark Acceleration. */
+  
+//////////////////PHLA
+  
+COPY ~Foundling/Spells/L#PHLA1.SPL~     ~override/L#PHLA1.SPL~
+  SAY NAME1 @103 /* Banish with Shadows */
+  SAY NAME2 @103 /* Banish with Shadows */
+  SAY UNIDENTIFIED_DESC @104 /* Banish with Shadows (Shadow Weave)
+Level: 5
+Range: 30 feet
+Duration: instant
+Casting Time: 4
+Area of Effect: 1 creature
+Saving Throw: None
+
+This spell can open a gate and banish one creature that has been summoned by another sorcerer. When the spell is cast, the creature is sent to its home plane.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -12% penalty to cold resistance for 10 seconds. */
+
+COPY ~Foundling/Spells/L#PHLA2.SPL~     ~override/L#PHLA2.SPL~
+  SAY NAME1 @105 /* Cold Blast */
+  SAY NAME2 @105 /* Cold Blast */
+  SAY UNIDENTIFIED_DESC @106 /* Cold Blast (Shadow Weave)
+Level: 6
+Range: 40 feet
+Duration: instant
+Casting Time: 3
+Area of Effect: 30' radius
+Saving Throw: Halves damage
+
+With this spell, the mage can summon an icy version of the Fireball spell, freezing everything caught in its area of effect and causing serious damage: 10D6+16 (half if a saving throw is successful). This spell may also harm allies.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -14% penalty to cold resistance for 10 seconds. */
+
+COPY ~Foundling/Spells/L#PHLA3.SPL~     ~override/L#PHLA3.SPL~
+  SAY NAME1 @107 /* Dark Regeneration */
+  SAY NAME2 @107 /* Dark Regeneration */
+  SAY UNIDENTIFIED_DESC @108 /* Dark Regeneration (Shadow Weave)
+Level: 7
+Range: touch
+Duration: 1 round for every caster's level
+Casting Time: 9
+Area of Effect: 1 creature
+Saving Throw: none
+
+This powerful spell can provide one creature an extra-ordinary regeneration skill. Once the shadows have covered all the wounds, they disappear in a few moments. The spell can heal 3 HP every second for the duration of the spell. 
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers -16% penalty to cold resistance for 10 seconds. */
+
+COPY ~Foundling/Spells/L#PHLA4.SPL~     ~override/L#PHLA4.SPL~
+  SAY NAME1 @109 /* Overwhelm */
+  SAY NAME2 @109 /* Overwhelm */
+  SAY UNIDENTIFIED_DESC @110 /* Overwhelm (Shadow Weave)
+Level: 8
+Range: 30 feet
+Duration: 2 rounds
+Casting Time: 3
+Area of Effect: 12' radius
+Saving Throw: vs spells to negate
+
+With this spell, the shadow adept may try to crush the minds of enemies and stun a whole group of foes to give himself and his allies some time to finish them off. Enemies can do nothing but observe and suffer.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -16% penalty to cold resistance for 10 seconds. */
+
+COPY ~Foundling/Spells/L#PHLA5.SPL~     ~override/L#PHLA5.SPL~
+  SAY NAME1 @111 /* Dark Alacrity */
+  SAY NAME2 @111 /* Dark Alacrity */
+  SAY UNIDENTIFIED_DESC @112 /* Dark Alacrity (Shadow Weave)
+Level: 9
+Range: self
+Duration: 2 rounds
+Casting Time: 9
+Area of Effect: self
+Saving Throw: none
+
+This is a dark version of the acceleration spell that lets a mage cast arcane spells in the very moment the previous spell has been cast, without the need to take a single breath.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -25% penalty to cold resistance for 10 seconds. */
+
+///////////////////////////
+////////CREATURES//////////
+///////////////////////////
+
+
+
+COPY ~Foundling/Creatures/L#Fou.cre~ ~override~
+
+  WRITE_SHORT   0x244 0
+  WRITE_SHORT   0x246 0x4000 + ~%LSHADO%~
+  
+  SAY NAME1 @0 /* Foundling */
+  SAY NAME2 @0 /* Foundling */
+  
+  SAY BIO @113 /*  FOUNDLING doesn't know much about his past; his recollections are little more than some glimpses and misty thoughts. He was found by the Shadow Dragon in the Plane of Shadows when he was still a child. He doesn't remember much from that time--just fear, confusion, and a feeling of insignificance. He also remembers that his new "master" examined invisible signs, a trait that led him to realizing the Foundling had been given access to the Shadow Weave. Later, after some time, the Shadow Dragon discovered the reason: Foundling had been a sacrifice to Shar--a sacrifice that was made in order to grant the 'beasts' who would kill a child the power of the Shadow Weave. Foundling doesn't know his real parents and he doesn't care much about them.
+  The Shadow Dragon and the Shade Lord have both taught Foundling some magic, as they wanted to make him a useful pawn; their motives were obvious from the very start, but their teachings were limited. A servant should never know too much. */
+
+  SAY MORALE @114 /* Think wisely: we need to leave. The dead can't do much. */ 
+  SAY HAPPY @115 /* You think sagaciously. */ 
+  SAY UNHAPPY_ANNOYED @116 /* Hmm? */ 
+  SAY UNHAPPY_SERIOUS @117 /* That's not wise. */ 
+  SAY UNHAPPY_BREAKING @118 /* You should be more thoughtful. */ 
+  SAY LEADER @119 /* I believe there are others more appropriate for this position. */ 
+  SAY TIRED @120 /* We may need to rest to regain our strength. */ 
+  SAY BORED @121 /* It's good to catch a breath without my master giving me some tasks. */ 
+  SAY BATTLE_CRY1 @122 /* Prepare. */ 
+  SAY BATTLE_CRY2 @123 /* This is the end. */ 
+  SAY BATTLE_CRY3 @124 /* This is your last day. */ 
+  SAY BATTLE_CRY4 @125 /* Die. */ 
+  SAY BATTLE_CRY5 @126 /* Soften them up, and my magic will finish them. */ 
+  SAY DAMAGE  @127 /* Ah! */ 
+  SAY DYING @128 /* Please, forgive me ... I... */ 
+  SAY HURT @129 /* I need help! */ 
+  SAY AREA_FOREST @130 /* A strange place. */ 
+  SAY AREA_CITY @131 /* There's too many people. Someone should do something about it. */ 
+  SAY AREA_DUNGEON @132 /* My eyes can finally rest from the sun. */ 
+  SAY AREA_DAY @133 /* There's too much light here. I can't focus. */ 
+  SAY AREA_NIGHT @134 /* No burning globe in the sky. This is much better. */ 
+  SAY SELECT_COMMON1 @135 /* Yes? */ 
+  SAY SELECT_COMMON2 @136 /* Awaiting. */ 
+  SAY SELECT_COMMON3 @137 /* I listen. */ 
+  SAY SELECT_COMMON4 @138 /* You have a plan? */ 
+  SAY SELECT_COMMON5 @139 /* What is it? */ 
+  SAY SELECT_COMMON6 @116 /* Hmm? */ 
+  SAY SELECT_ACTION1 @141 /* Wise. */ 
+  SAY SELECT_ACTION2 @142 /* I believe I can. */ 
+  SAY SELECT_ACTION3 @143 /* Sagaciously. */ 
+  SAY SELECT_ACTION4 @144 /* Acceptable. */ 
+  SAY SELECT_ACTION5 @145 /* I will try. */ 
+  SAY SELECT_ACTION6 @146 /* I've done worse. */ 
+  SAY SELECT_ACTION7 @147 /* Fine. */ 
+  SAY SELECT_RARE1 @148 /* I will do as you ask, but don't forget: I'm not a slave anymore. */ 
+  SAY SELECT_RARE2 @149 /* There's too much sun here. This plane is very different to the Plane of Shadows. */ 
+  SAY CRITICAL_HIT @150 /* I won't be enslaved again. */ 
+  SAY CRITICAL_MISS @151 /* Missed. */ 
+  SAY TARGET_IMMUNE @152 /* Magic may be more effective. */ 
+  SAY INVENTORY_FULL @153 /* I can't carry that much. */ 
+  SAY SPELL_DISRUPTED @154 /* Get them off me! */ 
+  SAY SET_A_TRAP @155 /* This could be of use. */ 
+  SAY HIDDEN_IN_SHADOWS @156 /* No one will see me */ 
+  SAY PICKED_POCKET @157 /* Perhaps you will find some use for this. */ 
+
+  
+//tob
+
+COPY ~Foundling/Creatures/L#Fou25.cre~ ~override~
+
+  WRITE_SHORT   0x244 0
+  WRITE_SHORT   0x246 0x4000 + ~%LSHADO%~
+  
+  SAY NAME1 @0 /* Foundling */
+  SAY NAME2 @0 /* Foundling */
+  
+  SAY BIO @113 /*  FOUNDLING doesn't know much about his past; his recollections are little more than some glimpses and misty thoughts. He was found by the Shadow Dragon in the Plane of Shadows when he was still a child. He doesn't remember much from that time--just fear, confusion, and a feeling of insignificance. He also remembers that his new "master" examined invisible signs, a trait that led him to realizing the Foundling had been given access to the Shadow Weave. Later, after some time, the Shadow Dragon discovered the reason: Foundling had been a sacrifice to Shar--a sacrifice that was made in order to grant the 'beasts' who would kill a child the power of the Shadow Weave. Foundling doesn't know his real parents and he doesn't care much about them.
+  The Shadow Dragon and the Shade Lord have both taught Foundling some magic, as they wanted to make him a useful pawn; their motives were obvious from the very start, but their teachings were limited. A servant should never know too much. */
+
+  SAY MORALE @114 /* Think wisely: we need to leave. The dead can't do much. */ 
+  SAY HAPPY @115 /* You think sagaciously. */ 
+  SAY UNHAPPY_ANNOYED @116 /* Hmm? */ 
+  SAY UNHAPPY_SERIOUS @117 /* That's not wise. */ 
+  SAY UNHAPPY_BREAKING @118 /* You should be more thoughtful. */ 
+  SAY LEADER @119 /* I believe there are others more appropriate for this position. */ 
+  SAY TIRED @120 /* We may need to rest to regain our strength. */ 
+  SAY BORED @121 /* It's good to catch a breath without my master giving me some tasks. */ 
+  SAY BATTLE_CRY1 @122 /* Prepare. */ 
+  SAY BATTLE_CRY2 @123 /* This is the end. */ 
+  SAY BATTLE_CRY3 @124 /* This is your last day. */ 
+  SAY BATTLE_CRY4 @125 /* Die. */ 
+  SAY BATTLE_CRY5 @126 /* Soften them up, and my magic will finish them. */ 
+  SAY DAMAGE  @127 /* Ah! */ 
+  SAY DYING @158 /* Please, forgive me ... I ... */ 
+  SAY HURT @129 /* I need help! */ 
+  SAY AREA_FOREST @130 /* A strange place. */ 
+  SAY AREA_CITY @131 /* There's too many people. Someone should do something about it. */ 
+  SAY AREA_DUNGEON @132 /* My eyes can finally rest from the sun. */ 
+  SAY AREA_DAY @133 /* There's too much light here. I can't focus. */ 
+  SAY AREA_NIGHT @134 /* No burning globe in the sky. This is much better. */ 
+  SAY SELECT_COMMON1 @135 /* Yes? */ 
+  SAY SELECT_COMMON2 @136 /* Awaiting. */ 
+  SAY SELECT_COMMON3 @137 /* I listen. */ 
+  SAY SELECT_COMMON4 @138 /* You have a plan? */ 
+  SAY SELECT_COMMON5 @139 /* What is it? */ 
+  SAY SELECT_COMMON6 @116 /* Hmm? */ 
+  SAY SELECT_ACTION1 @141 /* Wise. */ 
+  SAY SELECT_ACTION2 @142 /* I believe I can. */ 
+  SAY SELECT_ACTION3 @143 /* Sagaciously. */ 
+  SAY SELECT_ACTION4 @144 /* Acceptable. */ 
+  SAY SELECT_ACTION5 @145 /* I will try. */ 
+  SAY SELECT_ACTION6 @146 /* I've done worse. */ 
+  SAY SELECT_ACTION7 @147 /* Fine. */ 
+  SAY SELECT_RARE1 @148 /* I will do as you ask, but don't forget: I'm not a slave anymore. */ 
+  SAY SELECT_RARE2 @149 /* There's too much sun here. This plane is very different to the Plane of Shadows. */ 
+  SAY CRITICAL_HIT @150 /* I won't be enslaved again. */ 
+  SAY CRITICAL_MISS @151 /* Missed. */ 
+  SAY TARGET_IMMUNE @152 /* Magic may be more effective. */ 
+  SAY INVENTORY_FULL @153 /* I can't carry that much. */ 
+  SAY SPELL_DISRUPTED @154 /* Get them off me! */ 
+  SAY SET_A_TRAP @155 /* This could be of use. */ 
+  SAY HIDDEN_IN_SHADOWS @156 /* No one will see me */ 
+  SAY PICKED_POCKET @157 /* Perhaps you will find some use for this. */ 
+  
+APPEND ~pdialog.2da~
+~L#Fou L#FouP L#FouJ L#FouD L#Fou25P L#Fou25J L#Fou25D L#Fou25~
+UNLESS ~L#Fou~
+
+APPEND ~interdia.2da~
+~L#Fou L#FouB L#Fou25B~
+
+COPY ~Foundling/Creatures/L#SSH.cre~ ~override~
+SAY NAME1 @159 /* Shadow Hatchling */
+SAY NAME2 @159 /* Shadow Hatchling */
+
+
+COPY ~Foundling/Creatures/L#FSP37.cre~ ~override~
+SAY NAME1 @160 /* Shadowbound */
+SAY NAME2 @160 /* Shadowbound */
+
+COPY ~Foundling/Creatures/L#Sha1.cre~ ~override~
+SAY NAME1 @161 /* Shadow */
+SAY NAME2 @161 /* Shadow */
+
+COPY ~Foundling/Creatures/L#Glor.cre~ ~override~
+SAY NAME1 @162 /* Gloria D'Orlaux */
+SAY NAME2 @162 /* Gloria D'Orlaux */
+
+COPY ~Foundling/Creatures/L#Adv1.cre~ ~override~
+SAY NAME1 @163 /* Toracz */
+SAY NAME2 @163 /* Toracz */
+
+COPY ~Foundling/Creatures/L#Adv2.cre~ ~override~
+SAY NAME1 @164 /* Joah */
+SAY NAME2 @164 /* Joah */
+
+COPY ~Foundling/Creatures/L#Adv3.cre~ ~override~
+SAY NAME1 @165 /* Sonya */
+SAY NAME2 @165 /* Sonya */
+
+COPY ~Foundling/Creatures/L#RAT.cre~ ~override~
+SAY NAME1 @166 /* Faded-to-Gray */
+SAY NAME2 @166 /* Faded-to-Gray */
+
+COPY ~Foundling/Creatures/L#fomist.cre~ ~override~
+SAY NAME1 @167 /* Pearl Mist */
+SAY NAME2 @167 /* Pearl Mist */
+
+COPY ~Foundling/Creatures/L#FSW.cre~ ~override~
+SAY NAME1 ~~
+SAY NAME2 ~~
+
+
+COPY ~Foundling/Creatures/L#Guar.cre~ ~override~
+SAY NAME1 @168 /* Misty Guardian */
+SAY NAME2 @168 /* Misty Guardian */
+
+COPY ~Foundling/Creatures/L#Curs.cre~ ~override~
+SAY NAME1 @169 /* Curse */
+SAY NAME2 @169 /* Curse */
+
+COPY ~Foundling/Creatures/L#ffam.cre~ ~override~
+SAY NAME1 @170 /* Familiar */
+SAY NAME2 @170 /* Familiar */
+
+COPY ~Foundling/Creatures/L#FOUD.cre~ ~override~
+SAY NAME1 @171 /* Thaxll'ssillyia */
+SAY NAME2 @171 /* Thaxll'ssillyia */
+
+COPY ~Foundling/Creatures/L#foivo.cre~ ~override~
+SAY NAME1 @172 /* Ivory Witch */
+SAY NAME2 @172 /* Ivory Witch */
+SAY INITIAL_MEETING @173 /* (Sings.) */  
+SAY SELECT_COMMON1 @173 /* (Sings.) */ 
+
+COPY ~Foundling/Creatures/L#fogra.cre~ ~override~
+SAY NAME1 @174 /* Gray Spectre */
+SAY NAME2 @174 /* Gray Spectre */
+
+COPY ~Foundling/Creatures/L#fogr2.cre~ ~override~
+SAY NAME1 @175 /* Gray Hag */
+SAY NAME2 @175 /* Gray Hag */
+
+///////////////////////////
+//////////SCRIPTS//////////
+///////////////////////////
+
+COMPILE EVALUATE_BUFFER ~Foundling/Scripts/L#Fou.baf~
+COMPILE ~Foundling/Scripts/L#adv1.baf~
+COMPILE ~Foundling/Scripts/L#Fou1.baf~
+COMPILE ~Foundling/Scripts/L#Fou2.baf~
+COMPILE ~Foundling/Scripts/L#Fou0.baf~
+COMPILE ~Foundling/Scripts/L#Fou4.baf~
+COMPILE ~Foundling/Scripts/L#Guar.baf~
+COMPILE ~Foundling/Scripts/L#FOUD.baf~
+COMPILE ~Foundling/Scripts/L#FOIVO.baf~
+COMPILE ~Foundling/Scripts/L#FOGR2.baf~
+COMPILE ~Foundling/Scripts/L#FCUT1.baf~
+COMPILE ~Foundling/Scripts/L#FOgra.baf~
+COMPILE ~Foundling/Scripts/L#SHA1.baf~
+
+COMPILE ~Foundling/Scripts/L#Fou25.baf~
+
+EXTEND_TOP ~AR1401.bcs~ ~Foundling/Scripts/AR1401.baf~
+EXTEND_TOP ~AR1402.bcs~ ~Foundling/Scripts/AR1402.baf~
+EXTEND_TOP ~AR0702.bcs~ ~Foundling/Scripts/AR0702.baf~
+EXTEND_TOP ~RIBALD.bcs~ ~Foundling/Scripts/RIBALD.baf~
+EXTEND_TOP ~AR0020.bcs~ ~Foundling/Scripts/AR0020.baf~
+EXTEND_TOP ~BALDUR.bcs~ ~Foundling/Scripts/BALDUR.baf~
+
+EXTEND_TOP ~BOTSMITH.bcs~ ~Foundling/Scripts/BOTSMITH.baf~
+
+
+///////////////////////////
+/////////DIALOGUES/////////
+///////////////////////////
+
+COMPILE EVALUATE_BUFFER ~Foundling/Dialogues/L#Fou.d~
+COMPILE EVALUATE_BUFFER ~Foundling/Dialogues/L#FouJ.d~
+COMPILE ~Foundling/Dialogues/L#Guar.d~
+COMPILE ~Foundling/Dialogues/L#FouB.d~
+COMPILE ~Foundling/Dialogues/L#ADV.d~
+COMPILE ~Foundling/Dialogues/L#FSW.d~
+COMPILE ~Foundling/Dialogues/L#SHA1.d~
+COMPILE ~Foundling/Dialogues/L#FSHA.d~
+COMPILE ~Foundling/Dialogues/SHADRA01.d~
+COMPILE ~Foundling/Dialogues/L#FOIVO.d~
+
+COMPILE ~Foundling/Dialogues/L#Fou25.d~
+COMPILE ~Foundling/Dialogues/L#Fou25J.d~
+COMPILE ~Foundling/Dialogues/L#FFam.d~
+COMPILE ~Foundling/Dialogues/L#Fou25B.d~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COMPILE ~Foundling/Dialogues/EE.d~
+END
+
+///////////////////////////
+///////////BAMs////////////
+///////////////////////////
+
+COPY ~Foundling/BAM~ ~override~
+
+///////////////////////////
+///////////AREAS///////////
+///////////////////////////
+
+COPY ~Foundling/Areas~ ~override~
+
+///////////////////////////
+///////////AUDIO///////////
+///////////////////////////
+
+COPY_LARGE ~Foundling/Audio~ ~override~
+
+///////////////////////////
+////////Portraits//////////
+///////////////////////////
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COPY ~Foundling/Portraits~ ~override~
+END
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COPY ~Foundling/EEPortraits~ ~override~
+END
+
+
+///////////////////////////
+///////////SPELLS//////////
+///////////////////////////
+
+COPY ~Foundling/Spells/L#DAY.spl~ ~override~
+SAY NAME1 @176 /* Daylight penalty (-2 spellcasting level). */
+SAY NAME2 @176 /* Daylight penalty (-2 spellcasting level). */
+
+COPY ~Foundling/Spells/L#NIG.spl~ ~override~
+SAY NAME1 @177 /* Hidden from daylight (penalty cancelled). */
+SAY NAME2 @177 /* Hidden from daylight (penalty cancelled). */
+
+COPY ~Foundling/Spells/L#DAY2.spl~ ~override~
+SAY NAME1 @178 /* Daylight penalty cancelled permanently. Fighting abilities increased. */
+SAY NAME2 @178 /* Daylight penalty cancelled permanently. Fighting abilities increased. */
+
+COPY ~Foundling/Spells/L#DAY3.spl~ ~override~
+SAY NAME1 @179 /* Fighting abilities increased. */
+SAY NAME2 @179 /* Fighting abilities increased. */
+
+COPY ~Foundling/Spells/L#CR1HP.spl~ ~override~
+SAY NAME1 @169 /* Curse */
+SAY NAME2 @169 /* Curse */
+
+COPY ~Foundling/Spells/LINNA.spl~ ~override~
+SAY NAME1 @180 /* Create Blade */
+SAY NAME2 @180 /* Create Blade */
+
+////////////////////////////
+//////////ITEMS/////////////
+////////////////////////////
+
+COPY_EXISTING ~25SPELL.sto~ ~override/25SPELL.sto~
+ADD_STORE_ITEM ~MISC6Y~ #10 #0 #0 ~IDENTIFIED~ #1
+
+COPY_EXISTING ~25SPELL2.sto~ ~override/25SPELL2.sto~
+ADD_STORE_ITEM ~MISC6Y~ #10 #0 #0 ~IDENTIFIED~ #1
+
+COPY_EXISTING ~hgwra01.cre~ ~override/hgwra01.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~L#FGLV~ #0 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+COPY_EXISTING ~hgnya01.cre~ ~override/hgnya01.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~L#FGEM1~ #0 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+COPY_EXISTING ~hgskl01.cre~ ~override/hgskl01.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~L#FGEM2~ #0 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+COPY ~Foundling/Items/L#fclo.itm~ ~override~
+SAY NAME1 @181 /* Ripped Cloak */
+SAY NAME2 @181 /* Ripped Cloak */
+SAY DESC @182 /* This ripped cloak is made from a type of grayish weave. It is far from being soft and pleasant to the touch. The material near the lower edge has become ragged. It has at least five small holes.
+It's difficult to guess why Foundling still uses this cloak. It must be a matter of sentimental attachment since the cloak itself does not seem to have any real value. */
+
+COPY ~Foundling/Items/L#fclo2.itm~ ~override~
+SAY NAME1 @181 /* Ripped Cloak */
+SAY NAME2 @181 /* Ripped Cloak */
+SAY DESC @183 /* This ripped cloak is of a grayish weave. It is harsh and unpleasant to the touch. The material near the lower edge has become ragged. It has at least five small holes.
+It's difficult to tell why Foundling still uses this cloak. It must be a matter of sentimental attachment since the cloak itself does not seem to have any real value. */
+
+COPY ~Foundling/Items/L#fclo3.itm~ ~override~
+SAY NAME1 @181 /* Ripped Cloak */
+SAY NAME2 @181 /* Ripped Cloak */
+SAY DESC @184 /* This ripped cloak is of a grayish weave. It is far from being soft and pleasant to the touch. The material near the lower edge has become ragged. It has at least five small holes.
+It's difficult to tell why Foundling still uses this cloak. It must be a matter of sentimental attachment since the cloak itself does not seem to have any real value. */
+
+COPY ~Foundling/Items/L#fclod.itm~ ~override~
+SAY NAME1 @181 /* Ripped Cloak */
+SAY NAME2 @181 /* Ripped Cloak */
+SAY DESC @183 /* This ripped cloak is of a grayish weave. It is harsh and unpleasant to the touch. The material near the lower edge has become ragged. It has at least five small holes.
+It's difficult to tell why Foundling still uses this cloak. It must be a matter of sentimental attachment since the cloak itself does not seem to have any real value. */
+
+COPY ~Foundling/Items/l#sha1i.itm~ ~override~
+SAY NAME1 @185 /* Black Figurine */
+SAY NAME2 @185 /* Black Figurine */
+SAY DESC @186 /* This black figurine seems really peculiar. */
+
+COPY ~Foundling/Items/l#eye1.itm~ ~override~
+SAY NAME1 @187 /* Left Stone Eye */
+SAY NAME2 @187 /* Left Stone Eye */
+SAY DESC @188 /* This is an eye made of carved stone. It seems to be the left one. */
+
+COPY ~Foundling/Items/l#eye1.itm~ ~override/l#eye2.itm~
+SAY NAME1 @189 /* Right Stone Eye */
+SAY NAME2 @189 /* Right Stone Eye */
+SAY DESC @190 /* This is an eye made of carved stone. It seems to be the right one. */
+
+COPY ~Foundling/Items/l#fssw.itm~ ~override~
+SAY NAME1 @191 /* Black Sword */
+SAY NAME2 @191 /* Black Sword */
+
+COPY ~Foundling/Items/l#FSW.itm~ ~override~
+SAY NAME1 @192 /* Ritual Sword "Leira's Lie" */
+SAY NAME2 @192 /* Ritual Sword "Leira's Lie" */
+SAY DESC @193 /* This sword, obviously made for ritual use, also seems to be a solid and well-crafted weapon--not just decorative but a weapon of choice. It seems to be made of gold and some dark metal. There are some marks on both handle and blade, but you're not sure what they mean.
+This sword is said to turn small wounds into serious ones and turn the truth into mystification. It has been kept for a long time inside this peculiar cave.
+
+STATISTICS:
+
+This blade should be able to make the curse binding Foundling material.
+The one using this weapon is considered to have mastery in using long swords
+This blade is considered a +5 weapon
+
+Damage: 1d8 +3
+Thac0: +3 
+Special: 5% chance to curse enemy with Wild Magic for 10 seconds
+         2% chance to restore used spells of the user
+         1% chance to kill target if it has less than 60 HP
+Proficiency: Long Swords
+Type: One-handed
+Damage type: slashing
+Weight: 3 lbs
+Usable by:
+ Foundling */
+
+COPY ~Foundling/Items/l#fCHA.itm~ ~override~
+SAY NAME1 @194 /* Chain of the Solar */
+SAY NAME2 @194 /* Chain of the Solar */
+SAY DESC @195 /* This armour is a special type of gear that is said to be used by solars, planetars and devas; in reality, this is just a myth. This armour was blessed with divine powers that can protect the wearer not only from usual weapons, but also grants some special protection from undead creatures. The user of this chainmail will be ignored by most undead save for those of immense power like liches and dracoliches.
+
+STATISTICS:
+
+User is ignored by skeletons, zombies, and ghouls
+
+Armour Class: 3
+Special:
++25% fire resistance
+Weight: 10 lbs
+Usable by:
+ Good Bards
+ Good Clerics
+ Paladins */
+ 
+COPY ~Foundling/Items/l#farm.itm~ ~override~
+SAY NAME1 @196 /* Dusty Leather */
+SAY NAME2 @196 /* Dusty Leather */
+SAY DESC @197 /* This old armour is made of dark gray leather. It doesn't look very solid and does not grant any extraordinary protection, but is elastic enough not to block any spellcasting abilities.
+It is Foundling's favorite armor.
+
+STATISTICS:
+
++3 polymorph/petrification saving throw
+
+Armour Class: 7
+Weight: 8 lbs
+Usable by:
+ Foundling */
+ 
+COPY ~Foundling/Items/l#fCHI.itm~ ~override~
+SAY NAME1 @198 /* Chicken */
+SAY NAME2 @198 /* Chicken */
+SAY DESC @199 /* This chicken was locked in a chest along with some... skulls. You're not sure if you want to know how this poultry managed to survive till now. */
+
+COPY ~Foundling/Items/l#foio.itm~ ~override~
+SAY NAME1 @200 /* Shadow Ioun */
+SAY NAME2 @200 /* Shadow Ioun */
+SAY DESC @201 /* This ioun stone is similar to the guardian stone of the Shadow Dragon found in the temple ruins. However, this one has been enchanted with special magic that was freed after the fight with the resurrected Shadow Dragon, who took control of Foundling's body.
+
+STATISTICS:
+
+Armour Class: +2, +2 vs undead
+Protection from wing buffet
+
+Not usable by:
+ Good-aligned characters */
+ 
+COPY ~Foundling/Items/l#sbsw1.itm~ ~override~
+SAY NAME1 @202 /* Shadow Sword */
+SAY NAME2 @202 /* Shadow Sword */
+SAY DESC @203 /* This sword was created by a Shadow Adept and only they can use the item without being attacked by magic frost. The blade itself looks as if it was created from black metal and a dark crystal. It is said that the more powerful the Shadow Adept at the time of its creation, the more deadly the blade.
+
+STATISTICS:
+
+Damage: 1d8 +1 cold damage
+Thac0: +1, +1 vs humanoids
+Special: is considered a +1 weapon
+Proficiency: Long Swords
+Type: One-handed
+Damage type: slashing
+Weight: 8 lbs
+Usable by:
+ Foundling
+ Anyone else who attempts to use the weapon will be attacked by dark frost. */
+ 
+COPY ~Foundling/Items/l#sbsw2.itm~ ~override~
+SAY NAME1 @204 /* Shadow Sword +2 */
+SAY NAME2 @204 /* Shadow Sword +2 */
+SAY DESC @205 /* This sword was created by a Shadow Adept and only they can use the item without being attacked by magic frost. The blade itself looks as if it was created from black metal and a dark crystal. It is said that the more powerful the Shadow Adept at the time of its creation, the more deadly the blade.
+
+STATISTICS:
+
+Damage: 1d8 +1d4 cold damage
+Thac0: +2, +1 vs humanoids
+Special: is considered a +2 weapon
+Proficiency: Long Swords
+Type: One-handed
+Damage type: slashing
+Weight: 8 lbs
+Usable by:
+ Foundling
+ Anyone else who attempts to use the weapon will be attacked by dark frost. */
+ 
+COPY ~Foundling/Items/l#sbsw3.itm~ ~override~
+SAY NAME1 @206 /* Shadow Sword +3 */
+SAY NAME2 @206 /* Shadow Sword +3 */
+SAY DESC @207 /* This sword was created by a Shadow Adept and only they can use the item without being attacked by magic frost. The blade itself looks as if it was created from black metal and a dark crystal. It is said that the more powerful the Shadow Adept at the time of its creation, the more deadly the blade.
+STATISTICS:
+
+Damage: 1d8 +1d6 cold damage
+Thac0: +3, +2 vs humanoids
+Special: is considered a +3 weapon
+         10% chance to slow target
+Proficiency: Long Swords
+Type: One-handed
+Damage type: slashing
+Weight: 8 lbs
+Usable by:
+ Foundling
+ Anyone else who attempts to use the weapon will be attacked by dark frost. */
+ 
+ 
+COPY ~Foundling/Items/l#sbsw4.itm~ ~override~
+SAY NAME1 @208 /* Shadow Sword +4 */
+SAY NAME2 @208 /* Shadow Sword +4 */
+SAY DESC @209 /* This sword was created by a Shadow Adept and only they can use the item without being attacked by magic frost. The blade itself looks as if it was created from black metal and a dark crystal. It is said that the more powerful the Shadow Adept at the time of its creation, the more deadly the blade.
+
+STATISTICS:
+
+Damage: 1d8 +1d8 cold damage
+Thac0: +4, +2 vs humanoids
+Special: is considered a +4 weapon
+         20% chance to slow target
+Proficiency: Long Swords
+Type: One-handed
+Damage type: slashing
+Weight: 8 lbs
+Usable by:
+ Foundling
+ Anyone else who attempts to use the weapon will be attacked by dark frost. */
+ 
+COPY ~Foundling/Items/l#sbsw5.itm~ ~override~
+SAY NAME1 @210 /* Shadow Sword +5 */
+SAY NAME2 @210 /* Shadow Sword +5 */
+SAY DESC @211 /* This sword was created by a Shadow Adept and only they can use the item without being attacked by magic frost. The blade itself looks as if it was created from black metal and a dark crystal. It is said that the more powerful the Shadow Adept at the time of its creation, the more deadly the blade.
+STATISTICS:
+
+Damage: 1d8 +1d10 cold damage
+Thac0: +5, +2 vs humanoids
+Special: is considered a +5 weapon
+         40% chance to slow target
+         10% chance to drain 1 Dexterity
+Proficiency: Long Swords
+Type: One-handed
+Damage type: slashing
+Weight: 8 lbs
+Usable by:
+ Foundling
+ Anyone else who attempts to use the weapon will be attacked by dark frost. */
+ 
+COPY ~Foundling/Items/l#sbsw6.itm~ ~override~
+SAY NAME1 @212 /* Burning Shadow Sword +5 */
+SAY NAME2 @212 /* Burning Shadow Sword +5 */
+SAY DESC @213 /* This sword was created by a Shadow Adept and only they can use the item without being attacked by magic frost. The blade itself looks as if it was created from black metal and a dark crystal. It is said that the more powerful the Shadow Adept at the time of its creation, the more deadly the blade.
+STATISTICS:
+
+Damage: 1d8 +1d12 cold damage
+Thac0: +5, +3 vs humanoids
+Special: is considered a +5 weapon
+         40% chance to slow target
+         10% chance to drain 1 Dexterity
+Proficiency: Long Swords
+Type: One-handed
+Damage type: slashing
+Weight: 8 lbs
+Usable by:
+ Foundling
+ Anyone else who attempts to use the weapon will be attacked by dark frost. */
+ 
+ COPY ~Foundling/Items/l#fgem1.itm~ ~override~
+SAY NAME1 @214 /* Blueshadow Gem */
+SAY NAME2 @214 /* Blueshadow Gem */
+SAY DESC @215 /* This round gem has a deep blue color. It looks as if it is darker in the very center of the small globe. */
+
+ COPY ~Foundling/Items/l#fgem2.itm~ ~override~
+SAY NAME1 @214 /* Blueshadow Gem */
+SAY NAME2 @214 /* Blueshadow Gem */
+SAY DESC @215 /* This round gem has a deep blue color. It looks as if it is darker in the very center of the small globe. */
+
+ COPY ~Foundling/Items/l#fglv.itm~ ~override~
+SAY NAME1 @216 /* Dark Gloves */
+SAY NAME2 @216 /* Dark Gloves */
+SAY DESC @217 /* This is a pair of dark-colored gloves. They don't seem to hold any magic, but they look unique and well-crafted. You may get some gold for these, that's for sure. */
+
+COPY ~Foundling/Items/l#fglvf.itm~ ~override~
+SAY NAME1 @218 /* The Blackscratchers */
+SAY NAME2 @218 /* The Blackscratchers */
+SAY DESC @219 /* These are the Blackscratchers--powerful gloves that may enhance Shadow Weave magic. They seem unique and intriguing. They are colored black, blue, and gray and seem very solid.  They are set with dark blue gems.
+Sadly, only shadows and Shadow Adepts may use these.
+
+STATISTICS:
+
++1 casting level
+Lets the Shadow Adept enter a personal sphere similar to a Pocket Plane.
+
+Usable by:
+ Foundling */
+ 
+COPY ~Foundling/Items/l#fglvb.itm~ ~override~
+SAY NAME1 @218 /* The Blackscratchers */
+SAY NAME2 @218 /* The Blackscratchers */
+SAY DESC @220 /* These are the Blackscratchers--powerful gloves that may enhance Shadow Weave magic. They seem unique and intriguing. They are colored black, blue, and gray and seem very solid.  They are set with dark blue gems.
+Sadly, only shadows and Shadow Adepts may use these.
+
+
+STATISTICS:
+
+NOTE: Use these gloves to leave the Blackscratchers' plane.
+
++1 casting level
+Lets the Shadow Adept enter a personal sphere
+
+Usable by:
+ Foundling */
+ 
+COPY ~Foundling/Items/l#fglvc.itm~ ~override~
+SAY NAME1 @218 /* The Blackscratchers */
+SAY NAME2 @218 /* The Blackscratchers */
+SAY DESC @221 /* These are the Blackscratchers--powerful gloves that enhance Shadow Weave magic. They seem unique and intriguing. They are colored black, blue, and gray and seem very solid.  They are set with dark blue gems.
+Sadly, only shadows and Shadow Adepts may use these.
+
+
+STATISTICS:
+
++1 casting level
+These gloves can hide a Shadow Adept in his personal plane, where his spells are restored. The time in the personal sphere obeys different rules--the 8 hour rest lasts for 30 seconds in the Prime Material plane.
+
+Usable by:
+ Foundling */
+ 
+COPY ~Foundling/Items/l#fsp37a.itm~ ~override~
+SAY NAME1 @222 /* Claw */
+SAY NAME2 @222 /* Claw */
+SAY DESC @222 /* Claw */ 
+ 
+COPY ~Foundling/Items/l#foseed.itm~ ~override~
+SAY NAME1 @223 /* Ivory Seed */
+SAY NAME2 @223 /* Ivory Seed */
+SAY DESC @224 /* This seed should be brought to the frozen pond mentioned by the Ivory Witch. */ 
+
+COPY ~Foundling/Items/l#fois.itm~ ~override/l#fois.itm~
+SAY NAME1 @225 /* Perennial Ice Arrow */
+SAY NAME2 @225 /* Perennial Ice Arrow */
+SAY DESC @226 /* This magical arrow is made of solid ice. It not only deals additional ice damage, but also returns to the owner. With this arrow you'll never run out of luck.
+
+STATISTICS:
+
+Damage: 1D6 + 1D2 cold damage
+Damage type: Piercing
+Weight: 0 lbs.
+Launcher: Bow
+Not usable by:
+ Cleric
+ Druid
+ Mage */
+ 
+/*
+ 
+ 
+///////////////////////////////////JOURNAL EE
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+ADD_JOURNAL ~Foundling and the Black Curse
+I let Foundling, the shadow dragon's servant, join my group. He needs to find a special token that belonged to the Shadow Dragon. We should return to the Temple Ruins.~
+~Foundling and the Black Curse
+We found the special token Foundling was looking for. It doesn't work,and we may need to find an experienced adventurer or merchant who may know something about magical gadgets.~
+~Foundling and the Black Curse
+We asked Ribald for help and he suggested talking to someone named Gloria. Ribald says she comes in often and should arrive within a few hours.~
+~Foundling and the Black Curse
+We have spoken to Gloria and she has promised to investigate Foundling's token. She will have information soon and we should meet her at the Adventurer's Mart in one day.~
+~Foundling and the Black Curse
+Gloria told us what we need to prepare the ritual that may free Foundling. All we need is a specific ritual sword. We should visit the City Gates once we're ready for the adventure.~
+~The Colour of Ivory
+We met the Ivory Witch who asked us to save her land that has been invaded by a Hag. In return, she will destroy the barrier that is preventing our passage. We are also to place a special seed in the frozen pond that will heal the land.~
+~The Colour of Ivory
+We did what the Ivory Witch asked us to do and now we can safely travel through the snow-white lands of the Ivory Witch.~
+~Foundling and the Black Curse
+We found the ritual sword 'Leira's Lie'. Now we need to take the sword to the ruins of Amaunator's temple, to the place the Shadow Dragon died. Foundling will be able to dispel the curse when we arrive.~
+~Foundling and the Black Curse
+The whole ritual was predicted by the shadow dragon. He returned and possessed Foundling, but we managed to stop him.~
+END
+
+*/
+
+///////////////////////////////
+/////////EPILOGUES/////////////
+///////////////////////////////
+
+EXTEND_TOP ~ar6200.bcs~ ~Foundling\SCRIPTS\AR6200.baf~
+
+COPY ~Foundling\L#FouEp.2da~ ~override\L#FouEp1.2da~
+
+        REPLACE_TEXTUALLY ~PORTRAIT~ ~L#FouL~ 
+
+        REPLACE 99999 @227 /* After adventuring with the Bhaalspawn, Foundling tried to walk Faerun on his own, but found it difficult without companions. He never tried to see distant lands; he stayed near the lands he had visited with his former leader, but wherever he went, he felt out of place. Some time later, he fell into conflict with followers of Sune, who considered him an abomination shaped by Shar and her dark powers. He tried to escape as he considered the fight pointless, but the group of Sunites followed and caught the lone Shadow Adept. In the ensuing fight he lost one of his hands, denying him the use of most of his Shadow Weave spells. 
+		Foundling eventually overcame his maiming, relearned the use of powerful magic with only one hand, and found another group of adventurers to fight with. In time his new band traveled through the Underdark and stumbled upon a settlement of Deep Imaskari that offered him sanctuary--a privilege his adventurer companions were not granted. He left them to find their own destinies, and of his final days nothing is known in the surface world. */
+
+COPY ~Foundling\L#FouEp.2da~ ~override\L#FouEp2.2da~
+
+        REPLACE_TEXTUALLY ~PORTRAIT~ ~L#FouL~ 
+
+        REPLACE 99999 @228 /* After his adventures with the Bhaalspawn, Foundling decided to see more of Faerun, eventually returning to the places he had seen with <CHARNAME> - the Windspear Hills, the Umar Hills, the ruined temple of Amaunator, even Athkatla. Once, near Trademeet, he encountered a group of knights that chased him for some time and considered him an abomination--nothing more than a cruel shadow creature. The hunt was long and fierce, but after ten days, working together, the group of knights brought down the lone Shadow Adept.
+		It was then that Mazzy Fentan appeared and stopped the knights. Foundling, more than surprised, thanked the halfling lady. When asked why she did this, she said "without shadow there is no light," and suggested to the knights that there are more dangerous creatures than this particular Shadow Adept. When she left, Foundling followed her secretly for a time, though what he concluded from his observations is unclear. 
+		When he ceased this behavior, after some days of lone wandering, he met a man named Si'iliatrias. This man was a member of the Deep Imaskari, and took Foundling to his homeland beneath the Surface. The Shadow Adept was never heard of again. He may be both dead and alive, somewhere in the tunnels of the Underdark. */
+
+
+COPY ~Foundling\L#FouEp.2da~ ~override\L#FouEp3.2da~
+
+        REPLACE_TEXTUALLY ~PORTRAIT~ ~L#FouL~ 
+
+        REPLACE 99999 @229 /* When his adventures with the Bhaalspawn ended, Foundling still remembered the suggestion made by <CHARNAME>. That one thought echoed inside his mind: "You should return to the Plane of Shadows." It echoed over and over again until he had no more power to resist. He returned to the Temple Ruins and searched for an old tome of his former masters: The Book of Shadowpath. When he found it, he studied it for days and finally found his way back to the Shadow Plane. In the land of darkness it took him some time to forget the rules he had learned to obey in Faerun. He is said to have used the great powers he had acquired to create a hideout only he could safely enter. Some say that the insides of the hideout can break the rules of time and allow him to exist forever.
+		Gossips say that even though Foundling left Faerun, a dark figure still walks near the Umar Hills during the night, observing the villagers and sitting near the sculpture of Amaunator, tracing the inscription made by Mazzy Fentan. */
+
+COPY ~Foundling\L#FouEp.2da~ ~override\L#FouEp4.2da~
+
+        REPLACE_TEXTUALLY ~PORTRAIT~ ~L#FouL~ 
+
+        REPLACE 99999 @230 /* When his adventures with the Bhaalspawn ended, Foundling still remembered the suggestion made by <CHARNAME>. That one thought echoed inside his mind: "You can create objects just like you created the blade." Foundling knew that, even though his shadow blade was only created because of his Shadow Weave magic, his creation still had a meaning. He decided to give it a try and studied the creation of magical items and blacksmithing. Foundling created many weapons that could both save lives and kill. He never cared for gold, and his prices weren't high. Once he had sold one hundred different weapons, he is said to have disappeared. But his weapons are still there, in different parts of Faerun. Some say that his old companions from the Bhaalspawn's group use the daggers he made. None know that these weapons store part of Foundling's energy, letting him live as long as his weapons are in use.
+		Gossips say that a dark figure still appears near the Umar Hills from time to time during the night, observing the villagers and sitting near the sculpture of Amaunator. No one knows if it is Foundling or just another threat from the shadows to be afraid of. */
+
+
+/////////////////////////////////////
+//////////SPELL ADD-ON///////////////
+/////////////////////////////////////
+
+//1
+
+COPY ~Foundling/Spells/l#fsps1.SPL~     ~override/l#fsps1.SPL~
+  SAY NAME1 @231 /* Shadow Command */
+  SAY NAME2 @231 /* Shadow Command */
+  SAY UNIDENTIFIED_DESC @232 /* Shadow Command (Shadow Weave Magic)
+  
+Level: 1
+Range: touch
+Duration: 20 turns
+Casting Time: 1
+Area of Effect: 1 Creature
+Saving Throw: Special
+
+This spell enables the shadow adept to command another creature to "die" (sleep) for a single round. At the end of the round, the creature awakens and is unharmed. Creatures with 6 or more Hit Dice (or experience levels) are entitled to a Saving Throw vs. Spell to ignore the command.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+
+
+COPY ~Foundling/Items/l#fsps1.itm~ ~override~
+SAY NAME1 @231 /* Shadow Command */
+SAY NAME2 @231 /* Shadow Command */
+SAY DESC @233 /* Shadow Command (Shadow Weave Magic)
+Level: 1
+Range: touch
+Duration: 20 turns
+Casting Time: 1
+Area of Effect: 1 Creature
+Saving Throw: Special
+
+This spell enables the shadow adept to command another creature to "die" (sleep) for a single round. At the end of the round, the creature awakens and is unharmed. Creatures with 6 or more Hit Dice (or experience levels) are entitled to a Saving Throw vs. Spell to ignore the command.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */ 
+
+COPY_EXISTING ~firmag01.cre~ ~override/firmag01.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~l#fsps1~ #1 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+//2
+
+COPY ~Foundling/effects/l#fsps2x.eff~     ~override/l#fsps2x.eff~
+
+COPY ~Foundling/Spells/l#fsps2.SPL~     ~override/l#fsps2.SPL~
+  SAY NAME1 @234 /* Shadow Summoning I */
+  SAY NAME2 @234 /* Shadow Summoning I */
+  SAY UNIDENTIFIED_DESC @235 /* Shadow Summoning I (Shadow Weave Magic)
+  
+Level: 2
+Range: 120 ft. 
+Duration: 6 rounds
+Casting Time: 4 
+Area of Effect: Special 
+Saving Throw: None 
+
+With the casting of this spell, the shadow adept summons a shadow creature. The monster appear within spell range and attack the spellcaster's opponents until the spell duration expires or until it is slain.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */
+
+
+COPY ~Foundling/Items/l#fsps2.itm~ ~override~
+SAY NAME1 @234 /* Shadow Summoning I */
+SAY NAME2 @234 /* Shadow Summoning I */
+SAY DESC @236 /* Shadow Summoning I (Shadow Weave Magic)
+
+Level: 2
+Range: 120 ft. 
+Duration: 6 rounds
+Casting Time: 4 
+Area of Effect: Special 
+Saving Throw: None 
+
+With the casting of this spell, the shadow adept summons a shadow creature. The monster appear within spell range and attack the spellcaster's opponents until the spell duration expires or until it is slain.
+The shadow is a powerful ally when compared to other summoned creatures of the same level, however it instantly dies in sunlight.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -5% penalty to cold resistance for 10 seconds. */ 
+
+COPY ~Foundling/Creatures/L#fsps2.cre~ ~override~
+SAY NAME1 @161 /* Shadow */
+SAY NAME2 @161 /* Shadow */
+
+COMPILE ~Foundling/Scripts/L#sumsh.baf~
+
+COPY_EXISTING ~shadel.cre~ ~override/shadel.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~l#fsps2~ #1 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+//3
+
+COPY ~Foundling/Spells/l#fsps3.SPL~     ~override/l#fsps3.SPL~
+  SAY NAME1 @237 /* Holding Shadow */
+  SAY NAME2 @237 /* Holding Shadow */
+  SAY UNIDENTIFIED_DESC @238 /* Holding Shadow (Shadow Weave Magic)
+
+Level: 3
+Range: 35 ft.
+Duration: 1 turn
+Casting Time: 3
+Area of Effect: 1 creature and any enemy within 7.5 ft.
+Saving Throw: Neg. 
+
+This spell holds 1d4 humans, demihumans, or humanoid creatures rigidly immobile and in place for five or more rounds. The Hold Person spell affects any bipedal human, demihuman, or humanoid of mansize or smaller, including brownies, dryads, dwarves, elves, gnolls, gnomes, goblins, half-elves, halflings, half-orcs, hobgoblins, humans, kobolds, lizard men, nixies, orcs, pixies, sprites, troglodytes, and others. Thus, a 10th-level fighter could be held, while an ogre could not. The effect is centered on the victim selected by the caster. Every enemy within 7.5 ft. of the target is also affected. Those who save vs. Spell at -1 are totally unaffected by the spell. Undead creatures cannot be held.
+
+Held creatures cannot move or speak, but they remain aware of events around them and can use abilities not requiring motion or speech. Being held does not prevent the worsening of the subjects' condition due to wounds, disease, or poison.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+
+COPY ~Foundling/Items/l#fsps3.itm~ ~override~
+SAY NAME1 @237 /* Holding Shadow */
+  SAY NAME2 @237 /* Holding Shadow */
+  SAY UNIDENTIFIED_DESC @239 /* Holding Shadow (Shadow Weave Magic)
+  
+Level: 3
+Range: 35 ft.
+Duration: 1 turn
+Casting Time: 3
+Area of Effect: 1 creature and any enemy within 7.5 ft.
+Saving Throw: Neg. 
+
+This spell holds 1d4 humans, demihumans, or humanoid creatures rigidly immobile and in place for five or more rounds. The Hold Person spell affects any bipedal human, demihuman, or humanoid of mansize or smaller, including brownies, dryads, dwarves, elves, gnolls, gnomes, goblins, half-elves, halflings, half-orcs, hobgoblins, humans, kobolds, lizard men, nixies, orcs, pixies, sprites, troglodytes, and others. Thus, a 10th-level fighter could be held, while an ogre could not. The effect is centered on the victim selected by the caster. Every enemy within 7.5 ft. of the target is also affected. Those who save vs. Spell at -1 are totally unaffected by the spell. Undead creatures cannot be held.
+
+Held creatures cannot move or speak, but they remain aware of events around them and can use abilities not requiring motion or speech. Being held does not prevent the worsening of the subjects' condition due to wounds, disease, or poison.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+COPY_EXISTING ~firrak01.cre~ ~override/firrak01.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~l#fsps3~ #1 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+//4
+
+COPY ~Foundling/Spells/l#fsps4.SPL~     ~override/l#fsps4.SPL~
+  SAY NAME1 @240 /* Shadow thievery */
+  SAY NAME2 @240 /* Shadow thievery */
+  SAY UNIDENTIFIED_DESC @241 /* Shadow thievery (Shadow Weave Magic)
+
+Level: 4
+Range: 10 ft.
+Duration: 26 turns
+Casting Time: 2
+Area of Effect: 1 creature 
+Saving Throw: none 
+
+This spell, when cast at thiefs, bards and rangers, makes them more powerful. Target creature gets +40% bonus to all thievery skills, +5 Thac0 and +1 backstab modifier. Effects last 26 turns.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+
+COPY ~Foundling/Items/l#fsps4.itm~ ~override~
+SAY NAME1 @240 /* Shadow thievery */
+  SAY NAME2 @240 /* Shadow thievery */
+  SAY UNIDENTIFIED_DESC @241 /* Shadow thievery (Shadow Weave Magic)
+
+Level: 4
+Range: 10 ft.
+Duration: 26 turns
+Casting Time: 2
+Area of Effect: 1 creature 
+Saving Throw: none 
+
+This spell, when cast at thiefs, bards and rangers, makes them more powerful. Target creature gets +40% bonus to all thievery skills, +5 Thac0 and +1 backstab modifier. Effects last 26 turns.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+COPY_EXISTING ~lavok02.cre~ ~override/lavok02.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~l#fsps4~ #1 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+
+//5
+
+COPY ~Foundling/Spells/l#fsps5.SPL~     ~override/l#fsps5.SPL~
+  SAY NAME1 @242 /* Outerblack */
+  SAY NAME2 @242 /* Outerblack */
+  SAY UNIDENTIFIED_DESC @243 /* Outerblack (Shadow Weave Magic)
+
+Level: 5
+Range: 20 ft.
+Casting Time: 1
+Area of Effect: 1 creature 
+Saving Throw: none 
+
+This spell use dark telekinetic energy. It pushes target away from the caster and cause 10d5 +10 crushing damage. There is no saving throw.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+
+COPY ~Foundling/Items/l#fsps5.itm~ ~override~
+SAY NAME1 @242 /* Outerblack */
+  SAY NAME2 @242 /* Outerblack */
+  SAY UNIDENTIFIED_DESC @243 /* Outerblack (Shadow Weave Magic)
+
+Level: 5
+Range: 20 ft.
+Casting Time: 1
+Area of Effect: 1 creature 
+Saving Throw: none 
+
+This spell use dark telekinetic energy. It pushes target away from the caster and cause 10d5 +10 crushing damage. There is no saving throw.
+
+NOTE: This spell uses Shadow Weave Magic that makes the caster more vulnerable to cold.  If this spell is cast, the mage suffers a -8% penalty to cold resistance for 10 seconds. */
+
+COPY_EXISTING ~pmaster.cre~ ~override/pmaster.cre~
+	PATCH_IF (SOURCE_SIZE > 0x2d3) THEN BEGIN
+		ADD_CRE_ITEM ~l#fsps5~ #1 #0 #0 ~NONE~ ~inv~
+	END
+BUT_ONLY_IF_IT_CHANGES
+
+
+///////////////////////////////////JOURNAL EE
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+ADD_JOURNAL  @1 @2 @3 @4 @5 @6 @7 @8 @9 @10 @11 USING ~Foundling/Translations/%LANGUAGE%/Baldur.tra~
+END
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////FOUNDLING THE SHADOW ADEPT THIEF////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+PRINT ~~
+PRINT @244 /* Foundling's class option:
+Dash 1 to keep Foundling's original class (single-class mage: Shadow Adept)
+Dash 2 to install Foundling's optional class (dual-class Shadow Adept/thief - he won't level up as a thief) */
+
+
+OUTER_SPRINT ~FouClass~ @245 /* placeholder_value */
+OUTER_WHILE (!(IS_AN_INT ~FouClass~) OR (~FouClass~ > 0x2) OR (~FouClass~ < 0x1)) BEGIN
+  PRINT @246 /* Choose 1 or 2 and confirm by "enter" */
+  ACTION_READLN ~FouClass~
+END
+ACTION_IF ("FouClass" = 1) THEN BEGIN
+PRINT @247 /* Keeping Foundling's original class. */
+
+END
+
+ACTION_IF ("FouClass" = 2) THEN BEGIN
+PRINT @248 /* Changing Foundling's class to Shadow Adept/thief. */
+
+COPY ~Foundling/CreaturesA/L#Fou.cre~ ~override~
+
+  WRITE_SHORT   0x244 0
+  WRITE_SHORT   0x246 0x4000 + ~%LSHADO%~
+  
+  SAY NAME1 @0 /* Foundling */
+  SAY NAME2 @0 /* Foundling */
+  
+  SAY BIO @113 /*  FOUNDLING doesn't know much about his past; his recollections are little more than some glimpses and misty thoughts. He was found by the Shadow Dragon in the Plane of Shadows when he was still a child. He doesn't remember much from that time--just fear, confusion, and a feeling of insignificance. He also remembers that his new "master" examined invisible signs, a trait that led him to realizing the Foundling had been given access to the Shadow Weave. Later, after some time, the Shadow Dragon discovered the reason: Foundling had been a sacrifice to Shar--a sacrifice that was made in order to grant the 'beasts' who would kill a child the power of the Shadow Weave. Foundling doesn't know his real parents and he doesn't care much about them.
+  The Shadow Dragon and the Shade Lord have both taught Foundling some magic, as they wanted to make him a useful pawn; their motives were obvious from the very start, but their teachings were limited. A servant should never know too much. */
+
+  SAY MORALE @114 /* Think wisely: we need to leave. The dead can't do much. */ 
+  SAY HAPPY @115 /* You think sagaciously. */ 
+  SAY UNHAPPY_ANNOYED @116 /* Hmm? */ 
+  SAY UNHAPPY_SERIOUS @117 /* That's not wise. */ 
+  SAY UNHAPPY_BREAKING @118 /* You should be more thoughtful. */ 
+  SAY LEADER @119 /* I believe there are others more appropriate for this position. */ 
+  SAY TIRED @120 /* We may need to rest to regain our strength. */ 
+  SAY BORED @121 /* It's good to catch a breath without my master giving me some tasks. */ 
+  SAY BATTLE_CRY1 @122 /* Prepare. */ 
+  SAY BATTLE_CRY2 @123 /* This is the end. */ 
+  SAY BATTLE_CRY3 @124 /* This is your last day. */ 
+  SAY BATTLE_CRY4 @125 /* Die. */ 
+  SAY BATTLE_CRY5 @126 /* Soften them up, and my magic will finish them. */ 
+  SAY DAMAGE  @127 /* Ah! */ 
+  SAY DYING @128 /* Please, forgive me ... I... */ 
+  SAY HURT @129 /* I need help! */ 
+  SAY AREA_FOREST @130 /* A strange place. */ 
+  SAY AREA_CITY @131 /* There's too many people. Someone should do something about it. */ 
+  SAY AREA_DUNGEON @132 /* My eyes can finally rest from the sun. */ 
+  SAY AREA_DAY @133 /* There's too much light here. I can't focus. */ 
+  SAY AREA_NIGHT @134 /* No burning globe in the sky. This is much better. */ 
+  SAY SELECT_COMMON1 @135 /* Yes? */ 
+  SAY SELECT_COMMON2 @136 /* Awaiting. */ 
+  SAY SELECT_COMMON3 @137 /* I listen. */ 
+  SAY SELECT_COMMON4 @138 /* You have a plan? */ 
+  SAY SELECT_COMMON5 @139 /* What is it? */ 
+  SAY SELECT_COMMON6 @116 /* Hmm? */ 
+  SAY SELECT_ACTION1 @141 /* Wise. */ 
+  SAY SELECT_ACTION2 @142 /* I believe I can. */ 
+  SAY SELECT_ACTION3 @143 /* Sagaciously. */ 
+  SAY SELECT_ACTION4 @144 /* Acceptable. */ 
+  SAY SELECT_ACTION5 @145 /* I will try. */ 
+  SAY SELECT_ACTION6 @146 /* I've done worse. */ 
+  SAY SELECT_ACTION7 @147 /* Fine. */ 
+  SAY SELECT_RARE1 @148 /* I will do as you ask, but don't forget: I'm not a slave anymore. */ 
+  SAY SELECT_RARE2 @149 /* There's too much sun here. This plane is very different to the Plane of Shadows. */ 
+  SAY CRITICAL_HIT @150 /* I won't be enslaved again. */ 
+  SAY CRITICAL_MISS @151 /* Missed. */ 
+  SAY TARGET_IMMUNE @152 /* Magic may be more effective. */ 
+  SAY INVENTORY_FULL @153 /* I can't carry that much. */ 
+  SAY SPELL_DISRUPTED @154 /* Get them off me! */ 
+  SAY SET_A_TRAP @155 /* This could be of use. */ 
+  SAY HIDDEN_IN_SHADOWS @156 /* No one will see me */ 
+  SAY PICKED_POCKET @157 /* Perhaps you will find some use for this. */ 
+
+  
+//tob
+
+COPY ~Foundling/CreaturesA/L#Fou25.cre~ ~override~
+
+  WRITE_SHORT   0x244 0
+  WRITE_SHORT   0x246 0x4000 + ~%LSHADO%~
+  
+  SAY NAME1 @0 /* Foundling */
+  SAY NAME2 @0 /* Foundling */
+  
+  SAY BIO @113 /*  FOUNDLING doesn't know much about his past; his recollections are little more than some glimpses and misty thoughts. He was found by the Shadow Dragon in the Plane of Shadows when he was still a child. He doesn't remember much from that time--just fear, confusion, and a feeling of insignificance. He also remembers that his new "master" examined invisible signs, a trait that led him to realizing the Foundling had been given access to the Shadow Weave. Later, after some time, the Shadow Dragon discovered the reason: Foundling had been a sacrifice to Shar--a sacrifice that was made in order to grant the 'beasts' who would kill a child the power of the Shadow Weave. Foundling doesn't know his real parents and he doesn't care much about them.
+  The Shadow Dragon and the Shade Lord have both taught Foundling some magic, as they wanted to make him a useful pawn; their motives were obvious from the very start, but their teachings were limited. A servant should never know too much. */
+
+  SAY MORALE @114 /* Think wisely: we need to leave. The dead can't do much. */ 
+  SAY HAPPY @115 /* You think sagaciously. */ 
+  SAY UNHAPPY_ANNOYED @116 /* Hmm? */ 
+  SAY UNHAPPY_SERIOUS @117 /* That's not wise. */ 
+  SAY UNHAPPY_BREAKING @118 /* You should be more thoughtful. */ 
+  SAY LEADER @119 /* I believe there are others more appropriate for this position. */ 
+  SAY TIRED @120 /* We may need to rest to regain our strength. */ 
+  SAY BORED @121 /* It's good to catch a breath without my master giving me some tasks. */ 
+  SAY BATTLE_CRY1 @122 /* Prepare. */ 
+  SAY BATTLE_CRY2 @123 /* This is the end. */ 
+  SAY BATTLE_CRY3 @124 /* This is your last day. */ 
+  SAY BATTLE_CRY4 @125 /* Die. */ 
+  SAY BATTLE_CRY5 @126 /* Soften them up, and my magic will finish them. */ 
+  SAY DAMAGE  @127 /* Ah! */ 
+  SAY DYING @158 /* Please, forgive me ... I ... */ 
+  SAY HURT @129 /* I need help! */ 
+  SAY AREA_FOREST @130 /* A strange place. */ 
+  SAY AREA_CITY @131 /* There's too many people. Someone should do something about it. */ 
+  SAY AREA_DUNGEON @132 /* My eyes can finally rest from the sun. */ 
+  SAY AREA_DAY @133 /* There's too much light here. I can't focus. */ 
+  SAY AREA_NIGHT @134 /* No burning globe in the sky. This is much better. */ 
+  SAY SELECT_COMMON1 @135 /* Yes? */ 
+  SAY SELECT_COMMON2 @136 /* Awaiting. */ 
+  SAY SELECT_COMMON3 @137 /* I listen. */ 
+  SAY SELECT_COMMON4 @138 /* You have a plan? */ 
+  SAY SELECT_COMMON5 @139 /* What is it? */ 
+  SAY SELECT_COMMON6 @116 /* Hmm? */ 
+  SAY SELECT_ACTION1 @141 /* Wise. */ 
+  SAY SELECT_ACTION2 @142 /* I believe I can. */ 
+  SAY SELECT_ACTION3 @143 /* Sagaciously. */ 
+  SAY SELECT_ACTION4 @144 /* Acceptable. */ 
+  SAY SELECT_ACTION5 @145 /* I will try. */ 
+  SAY SELECT_ACTION6 @146 /* I've done worse. */ 
+  SAY SELECT_ACTION7 @147 /* Fine. */ 
+  SAY SELECT_RARE1 @148 /* I will do as you ask, but don't forget: I'm not a slave anymore. */ 
+  SAY SELECT_RARE2 @149 /* There's too much sun here. This plane is very different to the Plane of Shadows. */ 
+  SAY CRITICAL_HIT @150 /* I won't be enslaved again. */ 
+  SAY CRITICAL_MISS @151 /* Missed. */ 
+  SAY TARGET_IMMUNE @152 /* Magic may be more effective. */ 
+  SAY INVENTORY_FULL @153 /* I can't carry that much. */ 
+  SAY SPELL_DISRUPTED @154 /* Get them off me! */ 
+  SAY SET_A_TRAP @155 /* This could be of use. */ 
+  SAY HIDDEN_IN_SHADOWS @156 /* No one will see me */ 
+  SAY PICKED_POCKET @157 /* Perhaps you will find some use for this. */ 
+  
+APPEND ~pdialog.2da~
+~L#Fou L#FouP L#FouJ L#FouD L#Fou25P L#Fou25J L#Fou25D L#Fou25~
+UNLESS ~L#Fou~
+
+APPEND ~interdia.2da~
+~L#Fou L#FouB L#Fou25B~
+               
+    
+
+END
+
+///////////////////////////////////TOB TRANSITION
+
+ACTION_IF GAME_IS ~eet~ BEGIN
+  LOAD_TRA ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
+  INCLUDE ~Foundling/lib/EET_functions.tph~
+  LAF ~EET_NPC_TRANSITION~
+    INT_VAR
+      type = 2
+    STR_VAR
+      dv = "L#FOU"
+      override_SoA = "L#FOU"
+      override_ToB = "L#FOU25"
+      dialog_ToB = "L#FOU25"
+      string = "@0" //Bring me Foundling, the human Shadow Adept.
+      stringPosDV = "Garrick"
+  END
+END ELSE BEGIN
+  COMPILE ~Foundling/Dialogues/FATESP.d~ ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
+END

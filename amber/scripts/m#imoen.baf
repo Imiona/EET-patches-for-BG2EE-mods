@@ -1,0 +1,94 @@
+IF
+InParty("M#Amber")
+!Dead("M#Amber")
+See("M#Amber")
+!CombatCounter(0)
+AttackedBy([ANYONE],DEFAULT)
+OR(6)
+  HPPercentLT(Myself,30)
+  StateCheck(Myself,STATE_HELPLESS)
+  StateCheck(Myself,STATE_STUNNED)
+  StateCheck(Myself,STATE_PANIC)
+  StateCheck(Myself,STATE_SLEEPING)
+  StateCheck(Myself,STATE_FEEBLEMINDED)
+THEN
+	RESPONSE #100
+	Shout(2001)
+	Continue()
+END
+
+IF
+	InParty("M#Amber")
+	InParty("Imoen2")
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	OR(4)
+	  Global("M#AmberImoenTalk","GLOBAL",0)
+	  Global("M#AmberImoenTalk","GLOBAL",2)
+	  Global("M#AmberImoenTalk","GLOBAL",6)
+	  Global("M#AmberImoenTalk","GLOBAL",8)
+	RealGlobalTimerExpired("M#AmberImoenTalkTime","GLOBAL")
+THEN
+	RESPONSE #100
+	IncrementGlobal("M#AmberImoenTalk","GLOBAL",1)
+END
+
+IF
+	See("M#Amber")
+	OR(4)
+	  Global("M#AmberImoenTalk","GLOBAL",3)
+	  Global("M#AmberImoenTalk","GLOBAL",3)
+	  Global("M#AmberImoenTalk","GLOBAL",7)
+	  Global("M#AmberImoenTalk","GLOBAL",9)
+	!StateCheck("M#Amber",STATE_PANIC)
+	!StateCheck("M#Amber",STATE_BERSERK)
+	!StateCheck("M#Amber",STATE_CHARMED)
+	!StateCheck("M#Amber",STATE_CONFUSED)
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+	Dialog("M#Amber")
+END
+
+IF
+	Global("M#AmberImoenBanter","GLOBAL",0)
+	GlobalGT("Chapter","GLOBAL",%bg2_chapter_5%)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	Global("M#AmberMatch","GLOBAL",1)
+	Global("M#AmberImoenBanterTimeActivated","Locals",0)
+	!AreaType(DUNGEON)
+THEN
+	RESPONSE #100
+	RealSetGlobalTimer("M#AmberImoenBanterTime","GLOBAL",200)
+	SetGlobal("M#AmberImoenBanterTimeActivated","Locals",1)
+END
+
+IF
+	Global("M#AmberImoenBanter","GLOBAL",0)
+	RealGlobalTimerExpired("M#AmberImoenBanterTime","GLOBAL")
+	InParty("M#Amber")
+	InParty("Imoen2")
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	CombatCounter(0)
+	
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberImoenBanter","GLOBAL",1)
+END
+
+IF
+	See("M#Amber")
+	Global("M#AmberImoenBanter","GLOBAL",1)
+	GlobalGT("M#AmberImoenTalk","GLOBAL",1)
+	!StateCheck("M#Amber",STATE_PANIC)
+	!StateCheck("M#Amber",STATE_BERSERK)
+	!StateCheck("M#Amber",STATE_CHARMED)
+	!StateCheck("M#Amber",STATE_CONFUSED)
+	Global("M#AmberRomanceActive","GLOBAL",2)
+	Global("M#AmberMatch","GLOBAL",1)
+	GlobalLT("M#AmberMad","GLOBAL",1)
+THEN
+	RESPONSE #100
+	Dialog("M#Amber")
+END

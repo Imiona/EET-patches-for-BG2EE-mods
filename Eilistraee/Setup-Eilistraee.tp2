@@ -1,0 +1,856 @@
+BACKUP ~Eilistraee\backup~
+AUTHOR ~Lava Del'Vortel~
+
+VERSION ~3.4~
+
+README ~Eilistraee/ESReadMe.%LANGUAGE%.txt~ ~Eilistraee/ESReadMe.txt~
+
+AUTO_TRA ~Eilistraee/Translations/%s~
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 2283
+  END ELSE BEGIN
+    OUTER_SET wmp_xCoordAdd_SoA = 0
+    OUTER_SET wmp_yCoordAdd_SoA = 0
+  END
+
+  // Borrowed from Edwin Romance: convert strings to UTF-8 for BGEE/BG2EE
+  INCLUDE ~%MOD_FOLDER%/handle_charsets.tpa~
+
+  // No exception, everything needs to be converted
+  ACTION_DEFINE_ARRAY EsXnoconvert BEGIN END
+
+  // Only setup-Innershade.tra needs to be reloaded
+  ACTION_DEFINE_ARRAY EsXreload BEGIN Setup-Eilistraee END
+
+  // There is no "language" folder so the root of all languages in %MOD_FOLDER%
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      tra_path = EVAL ~%MOD_FOLDER%/translations~
+      // charset_table = EsXcharsets // Included for illustrative purposes.
+      noconvert_array = EsXnoconvert
+      reload_array = EsXreload
+  END
+END
+
+LANGUAGE ~English~ ~English~ ~Eilistraee/Translations/English/Setup-Eilistraee.tra~
+LANGUAGE ~French~ ~French~ ~Eilistraee/Translations/French/Setup-Eilistraee.tra~
+LANGUAGE ~Russian~ ~Russian~ ~Eilistraee/Translations/Russian/Setup-Eilistraee.tra~
+LANGUAGE ~German (by Gerri)~ ~German~ ~Eilistraee/Translations/German/Setup-Eilistraee.tra~
+
+BEGIN @0 /* Eilistraee's Song */
+
+
+
+
+////////////////////////////////Add CD_STATE_NOTVALID state
+
+APPEND ~STATE.IDS~ ~0x80101FEF CD_STATE_NOTVALID~
+UNLESS ~CD_STATE_NOTVALID~ 
+
+
+////////////////////////////////KIT
+
+ADD_KIT ~ESxKit~ 
+~ESxKit 0 0 1 1 0 1 0 0~  // CLASWEAP.2da
+~ESxKit 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0~ // WEAPPROF.2da 
+~ESxKit 0 0 0 0 9 0~ // ABCLASRQ.2da
+~ESxKit 0 0 0 0 0 0~ // ABCLSMOD.2da
+~ESxKit 0 0 0 0 0 0~ // ABDCDSRQ.2da - sensless
+~ESxKit 0 0 0 0 17 0~ // ABDCDSRQ.2da
+~ESxKit 1 1 0 1 1 0 1 1 0~ // ALIGNMNT.2da
+~ESxKit 1 0 1 1 0 1~ // DUALCLAS.2da
+~Eilistraee\KIT\ESxABIL.2da~ // CLAB - abilities     
+~~ // KITTABLE.2da
+~0x04000000 3~ // KITLIST.2da
+~Cl0~ // LUABBR.2da
+~* * * * * * * * * * * * * * * * * * * *~  // ToB starting items
+SAY @1 /* Sword Dancer of Eilistraee */
+SAY @1 /* Sword Dancer of Eilistraee */
+SAY @2 /* SWORD DANCER OF EILISTRAEE: Sword Dancers are the servants of the Dark Maiden, Eilistraee. They are usually drow who decided (or were forced to) leave the Underdark. However, not only drow may become Sword Dancers. There are also surface elves and half-elves among them. They usually live in forests or abandoned ruins which become both their shelter and temples. Eilistraee is a good goddess of the moon, dance, song, the sword and the hunt who grants her followers special abilities to help them survive. The Dark Lady herself is a child of Corellon Larethian and Araushnee - later known as Lolth the Queen of the Spider Pits. Eilistraee is also believed to appear in Faerûn herself. At these times, she may be seen during the night as a naked drow woman with long, silver hair, holding a silver sword.
+
+ADVANTAGES:
+- May summon a Moon Sword. The enchantment of the sword depends on the Sword Dancer's level.
+- May cast Moonfire. This spell grants some light similar to that of the moon. It gives all allies infravision.
+- At level 10, the Bladedance skill is granted. It creates a blade that will fight as the caster's ally.
+- At level 14, Lesser Spellsong is granted. It gives the caster a Free Action effect.
+- At level 16, Spellsong is granted. It gives the caster Free Action as well as Haste.
+
+DISADVANTAGES:
+- Only females may become a Sword Dancer.
+- Only elves and half-elves may be Sword Dancers.
+- Cannot be evil. */
+ 
+
+COPY ~Eilistraee\KIT\ESxSw1.itm~ ~override~ 
+SAY NAME1 @3 /* Moon Sword +1 */          
+SAY NAME2 @3 /* Moon Sword +1 */ 
+
+
+COPY ~Eilistraee\KIT\ESxSw2.itm~ ~override~ 
+SAY NAME1 @4 /* Moon Sword +2 */          
+SAY NAME2 @4 /* Moon Sword +2 */
+
+
+COPY ~Eilistraee\KIT\ESxSw3.itm~ ~override~ 
+SAY NAME1 @5 /* Moon Sword +3 */          
+SAY NAME2 @5 /* Moon Sword +3 */
+
+
+COPY ~Eilistraee\KIT\ESxSw4.itm~ ~override~ 
+SAY NAME1 @6 /* Moon Sword +4 */          
+SAY NAME2 @6 /* Moon Sword +4 */
+
+
+COPY ~Eilistraee\KIT\ESxSw5.itm~ ~override~ 
+SAY NAME1 @7 /* Moon Sword +5 */          
+SAY NAME2 @7 /* Moon Sword +5 */
+
+
+COPY ~Eilistraee\KIT\ESxSw6.itm~ ~override~ 
+SAY NAME1 @8 /* Moon Sword +6 */          
+SAY NAME2 @8 /* Moon Sword +6 */ 
+
+
+COPY ~Eilistraee\KIT\ESxblade.itm~ ~override~ 
+COPY ~Eilistraee\KIT\ESxblade.cre~ ~override~ 
+SAY NAME1 @9 /* Dancing Blade */          
+SAY NAME2 @9 /* Dancing Blade */
+
+COPY ~Eilistraee\KIT\ESxblade.eff~ ~override~ 
+
+COPY ~Eilistraee\KIT\ESxfire.spl~ ~override~ 
+COPY_EXISTING ~ESxfire.spl~ ~override/ESxfire.spl~           
+WRITE_SHORT 0x1C 4                     
+WRITE_LONG 0x34 1
+READ_LONG 0x64 "offset_abil"
+READ_SHORT  0x68 "num_abil"
+READ_ASCII ("%offset_abil%" + 0x04) "bam"            
+WRITE_EVALUATED_ASCII 0x3A "%bam%"                
+SAY NAME1 @10 /* Moonfire */          
+SAY NAME2 @10 /* Moonfire */                                               
+WHILE (0 < "%num_abil%")
+BEGIN
+WRITE_SHORT (("%offset_abil%" + 0x02) + (("%num_abil%" - 1) * 0x28)) 4 
+SET "num_abil" = ("%num_abil%" - 1)
+END 
+
+COPY ~Eilistraee\KIT\ESxlsong.spl~ ~override~ 
+COPY_EXISTING ~ESxlsong.spl~ ~override/ESxlsong.spl~           
+WRITE_SHORT 0x1C 4                     
+WRITE_LONG 0x34 1
+READ_LONG 0x64 "offset_abil"
+READ_SHORT  0x68 "num_abil"
+READ_ASCII ("%offset_abil%" + 0x04) "bam"            
+WRITE_EVALUATED_ASCII 0x3A "%bam%"                
+SAY NAME1 @11 /* Lesser Spellsong */          
+SAY NAME2 @11 /* Lesser Spellsong */                                               
+WHILE (0 < "%num_abil%")
+BEGIN
+WRITE_SHORT (("%offset_abil%" + 0x02) + (("%num_abil%" - 1) * 0x28)) 4 
+SET "num_abil" = ("%num_abil%" - 1)
+END 
+
+COPY ~Eilistraee\KIT\ESxsong.spl~ ~override~ 
+COPY_EXISTING ~ESxsong.spl~ ~override/ESxsong.spl~           
+WRITE_SHORT 0x1C 4                     
+WRITE_LONG 0x34 1
+READ_LONG 0x64 "offset_abil"
+READ_SHORT  0x68 "num_abil"
+READ_ASCII ("%offset_abil%" + 0x04) "bam"            
+WRITE_EVALUATED_ASCII 0x3A "%bam%"                
+SAY NAME1 @12 /* Spellsong */          
+SAY NAME2 @12 /* Spellsong */                                               
+WHILE (0 < "%num_abil%")
+BEGIN
+WRITE_SHORT (("%offset_abil%" + 0x02) + (("%num_abil%" - 1) * 0x28)) 4 
+SET "num_abil" = ("%num_abil%" - 1)
+END 
+
+
+COPY ~Eilistraee\KIT\ESxMSw.spl~ ~override~ 
+COPY_EXISTING ~ESxMSw.spl~ ~override/ESxMSw.spl~           
+WRITE_SHORT 0x1C 4                     
+WRITE_LONG 0x34 1
+READ_LONG 0x64 "offset_abil"
+READ_SHORT  0x68 "num_abil"
+READ_ASCII ("%offset_abil%" + 0x04) "bam"            
+WRITE_EVALUATED_ASCII 0x3A "%bam%"                
+SAY NAME1 @13 /* Moon Sword Summoning */          
+SAY NAME2 @13 /* Moon Sword Summoning */                                               
+WHILE (0 < "%num_abil%")
+BEGIN
+WRITE_SHORT (("%offset_abil%" + 0x02) + (("%num_abil%" - 1) * 0x28)) 4 
+SET "num_abil" = ("%num_abil%" - 1)
+END 
+
+COPY ~Eilistraee\KIT\ESxblade.spl~ ~override~ 
+COPY_EXISTING ~ESxblade.spl~ ~override/ESxblade.spl~           
+WRITE_SHORT 0x1C 4                     
+WRITE_LONG 0x34 1
+READ_LONG 0x64 "offset_abil"
+READ_SHORT  0x68 "num_abil"
+READ_ASCII ("%offset_abil%" + 0x04) "bam"            
+WRITE_EVALUATED_ASCII 0x3A "%bam%"                
+SAY NAME1 @14 /* Bladedance */          
+SAY NAME2 @14 /* Bladedance */                                               
+WHILE (0 < "%num_abil%")
+BEGIN
+WRITE_SHORT (("%offset_abil%" + 0x02) + (("%num_abil%" - 1) * 0x28)) 4 
+SET "num_abil" = ("%num_abil%" - 1)
+END
+
+
+
+
+////////////////////////////////AREAS
+
+COPY ~Eilistraee/AREAS~ ~override/~
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+    COPY ~Eilistraee/MinimapsEE~ ~override~
+END
+
+
+
+////////////////////////////////BAMS
+
+COPY ~Eilistraee/BAMS~ ~override/~
+
+
+
+
+////////////////////////////////PORTRAITS
+
+COPY ~Eilistraee/PORTRAITS~ ~override/~
+
+
+
+////////////////////////////////CREATURES
+
+COPY ~Eilistraee/CREATURES/ESxBARD.cre~ ~override/ESxBard.cre~
+SAY NAME1 @15 /* Thas'zzaria */
+SAY NAME2 @15 /* Thas'zzaria */
+
+COPY ~Eilistraee/CREATURES/ESxCC.cre~ ~override/ESxCC.cre~
+SAY NAME1 @16 /* Ostra */
+SAY NAME2 @16 /* Ostra */
+
+COPY ~Eilistraee/CREATURES/ESxCC2.cre~ ~override/ESxCC2.cre~
+SAY NAME1 @16 /* Ostra */
+SAY NAME2 @16 /* Ostra */
+
+COPY ~Eilistraee/CREATURES/ESxCD.cre~ ~override/ESxCD.cre~
+SAY NAME1 @17 /* Chain Demon */
+SAY NAME2 @17 /* Chain Demon */
+
+COPY ~Eilistraee/CREATURES/ESxLICH.cre~ ~override/ESxLich.cre~
+SAY NAME1 @18 /* Demi-Lich */
+SAY NAME2 @18 /* Demi-Lich */
+
+COPY ~Eilistraee/CREATURES/ESxMH.cre~ ~override/ESxMH.cre~
+SAY NAME1 @19 /* Fall */
+SAY NAME2 @19 /* Fall */
+
+COPY ~Eilistraee/CREATURES/ESxMH2.cre~ ~override/ESxMH2.cre~
+SAY NAME1 @19 /* Fall */
+SAY NAME2 @19 /* Fall */
+
+COPY ~Eilistraee/CREATURES/ESxQuif.cre~ ~override/ESxQuif.cre~
+SAY NAME1 @20 /* Quif De'Vir */
+SAY NAME2 @20 /* Quif De'Vir */
+
+COPY ~Eilistraee/CREATURES/ESxSE.cre~ ~override/ESxSE.cre~
+SAY NAME1 @21 /* Sleeping Drow */
+SAY NAME2 @21 /* Sleeping Drow */
+
+COPY ~Eilistraee/CREATURES/ESxShas.cre~ ~override/ESxShas.cre~
+SAY NAME1 @22 /* Shas'tan */
+SAY NAME2 @22 /* Shas'tan */
+
+COPY ~Eilistraee/CREATURES/ESxSha2.cre~ ~override/ESxSha2.cre~
+SAY NAME1 @22 /* Shas'tan */
+SAY NAME2 @22 /* Shas'tan */
+
+COPY ~Eilistraee/CREATURES/ESxSNA.cre~ ~override/ESxSNA.cre~
+SAY NAME1 @23 /* Child of Sseth */
+SAY NAME2 @23 /* Child of Sseth */
+
+COPY ~Eilistraee/CREATURES/ESxSOLA.cre~ ~override/ESxSola.cre~
+SAY NAME1 @24 /* Solaufein */
+SAY NAME2 @24 /* Solaufein */
+
+COPY ~Eilistraee/CREATURES/ESxTH.cre~ ~override/ESxTH.cre~
+SAY NAME1 @25 /* Hooded Man */
+SAY NAME2 @25 /* Hooded Man */
+
+COPY ~Eilistraee/CREATURES/ESxVash.cre~ ~override/ESxVash.cre~
+SAY NAME1 @26 /* Vash */
+SAY NAME2 @26 /* Vash */
+
+COPY ~Eilistraee/CREATURES/ESxYoea.cre~ ~override/ESxYoea.cre~
+SAY NAME1 @27 /* Yoea */
+SAY NAME2 @27 /* Yoea */
+
+COPY ~Eilistraee/CREATURES/ESxSER.cre~ ~override/ESxSER.cre~
+SAY NAME1 @28 /* Mist Creature */
+SAY NAME2 @28 /* Mist Creature */
+
+COPY ~Eilistraee/CREATURES/ESxSERM.cre~ ~override/ESxSERM.cre~
+SAY NAME1 @29 /* Deadly zombie */
+SAY NAME2 @29 /* Deadly zombie */
+
+COPY ~Eilistraee/CREATURES/ESxJOI.cre~ ~override/ESxJOI.cre~
+SAY NAME1 @30 /* Joi */
+SAY NAME2 @30 /* Joi */
+
+COPY ~Eilistraee/CREATURES/ESxCG.cre~ ~override/ESxCG.cre~
+SAY NAME1 @31 /* Crying Girl */
+SAY NAME2 @31 /* Crying Girl */
+
+COPY ~Eilistraee/CREATURES/ESxPrie.cre~ ~override/ESxPrie.cre~
+SAY NAME1 @32 /* Sword Dancer-Sentinel */
+SAY NAME2 @32 /* Sword Dancer-Sentinel */
+
+COPY ~Eilistraee/CREATURES/ESxEO.cre~ ~override/ESxEO.cre~
+SAY NAME1 @33 /* Eo */
+SAY NAME2 @33 /* Eo */
+
+COPY ~Eilistraee/CREATURES/ESxBIO.cre~ ~override/ESxBIO.cre~
+SAY NAME1 @34 /* Drow */
+SAY NAME2 @34 /* Drow */
+
+COPY ~Eilistraee/CREATURES/ESxRAB.cre~ ~override/ESxRAB.cre~
+SAY NAME1 @35 /* Rabbit */
+SAY NAME2 @35 /* Rabbit */
+
+COPY ~Eilistraee/CREATURES/ESxBea.cre~ ~override/ESxBea.cre~
+SAY NAME1 @36 /* Bear */
+SAY NAME2 @36 /* Bear */
+
+COPY ~Eilistraee/CREATURES/ESxWOM.cre~ ~override/ESxWOM.cre~
+SAY NAME1 @37 /* Woman */
+SAY NAME2 @37 /* Woman */
+
+COPY ~Eilistraee/CREATURES/ESxELF.cre~ ~override/ESxELF.cre~
+SAY NAME1 @34 /* Drow */
+SAY NAME2 @34 /* Drow */
+
+/////////////////////////////////DIALOGUES
+
+COMPILE ~Eilistraee/DIALOGUES/Elhan.d~
+        ~Eilistraee/DIALOGUES/ESxBard.d~
+        ~Eilistraee/DIALOGUES/ESxCC.d~
+        ~Eilistraee/DIALOGUES/ESxMH.d~
+        ~Eilistraee/DIALOGUES/ESxMH2.d~
+        ~Eilistraee/DIALOGUES/ESxQUIF.d~
+        ~Eilistraee/DIALOGUES/ESxShas.d~
+        ~Eilistraee/DIALOGUES/ESxSola.d~
+        ~Eilistraee/DIALOGUES/ESxTH.d~
+        ~Eilistraee/DIALOGUES/ESxVash.d~
+        ~Eilistraee/DIALOGUES/ESxYoea.d~
+        ~Eilistraee/DIALOGUES/ESxSER.d~
+        ~Eilistraee/DIALOGUES/ESxCD.d~
+        ~Eilistraee/DIALOGUES/ESxCG.d~
+        ~Eilistraee/DIALOGUES/ESxJOI.d~
+        ~Eilistraee/DIALOGUES/ESxPRIE.d~
+        ~Eilistraee/DIALOGUES/ESxRAB.d~
+        ~Eilistraee/DIALOGUES/ESxBIO.d~
+        ~Eilistraee/DIALOGUES/ESxEO.d~
+        ~Eilistraee/DIALOGUES/ESxCC2.d~
+        ~Eilistraee/DIALOGUES/ESxWOM.d~
+        ~Eilistraee/DIALOGUES/Cromwell.d~
+
+		
+
+		
+//////////////////////////////////SCRIPTS
+
+COMPILE ~Eilistraee/SCRIPTS/ARES01.baf~
+        ~Eilistraee/SCRIPTS/ARES02.baf~
+        ~Eilistraee/SCRIPTS/ARES03.baf~
+        ~Eilistraee/SCRIPTS/ARES04.baf~
+        ~Eilistraee/SCRIPTS/ARES05.baf~
+        ~Eilistraee/SCRIPTS/ARES06.baf~
+        ~Eilistraee/SCRIPTS/ESxCD.baf~
+        ~Eilistraee/SCRIPTS/ESxSER.baf~
+        ~Eilistraee/SCRIPTS/ESxELF.baf~
+
+
+EXTEND_TOP   ~AR1105.bcs~ ~Eilistraee/SCRIPTS/AR1105.baf~
+EXTEND_TOP   ~AR0334.bcs~ ~Eilistraee/SCRIPTS/AR0334.baf~
+EXTEND_TOP   ~AR2100.bcs~ ~Eilistraee/SCRIPTS/AR2100.baf~
+EXTEND_TOP   ~AR2401.bcs~ ~Eilistraee/SCRIPTS/AR2401.baf~
+EXTEND_TOP   ~AR2600.bcs~ ~Eilistraee/SCRIPTS/AR2600.baf~
+EXTEND_TOP   ~AR2800.bcs~ ~Eilistraee/SCRIPTS/AR2800.baf~
+EXTEND_TOP   ~AR0700.bcs~ ~Eilistraee/SCRIPTS/AR0700.baf~
+EXTEND_TOP   ~AR4000.bcs~ ~Eilistraee/SCRIPTS/AR4000.baf~
+EXTEND_BOTTOM   ~Baldur.bcs~ ~Eilistraee/SCRIPTS/Baldur.baf~
+
+
+/////////////////////////////////SOUNDS
+
+COPY ~Eilistraee/AUDIO~ ~override/~
+
+
+
+/////////////////////////////////SPELLS
+
+COPY ~Eilistraee/SPELLS/ESxChan.spl~ ~override/ESxChan.spl~
+SAY NAME1 @38 /* Chant of Eilistraee's Hunting */
+SAY NAME2 @38 /* Chant of Eilistraee's Hunting */
+SAY DESC @38 /* Chant of Eilistraee's Hunting */
+
+/////////////////////////////////ITEMS
+
+COPY ~Eilistraee/ITEMS/ESxR1.itm~ ~override/ESxR1.itm~
+SAY NAME1 @39 /* Swordbreaker */
+SAY NAME2 @39 /* Swordbreaker */
+SAY DESC @40 /* This is a magical ring found near the forgotten tomb. It is made of some kind of red metal. When you hold the ring, you have a strange feeling - as if you were more confident than usual.
+
+STATISTICS:
+
+50% resistance to slashing weapons
+Immunity to Slow */
+
+COPY ~Eilistraee/ITEMS/ESxS1.itm~ ~override/ESxS1.itm~
+SAY NAME1 @41 /* Moon Sword */
+SAY NAME2 @41 /* Moon Sword */
+SAY DESC @42 /* This is a bastard sword made of metal that reminds you of silver. It has a long blade glowing with a silver-blue light. The blade seems to be really sharp. It is said that Eilistraee herself fought with a similar blade. This particular sword was a possession of Fall - the main huntress of Eilistraee's followers who live in the clearing in the Forest of Tethyr.
+
+STATISTICS:
+
+Damage: 2d4 + 4
+THAC0: +5
+Special effects:
+ 50% resistance to cold
+ Protection from backstab
+ Protection from level drain
+Damage type: slashing
+Weight: 9
+Speed Factor: 3
+Proficiency Type: Bastard Sword
+Type: 1-handed
+Requires: 11 Strength
+Not Usable By:
+ Druid
+ Cleric
+ Mage
+ Evil characters */
+
+
+COPY ~Eilistraee/ITEMS/ESxKIT.itm~ ~override/ESxKIT.itm~
+SAY NAME1 @43 /* Symbol of Eilistraee */
+SAY NAME2 @43 /* Symbol of Eilistraee */
+SAY DESC @44 /* This is the symbol of Eilistraee - the goddess of good drow and some elves. It is said that the Dark Maiden as the patron of hunting and song blesses her followers with a beautiful voice that cannot be silenced.
+
+STATISTICS:
+
+Grants an additional 6th and 7th level spell.
+5% Magic Resistance while worn
++1 to Charisma while worn
+Wearer is immune to Silence spells
+
+Usable By:
+Sword Dancers of Eilistraee */
+
+
+COPY ~Eilistraee/ITEMS/ESxVic.itm~ ~override/ESxVic.itm~
+SAY NAME1 @45 /* De'Vir Amulet */
+SAY NAME2 @45 /* De'Vir Amulet */
+SAY DESC @46 /* This amulet used to be a magical artifact worn by Ginafae De'Vir, the Matron Mother of House De'Vir from Menzoberranzan. It has the shape of a spider. The amulet is said to give its wearer magical support. The amulet was given to Viconia by Quif De'Vir - Viconia's younger kin.
+
+STATISTICS:
+
++1 bonus to all saving throws
++2 armor class against spiders
++3 additional 1st level spells (divine magic)
+Immunity to all kinds of poisons
+
+Usable by:
+ Viconia */
+
+
+COPY ~Eilistraee/ITEMS/ESxAN.itm~ ~override/ESxAN.itm~
+SAY NAME1 @47 /* Rusty Myth */
+SAY NAME2 @47 /* Rusty Myth */
+SAY DESC @48 /* This is magical sword you have found in the tomb near Eilistraee's Clearing. It was guarded by a demi-lich. The sword itself if covered with rust and dust. This weapon seems to hide a powerful magic within, but on the other hand, it looks quite fragile.
+
+STATISTICS:
+
+Damage: 1d8 + 4
+THAC0: +5
+Special:
+ +1 armor class
+ Protection from 1st level spells
+ One additional attack per round
+ 10% resistance to magic
+ 6% chance the sword will break on a successful hit
+Damage type: slashing
+Weight: 3
+Speed Factor: 4
+Proficiency Type: Scimitar/Wakizashi/Ninja-To
+Type: 1-handed
+Requires: 10 Strength
+Not Usable By:
+ Cleric
+ Mage */
+
+ 
+COPY ~Eilistraee/ITEMS/ESxL1.itm~ ~override/ESxL1.itm~
+SAY NAME1 @49 /* Fall's Letter */
+SAY NAME2 @49 /* Fall's Letter */
+SAY DESC @50 /* This is the letter that Fall wrote. I'm supposed to deliver it to Elhan. */
+
+COPY ~Eilistraee/ITEMS/ESxL1.itm~ ~override/ESxL2.itm~
+SAY NAME1 @51 /* Elhan's Letter */
+SAY NAME2 @51 /* Elhan's Letter */
+SAY DESC @52 /* This is Elhan's response to Fall's letter. I should deliver it to Fall. */
+
+COPY ~Eilistraee/ITEMS/ESxL1.itm~ ~override/ESxL3.itm~
+SAY NAME1 @53 /* Strange Letter */
+SAY NAME2 @53 /* Strange Letter */
+SAY DESC @54 /* This is a strange letter found on the body of drow killed by other drow in the Underdark.
+
+"You shall test the kin we have discussed. Determine their feelings about our society, about Ust Natha. They may become our future companions in the clearing.
+
+S."
+
+It seems the drow have failed. */
+
+
+COPY ~Eilistraee/ITEMS/ESxB1.itm~ ~override/ESxB1.itm~
+SAY NAME1 @55 /* History of Eilistraee */
+SAY NAME2 @55 /* History of Eilistraee */
+SAY DESC @56 /* This parchment is a reference scroll about Eilistraee, the Dark Maiden.
+
+"Eilistraee is called the Dark Maiden and the Lady of the Dance. She's a good deity of drow who decided to escape the Darkness Beneath - the Underdark. Not only drow praise the Maiden, but also some surface elves. She is known to be the patron of good drow, music, dance, hunters and moonlight.
+
+Eilistraee was the daughter of Corellon Larethian and Araushnee, who later became Lolth, and the sister of Vhaeraun. She was banished along with the other drow deities for her role, albeit inadvertently, in the war against the Seldarine. Eilistraee insisted upon this punishment from her reluctant father, because she foresaw that the dark elves would need a beacon of good within their reach.
+
+Eilistraee's allies were the Seldarine, Mystra, Selune and the good deities of the Underdark races; her enemies are the evil deities of the Underdark, especially the rest of the drow pantheon." */
+
+
+COPY ~Eilistraee/ITEMS/ESxB1.itm~ ~override/ESxB2.itm~
+SAY NAME1 @57 /* About Eilistraee and Other Gods */
+SAY NAME2 @57 /* About Eilistraee and Other Gods */
+SAY DESC @58 /* This scroll tells some details about Eilistraee as well as about other gods.
+
+"First of all we should all tell what *gods* are. A deity is a being of great power who controls some aspect of mortal affairs, referred to as the god's portfolio. True gods are called Estelar and differ from the Dawn Titans.
+
+...
+
+The Drow worship the Dark Seldarine, deities that were cast out of the Seldarine after the failed invasion of Arvandor by the Anti-Seldarine. This original trio of gods was joined by four more as time passed. But with the events of the Time of Troubles and the War of the Spider Queen, Lolth subsumed the worship of the entire drow pantheon. 
+
+...
+
+The Time of Troubles, also known as the Arrival, the Godswar and the Avatar Crisis, was a cataclysmic time period in the chronology of Faerûn. Taking place during 1358 DR, the Year of Shadows, the Time of Troubles was a period during which the deities of Faerûn were forced to walk the earth in their mortal avatar forms. Several major deities died during the Time of Troubles and a handful of mortals rose to divinity.
+
+...
+
+Cyric, a petty, sadistic mercenary, slew Bhaal with the sword Godsbane (actually the god Mask in disguise). After the end of the Time of Troubles, he was granted control of nearly all the portfolios of the Dead Three by Ao, making him briefly the most powerful of the gods.
+
+...
+
+The church of Eilistraee headquartered at the Promenade located near Skullport was led by the High Priestess Qilué Veladorn, youngest of the Seven Sisters and Chosen of Mystra. Second to her was the Promenade's Battlemistress Rylla. All priestesses were free to do as they liked unless given a mission by either Qilué or Rylla. Although the Darksong knights, priestess/warriors, had more independence, they too were subject to being given missions. Generally, its clerics wore their hair long and dressed practically for whatever they were currently doing. For rituals, they wore as little as possible. Otherwise, they tended to wear soft leathers for hunting, aprons while cooking, and — rarely — armor when battle was expected. When relaxing, they favored silvery, diaphanous gowns. Their holy symbol was a small sword; clerics preferred holy symbols of silver, typically worn as pins or hung around the neck on slender silver or mithral chains. They prayed for spells at night, after moonrise, singing their prayers whenever possible. Their rituals revolved around a hunt followed by a feast, dancing, and a Circle of Song. This last was held preferably in a wooded glade on a moonlit night, in which the worshippers would sit and dance by turns in a circle, each one leading a song." */
+
+
+COPY ~Eilistraee/ITEMS/ESxEle.itm~ ~override/ESxEle.itm~
+SAY NAME1 @59 /* Elephant Figurine */
+SAY NAME2 @59 /* Elephant Figurine */
+SAY DESC @60 /* This is magical figurine of a golden elephant called the Mighty Jewel. It gives magical support to the one who uses it.
+
+STATISTICS:
+
+Grants +50 bonus to hit points for 2 minutes
+
+Usable by:
+Anyone */
+
+
+COPY ~Eilistraee/ITEMS/ESxbard.itm~ ~override/ESxbard.itm~
+SAY NAME1 @61 /* Book */
+SAY NAME2 @61 /* Book */
+SAY DESC @62 /* This is the book stolen from the bard in Eilistraee's Clearing. */
+
+COPY ~Eilistraee/ITEMS/ESxR2.itm~ ~override/ESxR2.itm~
+SAY NAME1 @63 /* Ring */
+SAY NAME2 @63 /* Ring */
+SAY DESC @64 /* This ring was found in the stomach of a beast known as the Child of Sseth - a giant snake that lived in Tethyr Forest. */
+
+COPY ~Eilistraee/ITEMS/ESxGMO.itm~ ~override/ESxGMO.itm~
+SAY NAME1 @65 /* Bottle */
+SAY NAME2 @65 /* Bottle */
+SAY DESC @66 /* There is a small label on the bottle that says "Drink me". */
+
+COPY ~Eilistraee/ITEMS/ESxCHA.itm~ ~override/ESxCHA.itm~
+SAY NAME1 @67 /* Chain Mail of Eilistraee */
+SAY NAME2 @67 /* Chain Mail of Eilistraee */
+SAY DESC @68 /* This chain mail used to belong to Fall, a servant of Eilistraee who decided to help Suldanesselar in the raid of evil creatures summoned by the mighty power of elven traitor Jon Irenicus. The armor is magically enchanted so it provides great power and doesn't block a mage's ability to cast arcane spells, nor does it block a thief's skills.
+
+STATISTICS:
+
+Armor Class: 1
++1 Charisma
+Allows use of thievery and arcane spells
+Weight: 7
+Requires: 8 Strength
+Not Usable By:
+ Druid 
+ Mage 
+ Thief
+ Evil characters */
+
+ 
+COPY ~Eilistraee/ITEMS/ESxJOI.itm~ ~override/ESxJOI.itm~
+SAY NAME1 @69 /* Teddy Bear */
+SAY NAME2 @69 /* Teddy Bear */
+SAY DESC @70 /* This is an old teddy bear obtained from a crying girl at Waukeen's Promenade. */
+
+COPY ~Eilistraee/ITEMS/ESxCAR.itm~ ~override/ESxCAR.itm~
+SAY NAME1 @71 /* Carrot */
+SAY NAME2 @71 /* Carrot */
+SAY DESC @72 /* This is a wild-growing carrot. It's quite fresh. Carrots are believed to be a rabbit's favorite food. It's surprising this carrot was found in Eilistraee's Clearing. There are lots of rabbits there. */
+
+COPY ~Eilistraee/ITEMS/ESxRAB.itm~ ~override/ESxRAB.itm~
+SAY NAME1 @73 /* Lucky Charm */
+SAY NAME2 @73 /* Lucky Charm */
+SAY DESC @74 /* This is a rabbit's foot. It is said that a rabbit foot worn near the hand or belt gives the owner luck.
+
+STATISTICS:
+
++1% magic resistance
++5 saving throw vs. death
++2 luck */
+
+
+COPY ~Eilistraee/ITEMS/ESxPIPE.itm~ ~override/ESxPIPE.itm~
+SAY NAME1 @75 /* Smoking Pipe */
+SAY NAME2 @75 /* Smoking Pipe */
+SAY DESC @76 /* This is the smoking pipe you took from a rabbit. No matter how strange it sounds, it's true. */
+
+COPY ~Eilistraee/ITEMS/ESxToot.itm~ ~override/ESxToot.itm~
+SAY NAME1 @77 /* Silver Tooth */
+SAY NAME2 @77 /* Silver Tooth */
+SAY DESC @78 /* This is the silver tooth of a lich you slayed at Eilistraee's Clearing. The undead creature lived in a tomb; its true life ended some time ago. The tooth itself has some kind of magic, but it seems there is not any clear or obvious way to use it. */
+
+COPY ~Eilistraee/ITEMS/ESxBoot.itm~ ~override/ESxBoot.itm~
+SAY NAME1 @79 /* Moondance Boots */
+SAY NAME2 @79 /* Moondance Boots */
+SAY DESC @80 /* These are magical boots you found on the body of an assassinated drow. The boots seem to be of good quality. They are made of leather. When you wear them, you feel as if your steps are more accurate and slightly faster.
+
+STATISTICS:
+
++1 dexterity bonus
++1 movement speed (not hindered by Free Action) */
+
+
+COPY ~Eilistraee/ITEMS/ESxDAG.itm~ ~override/ESxDAG.itm~
+SAY NAME1 @81 /* Dozen Moons */
+SAY NAME2 @81 /* Dozen Moons */
+SAY DESC @82 /* This ritual dagger is a magical item forged from silver tooth of a lich, adamantine dust and a moonstone gem. It is said that a similar weapon was used by the greatest priestess of Eilistraee.
+
+Dozen Moons is a dagger which may affect the fate of the creature hit with it. It is said the dagger cuts through the possible fate as if it were a material object. The dagger may cast one of a dozen effects which will provide the wielder a successful battle.
+
+STATISTICS:
+
+Damage: 1d4 + 3
+THAC0: +6
++20% resistance to magic
+Protects from 1st level spells
+Twelve moons (only one effect can by applied with each hit, effect may be avoided with saving throw):
+ 2% chance to heal wielder (30 HP)
+ 2% chance to inflict fear on enemy
+ 2% chance to inflict 10 fire damage to enemy
+ 2% chance to inflict 10 acid damage to enemy
+ 2% chance to inflict 10 electric damage to enemy
+ 2% chance to drain 3 levels from enemy
+ 2% chance to slow enemy
+ 2% chance to silence enemy
+ 2% chance to stun enemy
+ 2% chance to unsummon (if enemy is a summoned creature)
+ 2% chance to blind enemy
+ 2% chance to entangle enemy
+Weight: 1
+Speed Factor: 1
+Proficiency Type: Dagger
+Type: 1-handed
+Requires: 3 Strength
+Usable By:
+ Anyone */
+
+
+COPY ~Eilistraee/ITEMS/ESxDAG2.itm~ ~override/ESxDAG2.itm~
+SAY NAME1 @83 /* 13th Moon */
+SAY NAME2 @83 /* 13th Moon */
+SAY DESC @84 /* This ritual dagger is a magical item forged from the silver tooth of a lich and some other components. It is said that a similar weapon was used by the greatest priestess of Eilistraee.
+
+13th Moon is a dagger which may affect the fate of creature hit with it. It is said the dagger cuts through the possible fate as if it were a material object. The dagger may cast one of thirteen effects which will provide the wielder a successful battle.
+
+This weapon is actually a modified Dozen Moons dagger. Cromwell used his teacher's recipe to use an additional component - a Silver Blade, which is part of the famous Silver Sword.
+
+STATISTICS:
+
+Damage: 1d4 + 4
+THAC0: +6
++20% resistance to magic
+Protects from 1st level spells
+Thirteen moons (only one effect can by applied with each hit, effect may be avoided with saving throw):
+ 2% chance to heal wielder (30 HP)
+ 2% chance to inflict fear on enemy
+ 2% chance to inflict 10 fire damage to enemy
+ 2% chance to inflict 10 acid damage to enemy
+ 2% chance to inflict 10 electric damage to enemy
+ 2% chance to drain 3 levels from enemy
+ 2% chance to slow enemy
+ 2% chance to silence enemy
+ 2% chance to stun enemy
+ 2% chance to unsummon (if enemy is a summoned creature)
+ 2% chance to blind enemy
+ 2% chance to entangle enemy
+ 15% chance to kill enemy
+Weight: 1
+Speed Factor: 1
+Proficiency Type: Dagger
+Type: 1-handed
+Requires: 3 Strength
+Usable By:
+ Anyone */
+
+
+COPY ~Eilistraee/ITEMS/ESxmoss.itm~ ~override/ESxmoss.itm~
+SAY NAME1 @85 /* Dark-Green Moss */
+SAY NAME2 @85 /* Dark-Green Moss */
+SAY DESC @86 /* It is said this moss may heal even the worst wounds made by both magic and physical weapons. It has a bitter taste and smell, but the magical feature of the moss may prove helpful.
+
+STATISTICS:
+
+Heals 40 HP */
+
+///////////////////////////////////JOURNAL EE
+
+ACTION_IF FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+ADD_JOURNAL @500 @501 @502 @503 @504 @505 @506 @507 @508 @509 @510 @511 @600 @601 @602 @603 USING ~Eilistraee/Translations/%LANGUAGE%/Setup-Eilistraee.tra~
+END
+
+
+//////////////////////////////////AUDIO INSTALLATION
+
+COPY   ~Eilistraee/ESIA.bat~          ~ESIA.bat~
+COPY   ~Eilistraee/ESUA.bat~         ~ESUA.bat~
+    
+AT_INTERACTIVE_EXIT ~ESIA.bat~
+AT_UNINSTALL        ~ESUA.bat~
+
+
+
+BEGIN @87 /* Add Eilistraee's Clearing to the Worldmap */
+SUBCOMPONENT @88 /* Worldmap addition */
+REQUIRE_COMPONENT ~Eilistraee/Setup-eilistraee.tp2~ ~0~ @89 /* Main component not installed */
+
+//////////////////////////////////ADD AREA TO MAP
+
+ACTION_IF NOT FILE_EXISTS_IN_GAME ~neera10.cre~ THEN BEGIN
+MKDIR save
+END
+
+
+//**************************************************
+// Worldmap patching - do this last so we can patch the new areas too
+//**************************************************
+// Append mastarea.2da with the new areas
+APPEND ~MASTAREA.2da~ ~ARES01 value~ UNLESS "Eilistraee's Clearing" /* ARES01 *///ARES01
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Deep Gardens abandoned
+  OUTER_SPRINT areName @90 /* ARES01 */  // area reference, like "AR0700"
+  OUTER_SPRINT strName @91 /* Eilistraee's Clearing */// area name, like "Waukeen's Promenade"
+  OUTER_SPRINT strDesc @91 /* Eilistraee's Clearing */// area description which will show up when hovering the area on the worldmap
+
+  OUTER_SET mapIcon = 9              // map icon
+  OUTER_SET xCoord  = 890 + wmp_xCoordAdd_SoA // x coordinate
+  OUTER_SET yCoord  = 550 + wmp_yCoordAdd_SoA // y coordinate
+  OUTER_SET tTime   = 2              // travel time, *4, so two means eight hours
+  OUTER_SET inclSv  = 1              // include save games bool, 1 means yes and 0 means no
+
+// set up link variables
+
+  // add links from these area(s) to the new area
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY toNewArea BEGIN
+    "AR0020" => "Entrance"       // City Gates
+    "AR0300" => "Entrance"       // Docks
+    "AR0400" => "Entrance"       // Slums
+    "AR0500" => "Entrance"       // Bridge District
+    "AR0700" => "Entrance"       // Waukeen's Promenade
+    "AR0800" => "Entrance"       // Graveyard
+    "AR0900" => "Entrance"       // Temple District
+    "AR1000" => "Entrance"       // Government
+    "AR1100" => "Entrance"       // Umar Hills
+    "AR1300" => "Entrance"       // d'Arnise Keep
+    "AR1304" => "Entrance"       // d'Arnise Keep
+    "AR2000" => "Entrance"        // Trademeet
+    "AR1200" => "Entrance"        // Windspear Hills
+    "AR2500" => "Entrance"        // Camp
+  END
+
+  // add links from the new area to these area(s)
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY fromNewArea BEGIN
+    "AR0020" => "ExitNE"      // City Gates
+    "AR0300" => "ExitN"       // Docks
+    "AR0400" => "ExitN"       // Slums
+    "AR0500" => "ExitNE"      // Bridge District
+    "AR0700" => "ExitE"       // Waukeen's Promenade
+    "AR0800" => "ExitS"       // Graveyard
+    "AR0900" => "ExitNW"      // Temple District
+    "AR1000" => "ExitN"       // Government
+    "AR1100" => "ExitSE"      // Umar Hills
+    "AR1300" => "ExitSE"      // d'Arnise Keep
+    "AR1304" => "ExitSE"      // d'Arnise Keep
+    "AR2000" => "ExitSW"      // Trademeet
+    "AR1200" => "ExitW"       // Windspear Hills
+    "AR2500" => "CDExit"       // Camp
+  END
+
+// call the sc#addWmpAre function
+  // returns the worldmap entry number for the new area
+  LAUNCH_ACTION_FUNCTION sc#addWmpAre RET areNum = areNum END
+
+  // remove if not desired
+  PRINT @92 /* ARES01 patched. New area number is: %areNum% */
+  
+BEGIN @93 /* Add Eilistraee's Clearing to BP-BGT-Worldmap */
+SUBCOMPONENT @88 /* Worldmap addition */
+REQUIRE_COMPONENT ~Eilistraee/Setup-eilistraee.tp2~ ~0~ @89 /* Main component not installed */
+ACTION_IF FILE_EXISTS ~Worldmap/map_mods_areas.tbl~ THEN BEGIN
+  COPY ~Worldmap/map_mods_areas.tbl~  ~Worldmap~
+   APPEND_FILE ~Eilistraee/Worldmap/areas.tbl~
+  COPY ~Worldmap/map_mods_links.tbl~  ~Worldmap~
+   APPEND_FILE ~Eilistraee/Worldmap/links.tbl~
+  COPY - ~Eilistraee/Worldmap/worldmap.tra~  ~tmp_worldmap.tra~
+  COPY ~Worldmap/map_mods_trans.tra~  ~Worldmap~
+   APPEND_FILE ~tmp_worldmap.tra~
+END
+ELSE BEGIN
+  MKDIR ~Worldmap~
+  COPY ~Eilistraee/Worldmap/areas.tbl~ ~Worldmap/map_mods_areas.tbl~
+  COPY ~Eilistraee/Worldmap/links.tbl~ ~Worldmap/map_mods_links.tbl~
+  COPY ~Eilistraee/Worldmap/worldmap.tra~ ~Worldmap/map_mods_trans.tra~
+  END
+
+
+BEGIN @94 /* Do not add Eilistraee's Clearing to the Worldmap */
+SUBCOMPONENT @88 /* Worldmap addition */
+REQUIRE_COMPONENT ~Eilistraee/Setup-eilistraee.tp2~ ~0~ @89 /* Main component not installed */
+
+COPY ~Eilistraee/NoExit~ ~override/~
+COMPILE ~Eilistraee/DIALOGUES/ESxTake.d~
+EXTEND_TOP   ~AR2500.bcs~ ~Eilistraee/SCRIPTS/AR2500.baf~
+
+COPY ~Eilistraee/CREATURES/ESxTake.cre~ ~override/ESxTake.cre~
+SAY NAME1 @34 /* Drow */
+SAY NAME2 @34 /* Drow */
+

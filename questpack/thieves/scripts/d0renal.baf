@@ -1,0 +1,54 @@
+IF
+  GlobalGT("D0Maevar2","GLOBAL",33)
+  Global("D0CreateKey","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("D0CreateKey","LOCALS",1)
+    GiveItemCreate("misc4s",Myself,0,0,0)
+    DestroyItem("misc4t")
+    Continue()
+END
+
+IF
+  GlobalGT("chapter","GLOBAL",%bg2_chapter_5%)
+  HasItem("misc4t",Myself)
+THEN
+  RESPONSE #100
+    DestroyItem("misc4t")
+    Continue()
+END
+
+IF
+  GlobalGT("RenalJob","GLOBAL",3)
+  !HasItem("sw1h10",Myself)
+  !HasItem("sw1h09",Myself)
+  Global("NewSword","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NewSword","LOCALS",1)
+    CreateItem("sw1h09",0,0,0)
+    FillSlot(SLOT_WEAPON0)
+    Continue()
+END
+
+IF
+  GlobalGT("RenalJob","GLOBAL",3)
+  HasItem("sw1h10",Myself)
+  !HasItem("sw1h09",Myself)
+  Global("NewSword","LOCALS",0)
+THEN
+  RESPONSE #100
+    SetGlobal("NewSword","LOCALS",1)
+    TakeItemReplace("sw1h09","sw1h10",Myself)
+    EquipItem("sw1h09")
+    Continue()
+END
+
+IF
+  GlobalGT("RenalJob","GLOBAL",3)
+  HasItem("sw1h10",Myself)
+THEN
+  RESPONSE #100
+    DestroyItem("sw1h10")
+    Continue()
+END

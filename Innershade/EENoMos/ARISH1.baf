@@ -1,0 +1,240 @@
+/////////////////////TEXT SCREEN
+
+IF
+Global("ISHxTEXTSCREEN","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("ISHxTEXTSCREEN","GLOBAL",1)
+Continue()
+END
+
+/////////////////////CREATION
+
+IF
+Global("CreateAllBeings","ARISH1",0)
+THEN
+RESPONSE #100
+SetGlobal("CreateAllBeings","ARISH1",1)
+CreateCreature("9xBard",[507.523],3)
+CreateCreature("9xCC",[879.614],3)
+CreateCreature("9xStoryT",[1775.1032],5)
+CreateCreature("9xFood",[2183.930],7)
+CreateCreature("9xWC",[1898.1438],3)
+CreateCreature("9xComm1",[856.1366],3)
+CreateCreature("9xComm2",[555.405],3)
+CreateCreature("9xComm3",[874.830],3)
+CreateCreature("9xComm4",[1939.169],3)
+CreateCreature("9xComm5",[2123.1113],3)
+CreateCreature("9xComm6",[1500.1160],3)
+CreateCreature("9xKat",[2227.104],3)
+CreateCreature("9xDog",[659.1545],3)
+CreateCreature("SQUIRL",[444.1500],3)
+CreateCreature("MOOSE",[2335.322],3)
+CreateCreature("RABBIT",[980.974],3)
+CreateCreature("SQUIRL",[1710.785],3)
+END
+
+IF
+Global("ElhansFriend","ARISH1",0)
+GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_4%)
+THEN
+RESPONSE #100
+SetGlobal("ElhansFriend","ARISH1",1)
+CreateCreature("9xElF",[928.256],3)
+END
+
+IF
+Global("HealerE","ARISH1",0)
+GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_2%)
+THEN
+RESPONSE #100
+SetGlobal("HealerE","ARISH1",1)
+CreateCreature("9xHeal",[1905.505],6)
+END
+
+IF
+Global("ISHxMain","GLOBAL",8)
+Global("DreamCame","ARISH1",0)
+THEN
+RESPONSE #100
+SetGlobal("DreamCame","ARISH1",1)
+CreateCreature("9xE6",[1374.229],6)
+END
+
+IF
+Global("ISHxMain","GLOBAL",9)
+Dead("9xE6")
+Global("DreamCame","ARISH1",1)
+THEN
+RESPONSE #100
+SetGlobal("DreamCame","ARISH1",2)
+CreateCreature("9xE7",[1374.229],6)
+END
+
+IF
+GlobalGT("ISHxMain","GLOBAL",10)
+Global("P2Came","ARISH1",0)
+THEN
+RESPONSE #100
+SetGlobal("P2Came","ARISH1",1)
+CreateCreature("9xP2",[1374.259],6)
+ActionOverride("9xP2",StartDialogueNoSet(Player1))
+END
+
+IF
+Global("ISHGenie","GLOBAL",7)
+THEN
+RESPONSE #100
+SetGlobal("ISHGenie","GLOBAL",8)
+CreateCreature("9xOLady2",[2227.104],3)
+END
+
+IF
+!Exists("9xStoryT")
+Global("CreateAllBeings","ARISH1",1)
+THEN
+RESPONSE #100
+CreateCreature("9xStoryT",[1775.1032],5)
+END
+
+
+
+
+/////////////MAIN
+
+IF
+Global("ISHxGift","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("ISHxGift","GLOBAL",4)
+GiveItemCreate("ISHP1",Player1,0,0,0)
+GiveGoldForce(5000)
+END
+
+IF
+Global("ISHxGift","GLOBAL",2)
+THEN
+RESPONSE #100
+SetGlobal("ISHxGift","GLOBAL",4)
+GiveItemCreate("ISHP2",Player1,0,0,0)
+GiveGoldForce(5000)
+END
+
+IF
+Global("ISHxGift","GLOBAL",3)
+THEN
+RESPONSE #100
+SetGlobal("ISHxGift","GLOBAL",4)
+ReputationInc(2)
+GiveGoldForce(5000)
+END
+
+IF
+Global("ISHxGift","GLOBAL",4)
+THEN
+RESPONSE #100
+SetGlobal("ISHxGift","GLOBAL",5)
+EraseJournalEntry(@105)
+EraseJournalEntry(@115)
+EraseJournalEntry(@116)
+EraseJournalEntry(@117)
+EraseJournalEntry(@129)
+AddJournalEntry(@106,QUEST_DONE)
+AddXPObject(Player1,18000)
+AddXPObject(Player2,18000)
+AddXPObject(Player3,18000)
+AddXPObject(Player4,18000)
+AddXPObject(Player5,18000)
+AddXPObject(Player6,18000)
+END
+
+///////////////AXE FOR A WOODCHOPPER
+
+IF
+Global("ISHxWCAxe","GLOBAL",1)
+Global("ISHxWCAxeJ","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("ISHxWCAxeJ","GLOBAL",1)
+AddJournalEntry(@107,QUEST)
+END
+
+IF
+GlobalGT("ISHxWCAxe","GLOBAL",1)
+Global("ISHxWCAxeJ","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("ISHxWCAxeJ","GLOBAL",2)
+EraseJournalEntry(@107)
+AddJournalEntry(@108,QUEST_DONE)
+AddexperienceParty(5000)
+RealSetGlobalTimer("ISHValyTime","GLOBAL",6)
+END
+
+////////////////Eva vs. Strongheart
+
+IF
+Global("ISHxEvaWC","GLOBAL",3)
+Global("ISHxEvaWCJ","GLOBAL",2)
+THEN
+RESPONSE #100
+SetGlobal("ISHxEvaWCJ","GLOBAL",3)
+EraseJournalEntry(@109)
+AddJournalEntry(@110,QUEST)
+END
+
+////////////////COIN CHILD
+
+IF
+Global("ISHxCC","GLOBAL",1)
+Global("ISHxCCJ","GLOBAL",0)
+THEN 
+RESPONSE #100
+SetGlobal("ISHxCCJ","GLOBAL",1)
+AddJournalEntry(@111,QUEST)
+END
+
+IF
+Global("ISHxCC","GLOBAL",4)
+GlobalGT("ISHxCCJ","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("ISHxCCJ","GLOBAL",4)
+EraseJournalEntry(@111)
+EraseJournalEntry(@127)
+EraseJournalEntry(@125)
+AddJournalEntry(@112,QUEST_DONE)
+AddexperienceParty(12000)
+END
+
+////////////////GIVE SPELL
+
+IF
+Global("ISHxMain","GLOBAL",20)
+THEN
+RESPONSE #100
+SetGlobal("ISHxMain","GLOBAL",40)
+ActionOverride(Player1,AddSpecialAbility("ISH"))
+END
+
+////////////////healer
+
+IF
+Global("ISHHealerQuest","GLOBAL",1)
+Global("ISHHealerQuestJ","GLOBAL",0)
+THEN
+RESPONSE #100
+SetGlobal("ISHHealerQuestJ","GLOBAL",1)
+AddJournalEntry(@113,QUEST)
+END
+
+IF
+Global("ISHHealerQuest","GLOBAL",2)
+Global("ISHHealerQuestJ","GLOBAL",1)
+THEN
+RESPONSE #100
+SetGlobal("ISHHealerQuestJ","GLOBAL",2)
+EraseJournalEntry(@113)
+AddJournalEntry(@114,QUEST_DONE)
+AddexperienceParty(7000)
+END

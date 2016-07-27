@@ -1,0 +1,61 @@
+BACKUP ~stratagems_external/backup/wheels~
+AUTHOR ~For help troubleshooting installation problems, go to the Wheels of Prophecy forum at forums.gibberlings3.net.~
+VERSION ~v4~
+README ~wheels/readme-wheels.html~
+AUTO_EVAL_STRINGS
+AUTO_TRA ~wheels/tra/%s~
+
+
+
+ALWAYS
+  ACTION_IF GAME_IS ~eet~ BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+
+  // Convert charsets to utf-8 so that non-English EE games won't crash
+  ACTION_IF NOT VARIABLE_IS_SET cd_always THEN BEGIN
+    OUTER_SET cd_always = 1
+    ACTION_DEFINE_ARRAY cdnoconvert BEGIN setup END // List of tra files that contain ONLY strings for the WeiDU installer and NOT game content
+    LAF HANDLE_CHARSETS INT_VAR infer_charset = 1 STR_VAR tra_path = ~wheels/tra~ noconvert_array = cdnoconvert END
+  END
+
+   OUTER_SET debug_variable=0
+   OUTER_SPRINT scsroot wheels
+   OUTER_SET read_resources=1
+   OUTER_SPRINT workspace ~stratagems_external/workspace~
+   INCLUDE ~%scsroot%/sfo/install_sfo.tpa~
+   APPEND state.ids "0x00000029 STATE_IMMOBILE" UNLESS " +STATE_IMMOBILE"
+   APPEND state.ids "0x8010202D STATE_DISABLED" UNLESS " +STATE_DISABLED"
+END
+
+////////////////////////////////////////////////////////////////////
+////	Language commands
+//////////////////////////////////////////////////////////////////////
+
+LANGUAGE 
+"English" 
+"english"
+ ~wheels/tra/english/setup.tra~
+
+LANGUAGE 
+"Francais (Mornagest)"
+"french"
+ ~wheels/tra/english/setup.tra~
+ ~wheels/tra/french/setup.tra~
+
+ ///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+BEGIN @1 // ~The Wheels of Prophecy~
+///////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+REQUIRE_PREDICATE GAME_IS "tob bgt bg2ee eet" @2
+REQUIRE_PREDICATE !FILE_EXISTS "override/dw#setup.mrk" @3
+OUTER_SPRINT component_loc ""
+LAF run STR_VAR file="wheels" location=lib END

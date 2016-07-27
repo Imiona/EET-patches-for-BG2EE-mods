@@ -1,0 +1,10 @@
+IF
+PartyHasItem("WQxBOOK")
+Global("WhiteQueenMAP","GLOBAL",0)
+GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_1%)
+THEN
+RESPONSE #100
+SetGlobal("WhiteQueenMAP","GLOBAL",1)
+RevealAreaOnMap("WQ0001")
+Continue()
+END

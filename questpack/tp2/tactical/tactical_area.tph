@@ -1,0 +1,114 @@
+//////////////////////////////////////////////////////////////////////
+/////////////////////// IRENICUS' DUNGEON ////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Lightning machine spawns more mephits, mephit AI overhauled
+// - Ogre mage has minor spellcasting ability
+// - Goblin AI overhauled
+
+/* COMPILE ~questpack/areas/irenicus dungeon/compile~
+
+COPY_EXISTING ~IOGREMAG.CRE~ ~override~
+WRITE_ASCII 0x260 "IOGREMAG" #8
+
+COPY_EXISTING ~ICGOB01.CRE~ ~override~
+              ~ICGOB02.CRE~ ~override~
+              ~ICGOB03.CRE~ ~override~
+              ~ICGOB04.CRE~ ~override~
+WRITE_ASCII 0x248 "" #8
+WRITE_ASCII 0x250 "" #8
+WRITE_ASCII 0x258 "" #8
+WRITE_ASCII 0x260 "" #8
+WRITE_ASCII 0x268 "D0IGOB1" #8 */
+
+
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// BEHOLDER LAIR ////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Add additional beholders and move Elder Orb depending on difficulty.
+
+// Beholders
+COPY_EXISTING ~udelder.cre~ ~override~
+  SAY NAME1 #2183 // Elder Orb
+  SAY NAME2 #2183 // Elder Orb
+BUT_ONLY
+
+COPY_EXISTING ~beheld01.cre~ ~override/udelder2.cre~
+  SAY NAME1 #2183 // Elder Orb
+  SAY NAME2 #2183 // Elder Orb
+  WRITE_ASCII 0x280 "udelder2" #32
+  ADD_CRE_ITEM ~misca8~ #0 #0 #0 ~NONE~ ~CLOAK~
+
+COPY_EXISTING ~ar2101.are~ ~override~
+  REPLACE_TEXTUALLY "BEHELD01" "UDELDER2" (8)
+BUT_ONLY
+
+EXTEND_TOP ~ar2101.bcs~ ~questpack/areas/ar2101.baf~ EVALUATE_BUFFER
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// TWISTED RUNE /////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Dispel Magic trap upon entry.
+// - Vaxall is granted the abilities of an Elder Orb.
+// - Added equipment to Revan and Layenne.
+
+// Twisted Rune
+EXTEND_TOP ~ar1008.bcs~ ~questpack/areas/ar1008.baf~ EVALUATE_BUFFER
+
+COPY_EXISTING ~HLVAXAL.CRE~ ~override~
+  WRITE_ASCII 0x260 "BEHELD01" #8
+BUT_ONLY
+
+COPY_EXISTING ~hlrevan.cre~ ~override~
+  WRITE_LONG 0x14 12000
+  WRITE_LONG 0x1c 13
+  WRITE_ASCII 0x260 "USEITEM" #8
+  WRITE_ASCII 0x268 "WTARSGT" #8
+  WRITE_BYTE 0x27b 35
+  ADD_CRE_ITEM ~helm01~ #0 #0 #0 ~NONE~ ~HELMET~
+  ADD_CRE_ITEM ~xbow07~ #0 #0 #0 ~NONE~ ~WEAPON1~
+  ADD_CRE_ITEM ~sw2h11~ #0 #0 #0 ~NONE~ ~WEAPON1~ EQUIP TWOHANDED
+  ADD_CRE_ITEM ~plat04~ #0 #0 #0 ~NONE~ ~ARMOR~
+  ADD_CRE_ITEM ~bolt03~ #31 #0 #0 ~NONE~ ~QUIVER1~
+  ADD_CRE_ITEM ~bolt04~ #24 #0 #0 ~NONE~ ~QUIVER2~
+  ADD_CRE_ITEM ~potn14~ #1 #0 #0 ~NONE~ ~QITEM1~
+  ADD_CRE_ITEM ~potn52~ #3 #0 #0 ~NONE~ ~QITEM2~
+BUT_ONLY
+
+COPY_EXISTING ~hllayen.cre~ ~override~
+  WRITE_LONG 0x14 13000
+  WRITE_SHORT 0x24 52
+  WRITE_SHORT 0x26 52
+  ADD_CRE_ITEM ~clck17~ #0 #0 #0 ~NONE~ ~ARMOR~
+  ADD_CRE_ITEM ~scrl8r~ #1 #0 #0 ~NONE~ ~QITEM1~
+  ADD_CRE_ITEM ~scrl9g~ #1 #0 #0 ~NONE~ ~QITEM2~
+BUT_ONLY
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// GUARDED COMPOUND /////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Altered enemies spawned by first level trap.
+
+COPY ~questpack/areas/d0platwi.itm~ ~override~
+
+COPY ~questpack/areas/d0wizcon.cre~ ~override~
+  SAY NAME1 @318 // Wizard Construct
+  SAY NAME2 @318 // Wizard Construct
+
+COPY ~questpack/encounters/ding0/d0batho~ ~override~
+
+COMPILE EVALUATE_BUFFER ~questpack/areas/kettaatk.baf~
+
+//////////////////////////////////////////////////////////////////////
+/////////////////////// NORTH FOREST /////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// Changes:
+// - Added new random spawns.
+
+EXTEND_TOP ~ar1800.bcs~ ~questpack/areas/ar1800_top.baf~ EVALUATE_BUFFER
+
+EXTEND_BOTTOM ~ar1800.bcs~ ~questpack/areas/ar1800.baf~ EVALUATE_BUFFER

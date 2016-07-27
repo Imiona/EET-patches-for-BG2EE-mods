@@ -1,0 +1,136 @@
+COPY ~questpack/potion/d0qppotn.cre~ ~override~
+  SAY NAME1 @134
+  SAY NAME2 @134
+
+COPY ~questpack/potion/d0qppot1.spl~ ~override~
+     ~questpack/potion/d0qppot2.spl~ ~override~
+  SAY NAME1 #-1
+  SAY NAME2 #-1
+  SAY IDENTIFIED_DESC #-1
+
+COPY_EXISTING d0qppot1.spl override
+  LPF ADD_SPELL_EFFECT
+    INT_VAR
+      opcode = 12
+      target = 2
+      timing = 1
+      parameter1 = 10
+      parameter2 = 0x400003
+  END
+
+COPY ~questpack/potion/potn33.itm~ ~override~
+
+COPY ~questpack/potion/d0qppot1.itm~ ~override~
+  SAY NAME1 @149
+  SAY NAME2 @149
+  SAY UNIDENTIFIED_DESC @150
+  SAY IDENTIFIED_DESC @150
+
+COPY ~questpack/potion/d0qppot2.itm~ ~override~
+  SAY NAME1 @166
+  SAY NAME2 @166
+  SAY UNIDENTIFIED_DESC @167
+  SAY IDENTIFIED_DESC @167
+
+COPY_EXISTING ~clmom.cre~ ~override/d0qpmom.cre~
+  SAY NAME1 @178
+  SAY NAME2 @178
+  WRITE_ASCII 0x250 "D0QPMOM" #8
+  WRITE_BYTE 0x27b 33
+  WRITE_ASCII 0x280 "D0QPMOM" #32
+  WRITE_ASCII 0x2cc "D0QPMOM" #8
+
+COPY_EXISTING ~clkid.cre~ ~override/d0qpjan.cre~
+  SAY NAME1 @179
+  SAY NAME2 @179
+  WRITE_ASCII 0x258 "D0QPJAN" #8
+  WRITE_BYTE 0x27b 33
+  WRITE_ASCII 0x280 "D0QPJAN" #32
+  WRITE_ASCII 0x2cc "D0QPJAN" #8
+
+COPY ~questpack/potion/potn38.itm~ ~override~
+  SAY IDENTIFIED_DESC @180
+
+EXTEND_BOTTOM ~ar0701.bcs~ ~questpack/potion/ar0701.baf~ EVALUATE_BUFFER
+
+EXTEND_TOP ~ar0500.bcs~ ~questpack/potion/ar0500.baf~ EVALUATE_BUFFER
+
+COMPILE EVALUATE_BUFFER ~questpack/potion/d0qppotn.baf~
+
+COPY_EXISTING ~murcrag.sto~ ~override~
+  ADD_STORE_ITEM "potn38" AFTER "potn29" #1 #0 #0 ~IDENTIFIED~ #4
+
+COPY_EXISTING ~ribald3.sto~ ~override~
+  ADD_STORE_ITEM "potn33" AFTER "potn42" #1 #0 #0 ~IDENTIFIED~ #2
+
+COPY_EXISTING ~uddrow24.sto~ ~override~
+  ADD_STORE_ITEM "potn38" AFTER "potn35" #1 #0 #0 ~IDENTIFIED~ #3
+
+COPY_EXISTING ~DCOWL1.cre~ ~override~
+              ~RUMAR01.cre~ ~override~
+  ADD_CRE_ITEM ~potn33~ #1 #0 #0 ~NONE~ ~QITEM1 QITEM2 QITEM3 INV1 INV2 INV3 INV4 INV5 INV6 INV7 INV8 INV9 INV10 INV11 INV12 INV13 INV14 INV15 INV16~
+
+COPY_EXISTING ~FIRMAG01.cre~ ~override~
+  ADD_CRE_ITEM ~potn38~ #1 #0 #0 ~NONE~ ~QITEM1 QITEM2 QITEM3 INV1 INV2 INV3 INV4 INV5 INV6 INV7 INV8 INV9 INV10 INV11 INV12 INV13 INV14 INV15 INV16~
+
+// Blindness protects from gaze attacks... (Guess what, I stole the code from Cam! Ha ha ha!) And then Wisp came along and wrote brand new old code
+COPY_EXISTING ~spwi106.spl~ ~override~
+              ~spwi815.spl~ ~override~
+              ~spwi958.spl~ ~override~
+              ~spwm178.spl~ ~override~
+              ~spin929.spl~ ~override~
+  PATCH_IF (SOURCE_SIZE > 0x71) THEN BEGIN // protects against invalid files
+    READ_LONG  0x64 "abil_off"
+    READ_SHORT 0x68 "abil_num"
+    READ_LONG  0x6a "fx_off"
+    SET "delta" = 0
+    FOR (index = 0; index < abil_num; index = index + 1) BEGIN
+      READ_SHORT ("%abil_off%" + 0x1e + (0x28 * "%index%")) "abil_fx_num"
+      READ_SHORT ("%abil_off%" + 0x20 + (0x28 * "%index%")) "abil_fx_idx"
+      SET "abil_fx_idx" = ("%abil_fx_idx%" + "%delta%")
+      WRITE_SHORT ("%abil_off%" + 0x20 + (0x28 * "%index%")) "%abil_fx_idx%"
+      FOR (index2 = 0; index2 < abil_fx_num; index2 = index2 + 1) BEGIN
+        READ_SHORT   ("%fx_off%" +        (0x30 * ("%abil_fx_idx%" + "%index2%"))) "opcode"
+        READ_LONG    ("%fx_off%" + 0x0e + (0x30 * ("%abil_fx_idx%" + "%index2%"))) "duration"
+        PATCH_IF ("%opcode%" = 74) BEGIN // blindness
+          READ_ASCII ("%fx_off%" +        (0x30 * ("%abil_fx_idx%" + "%index2%"))) "clone" (0x30)
+          SET "index2" = "%abil_fx_num%" // kills loop
+        END
+      END
+      PATCH_FOR_EACH resource IN
+                     INSANITY
+                     BEGUILE
+                     D0QPMGAZ
+                     SPIN784
+                     SPIN996
+                     SPIN839
+                     SPIN883
+      BEGIN
+        INSERT_BYTES   ("%fx_off%" +        (0x30 * "%abil_fx_idx%")) 0x30      // insert bytes for new effect
+          WRITE_ASCIIE ("%fx_off%" +        (0x30 * "%abil_fx_idx%")) "%clone%" // clones blindness effect
+          WRITE_SHORT  ("%fx_off%" +        (0x30 * "%abil_fx_idx%")) 206       // protection from spell
+          WRITE_LONG   ("%fx_off%" + 0x04 + (0x30 * "%abil_fx_idx%")) 0         // unknown
+          WRITE_LONG   ("%fx_off%" + 0x08 + (0x30 * "%abil_fx_idx%")) 0         // unknown
+          WRITE_ASCIIE ("%fx_off%" + 0x14 + (0x30 * "%abil_fx_idx%")) "%resource%" #8 // gaze attack SPL
+        SET "delta" = ("%delta%" + 1)
+        SET "abil_fx_num" = ("%abil_fx_num%" + 1)
+      END
+      INSERT_BYTES   ("%fx_off%" +        (0x30 * "%abil_fx_idx%")) 0x30      // insert bytes for new effect
+        WRITE_ASCIIE ("%fx_off%" +        (0x30 * "%abil_fx_idx%")) "%clone%" // clones blindness effect
+        WRITE_SHORT  ("%fx_off%" +        (0x30 * "%abil_fx_idx%")) 83        // immunity to projectile
+        WRITE_LONG   ("%fx_off%" + 0x04 + (0x30 * "%abil_fx_idx%")) 0
+        WRITE_LONG   ("%fx_off%" + 0x08 + (0x30 * "%abil_fx_idx%")) 64        // gaze
+      SET "delta" = ("%delta%" + 1)
+      SET "abil_fx_num" = ("%abil_fx_num%" + 1)
+      WRITE_SHORT ("%abil_off%" + 0x1e + (0x28 * "%index%")) "%abil_fx_num%"
+    END
+  END
+BUT_ONLY
+
+COMPILE EVALUATE_BUFFER ~questpack/potion/potiontra.d~ USING
+        ~%tra_path%/english/potion.tra~
+        ~%tra_path%/%LANGUAGE%/potion.tra~
+
+ADD_JOURNAL @256 @257 @258 @260 @261 @262 @263 @264 @265 USING
+            ~%tra_path%/english/potion.tra~
+            ~%tra_path%/%LANGUAGE%/potion.tra~

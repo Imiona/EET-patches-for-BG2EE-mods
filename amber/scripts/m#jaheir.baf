@@ -1,0 +1,42 @@
+IF
+	Global("M#AmberKidnap","GLOBAL",4)
+	CombatCounter(0)
+	!StateCheck(Player1,STATE_PANIC)
+	!StateCheck(Player1,STATE_BERSERK)
+	!StateCheck(Player1,STATE_CHARMED)
+	!StateCheck(Player1,STATE_CONFUSED)
+	See(Player1)
+	Global("M#JaheiraKidnapResponse","GLOBAL",1)
+THEN
+	RESPONSE #100
+	Dialog(Player1)	
+END
+
+IF
+	RealGlobalTimerExpired("M#AmberJaheiraRomanceConflictTime","GLOBAL")
+	Global("M#AmberJaheiraRomanceConflict","GLOBAL",1)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!AreaType(DUNGEON)
+	InParty("m#amber")
+	InParty("Jaheira")
+	Global("M#AmberRomanceActive","GLOBAL",1)
+	Global("M#AmberMatch","GLOBAL",1)
+	!Global("M#AmberMad","GLOBAL",1)
+	Global("JaheiraRomanceActive","GLOBAL",1)
+THEN
+	RESPONSE #100
+	SetGlobal("M#AmberJaheiraRomanceConflict","GLOBAL",2)
+END
+
+IF
+	Global("M#AmberJaheiraRomanceConflict","GLOBAL",2)
+	!StateCheck("m#amber",STATE_PANIC)
+	!StateCheck("m#amber",STATE_BERSERK)
+	!StateCheck("m#amber",STATE_CHARMED)
+	!StateCheck("m#amber",STATE_CONFUSED)
+	CombatCounter(0)
+	See("m#amber")
+THEN
+	RESPONSE #100
+	Dialog("m#amber")
+END

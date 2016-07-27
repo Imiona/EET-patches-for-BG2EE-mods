@@ -1,0 +1,158 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ANIMATIONS
+
+// 57568 = IC_CORNUGONSKI - Cornugon
+// 57585 = IC_GLAB - Glabrezu
+// 32558 = RAVER - Pit Fiend
+// 4352 = TANARI - Balor, Nabassu
+// 57488 = IC_MERILITH - Marilith
+// 57872 = D0_LEMURE - Lemure
+// 60448 = D0_ABISHAI - White Abishai
+// 8960 = DEATH_KNIGHT - Cambion
+// 8192 = SIRINE - Succubus
+
+COPY ~d0quest/carceri/lemure~ ~override~
+APPEND ~animate.ids~ ~0xE210 D0_LEMURE~ UNLESS ~0xE210 D0_LEMURE~
+// IC_BEETLE_FIRE MBFI 20 No No
+// Used by CtB for Unarmoured Bugbear
+// To remain compatible with CtB, we change anything currently using the Unarmoured Bugbear animation to use the Armoured Bugbear animation.
+ACTION_IF (FILE_EXISTS ~override/CBCO8SCR.2DA~) OR (FILE_EXISTS_IN_GAME ~CBCO8SCR.2DA~) THEN BEGIN
+  COPY_EXISTING_REGEXP GLOB ~.*\.cre~ ~override~
+    READ_SHORT 0x28 "currentanim"
+    PATCH_IF ("%currentanim%" = 57872) BEGIN
+      WRITE_SHORT 0x28 57904
+    END
+  BUT_ONLY_IF_IT_CHANGES
+END
+
+COPY ~d0quest/carceri/abishai~ ~override~
+APPEND ~animate.ids~ ~0xEC20 D0_ABISHAI~ UNLESS ~0xEC20 D0_ABISHAI~
+COPY_EXISTING ~abisred1.cre~ ~override~
+              ~demabi01.cre~ ~override~
+WRITE_SHORT 0x28 0xEC00
+// IC_WIGHT3 MWI3 24 No Yes
+// Used by NeJ for Red Wight
+// To remain compatible with NeJ, we change anything currently using the Red Wight animation to use the Green Wight animation.
+ACTION_IF (FILE_EXISTS ~override/Bag02NeJ.sto~) OR (FILE_EXISTS_IN_GAME ~Bag02NeJ.sto~) THEN BEGIN
+  COPY_EXISTING_REGEXP GLOB ~.*\.cre~ ~override~
+    READ_SHORT 0x28 "currentanim"
+    PATCH_IF ("%currentanim%" = 60448) BEGIN
+      WRITE_SHORT 0x28 60432
+    END
+  BUT_ONLY_IF_IT_CHANGES
+END
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MISCELLANEOUS BEHAVIOUR
+
+// Summons AI
+COMPILE EVALUATE_BUFFER ~d0quest/carceri/summons~
+
+// Demogorgon may only charm Tanar'ri
+COPY_EXISTING ~demogor2.bcs~ ~override~
+  DECOMPILE_BCS_TO_BAF
+    REPLACE_TEXTUALLY %Detect(\[GOODCUTOFF\.0\.DEMONIC\.TANARI\])% %OR(3)
+    Detect([GOODCUTOFF.0.DEMONIC.0.0.0.CHAOTIC_EVIL])
+    Detect([GOODCUTOFF.0.0.TANARI.0.0.CHAOTIC_EVIL])
+    Detect([GOODCUTOFF.0.0.0.0.SUMMONED_DEMON.CHAOTIC_EVIL])%
+    REPLACE_TEXTUALLY %ReallyForceSpellRES("demochm",\[GOODCUTOFF\.0\.DEMONIC\.TANARI\])% %ReallyForceSpellRES("demochm",LastSeenBy(Myself))%
+  COMPILE_BAF_TO_BCS
+BUT_ONLY_IF_IT_CHANGES
+
+// Yochlols may change form
+EXTEND_TOP ~demyoch.bcs~ ~d0quest/carceri/demyoch.baf~ EVALUATE_BUFFER
+EXTEND_TOP ~ar3012.bcs~ ~d0quest/carceri/et_3012.baf~ EVALUATE_BUFFER
+COPY_EXISTING ~yochlo01.cre~ ~override~
+  WRITE_SHORT 0x28 30978 // Yochlol = SLIME_MUSTARD
+  READ_LONG 0x2c4 "effects_offset"
+  READ_LONG 0x2c8 "#effects"
+  READ_LONG 0x2bc "items_offset"
+  READ_LONG 0x2b8 "slots_offset"
+  INSERT_BYTES "%effects_offset%" 264
+  WRITE_LONG 0x2c8 ("%#effects%" + 1)
+  WRITE_LONG 0x2bc ("%items_offset%" + 264)
+  WRITE_LONG 0x2b8 ("%slots_offset%" + 264)
+  WRITE_LONG ("%effects_offset%" + 8) 126
+  WRITE_LONG ("%effects_offset%" + 12) 1
+  WRITE_LONG ("%effects_offset%" + 20) 6
+  WRITE_LONG ("%effects_offset%" + 24) 1
+  WRITE_LONG ("%effects_offset%" + 28) 9
+  WRITE_SHORT ("%effects_offset%" + 36) 100
+
+// New Demon Creatires
+COPY ~d0quest/carceri/d0lemure.cre~ ~override~ // Lemures
+  SAY NAME1 @206
+  SAY NAME2 @206
+  READ_LONG 0x2c4 "effects_offset"
+  READ_LONG 0x2c8 "#effects"
+  READ_LONG 0x2bc "items_offset"
+  READ_LONG 0x2b8 "slots_offset"
+  INSERT_BYTES "%effects_offset%" 264
+  WRITE_LONG 0x2c8 ("%#effects%" + 1)
+  WRITE_LONG 0x2bc ("%items_offset%" + 264)
+  WRITE_LONG 0x2b8 ("%slots_offset%" + 264)
+  WRITE_LONG ("%effects_offset%" + 8) 126
+  WRITE_LONG ("%effects_offset%" + 12) 1
+  WRITE_LONG ("%effects_offset%" + 20) 3
+  WRITE_LONG ("%effects_offset%" + 24) 1
+  WRITE_LONG ("%effects_offset%" + 28) 9
+  WRITE_SHORT ("%effects_offset%" + 36) 100
+COMPILE EVALUATE_BUFFER ~d0quest/carceri/d0lemure.baf~
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// QUESTS
+
+// Dialog
+COMPILE EVALUATE_BUFFER ~d0quest/carceri/dialog.d~
+        ~d0quest/carceri/dialog2.d~
+
+// Succubus
+EXTEND_TOP ~ar0400.bcs~ ~d0quest/carceri/et_0400.baf~ EVALUATE_BUFFER
+COPY ~d0quest/carceri/d0sucvic.cre~ ~override~
+COPY_EXISTING ~demsuc01.cre~ ~override/d0sucsuc.cre~
+  WRITE_SHORT 0x28 50704
+  WRITE_ASCII 0x280 "d0sucsuc"
+  WRITE_ASCII 0x2cc "d0sucsuc"
+
+// Power Core can take Demon or Devil hearts
+EXTEND_TOP ~POWEROBS.BCS~ ~d0quest/carceri/et_pcore.baf~ EVALUATE_BUFFER
+COPY_EXISTING ~misc6m.itm~ ~override/d0misc6m.itm~
+  SAY NAME1 @207
+  SAY NAME2 @207
+  SAY UNIDENTIFIED_DESC @208
+  SAY IDENTIFIED_DESC @208
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+COPY_EXISTING ~dempit01.cre~ ~override~
+WRITE_ASCII 0x248 "D0TPIT01"
+COPY_EXISTING ~telpit1.cre~ ~override~
+              ~telpit2.cre~ ~override~
+WRITE_ASCII 0x248 "D0TPIT02"
+COMPILE EVALUATE_BUFFER ~d0quest/carceri/baatezu/d0tpit01.baf~
+        ~d0quest/carceri/baatezu/d0tpit02.baf~
+
+
+
+COPY_EXISTING ~ICSALFIR.CRE~ ~override~
+WRITE_ASCII 0x280 "ICSALFIR"
+
+
+
+EXTEND_TOP ~ar0414.bcs~ ~d0quest/carceri/ar0414.baf~ EVALUATE_BUFFER
+
+COPY ~d0quest/carceri/baatezu/d0qppitb.cre~ ~override~
+SAY NAME1 @210
+SAY NAME2 @210
+COMPILE EVALUATE_BUFFER ~d0quest/carceri/baatezu/d0qppitb.baf~
+
+COPY ~d0quest/carceri/tanari/d0quas01.cre~ ~override~
+COMPILE EVALUATE_BUFFER ~d0quest/carceri/tanari/d0quas01.baf~

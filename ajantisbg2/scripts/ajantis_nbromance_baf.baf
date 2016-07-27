@@ -1,0 +1,497 @@
+//New beginnings romance .baf
+
+/* core dialogues: along friendship path (gecoded) */
+
+
+
+/* leaf */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisRomanceActive","GLOBAL",1) 	
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	AreaType(OUTDOOR)
+	ReputationGT(Player1,11)
+	RealGlobalTimerExpired("C#AjantisFriendTalkT","GLOBAL")
+	GlobalGT("C#AjantisFriendTalk","GLOBAL",10)
+	Global("C#AjantisNPCLeafInHair","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisNPCLeafInHair","GLOBAL",1)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisNPCLeafInHair","GLOBAL",1)
+THEN
+	RESPONSE #100
+    RealSetGlobalTimer("C#AjantisFriendTalkT","GLOBAL",%C#AJROM_TIMER%)
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+/* your twenty */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisRomanceActive","GLOBAL",1) 	
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	AreaType(OUTDOOR)
+	ReputationGT(Player1,15)
+	RealGlobalTimerExpired("C#AjantisFriendTalkT","GLOBAL")
+	GlobalGT("C#AjantisFriendTalk","GLOBAL",12)
+	Global("C#AjantisNBTwenty","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisNBTwenty","GLOBAL",1)
+END
+
+/* dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisNBTwenty","GLOBAL",1)
+THEN
+	RESPONSE #100
+    RealSetGlobalTimer("C#AjantisFriendTalkT","GLOBAL",%C#AJROM_TIMER%)
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+
+/* (rep > 16) flirt cycle 1: activation */
+IF
+	InParty(Myself)
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisNewRomMatch","GLOBAL",1)
+  !Global("C#AjantisEngaged","GLOBAL",1)	
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	ReputationGT(Player1,15)
+	GlobalGT("C#AjantisFriendTalk","GLOBAL",10)
+	Global("C#AjantisNBFlirtCycle1","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisNBFlirtCycle1","GLOBAL",1)
+		RealSetGlobalTimer("C#AjantisNBFlirtTimer1","GLOBAL",2400)
+END
+
+/* (rep > 16) flirt cycle 1: dialogue activation */
+IF
+  InParty(Myself)
+  RealGlobalTimerExpired("C#AjantisNBFlirtTimer1","GLOBAL")
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisNewRomMatch","GLOBAL",1)
+  !Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisSchweigen","GLOBAL",0)
+  !See([ENEMY])
+	!Range([NEUTRAL],10)
+	ReputationGT(Player1,15)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  CombatCounter(0)
+  !AreaType(DUNGEON)
+    Global("C#AjantisNBFlirtCycle1","GLOBAL",1)
+THEN
+  RESPONSE #100
+    IncrementGlobal("C#AjantisNBFlirtCycle1","GLOBAL",1)
+END
+
+/* (rep > 16) flirt cycle 1: triggering */
+IF
+  InParty(Myself)
+  !Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  Global("C#AjantisNBFlirtCycle1","GLOBAL",2)
+THEN
+  RESPONSE #100
+    RealSetGlobalTimer("C#AjantisNBFlirtTimer1","GLOBAL",2400) //s
+		PlaySong(0)
+		PlaySound("C#AJROM")
+    StartDialogNoSet(Player1)
+END
+
+
+
+
+/* PC got transformed into Bhaal's avatar without her will (Bodhi's maze): dialogue activation of first change in C#Ajan.baf */
+
+/* After rest turning into the slayer-dialogue: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisRomanceActive","GLOBAL",1) 	
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	Global("DrowTalk","GLOBAL",5)
+	Global("C#AjanNBRSlayerChange2","GLOBAL",1)
+	ReputationGT(Player1,11)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjanNBRSlayerChange2","GLOBAL",2)
+END
+
+/* After rest turning into the slayer-dialogue: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjanNBRSlayerChange2","GLOBAL",2)
+THEN
+	RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+
+
+
+/* slayer change cycle: activation */
+IF
+  InParty(Myself)
+  RealGlobalTimerExpired("C#AjantisSlayerNBTimer","GLOBAL")
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisNewRomMatch","GLOBAL",1)
+  !Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	ReputationGT(Player1,11)
+  !See([ENEMY])
+	!Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  CombatCounter(0)
+  !AreaType(DUNGEON)
+    OR(3)
+    Global("C#AjantisSlayerNBLoveTalks","GLOBAL",1)
+    Global("C#AjantisSlayerNBLoveTalks","GLOBAL",3)
+    Global("C#AjantisSlayerNBLoveTalks","GLOBAL",5)
+THEN
+  RESPONSE #100
+    IncrementGlobal("C#AjantisSlayerNBLoveTalks","GLOBAL",1)
+END
+
+/* slayer change cycle: triggering */
+IF
+  InParty(Myself)
+  !Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  OR(3)
+    Global("C#AjantisSlayerNBLoveTalks","GLOBAL",2)
+    Global("C#AjantisSlayerNBLoveTalks","GLOBAL",4)
+    Global("C#AjantisSlayerNBLoveTalks","GLOBAL",6)
+THEN
+  RESPONSE #100
+    RealSetGlobalTimer("C#AjantisSlayerNBTimer","GLOBAL",600) //s
+		PlaySong(0)
+		PlaySound("C#AJROM")
+    StartDialogNoSet(Player1)
+END
+
+
+/* rep < 16: Ajantis "meckert": dialogue activation */
+IF
+  InParty(Myself)
+  RealGlobalTimerExpired("C#AjantisSlayerNBTimer","GLOBAL")
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisNewRomMatch","GLOBAL",1)
+  !Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	ReputationGT(Player1,11)
+	ReputationLT(Player1,16)
+  !See([ENEMY])
+	!Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  CombatCounter(0)
+  !AreaType(DUNGEON)
+	Global("C#AjantisNBRepWarning","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("C#AjantisNBRepWarning","GLOBAL",1)
+END
+
+/* rep < 16: Ajantis "meckert": dialogue triggering */
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+  Global("C#AjantisNBRepWarning","GLOBAL",1)
+THEN
+  RESPONSE #100
+    StartDialogNoSet(Player1)
+END
+
+
+
+
+//rep decreases again: romance breaks.
+
+
+/* rep < 12 : dialogue activation */
+IF
+	InParty(Myself) CombatCounter(0) !See([ENEMY])
+	InMyArea(Player1)
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	ReputationLT(Player1,12)
+	Global("C#AjantisRomanceActive","GLOBAL",1) 
+	!Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisNewRomMatch","GLOBAL",1)
+	Global("C#AjantisNBRomRepDown","GLOBAL",0)
+THEN
+  RESPONSE #100
+    SetGlobal("C#AjantisNBRomRepDown","GLOBAL",1)
+END
+
+/* rep < 12 romance breaks: dialogue triggering */
+IF
+InParty(Myself) CombatCounter(0) !See([ENEMY])
+InMyArea(Player1)
+!Range([NEUTRAL],10)
+!StateCheck(Player1,CD_STATE_NOTVALID)
+  Global("C#AjantisNBRomRepDown","GLOBAL",1)
+THEN
+  RESPONSE #100
+    StartDialogNoSet(Player1)
+END
+
+
+
+
+
+/* Nach dem Verlassen des Unterreichs: Der Bote erscheint */
+
+IF
+	InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisNewRomMatch","GLOBAL",1)
+  !Global("C#AjantisEngaged","GLOBAL",1)	
+	!Global("Chapter","GLOBAL",%bg2_chapter_2%)
+	!Global("Chapter","GLOBAL",%bg2_chapter_3%)
+	!Global("Chapter","GLOBAL",%bg2_chapter_4%)
+	!Global("Chapter","GLOBAL",%bg2_chapter_5%)
+	!Global("Chapter","GLOBAL",%bg2_chapter_7%)
+	!AreaCheck("AR1900")
+	!AreaCheck("AR1100")
+	!AreaCheck("AR1300")
+	!AreaCheck("AR1400")
+	!AreaCheck("AR1404")
+	!AreaCheck("AR2500")
+	!AreaCheck("AR2600")
+	!AreaCheck("AR2601")
+	AreaType(OUTDOOR)
+	!Exists("C#AJDOUG")
+	ReputationGT(Player1,15)
+	Global("C#AjantisNBMessenger","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisNBMessenger","GLOBAL",1)
+		SetGlobal("C#AjantisNBFlirtCycle1","GLOBAL",3)
+END
+
+IF
+	InParty(Myself)
+	CombatCounter(0) !See([ENEMY])
+	InMyArea(Player1) 
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Exists("C#AJDOUG")
+	Global("C#AjantisNBMessenger","GLOBAL",1)
+THEN
+	RESPONSE #100
+		CreateCreatureObjectOffScreen("C#AJDOUG",Myself,0,0,0) // Douglas
+END
+
+/* NB thinking cycle: activation */
+IF
+  InParty(Myself)
+  RealGlobalTimerExpired("C#AjantisNBThinkingTimer","GLOBAL")
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisNewRomMatch","GLOBAL",1)
+  !Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisSchweigen","GLOBAL",0)
+  !See([ENEMY])
+	!Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  CombatCounter(0)
+  !AreaType(DUNGEON)
+	ReputationGT(Player1,15)
+    OR(4)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",1)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",3)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",5)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",7)
+THEN
+  RESPONSE #100
+    IncrementGlobal("C#AjantisNBThinkingCycle","GLOBAL",1)
+END
+
+/* NB thinking cycle: triggering */
+IF
+  InParty(Myself)
+  !Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  OR(4)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",2)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",4)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",6)
+    Global("C#AjantisNBThinkingCycle","GLOBAL",8)
+THEN
+  RESPONSE #100
+    RealSetGlobalTimer("C#AjantisNBThinkingTimer","GLOBAL",600) //s
+		PlaySong(0)
+		PlaySound("C#AJROM")
+    StartDialogNoSet(Player1)
+END
+
+
+/* Ajantis initiated flirts (After end of "thinking" cycle): activation */
+IF
+  InParty(Myself)
+  RealGlobalTimerExpired("C#AjantisNBFlirtTimer","GLOBAL")
+  !Global("C#AjantisRomanceActive","GLOBAL",3)
+  Global("C#AjantisNewRomMatch","GLOBAL",1)
+  !Global("C#AjantisEngaged","GLOBAL",1)
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	Global("C#AjantisNBThinkingCycle","GLOBAL",9)
+  !See([ENEMY])
+	!Range([NEUTRAL],10)
+	ReputationGT(Player1,15)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  CombatCounter(0)
+  !AreaType(DUNGEON)
+    Global("C#AjantisNBFlirtCycle","GLOBAL",1)
+THEN
+  RESPONSE #100
+    IncrementGlobal("C#AjantisNBFlirtCycle","GLOBAL",1)
+END
+
+/* Ajantis initiated flirts (After end of "thinking" cycle): triggering */
+IF
+  InParty(Myself)
+  !Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  Global("C#AjantisNBFlirtCycle","GLOBAL",2)
+THEN
+  RESPONSE #100
+    RealSetGlobalTimer("C#AjantisNBFlirtTimer","GLOBAL",2000) //s
+		PlaySong(0)
+		PlaySound("C#AJROM")
+    StartDialogNoSet(Player1)
+END
+
+
+
+/* Heiratsantrag (Hölle): activation */
+
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	Global("C#AjantisRomanceActive","GLOBAL",1) 	
+	Global("C#AjantisNewRomMatch","GLOBAL",1)
+	Global("C#AjantisSchweigen","GLOBAL",0)
+	GlobalGT("C#AjantisHellTrialsGood","GLOBAL",1)
+	Global("C#AjanNBMarriageProposal","GLOBAL",0)
+	OR(2)
+		AreaCheck("AR2900")
+		AreaCheck("AR2906")
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjanNBMarriageProposal","GLOBAL",1)
+END
+
+/* Heiratsantrag (Hölle): triggering */
+IF
+  InParty(Myself)
+  !Range([NEUTRAL],10)
+  InMyArea(Player1) 
+  !StateCheck(Player1,CD_STATE_NOTVALID)
+  Global("C#AjanNBMarriageProposal","GLOBAL",1)
+THEN
+  RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+    StartDialogNoSet(Player1)
+END
+
+
+
+
+/* Ajantis protects his love interest if HP get too low */
+IF
+	InParty(Myself)
+	!GlobalTimerNotExpired("C#AjantisBeschuetzerTimer","GLOBAL")
+	Global("C#AjantisRomanceActive","GLOBAL",1) 
+	Global("C#AjantisNewRomMatch","GLOBAL",1)
+	HPPercentLT(Player1,5)
+	Exists(LastAttackerOf(Player1))
+	Global("C#AjantisNichtBeschuetzen","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("C#AjantisBeschuetzerTimer","GLOBAL",60)
+		DisplayStringHead(Myself,@0) 
+		SetGlobal("C#AjantisNBBeschuetzer","GLOBAL",1)
+		Attack(LastAttackerOf(Player1))
+END
+
+/* First time Ajantis protects CHARNAME they will talk about it */
+/* Ajantis protected CHARNAME: dialogue activation */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	CombatCounter(0) !See([ENEMY])
+	!Range([NEUTRAL],10)
+	Global("C#AjantisRomanceActive","GLOBAL",1) 
+	Global("C#AjantisNewRomMatch","GLOBAL",1)
+	Global("C#AjantisNBBeschuetzer","GLOBAL",1)
+	Global("C#AjantisNBBeschuetzerTalk","GLOBAL",0)
+THEN
+	RESPONSE #100
+		SetGlobal("C#AjantisNBBeschuetzerTalk","GLOBAL",1)
+END
+
+/* Ajantis protected CHARNAME: dialogue triggering */
+IF
+	InParty(Myself)
+	InMyArea(Player1)
+	!StateCheck(Player1,CD_STATE_NOTVALID)
+	!Range([NEUTRAL],10)
+	Global("C#AjantisNBBeschuetzerTalk","GLOBAL",1)
+THEN
+	RESPONSE #100
+		PlaySong(0)
+		PlaySound("C#AJROM")
+		StartDialogNoSet(Player1)
+END
+
+
+

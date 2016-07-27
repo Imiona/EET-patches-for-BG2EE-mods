@@ -1,0 +1,14 @@
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/bows.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/bows.tph: GAME_IS ~tob bgt bg2ee~ => GAME_IS ~tob bgt bg2ee eet~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/bows.tph: GAME_IS ~tob bgt bg2ee~ => GAME_IS ~tob bgt bg2ee eet~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/kit.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/kit.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/kit.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/kit.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/kit.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/kit.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/kit.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/missiles.tph: GAME_IS ~bgee bg2ee iwdee~ => GAME_IS ~bgee bg2ee eet iwdee~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/missiles.tph: GAME_IS ~tob bgt bg2ee~ => GAME_IS ~tob bgt bg2ee eet~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/missiles.tph: GAME_IS ~tob bgt bg2ee~ => GAME_IS ~tob bgt bg2ee eet~
+Patching A7#ImprovedArcher-v2.1/A7#ImprovedArcher/lib/missiles.tph: GAME_IS ~bg2ee~ => GAME_IS ~bg2ee eet~
