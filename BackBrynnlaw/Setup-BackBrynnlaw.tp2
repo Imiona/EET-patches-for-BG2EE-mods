@@ -1,6 +1,6 @@
 BACKUP ~BackBrynnlaw/Backup~
 AUTHOR ~http://forums.pocketplane.net~
-VERSION ~v4~
+VERSION ~v5~
 
 README ~BackBrynnlaw/%LANGUAGE%/Readme-BackBrynnlaw.txt~ ~BackBrynnlaw/Readme-BackBrynnlaw.txt~ 
 
@@ -41,6 +41,7 @@ AUTO_TRA ~BackBrynnlaw/%s~
 
 LANGUAGE ~English~ ~English~ ~BackBrynnlaw/English/Setup-BackBrynnlaw.tra~
 LANGUAGE ~Russian~ ~Russian~ ~BackBrynnlaw/Russian/Setup-BackBrynnlaw.tra~
+LANGUAGE ~Deutsch~ ~Deutsch~ ~BackBrynnlaw/Deutsch/Setup-BackBrynnlaw.tra~
 
 BEGIN @0
 

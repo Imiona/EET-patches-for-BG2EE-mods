@@ -2,9 +2,9 @@ BACKUP ~deArnise/Backup~
 
 AUTHOR ~jcompton@pocketplane.net~
 
-VERSION ~v4~
+README ~deArnise/README-DeArnise.txt~
 
-AUTO_TRA ~deArnise/%s~
+VERSION ~v5~
 
 ALWAYS
   ACTION_IF GAME_IS ~eet~ BEGIN
@@ -17,10 +17,28 @@ ALWAYS
     OUTER_SPRINT name_source ~bg2_chapter_%i%~
     OUTER_SET EVAL ~%name_source%~ = bg2_chapter
   END
+
+  // Character encoding conversion for BG2EE
+  ACTION_DEFINE_ARRAY deArnise_noconvert BEGIN END
+  ACTION_DEFINE_ARRAY deArnise_reload BEGIN Setup-deArnise END
+
+  LAF HANDLE_CHARSETS
+    INT_VAR
+      infer_charset = 1
+    STR_VAR
+      // Translation folders directly in the mod folder (iconv directory to keep at the same place)
+      tra_path = EVAL ~%MOD_FOLDER%~
+      noconvert_array = deArnise_noconvert
+      reload_array = deArnise_reload
+  END
+
 END
+
+AUTO_TRA ~deArnise/%s~
 
 LANGUAGE ~English~ ~English~ ~deArnise/English/Setup-deArnise.tra~
 LANGUAGE ~Russian (translation by Aleksander Zudwa~ ~russian~ ~deArnise/russian/Setup-deArnise.tra~
+LANGUAGE ~Francais (traduit par Mornagest des d'Oghmatiques)~ ~french~ ~deArnise/french/Setup-deArnise.tra~
 
 BEGIN @0
 
@@ -167,6 +185,10 @@ EXTEND_BOTTOM ~BODHIAMB.bcs~ ~deArnise/Scripts/BODHIAMB.baf~
 EXTEND_BOTTOM ~VAMPAMB.bcs~ ~deArnise/Scripts/VAMPAMB.baf~
 EXTEND_BOTTOM ~CLEANSE.bcs~ ~deArnise/Scripts/CLEANSE.baf~
 
+// HANDLE_AUDIO can handle installation and uninstallation for Windows/OSX/Linux
+// *.bat and *.sh file could be removed
+// sox and oggdec are expected to be in the audio directory
+/*
 ACTION_IF (~%WEIDU_OS%~ STRING_EQUAL_CASE ~win32~) THEN BEGIN
     AT_NOW ~deArnise/Commands/AudioInstall.bat~
     AT_UNINSTALL ~deArnise/Commands/AudioUninstall.bat~
@@ -176,5 +198,13 @@ ACTION_IF (~%WEIDU_OS%~ STRING_EQUAL_CASE ~osx~) THEN BEGIN
     AT_INTERACTIVE_UNINSTALL ~sh deArnise/Commands/AudioUninstall.sh~
 END
 END
+*/
+LAF HANDLE_AUDIO
+	STR_VAR
+		audio_path = EVAL ~deArnise/Audio~
+		oggdec_path = ~deArnise/Audio~
+		sox_path = ~deArnise/Audio~
+END
 
-AT_INTERACTIVE_EXIT ~VIEW deArnise/README-DeArnise.txt~
+// Readme display transfered at the beginning of the process with the README statement
+// AT_INTERACTIVE_EXIT ~VIEW deArnise/README-DeArnise.txt~

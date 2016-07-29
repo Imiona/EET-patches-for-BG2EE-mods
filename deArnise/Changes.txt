@@ -22,8 +22,7 @@ Patching deArnise/Scripts/PGNalia.baf: Global("Chapter","GLOBAL",5) => Global("C
 Patching deArnise/Scripts/PGNalia.baf: Global("Chapter","GLOBAL",7) => Global("Chapter","GLOBAL",%bg2_chapter_7%)
 Patching deArnise/Scripts/PGNaliaD.baf: GlobalLT("Chapter","GLOBAL",4) => GlobalLT("Chapter","GLOBAL",%bg2_chapter_4%)
 Patching deArnise/Scripts/PGNaliaD.baf: GlobalGT("Chapter","GLOBAL",5) => GlobalGT("Chapter","GLOBAL",%bg2_chapter_5%)
-Patching deArnise/Setup-deArnise.tp2: ALWAYS command added
-ALWAYS
+Patching deArnise/Setup-deArnise.tp2: ALWAYS command expanded
   ACTION_IF GAME_IS ~eet~ BEGIN
     OUTER_SET bg2_chapter = 12
   END ELSE BEGIN
@@ -34,6 +33,5 @@ ALWAYS
     OUTER_SPRINT name_source ~bg2_chapter_%i%~
     OUTER_SET EVAL ~%name_source%~ = bg2_chapter
   END
-END
 
 This file doesn't document EVALUATE_BUFFER additions. The command is added if script or dialogue needs evaluation due to chapters variables usage

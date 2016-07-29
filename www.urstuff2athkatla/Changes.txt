@@ -1,8 +1,0 @@
-ACTION_IF GAME_IS ~eet~ BEGIN
-  COPY_EXISTING K#TELBGT.bcs override
-    DECOMPILE_AND_PATCH BEGIN
-      REPLACE_TEXTUALLY ~Global("K#DoOnceItemList","LOCALS",0)~ ~False()~
-      REPLACE_TEXTUALLY ~ActionOverride(".+",DropInventory())~ ~~
-    END
-  BUT_ONLY
-END

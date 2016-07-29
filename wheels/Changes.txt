@@ -1,35 +1,5 @@
-1. GAME_IS changes:
-
-Patching wheels/setup-wheels.tp2: GAME_IS "tob bgt bg2ee"  => GAME_IS "tob bgt bg2ee eet" 
-Patching wheels/sfo/install_sfo.tpa: GAME_IS ~bgee bg2ee~ BEGIN => GAME_IS ~bgee bg2ee eet~ BEGIN
-Patching wheels/sfo/install_sfo.tpa: GAME_IS ~tutu tutu_totsc bgt bgee~ => GAME_IS ~tutu tutu_totsc bgt eet bgee~
-Patching wheels/sfo/general/lib_iterate.tpa: GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee~ BEGIN => GAME_IS ~bg2 tob tutu tutu_totsc bgee bg2ee eet~ BEGIN
-
-2. BG2 chapter variables:
-
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/dialogues/heads.D: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/heads/itheads.baf: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/heads/itheads.baf: Global("Chapter","GLOBAL",9) => Global("Chapter","GLOBAL",%bg2_chapter_9%)
-Patching wheels/setup-wheels.tp2: ALWAYS command expanded
+  ACTION_IF (GAME_IS ~eet~) AND (FILE_CONTAINS ~override/EET.flag~ ~EET_JOURNAL~) BEGIN
+    OUTER_SET bg2_chapter = 14
+->
   ACTION_IF GAME_IS ~eet~ BEGIN
     OUTER_SET bg2_chapter = 12
-  END ELSE BEGIN
-    OUTER_SET bg2_chapter = 0
-  END
-  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
-    OUTER_SET bg2_chapter = bg2_chapter + 1
-    OUTER_SPRINT name_source ~bg2_chapter_%i%~
-    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
-  END
-
-3. wheels/sfo/crossplatform.tph replaced with already updated version available within SCS compatibility patch (all changes are listed there)
-
-This file doesn't document EVALUATE_BUFFER additions. The command is added if script or dialogue needs evaluation due to chapters variables usage
