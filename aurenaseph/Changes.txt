@@ -81,7 +81,7 @@ has been moved at the end of the component (see next change)
 
 ACTION_IF GAME_IS ~eet~ BEGIN
   LOAD_TRA ~AurenAseph/%LANGUAGE%/fatesp.tra~
-  INCLUDE ~Angelo/lib/EET_functions.tph~
+  INCLUDE ~AurenAseph/lib/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -96,8 +96,5 @@ ACTION_IF GAME_IS ~eet~ BEGIN
 END ELSE BEGIN
   COMPILE ~AurenAseph/Dialogues/FATESP.d~
 END
-
-
-No need to add additional "Nalia lover" option - at the end of romance correct variable is set
 
 This file doesn't document EVALUATE_BUFFER additions. The command is added if script or dialogue needs evaluation due to chapters variables usage
