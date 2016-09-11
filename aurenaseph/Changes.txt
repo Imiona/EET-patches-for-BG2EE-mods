@@ -69,7 +69,6 @@ END
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from aurenaseph/setup-aurenaseph.tp2:
 
@@ -80,8 +79,7 @@ has been moved at the end of the component (see next change)
 3. New code added at the end of aurenaseph/setup-aurenaseph.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~AurenAseph/%LANGUAGE%/fatesp.tra~
-  INCLUDE ~AurenAseph/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -90,6 +88,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "K#AUREN"
       override_ToB = "K#AURE25"
       dialog_ToB = "K#AUR25D"
+      traFile = EVAL "AurenAseph/%LANGUAGE%/fatesp.tra"
       string = "@0" //Bring me Auren, the human fighter.
       stringPosDV = "Anomen"
   END

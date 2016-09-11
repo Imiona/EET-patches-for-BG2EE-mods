@@ -105,8 +105,7 @@ IF     ~25FILE~
 // End of .2DA patching
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~alora/%LANGUAGE%/alora25.tra~
-  INCLUDE ~alora/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -116,6 +115,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "CMALORA"
       override_ToB = "CMALO25"
       dialog_ToB = "CMALO25A"
+      traFile = EVAL "alora/%LANGUAGE%/alora25.tra"
       string = "@0" //Bring me Alora, the happy go lucky thief.
       stringPosDV = "Anomen"
       clean_ToB_DV = "Alora"

@@ -21,7 +21,6 @@ Patching Foundling/Foundling.tp2: ALWAYS command expanded
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from Foundling/Dialogues/L#Fou25.d:
 
@@ -38,8 +37,7 @@ Moved to new file: Foundling/Dialogues/FATESP.d
 3. New code added at the end of Foundling/Foundling.tp2
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
-  INCLUDE ~Foundling/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -48,11 +46,12 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "L#FOU"
       override_ToB = "L#FOU25"
       dialog_ToB = "L#FOU25"
+      traFile = EVAL "Foundling/translations/%LANGUAGE%/L#FOU25.TRA"
       string = "@0" //Bring me Foundling, the human Shadow Adept.
       stringPosDV = "Garrick"
   END
 END ELSE BEGIN
-  COMPILE ~Foundling/Dialogues/FATESP.d~ ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
+  COMPILE ~Foundling/Dialogues/FATESP.d~ USING ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
 END
 
 This file doesn't document EVALUATE_BUFFER additions. The command is added if script or dialogue needs evaluation due to chapters variables usage

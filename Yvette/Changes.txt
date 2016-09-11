@@ -33,14 +33,13 @@ END
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. New code added at the end of Yvette/Setup-Yvette.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
 <<<<<<<< .../AR4000.baf
 IF
-  InParty("YxYve")
+  InPartyAllowDead("YxYve")
   Global("YxYveSummoned","GLOBAL",0)
 THEN
   RESPONSE #100

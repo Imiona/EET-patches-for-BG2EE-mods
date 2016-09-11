@@ -2216,8 +2216,7 @@ END
 ///////////////////////////////////TOB TRANSITION
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
-  INCLUDE ~Foundling/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -2226,9 +2225,10 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "L#FOU"
       override_ToB = "L#FOU25"
       dialog_ToB = "L#FOU25"
+      traFile = EVAL "Foundling/translations/%LANGUAGE%/L#FOU25.TRA"
       string = "@0" //Bring me Foundling, the human Shadow Adept.
       stringPosDV = "Garrick"
   END
 END ELSE BEGIN
-  COMPILE ~Foundling/Dialogues/FATESP.d~ ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
+  COMPILE ~Foundling/Dialogues/FATESP.d~ USING ~Foundling/translations/%LANGUAGE%/L#FOU25.TRA~
 END

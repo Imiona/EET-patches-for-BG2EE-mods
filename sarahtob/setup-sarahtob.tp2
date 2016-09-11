@@ -371,8 +371,7 @@ UNLESS ~K#Sarah~
 IF ~25FILE~
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~SarahToB/translations/%LANGUAGE%/k#fates.tra~
-  INCLUDE ~SarahToB/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -381,6 +380,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "K#SARAH"
       override_ToB = "K#SARA25"
       dialog_ToB = "K#SARA25"
+      traFile = EVAL "SarahToB/translations/%LANGUAGE%/k#fates.tra"
       string = "@1" //Bring me Sarah, the human ranger.
       stringPosDV = "SharTeel"
   END

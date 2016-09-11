@@ -299,7 +299,7 @@ AT_INTERACTIVE_EXIT ~VIEW Branwen/Readme-Branwen.txt~
 
 // EET related code
 ACTION_IF GAME_IS ~eet~ BEGIN //only true if game is detected as Enhanced Edition Trilogy (mod for BG2:EE)
-  INCLUDE ~Branwen/lib/EET_functions.tph~ //declaration of external EET functions used below
+  INCLUDE ~EET/other/EET_functions.tph~ //declaration of external EET functions used below
   LAF ~EET_NPC_TRANSITION~ //function used to automatically implement EET continuity system
     INT_VAR
       type = 2 //informs the function that this is BG2 NPC without BG1 content

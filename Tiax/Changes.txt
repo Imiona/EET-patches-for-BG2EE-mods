@@ -42,7 +42,6 @@ Patching Tiax/Setup-Tiax.tp2: ALWAYS command expanded
 ---------------------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from Tiax/Dialogue/O#Tia25J.d:
 
@@ -59,8 +58,7 @@ Moved to new file: Tiax/Dialogue/FATESP.d
 3. New code added at the end of Tiax/Setup-Tiax.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Tiax/%LANGUAGE%/O#Tia25J.tra~
-  INCLUDE ~Tiax/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -70,6 +68,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "O#TIAXS"
       override_ToB = "O#TIA25S"
       dialog_ToB = "O#TIAX25"
+      traFile = EVAL "Tiax/%LANGUAGE%/O#Tia25J.tra"
       string = "@8" //Bring me Tiax, the gnome thief/cleric.
       stringPosDV = "Viconia"
       clean_ToB_DV = "Tiax"

@@ -16,7 +16,6 @@ Patching Skie/Setup-Skie.tp2: ALWAYS command expanded
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from Skie/DIALOGUES/1xSki25J.d:
 
@@ -32,8 +31,7 @@ Moved to new file: Skie/DIALOGUES/FATESP.d
 3. New code added at the end of Skie/Setup-Skie.tp2
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Skie/translations/%LANGUAGE%/1XSKI25J.TRA~
-  INCLUDE ~Skie/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -43,6 +41,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "1XSKIE"
       override_ToB = "1XSKI25"
       dialog_ToB = "1XSKI25"
+      traFile = EVAL "Skie/translations/%LANGUAGE%/1XSKI25J.TRA"
       string = "@132" //Bring Skie, the constantly-complaining thief.
       stringPosDV = "Tiax"
       clean_ToB_DV = "Skie"

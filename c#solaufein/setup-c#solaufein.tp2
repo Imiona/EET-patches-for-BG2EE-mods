@@ -663,8 +663,7 @@ END
 
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~C#Solaufein/Translations/autotra/%LANGUAGE%/c#solatra.tra~
-  INCLUDE ~c#solaufein/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -673,6 +672,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "C#SOLAU"
       override_ToB = "C#SOLAU"
       dialog_ToB = "C#SOLA25"
+      traFile = EVAL "C#Solaufein/Translations/autotra/%LANGUAGE%/c#solatra.tra"
       string = "@1328" //Bring me Solaufein, the drow fighter, who I saved from the drider cocoons.
       stringPosDV = "Tiax"
   END

@@ -34,7 +34,6 @@ Patching tyrisflare/setup-tyrisflare.tp2: ALWAYS command expanded
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from TyrisFlare/Dialogue/G#TRS25A.d
 
@@ -71,8 +70,7 @@ Moved to new file: tyrisflare/dialogue/FATESP.d
 4. New code added at the end of tyrisflare/setup-tyrisflare.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~TyrisFlare/languages/%LANGUAGE%/g#trs25a.tra~
-  INCLUDE ~TyrisFlare/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -81,6 +79,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "G#TYRIS"
       override_ToB = "G#TYRS25"
       dialog_ToB = "G#TRS25A"
+      traFile = EVAL "TyrisFlare/languages/%LANGUAGE%/g#trs25a.tra"
       string = "@1" //Bring me Tyris, the amazon fighter/mage.
       stringPosDV = "Viconia"
       SummonedVar = "G#TF.TyrisSummoned"

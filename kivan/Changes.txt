@@ -122,7 +122,6 @@ Patching kivan/setup-kivan.tp2: ALWAYS command expanded
 -----------------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the lib folder
 
 2. Below code from kivan/d/p#ki25j.d:
 
@@ -148,8 +147,7 @@ Moved to new file: kivan/d/FATESP.d
 3. New code added at the end of ajantisbg2/setup-ajantisbg2.tp2
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Kivan/tra/%LANGUAGE%/p#ki25j.tra~
-  INCLUDE ~Kivan/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -159,6 +157,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "P#KIVAN"
       override_ToB = "P#KI25"
       dialog_ToB = "P#KI25P" //unfortunately ToB starting dialogue doesn't exist
+      traFile = EVAL "Kivan/tra/%LANGUAGE%/p#ki25j.tra"
       string = "@164" //Bring me Kivan, the elven archer.
       stringPosDV = "Korgan"
       clean_ToB_DV = "Kivan"
@@ -171,6 +170,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "P#DEH01"
       override_ToB = "P#DE25"
       dialog_ToB = "P#DE25P" //unfortunately ToB starting dialogue doesn't exist
+      traFile = EVAL "Kivan/tra/%LANGUAGE%/p#ki25j.tra"
       string = "@165" //Bring me Deheriana, the elven mage.
       stringPosDV = "Dorn"
   END

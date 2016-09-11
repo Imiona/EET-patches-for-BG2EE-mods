@@ -401,8 +401,7 @@ END ELSE BEGIN
 END
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~AurenAseph/%LANGUAGE%/fatesp.tra~
-  INCLUDE ~Angelo/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -411,6 +410,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "K#AUREN"
       override_ToB = "K#AURE25"
       dialog_ToB = "K#AUR25D"
+      traFile = EVAL "AurenAseph/%LANGUAGE%/fatesp.tra"
       string = "@0" //Bring me Auren, the human fighter.
       stringPosDV = "Anomen"
   END

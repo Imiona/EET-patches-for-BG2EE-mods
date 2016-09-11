@@ -190,8 +190,7 @@ APPEND ~pdialog.2da~ ~O#Coran        O#CoranP             O#CoranJ            O#
 UNLESS ~O#Coran~
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Coran/%LANGUAGE%/O#Cor25J.tra~
-  INCLUDE ~Coran/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -201,6 +200,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "O#CORANS"
       override_ToB = "O#COR25S"
       dialog_ToB = "O#COR25"
+      traFile = EVAL "Coran/%LANGUAGE%/O#Cor25J.tra"
       string = "@107" //Bring me Coran, the elven fighter and thief.
       stringPosDV = "Corwin"
       clean_ToB_DV = "Coran"

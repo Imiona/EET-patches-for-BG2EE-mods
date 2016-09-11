@@ -386,8 +386,7 @@ UNLESS ~O#XAN~
 LAF HANDLE_AUDIO END
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Xan/%LANGUAGE%/O#Xan25J.tra~
-  INCLUDE ~Xan/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -397,6 +396,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "O#XANS"
       override_ToB = "O#XAN25S"
       dialog_ToB = "O#XAN25"
+      traFile = EVAL "Xan/%LANGUAGE%/O#Xan25J.tra"
       string = "@34" //Bring me Xan, the elven mage.
       stringPosDV = "Xan"
       clean_ToB_DV = "Xzar"

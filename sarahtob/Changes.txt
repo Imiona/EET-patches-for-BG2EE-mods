@@ -63,7 +63,6 @@ Patching sarahtob/setup-sarahtob.tp2: ALWAYS command expanded
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from sarahtob/setup-sarahtob.tp2:
 
@@ -74,8 +73,7 @@ Moved at the end of main component (see next step)
 3. New code added at the end of sarahtob/setup-sarahtob.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~SarahToB/translations/%LANGUAGE%/k#fates.tra~
-  INCLUDE ~SarahToB/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -84,6 +82,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "K#SARAH"
       override_ToB = "K#SARA25"
       dialog_ToB = "K#SARA25"
+      traFile = EVAL "SarahToB/translations/%LANGUAGE%/k#fates.tra"
       string = "@1" //Bring me Sarah, the human ranger.
       stringPosDV = "SharTeel"
   END

@@ -1486,8 +1486,7 @@ LAF HANDLE_AUDIO
 END
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~AjantisBG2/tra/autotra/%LANGUAGE%/c#ajanj_pr.tra~
-  INCLUDE ~AjantisBG2/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -1497,6 +1496,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "C#AJAN"
       override_ToB = "C#AJAN25"
       dialog_ToB = "C#AJAN25"
+      traFile = EVAL "AjantisBG2/tra/autotra/%LANGUAGE%/c#ajanj_pr.tra"
       string = "@749" //Bring me Ajantis, the paladin and knight
       stringPosDV = "Alora"
       clean_ToB_DV = "Ajantis"

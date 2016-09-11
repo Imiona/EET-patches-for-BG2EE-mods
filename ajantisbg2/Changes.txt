@@ -222,7 +222,6 @@ Patching ajantisbg2/setup-ajantisbg2.tp2: ALWAYS command expanded
 -----------------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from ajantisbg2/tob/dialogue/tob_ict.d:
 
@@ -260,8 +259,7 @@ Moved to new file: ajantisbg2/tob/dialogue/FATESP.d
 3. New code added at the end of ajantisbg2/setup-ajantisbg2.tp2
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~AjantisBG2/tra/autotra/%LANGUAGE%/c#ajanj_pr.tra~
-  INCLUDE ~AjantisBG2/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -271,6 +269,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "C#AJAN"
       override_ToB = "C#AJAN25"
       dialog_ToB = "C#AJAN25"
+      traFile = EVAL "AjantisBG2/tra/autotra/%LANGUAGE%/c#ajanj_pr.tra"
       string = "@749" //Bring me Ajantis, the paladin and knight
       stringPosDV = "Alora"
       clean_ToB_DV = "Ajantis"

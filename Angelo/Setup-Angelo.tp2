@@ -644,8 +644,7 @@ END ELSE BEGIN // linux or OS X
 END
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Angelo/%LANGUAGE%/adang25j.tra~
-  INCLUDE ~Angelo/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -654,6 +653,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "ADANGEL"
       override_ToB = "ADANG25"
       dialog_ToB = "ADANG25"
+      traFile = EVAL "Angelo/%LANGUAGE%/adang25j.tra"
       string = "@0" //Bring me Angelo, the human fighter/mage.
       stringPosDV = "Anomen"
   END

@@ -77,7 +77,6 @@ END
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from Isra_bg2/dialogue/rh#is25.d:
 
@@ -102,8 +101,7 @@ Moved to new file: Isra_bg2/dialogue/FATESP.d
 3. New code added at the end of Isra_bg2/isra_bg2.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Isra_bg2/translations/%LANGUAGE%/brh#is25.tra~
-  INCLUDE ~Isra_bg2/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -113,6 +111,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "RH#ISR"
       override_ToB = "RH#IS25"
       dialog_ToB = "RH#IS25"
+      traFile = EVAL "Isra_bg2/translations/%LANGUAGE%/brh#is25.tra"
       string = "@1" //Bring me Isra, the Sunite cavalier.
       stringPosDV = "Jaheira"
 	  clean_ToB_DV = "rh#isra"

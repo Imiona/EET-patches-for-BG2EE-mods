@@ -311,8 +311,7 @@ COPY ~Skie\SKIEMUSICI.bat~ ~SKIEMUSICI.bat~
 COPY ~Skie\SKIEMUSICU.bat~ ~SKIEMUSICU.bat~
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Skie/translations/%LANGUAGE%/1XSKI25J.TRA~
-  INCLUDE ~Skie/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -322,6 +321,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "1XSKIE"
       override_ToB = "1XSKI25"
       dialog_ToB = "1XSKI25"
+      traFile = EVAL "Skie/translations/%LANGUAGE%/1XSKI25J.TRA"
       string = "@132" //Bring Skie, the constantly-complaining thief.
       stringPosDV = "Tiax"
       clean_ToB_DV = "Skie"

@@ -41,7 +41,6 @@ Patching kelsey.tp2: ALWAYS command expanded
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from kelsey/d/kelseyg.d:
 
@@ -94,8 +93,7 @@ Moved to new file: kelsey/d/FATESP.d
 3. New code added at the end of kelsey.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~kelsey/tra/%LANGUAGE%/kelseyg.tra~
-  INCLUDE ~kelsey/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -104,6 +102,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "J#KLSY"
       override_ToB = "J#KLSY25"
       dialog_ToB = "J#KLSY25"
+      traFile = EVAL "kelsey/tra/%LANGUAGE%/kelseyg.tra"
       string = "@6001" //Bring me Kelsey, the human sorceror.
       stringPosDV = "Khalid"
   END

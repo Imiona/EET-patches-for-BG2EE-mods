@@ -39,7 +39,6 @@ Patching Coran/Setup-Coran.tp2: ALWAYS command expanded
 ---------------------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from Coran/Dialogue/O#Cor25J.d:
 
@@ -56,8 +55,7 @@ Moved to new file: Coran/Dialogue/FATESP.d
 3. New code added at the end of Coran/Setup-Coran.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Coran/%LANGUAGE%/O#Cor25J.tra~
-  INCLUDE ~Coran/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -67,6 +65,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "O#CORANS"
       override_ToB = "O#COR25S"
       dialog_ToB = "O#COR25"
+      traFile = EVAL "Coran/%LANGUAGE%/O#Cor25J.tra"
       string = "@107" //Bring me Coran, the elven fighter and thief.
       stringPosDV = "Corwin"
       clean_ToB_DV = "Coran"

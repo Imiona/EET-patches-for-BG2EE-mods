@@ -37,7 +37,6 @@ END
 -----------
 
 Manual edits:
-1. New file EET_functions.tph with common EET functions added to the mod folder
 
 2. Below code from Angelo/Dialogue/ADAng25J.d:
 
@@ -63,8 +62,7 @@ Moved to new file: Angelo/Dialogue/FATESP.d
 3. New code added at the end of Angelo/Setup-Angelo.tp2 main component
 
 ACTION_IF GAME_IS ~eet~ BEGIN
-  LOAD_TRA ~Angelo/%LANGUAGE%/adang25j.tra~
-  INCLUDE ~Angelo/lib/EET_functions.tph~
+  INCLUDE ~EET/other/EET_functions.tph~
   LAF ~EET_NPC_TRANSITION~
     INT_VAR
       type = 2
@@ -73,6 +71,7 @@ ACTION_IF GAME_IS ~eet~ BEGIN
       override_SoA = "ADANGEL"
       override_ToB = "ADANG25"
       dialog_ToB = "ADANG25"
+      traFile = EVAL "Angelo/%LANGUAGE%/adang25j.tra"
       string = "@0" //Bring me Angelo, the human fighter/mage.
       stringPosDV = "Anomen"
   END
